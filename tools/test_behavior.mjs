@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /*  ⛔ נתיב הדפדפן — ⚠️ ניתן לדריסה ב-`BEHAVIOR_CHROME`, ⭐ והיעדרו
    *  **מדווח ואינו מדלג בשתיקה**: ⛔ שער שמדלג כשאין דפדפן אינו יכול להיכשל. */
   chrome: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',

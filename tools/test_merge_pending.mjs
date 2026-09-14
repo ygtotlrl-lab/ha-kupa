@@ -30,7 +30,7 @@ import vm from 'node:vm';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   names: ['rowTs', 'findRow', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
   vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
   /*  ⛔ גלובלים שהארגז חול צריך מעבר לבדלים המשותפים — ⚠️ **מה נכנס**:
@@ -53,7 +53,7 @@ const APP = {
   /*  ⭐ שכבת ליבת המיזוג (סבב 72) — ⚠️ השמות, המעטפת והרשומה נבדלים
    *  מאלה שמעליהם, ⛔ ולכן הם יושבים בקבוצה משלהם ואינם מתמזגים בהם. */
   core: {
-    app: 'gius',
+    app: 'ha-kupa',
     names: ['rowTs', 'findRow', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
     vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
     globals: {},

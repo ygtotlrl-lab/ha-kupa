@@ -32,7 +32,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   usersTable: 'g_users',
   plainCol: 'password',
   verifyFn: 'gVerifyOffline',

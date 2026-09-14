@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /* חריגות מנומקות — קובץ/תיקייה שקיימים כאן ולא באחיות, עם הסיבה. */
   rootExtra: {},
   toolsExtra: {

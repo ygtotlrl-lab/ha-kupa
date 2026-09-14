@@ -36,7 +36,7 @@ export const ROWS = [140];
 const RUN_MUT = process.env.GATE_MUT === '1';
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  name: 'gius',
+  name: 'ha-kupa',
   /* ⛔ שבע הטבלאות של הפרויקט הייעודי. ⚠️ נמדדו מול
      `information_schema.tables` ב-26.8.2026, ⛔ ולא הועתקו מהקוד — רשימה
      שנגזרת מהקוד מאשרת את עצמה. */

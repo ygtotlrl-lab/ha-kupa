@@ -34,7 +34,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /* ⚠️ אין כאן גשר שיתוף — אין `navigator.share` בקוד, ולכן אין
      `<queries>`, אין `<provider>` ואין תלויות androidx. ⛔ אין לתת גשר
      מקורי לדף שנטען מהרשת בלי צורך (סבב 41). שתי החתימות כאן הן

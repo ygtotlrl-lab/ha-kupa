@@ -33,7 +33,7 @@ import { execFileSync } from 'node:child_process';
  *  מדווחת ⭕ ⛔ ואינה מדלגת בשתיקה. ⚠️ **וריק הוא «נמדד ואין»** ⛔ ואינו
  *  נשמט: ⭐ שדה חסר נקרא «לא נשאל». */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   actMap: 'DOM_ACTIONS',
   sortFn: 'byName',
   cdnSym: 'supabase',

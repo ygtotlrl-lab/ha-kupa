@@ -31,7 +31,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /* ⭐ הליבה המשותפת (סבב 41) — זהה בית-לבית בכל הריפו פרט לשורת
      ה-`package`, וכל חוזה ההתנהגות יושב בה. */
   core:  'android/app/src/main/java/com/gius/app/ShellActivity.java',

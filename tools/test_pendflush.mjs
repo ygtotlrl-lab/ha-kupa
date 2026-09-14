@@ -33,7 +33,7 @@ import crypto from 'node:crypto';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   file: 'index.html',
   /*  ⚠️ נמדד ולא הוצהר: כאן המשיכה והדחיפה הן אותה פונקציה — `syncNow`
    *  מושכת, ממזגת ודוחפת, ⭐ ולכן היא גם `RTY_CFG.flush` וגם `PL_CFG.pull`:

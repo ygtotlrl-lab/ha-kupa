@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  name: 'gius',
+  name: 'ha-kupa',
   art: 'shapes',
   ink: [255, 255, 255],
   bg: { kind: 'solid', color: [15, 118, 110] },

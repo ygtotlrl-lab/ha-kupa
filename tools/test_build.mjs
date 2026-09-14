@@ -35,17 +35,17 @@ import { PEERS } from './peers.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /* שם הריפו המלא הוא גם שם ה-artifact וגם שם קובץ הפלט.
      ⛔ לא שם הקיצור של ה-keystore (סבב 41) — «schar.apk» היה שם המפתח
      ולא שם התוצר, וזה בדיוק סוג ההיסט ששני שמות לאותו דבר מייצרים. */
-  repo: 'gius',
+  repo: 'ha-kupa',
   /* שם הריפו — מוכרז פרטי בחתימת ה-workflows ומנורמל החוצה. */
-  slug: 'gius',
+  slug: 'ha-kupa',
   keystore: 'gius.keystore',
-  alias: 'gius',
+  alias: 'ha-kupa',
   pass: 'gius123',
-  out: 'gius-signed.apk',
+  out: 'kupa-signed.apk',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 

@@ -24,7 +24,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
-const APP = { app: 'gius' };
+const APP = { app: 'ha-kupa' };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
 export const ROWS = [184];

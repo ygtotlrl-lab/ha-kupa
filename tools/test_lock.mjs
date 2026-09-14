@@ -29,7 +29,7 @@ import crypto from 'node:crypto';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   file: 'index.html',
   /*  ⛔ `present:false` הוא הצהרה מנומקת ולא היעדר שקט — ר' יומן העבודה,
    *  שאין בה מסך כניסה כלל. */

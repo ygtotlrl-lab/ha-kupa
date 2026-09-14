@@ -47,16 +47,16 @@ const APP = {
    *  ⭐ **ולמה היא קיימת**: שער שמספרו נע נראה כריצה חלקית או כריצפה
    *  מיושנת, ⛔ והטווח הוא מה שמבדיל בין השניים. */
   floorRange: {},
-  app: 'gius',
+  app: 'ha-kupa',
   /* ⚠️ הכללים נמדדו מ-sw.js ומ-index.html של האפליקציה הזו — אלה כללי
      השער המקורי של gius (סבב 11), בצורת הנתונים של סבב 33.
      [file, regex, expect, msg] */
   rules: [
-    ['sw',   "CACHE_NAME\\s*=\\s*'gius-v\\d+'", true,
-             "sw.js: CACHE_NAME בתבנית 'gius-v<N>' (תבנית, לא מספר קבוע — הלקח מסבב 11)"],
+    ['sw',   "CACHE_NAME\\s*=\\s*'kupa-v\\d+'", true,
+             "sw.js: CACHE_NAME בתבנית 'kupa-v<N>' (תבנית, לא מספר קבוע — הלקח מסבב 11)"],
     ['sw',   "supabase\\.co", true, "sw.js: דילוג על בקשות supabase.co"],
-    ['sw',   "prefix:\\s*'gius-'", true,
-             "sw.js: SW_CFG.prefix = 'gius-'"],
+    ['sw',   "prefix:\\s*'kupa-'", true,
+             "sw.js: SW_CFG.prefix = 'kupa-'"],
     ['sw',   "indexOf\\(SW_CFG\\.prefix\\)\\s*===\\s*0", true,
              "sw.js: ניקוי המטמון לפי SW_CFG.prefix בלבד"],
     ['sw',   "mode:\\s*'cors'", true, "sw.js: משיכת CDN ב-mode:'cors'"],

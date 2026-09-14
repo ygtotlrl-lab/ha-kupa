@@ -24,7 +24,7 @@ import { PEERS, COL_FIRST, COL_NOTE, ROW_CELLS } from './peers.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   sameProbeOk: [],
   sharedDecl: [],
   /*  ⛔ מפקד שאינו מפקד — ⚠️ **מה נכנס**: קטע טקסט שהמספר בו הוא

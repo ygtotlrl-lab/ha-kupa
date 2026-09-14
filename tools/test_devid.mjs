@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   /* ⛔ המפתח ההיסטורי — אינו משתנה לעולם (סבב 40). */
   deviceKey: 'g_device_id',
 };

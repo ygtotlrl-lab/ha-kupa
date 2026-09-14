@@ -34,7 +34,7 @@ import { DB_SCHEMA } from './db_schema.mjs';
    `BK_CFG.sources()` היא מלאה ודו-כיוונית. */
 /* ⚠️ סוף פר-אפליקציה */
 const APP = {
-  name: 'gius',
+  name: 'ha-kupa',
   keys: ['g_donors', 'g_pledges', 'g_txns', 'g_tasks', 'g_targets', 'g_config', 'g_users'],
   prefixes: [''],
   /*  ⛔ שמות גיבוי שרצו בעבר ואינם נגזרים מהקוד — ⚠️ **מה נכנס**: שם מפתח
@@ -49,7 +49,7 @@ const APP = {
   sisterKeys: [],
   /*  ⛔ הפרויקט שהאפליקציה חיה בו — ⚠️ שתי סכימות חיות ב-`DB_SCHEMA`,
       ⭐ וההצלבה היא מול זו של הפרויקט הזה בלבד. */
-  project: 'gius',
+  project: 'ha-kupa',
   /*  ⛔ טבלת הגיבוי בשמה החי — ⚠️ מוטציית-הנגד נוקבת בה, ⭐ ושם מוקלד
       בגוף השער היה נשבר בהסבה הבאה. */
   backupTableName: 'sh_backup',

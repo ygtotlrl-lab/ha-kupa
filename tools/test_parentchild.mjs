@@ -39,7 +39,7 @@ import { DB_SCHEMA } from './db_schema.mjs';
  *  ⚠️ והדבר היחיד שאפשר להשוות בהן הוא **מה שהוצהר** — ⛔ והגוף שמודד
  *  אותו זהה בכולן. */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   tablePrefix: 'g_',
   dbSchema: DB_SCHEMA,
   parentChild: [

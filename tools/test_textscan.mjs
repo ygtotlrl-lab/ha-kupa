@@ -39,7 +39,7 @@ import { PEERS } from './peers.mjs';
  *  המבנה קיים**: יש נוסח שנבדל בהחלטת מנהל, ⚠️ והרשימה היא המקום
  *  שבו אומרים למה ⛔ ולא שקט. */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   textAllow: {},
   sharedExempt: {
     MSG_PASS_SIX: 'צמודה לאתר האימות שבמסלול היצירה — ⚠️ ושורה אחרת מודדת ' +

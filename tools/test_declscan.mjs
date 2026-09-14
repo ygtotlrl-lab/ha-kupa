@@ -23,7 +23,7 @@ import { PEERS } from './peers.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   idKeys: ['app', 'name'],
   readerExempt: {
     'check-capabilities.mjs': 'הבודק המרוכז פורס את בלוקי ה-APP של שאר השערים ומודד אותם — ⚠️ והאזכורים בגופו מפנים לבלוק שנפרס',

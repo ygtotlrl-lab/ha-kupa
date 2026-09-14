@@ -27,7 +27,7 @@ import crypto from 'node:crypto';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'gius',
+  app: 'ha-kupa',
   file: 'index.html',
   bootFn: 'start',
   /*  פונקציית המשיכה — מה ש-`PL_CFG.pull` מפעיל. */

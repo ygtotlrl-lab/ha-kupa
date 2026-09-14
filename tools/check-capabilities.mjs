@@ -89,7 +89,7 @@ const APP = {
    *  בשתיים בלבד, ⛔ והיעדר בשתיים האחרות הוא החלטה רשומה. */
   kvMeta: { table: '', why: 'אין שכבת חותמת פר-מפתח; הרעננות מ-`updated_at` ברמת השורה' },
   sealExempt: { 'check-capabilities': 'רץ בתוך תהליך של שער אחר, והסגירה בסוף `run` ולא במאזין' },
-  app: 'gius',
+  app: 'ha-kupa',
   file: 'index.html',
   docs: 'CLAUDE.md',
   bootFn: 'start',
