@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.ha.kupa'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.ha.kupa"   // ⛔ אין לשנות (סבב 46ב) — מזהה אחר הוא אפליקציה אחרת
+        minSdk 21
+        targetSdk 34
+        // ⛔ versionCode לעולם אינו יורד (סבב 46ב) — מספר נמוך ממה
+        // שמותקן במכשיר חוסם את העדכון.
+        // ⛔ קדם בכל שינוי ב-`android/` (סבב 68) — ⚠️ ר' טבלת הגרסאות
+        // ב-`android/README.md`, ⛔ שהיא מקור האמת היחיד להיסטוריה
+        // (כלל ברזל 21); `tools/test_gradle.mjs` אוכף את הקידום מול
+        // קומיט הקידום האחרון.
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// No dependencies, on purpose: yoman's shell needs androidx.webkit + androidx.core for
+// its origin-restricted share bridge (navigator.share → FileProvider). gius's
+// page has no navigator.share, the bridge is omitted entirely, and nothing androidx
+// is used. See MainActivity.java.
