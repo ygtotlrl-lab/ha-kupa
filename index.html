@@ -401,8 +401,10 @@ var sb = null;
 var EPS = 0.005;
 var LS_PREFIX = 'kupa_';
 
-var MSG_OFFLINE = '⚠️ אין חיבור לאינטרנט — הפעולה תסתנכרן כשהחיבור יחזור';
-var MSG_BAD_LOGIN = '❌ שם משתמש או סיסמה שגויים';
+/*  ⛔ ההודעה נכתבת בלשון הקופה — ⚠️ ואינה מועתקת מאחות: ⭐ נוסח שזהה
+ *  לזה שבאחות הוא הודעה שיותר מאפליקציה אחת אומרת, ⛔ ומקומה אז בבלוק
+ *  החתום. ⚠️ **ואין כאן `MSG_BAD_LOGIN`** — ⛔ אין כניסה, ואין לו אתר. */
+var MSG_OFFLINE = '⚠️ אין חיבור — הרישום נשמר במכשיר ויעלה כשהרשת תחזור';
 
 /* ══ הודעות פר-אפליקציה — מה שרק כאן נאמר ═══════════════════════════════
    ⛔ ההודעה היא קבוע ⛔ ואינה ליטרל באתר התצוגה — ⚠️ טקסט שנכתב במקום
@@ -412,7 +414,7 @@ var MSG_OPENER = 'אין עוד מלבדו!';
 var MSG_CLOSER = 'יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד';
 var MSG_MONTH_DONE = 'החודש הושלם ✓';
 var MSG_TZ_BLESS = 'גדולה צדקה שמקרבת את הגאולה';
-var MSG_NEED_AMOUNT = '⚠️ נא להזין סכום גדול מאפס';
+var MSG_NEED_AMOUNT = '⚠️ הסכום חסר — נא להזין סכום לרישום';
 var MSG_NEED_DESC = '⚠️ נא למלא פירוט';
 var MSG_SLIDE_KUPA = 'החלק את המטבע לקופה';
 var MSG_SLIDE_WALLET = 'החלק את המטבע לארנק';
@@ -521,18 +523,18 @@ var TABLES = [
   { t: 'kp_entries',        key: 'client_id' },
   { t: 'kp_lookups',        key: 'client_id' }
 ];
-function tableMeta(t) {
+function kpTableMeta(t) {
   var i;
   for (i = 0; i < TABLES.length; i++) if (TABLES[i].t === t) return TABLES[i];
   return { t: t, key: 'client_id' };
 }
-function rowTs(r) { return (r && +r.updated_at) || 0; }
-function rowPendingKey(t, r) { return t + ':' + (r && r.client_id); }
-function stripRows(t, rows) { return rows; }
+function kpRowTs(r) { return (r && +r.updated_at) || 0; }
+function kpPendKey(t, r) { return t + ':' + (r && r.client_id); }
+function kpStripRows(t, rows) { return rows; }
 /*  ⛔ נקודת ההסבה האחת — ⚠️ מזהה שנשמר בגרסה ישנה כמספר: ⭐ `legacyIdStamp`
  *  מחזירה 0 ⛔ ולא `NaN`, ⚠️ והשוואה נכשלת בשקט בלעדיה. */
-function adoptLegacyId(r) { return r; }
-function todayISO() { return new Date().toISOString().slice(0, 10); }
+function kpAdoptId(r) { return r; }
+function kpToday() { return new Date().toISOString().slice(0, 10); }
 
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
@@ -549,8 +551,8 @@ function _kpPushedFor(t) { return function () { return _kpPushedAt[t] || 0; }; }
 
 /*  ⛔ השורות המלוכלכות — ⚠️ מה שסומן ⏳ ולא הוכרע: ⭐ הסימון יורד רק
  *  כשהכתיבה הוכרעה, ⛔ וכשל רשת משאיר אותו. */
-function dirtyRows(t) {
-  return (DATA[t] || []).filter(function (r) { return pendHas(rowPendingKey(t, r)); });
+function kpDirtyRows(t) {
+  return (DATA[t] || []).filter(function (r) { return pendHas(kpPendKey(t, r)); });
 }
 
 var MIRROR_CFG = {
@@ -561,9 +563,9 @@ var MIRROR_CFG = {
    *  ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין». */
   noPush: [],
   empty:  function () { return []; },
-  ts:     function (r) { return rowTs(r); },
-  clean:  function (t, rows) { return stripRows(t, rows); },
-  adopt:  function (r) { return adoptLegacyId(r); },
+  ts:     function (r) { return kpRowTs(r); },
+  clean:  function (t, rows) { return kpStripRows(t, rows); },
+  adopt:  function (r) { return kpAdoptId(r); },
   fail:   function (where, e) { console.error('[mirror] ' + where, e); },
 };
 
@@ -609,11 +611,11 @@ var BK_CFG = {
 
 var PEND_CFG = {
   app: 'kupa', key: 'kp_pending',
-  redraw: function () { try { render(); } catch (e) { } }
+  redraw: function () { try { kpRender(); } catch (e) { } }
 };
 
 var RTY_CFG = {
-  flush:   function () { return syncNow(); },
+  flush:   function () { return kpSyncNow(); },
   pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
 };
 
@@ -631,7 +633,7 @@ var PL_CFG = {
     return sb.from(KV_TABLE).upsert({ key: KP_STAMP_KEY, value: JSON.stringify(ts),
                                       updated_at: Date.now() }, { onConflict: 'key' });
   },
-  pull:   function () { return syncNow(); },
+  pull:   function () { return kpSyncNow(); },
   remote: function () {
     return withTimeout(sb.from(KV_TABLE).select('value').eq('key', KP_STAMP_KEY).maybeSingle())
       .then(function (r) {
@@ -646,14 +648,14 @@ var PUSH_CFG = {
   tables: PUSH_TABLES,
   chunk:  500,
   delay:  400,
-  dirty:  function (t) { _kpPushEp = ctxEpoch(); return dirtyRows(t); },
-  key:    function (t, row) { return rowPendingKey(t, row); },
+  dirty:  function (t) { _kpPushEp = ctxEpoch(); return kpDirtyRows(t); },
+  key:    function (t, row) { return kpPendKey(t, row); },
   send:   function (t, rows) {
-    var m = tableMeta(t);
+    var m = kpTableMeta(t);
     return withTimeout(sb.from(t).upsert(rows, { onConflict: m.key }));
   },
   mark:   function (t) { if (!ctxStale(_kpPushEp)) _kpMarkPushed(t); },
-  run:    function () { syncNow(); },
+  run:    function () { kpSyncNow(); },
 };
 
 var HW_CFG = {
@@ -670,8 +672,8 @@ var HW_CFG = {
       return d >= hwHorizonDate();
     },
     idOf: function (r) { return r && r.client_id; },
-    ts: function (r) { return rowTs(r); },
-    isPending: function (r) { return pendHas(rowPendingKey('kp_entries', r)); },
+    ts: function (r) { return kpRowTs(r); },
+    isPending: function (r) { return pendHas(kpPendKey('kp_entries', r)); },
     fetch: function () {
       return withTimeout(sb.from('kp_entries').select('*'))
         .then(function (r) {
@@ -700,17 +702,17 @@ function pullTable(t) {
 }
 
 function mergeTable(t, remote) {
-  var m = tableMeta(t);
+  var m = kpTableMeta(t);
   var merged = mergeCore(DATA[t] || [], remote, function (r) { return r[m.key]; },
-    function (a, b) { return rowTs(a) >= rowTs(b) ? a : b; },
-    function (r) { return pendHas(rowPendingKey(t, r)); });
+    function (a, b) { return kpRowTs(a) >= kpRowTs(b) ? a : b; },
+    function (r) { return pendHas(kpPendKey(t, r)); });
   DATA[t] = merged;
   mirrorSave(t, merged);
   return merged;
 }
 
 var _syncBusy = false;
-function syncPull() {
+function kpSyncPull() {
   if (!sb) return Promise.resolve(false);
   if (_syncBusy) return Promise.resolve(false);
   _syncBusy = true;
@@ -727,7 +729,7 @@ function syncPull() {
     return any;
   }).then(function (any) {
     _syncBusy = false;
-    if (any) render();
+    if (any) kpRender();
     return any;
   }, function (e) {
     _syncBusy = false;
@@ -736,9 +738,9 @@ function syncPull() {
   });
 }
 
-function syncNow() { return syncPull().then(function () { return pushDirty(); }); }
+function kpSyncNow() { return kpSyncPull().then(function () { return pushDirty(); }); }
 function pushSoon() { schedulePush(); }
-function saveRefresh() { render(); }
+function saveRefresh() { kpRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
 /* ══ ההגדרות שבמסד — קריאה וכתיבה פר-מפתח ═══════════════════════════════
@@ -3445,7 +3447,7 @@ var DATA = { kp_years: [], kp_months: [], kp_standing_orders: [],
 var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
 
-var $ = function (s) { return document.querySelector(s); };
+var kpQ = function (s) { return document.querySelector(s); };
 
 /*  ⛔ מפריד אלפים, ו-₪ אחרי המספר עם רווח — ⚠️ אובייקט אחד ברמת המודול:
  *  ⭐ `Intl` בגוף פונקציה שנקראת בכל שורה נבנה מחדש בכל קריאה. */
@@ -3793,20 +3795,20 @@ function flowStart(kind) {
   view.screen = 'flow';
   view.draft = { amount: null, description: '', method: '', category: '',
                  entry_date: new Date().toISOString().slice(0, 10) };
-  render();
+  kpRender();
 }
 
 function flowCollect() {
   var steps = flowSteps(), key = steps[view.step], el;
   if (key === 'amount') {
-    el = $('#f-amount');
+    el = kpQ('#f-amount');
     /*  ⛔ הקריאה עוברת ב-`readNum` — ⚠️ המרה ישירה מחזירה `NaN` על שדה
      *  ריק, ⭐ ו-`NaN` בהשוואה נכשל בשקט. */
     view.draft.amount = el ? readNum(el, null) : null;
   } else if (key === 'desc') {
-    el = $('#f-desc'); view.draft.description = el ? el.value.trim() : '';
+    el = kpQ('#f-desc'); view.draft.description = el ? el.value.trim() : '';
   } else if (key === 'date') {
-    el = $('#f-date'); if (el && el.value) view.draft.entry_date = el.value;
+    el = kpQ('#f-date'); if (el && el.value) view.draft.entry_date = el.value;
   }
 }
 
@@ -3965,7 +3967,7 @@ function flowCommit() {
   pushSoon();
   view.screen = 'done';
   view.doneInc = isInc;
-  render();
+  kpRender();
   if (before && before.done) {
     toast(MSG_MONTH_DONE, 4000, 'good');
   }
@@ -4006,7 +4008,7 @@ function entryDelete(id) {
     UNDO.row = copy;
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
-    render();
+    kpRender();
     toast(MSG_DELETED + ' · ' + MSG_UNDO, 5000);
   });
 }
@@ -4019,7 +4021,7 @@ function entryUndo() {
   UNDO.row = null;
   if (UNDO.timer) clearTimeout(UNDO.timer);
   pushSoon();
-  render();
+  kpRender();
 }
 
 /* ══ הוראות קבע — עריכה פותחת גרסה ══════════════════════════════════════
@@ -4069,10 +4071,10 @@ function settingsScreenHTML() {
 }
 
 /* ══ הרינדור האחד ═══════════════════════════════════════════════════════ */
-function render() {
-  var root = $('#app');
-  if (!root) { uiNoDialog('render', 'app'); return; }
-  var fab = $('#fab');
+function kpRender() {
+  var root = kpQ('#app');
+  if (!root) { uiNoDialog('kpRender', 'app'); return; }
+  var fab = kpQ('#fab');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'flow') root.innerHTML = flowScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
@@ -4093,30 +4095,30 @@ var DOM_ACTIONS = {
   },
   'month-prev': function () {
     var p = prevMonthOf(view.monthKey);
-    if (p) { view.monthKey = p.client_id; render(); }
+    if (p) { view.monthKey = p.client_id; kpRender(); }
   },
   'month-next': function () {
     var n = nextMonthOf(view.monthKey);
-    if (n) { view.monthKey = n.client_id; render(); }
+    if (n) { view.monthKey = n.client_id; kpRender(); }
   },
-  'month-goto': function (el) { view.monthKey = el.dataset.id; render(); },
+  'month-goto': function (el) { view.monthKey = el.dataset.id; kpRender(); },
   'flow-next': function () {
     flowCollect();
     var bad = flowValid();
     if (bad) { toast(bad, 4000, 'bad'); return; }
-    if (view.step === flowSteps().length - 1) { view.screen = 'slide'; render(); return; }
+    if (view.step === flowSteps().length - 1) { view.screen = 'slide'; kpRender(); return; }
     view.step++;
-    render();
+    kpRender();
   },
   'flow-back': function () {
-    if (view.screen === 'slide') { view.screen = 'flow'; render(); return; }
-    if (view.step === 0) { view.screen = 'month'; view.flow = null; render(); return; }
+    if (view.screen === 'slide') { view.screen = 'flow'; kpRender(); return; }
+    if (view.step === 0) { view.screen = 'month'; view.flow = null; kpRender(); return; }
     view.step--;
-    render();
+    kpRender();
   },
-  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; render(); },
+  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; kpRender(); },
   'flow-ac': function (el) {
-    var f = $('#f-desc');
+    var f = kpQ('#f-desc');
     if (!f) { uiNoDialog('flow-ac', 'f-desc'); return; }
     f.value = el.dataset.v;
   },
@@ -4133,7 +4135,7 @@ var DOM_ACTIONS = {
       '" data-ksave>שמור</button>');
   },
   'order-save': function (el) {
-    var inp = $('#o-amt');
+    var inp = kpQ('#o-amt');
     if (!inp) { uiNoDialog('order-save', 'o-amt'); return; }
     var o = orderById(el.dataset.id);
     if (!o) { uiNoDialog('order-save', el.dataset.id); return; }
@@ -4142,18 +4144,18 @@ var DOM_ACTIONS = {
     return runSave(function () {
       orderNewVersion(o, { amount: v }, view.monthKey);
       closeModal();
-      render();
+      kpRender();
       return Promise.resolve();
     }, MSG_SAVED_LOCAL);
   },
   'sensory-toggle': function () {
     APP_SENSORY.on = !APP_SENSORY.on;
     cfgWrite('sensory', APP_SENSORY.on);
-    render();
+    kpRender();
   },
-  'settings-open': function () { view.screen = 'settings'; render(); },
-  'settings-close': function () { view.screen = 'month'; render(); },
-  'done-close': function () { view.screen = 'month'; view.flow = null; render(); },
+  'settings-open': function () { view.screen = 'settings'; kpRender(); },
+  'settings-close': function () { view.screen = 'month'; kpRender(); },
+  'done-close': function () { view.screen = 'month'; view.flow = null; kpRender(); },
   'sw-reload': function () { swApply(); }
 };
 
@@ -4177,7 +4179,7 @@ document.addEventListener('keydown', function (e) {
 });
 
 /* ══ העלייה ═════════════════════════════════════════════════════════════ */
-function boot() {
+function kpBoot() {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   lsBoot();
   _kpLoadPushed();
@@ -4185,7 +4187,7 @@ function boot() {
   mirrorBoot(PUSH_TABLES, DATA);
   var ms = monthsSorted();
   view.monthKey = ms.length ? ms[ms.length - 1].client_id : null;
-  render();
+  kpRender();
   pendBoot();
   tombBoot();
   bkBoot();
@@ -4194,14 +4196,14 @@ function boot() {
   plBoot();
   swRegister();
   sbWatch();
-  syncPull().then(function () {
+  kpSyncPull().then(function () {
     var made = soEnsureInstances(view.monthKey), i;
     for (i = 0; i < made.length; i++) localPut('kp_so_instances', made[i]);
     if (made.length) pushSoon();
-    render();
+    kpRender();
   });
 }
-boot();
+kpBoot();
 
 })();
 </script>
