@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sign an APK with the PERMANENT ha-kupa key — signing/ha-kupa.keystore.
+# Sign an APK with the PERMANENT ha-kupa key — signing/kupa.keystore.
 #
 # ⛔ זה המפתח היחיד: חתימה בכל מפתח אחר מייצרת אפליקציה זרה, וכל המשתמשים
 # ייתקלו ב-INSTALL_FAILED_UPDATE_INCOMPATIBLE בלי שום דרך חזרה.
@@ -10,7 +10,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-KS="$HERE/ha-kupa.keystore"
+KS="$HERE/kupa.keystore"
 ALIAS='ha-kupa'
 PASS='hakupa123'
 EXPECTED_SHA256='66:07:D2:37:FD:3F:36:8A:9F:46:AB:64:EE:3A:71:5E:5A:F6:48:42:73:E5:54:F1:D2:04:FF:45:74:9B:9D:B5'
