@@ -767,6 +767,7 @@ function kpSyncPull() {
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
     if (any) { tombPruneMerged(); hwNoteCloud(); }
+    if (any && !_kpPullLogged) { _kpPullLogged = true; kpSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
     _syncBusy = false;
@@ -779,7 +780,21 @@ function kpSyncPull() {
   });
 }
 
-function kpSyncNow() { return kpSyncPull().then(function () { return pushDirty(); }); }
+/* ⭐ יומן הפעולות של הסנכרון — דחיפה
+   שהעלתה שורות נרשמת עם מספרן, ומשיכה מלאה נרשמת פעם אחת בסשן. הרישום
+   דרך `logAction` שבמודול הגיבוי — fire-and-forget, לעולם אינו חוסם.
+   ⛔ אין לרשום כל מחזור סנכרון — הפולינג רץ כל שלוש שניות,
+   ו-`sh_sync_log` היא יומן ראיות ב-insert בלבד שאי-אפשר לדלל.
+   ⚠️ ואין כאן כניסה — ⛔ `user_name` נרשם `null` מוצהר, ⭐ והמכשיר
+   הוא מה שמזהה את הרישום. */
+function kpSyncLog(action, key, recordCount, details) {
+  try { logAction(action, key, recordCount, details); } catch (e) { }
+}
+var _kpPullLogged = false;
+function kpSyncNow() {
+  return kpSyncPull().then(function () { return pushDirty(); })
+    .then(function (r) { if (r && r.n) kpSyncLog('push', null, r.n); return r; });
+}
 function pushSoon() { schedulePush(); }
 function saveRefresh() { kpRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
