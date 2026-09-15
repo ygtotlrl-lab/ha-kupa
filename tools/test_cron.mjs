@@ -35,7 +35,7 @@ import { DB_SCHEMA } from './db_schema.mjs';
 /* ⚠️ סוף פר-אפליקציה */
 const APP = {
   name: 'ha-kupa',
-  keys: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances',
+  keys: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances',
          'kp_entries', 'kp_lookups', 'kp_settings'],
   prefixes: [''],
   /*  ⛔ שמות גיבוי שרצו בעבר ואינם נגזרים מהקוד — ⚠️ **מה נכנס**: שם מפתח
@@ -88,7 +88,7 @@ const APP = {
 
 /*  ⛔ השורה שהקובץ הזה אוכף (סבב 92) — ⚠️ בעלות הסכימה המשותפת: ⭐ עותק
  *  אחד, בריפו אחד, ⛔ והנמדד הוא היעדר העותק השני. */
-export const ROWS = [146, 151, 160];
+export const ROWS = [148, 153, 162];
 
 /*  ⛔ המוטציות אינן ברירת המחדל (סבב 92) — ⚠️ כל מוטציה היא שינוי ⟵ הרצה
  *  ⟵ שחזור, ⭐ ושני שערים לבדם היו רוב זמן הסט: ⛔ הן רצות ברמה המלאה

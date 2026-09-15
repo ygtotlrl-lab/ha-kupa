@@ -45,7 +45,7 @@
   --shadow-lg:0 8px 22px rgba(53,43,63,.16);
 
   /*  ⛔ אסימוני המוצר — ⚠️ הם קיימים כאן בלבד: ⭐ שבע דרגות הסגול הן
-   *  **תפקיד** — חומש · צדקה · ניווט, ⛔ ושלוש דרגות האפרסק הן פלעזדש ·
+   *  **תפקיד** — חומש · צדקה · ניווט, ⛔ ושלוש דרגות האפרסק הן פלעדזש ·
    *  הכנסה · מטבע. ⛔ **והפטל בשני מקומות בלבד** — ⚠️ הכפתור הצף
    *  ו«אין עוד מלבדו!»: ⭐ צבע שמופיע בכל מקום מפסיק להיות סימן. */
   --purple-1:#EFEAF6; --purple-2:#B49EE0; --purple-3:#9C7FD0; --purple-4:#8A6BC0;
@@ -409,7 +409,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 'use strict';
 
 /* ==========================================================================
- * «הקופה» — מעקב חומש ופלעזדש בקובץ אחד.
+ * «הקופה» — מעקב חומש ופלעדזש בקובץ אחד.
  * ⭐ הכול יושב כאן בכוונה: קובץ אחד לפריסה, קובץ אחד למטמון.
  * ======================================================================== */
 
@@ -465,7 +465,7 @@ var MSG_EDIT = 'עריכה';
    טבלה שנכתבת מקומית ואינה כאן — שורותיה אינן עולות לעולם.
    ⭐ **ולמה הסדר**: האב נדחף לפני הבן, ⛔ אחרת הבן נקרא כיתום.
    ══════════════════════════════════════════════════════════════════════════ */
-var PUSH_TABLES = ['kp_years', 'kp_months', 'kp_standing_orders',
+var PUSH_TABLES = ['kp_pledges', 'kp_standing_orders',
                    'kp_so_instances', 'kp_entries', 'kp_lookups'];
 var KV_TABLE = 'kp_settings';
 
@@ -491,8 +491,8 @@ var APP_SENSORY = { on: true };
       ⛔ ואינו נסרק.
    ⛔ **והיתרה מצטברת חוצה שנים** — ⚠️ חומש שלא ניתן בתשרי נשאר חוב
       בתשרי הבא: ⭐ איפוס בראש השנה היה מוחק אותו בלי שאיש החליט.
-   ⛔ **והעודף עובר, והחוב לא** — ⚠️ פלעזדש שהושלם ועבר מוסיף לחודש הבא,
-      ⭐ ופלעזדש שלא הושלם אינו נגרר: ⛔ הוא חודשי, והחומש הוא המצטבר.
+   ⛔ **והעודף עובר, והחוב לא** — ⚠️ פלעדזש שהושלם ועבר מוסיף לחודש הבא,
+      ⭐ ופלעדזש שלא הושלם אינו נגרר: ⛔ הוא חודשי, והחומש הוא המצטבר.
    ═══════════════════════════════════════════════════════════════════════ */
 var KP_CHUMASH_RATE = 0.2;
 var KP_CAT_SELF = 'אישי';
@@ -520,7 +520,7 @@ function kpSelfPct(rows) {
 }
 
 function kpChain(months, opts) {
-  var pleziashOf = opts.pleziashOf;
+  var pledgeOf = opts.pledgeOf;
   var balance = opts.opening || 0;
   var carry = 0;
   var out = [], i, m;
@@ -529,15 +529,15 @@ function kpChain(months, opts) {
     var income = kpIncome(m.rows);
     var tzedakah = kpTzedakah(m.rows);
     var chumash = kpChumash(income);
-    var pleziash = pleziashOf(m.year);
+    var pledge = pledgeOf(m.year);
     var prevBalance = balance;
     balance = prevBalance + tzedakah - chumash;
     var carryIn = carry;
     var fill = tzedakah + carryIn;
-    var short = Math.max(0, pleziash - fill);
-    carry = Math.max(0, tzedakah + carryIn - pleziash);
+    var short = Math.max(0, pledge - fill);
+    carry = Math.max(0, tzedakah + carryIn - pledge);
     out.push({ key: m.key, year: m.year, income: income, tzedakah: tzedakah,
-               chumash: chumash, pleziash: pleziash, prevBalance: prevBalance,
+               chumash: chumash, pledge: pledge, prevBalance: prevBalance,
                balance: balance, carryIn: carryIn, fill: fill, short: short,
                done: short === 0, carryOut: carry, selfPct: kpSelfPct(m.rows) });
   }
@@ -553,8 +553,7 @@ function kpChain(months, opts) {
    מתפצל ביום שאחד משני האתרים נערך.
    ══════════════════════════════════════════════════════════════════════════ */
 var TABLES = [
-  { t: 'kp_years',          key: 'client_id' },
-  { t: 'kp_months',         key: 'client_id' },
+  { t: 'kp_pledges',         key: 'hebrew_year' },
   { t: 'kp_standing_orders', key: 'client_id' },
   { t: 'kp_so_instances',   key: 'client_id' },
   { t: 'kp_entries',        key: 'client_id' },
@@ -633,8 +632,7 @@ var BK_CFG = {
   secrets: [],
   sources: function () {
     return [
-      { kind: 'table', name: 'kp_years',           order: 'client_id', ts: 'updated_at' },
-      { kind: 'table', name: 'kp_months',          order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'kp_pledges',         order: 'hebrew_year', ts: 'updated_at' },
       { kind: 'table', name: 'kp_standing_orders', order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'kp_so_instances',    order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'kp_entries',         order: 'client_id', ts: 'updated_at' },
@@ -3643,7 +3641,7 @@ function barChart(rows, label) {
    ⚠️ **מה נכנס**: העותק המקומי של הטבלאות, והמסך שמוצג עכשיו;
    ⛔ **ומה מפיל**: סיכום שנשמר כאן — ⭐ כל מספר נגזר בזמן קריאה.
    ══════════════════════════════════════════════════════════════════════════ */
-var DATA = { kp_years: [], kp_months: [], kp_standing_orders: [],
+var DATA = { kp_pledges: [], kp_standing_orders: [],
              kp_so_instances: [], kp_entries: [], kp_lookups: [] };
 var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
@@ -3665,26 +3663,136 @@ function kpSortEntries(list) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   החודשים והשנים
+   התקופה — נגזרת מהמנוע, ואינה מאוחסנת
+   ══════════════════════════════════════════════════════════════════════════
+   ⛔ החודש והשנה מחושבים מתאריך הרשומה — ⚠️ ואינם נשלפים משורה שמישהו
+      מילא: ⭐ טבלת תקופות היא תחליף למנוע שחסר, ⛔ והיא נשברת בהתקנה
+      טרייה ובכל תקופה שלא הוזנה.
+   ⛔ **והמפתח הוא `YYYY-NN`** — ⚠️ השנה העברית ומספר החודש בתוכה,
+      ⭐ מרופד לשתי ספרות: ⛔ בלי הריפוד ההשוואה הלקסיקוגרפית מסדרת את
+      החודש העשירי לפני השני.
+   ⛔ **וטבלה שנושאת ערך לתקופה אינה טבלת תקופה** — ⚠️ `kp_pledges` נושאת
+      את הפלעדזש לשנה, ⭐ ושמה אומר את הערך ⛔ ולא את התקופה.
    ══════════════════════════════════════════════════════════════════════════ */
-function monthsSorted() {
-  return kpLive(DATA.kp_months).slice().sort(function (a, b) {
-    var y = String(a.hebrew_year).localeCompare(String(b.hebrew_year));
-    return y !== 0 ? y : (a.ordinal - b.ordinal);
-  });
+function kpPad2(n) { return (n < 10 ? '0' : '') + n; }
+
+/*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף,
+ *  ⭐ והמנוע האחד הוא `ysHebDate`. */
+function kpHeb(iso) {
+  var h;
+  if (!iso) return null;
+  try { h = ysHebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
+  return (h && h.ok) ? h : null;
 }
+function yearOf(iso) { var h = kpHeb(iso); return h ? String(h.year) : ''; }
+function monthKeyOf(iso) {
+  var h = kpHeb(iso);
+  return h ? yearOf(iso) + '-' + kpPad2(h.monthIndex + 1) : '';
+}
+function keyYear(k) { return String(k || '').slice(0, 4); }
+function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
+/*  ⛔ התווית נגזרת מטבלת השמות של אותה שנה — ⚠️ שנה מעוברת נושאת «אדר א»
+ *  ו«אדר ב» נפרדים, ⭐ ומיפוי שקורס אותם לחודש אחד מאחד כ-60 יום. */
+function monthLabel(k) {
+  var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
+  if (!y || i < 0) return '';
+  try { names = window.ysHebMonthNames(y); } catch (e) { return ''; }
+  return names[i] || '';
+}
+
+/*  ⛔ אריתמטיקת ימים על מספר יום שלם ⛔ ולא על מילישניות — ⚠️ חיבור של
+ *  24 שעות חוצה גבול שעון-קיץ ונופל ליום הקודם. */
+function kpDayNum(y, m, d) { return Math.floor(Date.UTC(y, m, d) / 86400000); }
+function kpIsoOfDay(n) {
+  var d = new Date(n * 86400000);
+  return d.getUTCFullYear() + '-' + kpPad2(d.getUTCMonth() + 1) + '-' + kpPad2(d.getUTCDate());
+}
+function kpAddDays(iso, n) {
+  var p = String(iso).slice(0, 10).split('-');
+  return kpIsoOfDay(kpDayNum(+p[0], +p[1] - 1, +p[2]) + n);
+}
+function kpScale(iso) { var h = kpHeb(iso); return h ? h.year * 100 + h.monthIndex + 1 : 0; }
+
+/*  ⛔ ראש החודש נגזר מהמנוע בחיפוש בינארי ⛔ ואינו נשלף משורה — ⚠️ המנוע
+ *  ממפה לועזי ⟵ עברי בכיוון אחד, ⭐ והסולם «שנה×100 + מספר החודש» עולה
+ *  מונוטונית עם התאריך: ⛔ ולכן היום הראשון שסולמו מגיע ליעד הוא ראש החודש.
+ *  ⚠️ **והתוצאה נשמרת במטמון** — ⭐ כל קריאה היא כתריסר גזירות. */
+var _kpMonthStart = {};
+function monthStart(k) {
+  var y = +keyYear(k), ord = keyOrdinal(k), want, lo, hi, mid, out = '';
+  if (_kpMonthStart[k] !== undefined) return _kpMonthStart[k];
+  if (y && ord) {
+    want = y * 100 + ord;
+    lo = kpDayNum(y - 3762, 0, 1);
+    hi = kpDayNum(y - 3760, 11, 31);
+    if (kpScale(kpIsoOfDay(lo)) < want && kpScale(kpIsoOfDay(hi)) >= want) {
+      while (hi - lo > 1) {
+        mid = Math.floor((lo + hi) / 2);
+        if (kpScale(kpIsoOfDay(mid)) >= want) hi = mid; else lo = mid;
+      }
+      if (kpScale(kpIsoOfDay(hi)) === want) out = kpIsoOfDay(hi);
+    }
+  }
+  _kpMonthStart[k] = out;
+  return out;
+}
+
+/*  ⛔ הניווט נגזר אף הוא — ⚠️ חודש ריק הוא חודש, ⭐ ודילוג עליו מסתיר
+ *  מהמשתמש לאן הגיע. */
+function prevMonthOf(k) {
+  var s = monthStart(k);
+  return s ? monthByKey(monthKeyOf(kpAddDays(s, -1))) : null;
+}
+function nextMonthOf(k) {
+  var s = monthStart(k);
+  return s ? monthByKey(monthKeyOf(kpAddDays(s, 31))) : null;
+}
+
 function monthByKey(k) {
-  var l = kpLive(DATA.kp_months), i;
-  for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, k)) return l[i];
-  return null;
+  var y = +keyYear(k), ord = keyOrdinal(k);
+  if (!y || !ord) return null;
+  return { key: String(k), year: String(y), ordinal: ord,
+           name: monthLabel(k), start: monthStart(k) };
 }
+
+/*  ⛔ החודשים נגזרים מהרשומות שיש ⛔ ומהחודש הנוכחי — ⚠️ והחודש הנוכחי
+ *  נכנס תמיד: ⭐ בלעדיו התקנה טרייה נפתחת למסך שלד, ⛔ והיא אינה ניתנת
+ *  להתקנה. */
+function monthsWithData() {
+  var seen = {}, out = [], l, i, k;
+  l = kpLive(DATA.kp_entries);
+  for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
+  l = kpLive(DATA.kp_so_instances);
+  for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
+  k = monthKeyOf(kpIsoOfDay(Math.floor(Date.now() / 86400000)));
+  if (k) seen[k] = true;
+  for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
+  return out.sort();
+}
+
+/*  ⛔ השרשרת רצה על כל חודש שבטווח ⛔ ולא על אלה שיש בהם רשומות בלבד —
+ *  ⚠️ חודש ריק צורך את העודף שנשאר מקודמו: ⭐ דילוג עליו היה מחזיר
+ *  «הושלם» לחודש שאיש לא מילא. ⛔ **והתקרה היא חמישים שנה** — ⚠️ מפתח
+ *  פגום היה פותח לולאה בלי סוף. */
+function monthsSorted() {
+  var have = monthsWithData(), out = [], k, last, n, guard = 0;
+  if (!have.length) return out;
+  k = have[0]; last = have[have.length - 1];
+  while (k && k <= last && guard++ < 650) {
+    out.push(monthByKey(k));
+    n = nextMonthOf(k);
+    k = n ? n.key : '';
+  }
+  return out;
+}
+
 function entriesOfMonth(k) {
-  return kpLive(DATA.kp_entries).filter(function (r) { return idEq(r.month_client_id, k); });
+  return kpLive(DATA.kp_entries).filter(function (r) { return monthKeyOf(r.entry_date) === k; });
 }
 /*  ⛔ מופע ממתין נספר בצדקה בפועל **מיד** — ⚠️ אחרת ה«חסר» שגוי מא׳
  *  דחודש ועד יום החיוב: ⭐ ההוראה כבר ידועה, ⛔ והתאריך אינו משנה אותה. */
 function instancesOfMonth(k) {
-  return kpLive(DATA.kp_so_instances).filter(function (r) { return idEq(r.month_client_id, k); });
+  return kpLive(DATA.kp_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
 }
 function instanceRows(k) {
   return instancesOfMonth(k).map(function (r) {
@@ -3697,13 +3805,15 @@ function instanceRows(k) {
 }
 function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 
-function pleziashOfYear(y) {
-  var l = kpLive(DATA.kp_years), i;
-  for (i = 0; i < l.length; i++) if (l[i].hebrew_year === y) return +l[i].pleziash || 0;
+/*  ⛔ הפלעדזש נקרא מהטבלה לפי השנה — ⚠️ **ושנה בלי שורה היא אפס**:
+ *  ⭐ ולא כשל, ⛔ שהתקנה טרייה אינה נושאת אף שורה. */
+function pledgeOfYear(y) {
+  var l = kpLive(DATA.kp_pledges), i;
+  for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === String(y)) return +l[i].pledge || 0;
   return 0;
 }
 function openingBalance() {
-  var l = kpLive(DATA.kp_years).slice().sort(function (a, b) {
+  var l = kpLive(DATA.kp_pledges).slice().sort(function (a, b) {
     return String(a.hebrew_year).localeCompare(String(b.hebrew_year));
   });
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
@@ -3713,9 +3823,9 @@ function openingBalance() {
  *  ⭐ ולכן חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו. */
 function chainAll() {
   var ms = monthsSorted().map(function (m) {
-    return { key: m.client_id, year: m.hebrew_year, rows: monthRows(m.client_id) };
+    return { key: m.key, year: m.year, rows: monthRows(m.key) };
   });
-  return kpChain(ms, { pleziashOf: pleziashOfYear, opening: openingBalance() });
+  return kpChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
 }
 function chainOf(k) {
   var c = chainAll(), i;
@@ -3738,17 +3848,17 @@ function orderById(id) {
  *  מקבלת «תוקף עד» החודש הקודם, ⭐ והחדשה מתחילה מהחודש הנוכחי:
  *  ⛔ מופעים קודמים אינם משתנים. */
 function orderAppliesTo(o, m) {
-  var key = m.hebrew_year + '-' + String(m.ordinal);
+  var key = m.key;
   if (o.valid_from_month && key < o.valid_from_month) return false;
   if (o.valid_to_month && key > o.valid_to_month) return false;
   return true;
 }
+/*  ⛔ יום החיוב נספר מראש החודש הנגזר — ⚠️ `day_of_month` הוא יום עברי,
+ *  ⭐ וראש החודש בא מהמנוע ⛔ ולא משדה שמישהו מילא. */
 function soDate(monthKey, o) {
-  var m = monthByKey(monthKey);
-  if (!m || !m.start_date || !o) return m && m.start_date ? m.start_date : '';
-  var d = new Date(m.start_date + 'T12:00:00');
-  d.setDate(d.getDate() + (Math.max(1, +o.day_of_month || 1) - 1));
-  return d.toISOString().slice(0, 10);
+  var s = monthStart(monthKey);
+  if (!s) return '';
+  return o ? kpAddDays(s, Math.max(1, +o.day_of_month || 1) - 1) : s;
 }
 
 /*  ⛔ המופעים נוצרים בתחילת כל חודש עברי — ⚠️ פעם אחת לכל צמד
@@ -3765,7 +3875,7 @@ function soEnsureInstances(monthKey) {
     });
     if (has) continue;
     made.push({ client_id: newClientId(), standing_order_client_id: o.client_id,
-                month_client_id: monthKey, amount: +o.amount || 0,
+                month_key: monthKey, amount: +o.amount || 0,
                 status: 'pending', updated_at: Date.now(), deleted: false });
   }
   return made;
@@ -3814,7 +3924,7 @@ function monthScreenHTML() {
   var c = chainOf(view.monthKey) || {};
   var rows = kpSortEntries(monthRows(view.monthKey));
   var prev = prevMonthOf(view.monthKey);
-  var pc = prev ? chainOf(prev.client_id) : null;
+  var pc = prev ? chainOf(prev.key) : null;
 
   var h = openerHTML();
 
@@ -3825,7 +3935,7 @@ function monthScreenHTML() {
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
   if (pc && pc.short > EPS)
-    h += '<button class="carry" data-act="month-goto" data-id="' + esc(prev.client_id) + '">' +
+    h += '<button class="carry" data-act="month-goto" data-id="' + esc(prev.key) + '">' +
          esc(MSG_CARRY_PRE + prev.name + MSG_CARRY_MID + plain(pc.short)) +
          '<span class="arw">‹</span></button>';
 
@@ -3847,13 +3957,13 @@ function monthScreenHTML() {
        '<div class="sml">' + (noGoal ? esc(MSG_GOAL_FROM_INCOME) : 'יעד ' + plain(goal)) + '</div>' +
        '<div class="u-mt-5">' + bar(pct.toFixed(1)) + '</div></div>';
 
-  /* 5 — כרטיס הפלעזדש. */
-  var pp = c.pleziash > EPS ? Math.min(100, c.fill / c.pleziash * 100) : 0;
-  h += '<div class="card"><h2>פלעזדש' +
+  /* 5 — כרטיס הפלעדזש. */
+  var pp = c.pledge > EPS ? Math.min(100, c.fill / c.pledge * 100) : 0;
+  h += '<div class="card"><h2>פלעדזש' +
        '<span class="st ' + (c.done ? 'ok' : 'peach') + '">' +
        (c.done ? 'הושלם ✓ · +' + plain(c.carryOut) + ' לחודש הבא'
                : 'נשאר ' + plain(c.short)) + '</span></h2>' +
-       '<div class="big">' + plain(c.fill) + ' מתוך ' + plain(c.pleziash) + '</div>' +
+       '<div class="big">' + plain(c.fill) + ' מתוך ' + plain(c.pledge) + '</div>' +
        '<div class="sml' + (c.selfPct > 50 ? ' strong' : '') + '">אישי ' +
        Math.round(c.selfPct) + '%</div>' +
        (c.carryIn > EPS ? '<div class="sml">מחודש קודם +' + plain(c.carryIn) + '</div>' : '') +
@@ -3873,17 +3983,6 @@ function monthScreenHTML() {
     h += '<button class="btn ghost" data-act="entry-undo">' + esc(MSG_UNDO) + '</button>';
   h += '<button class="btn ghost" data-act="settings-open">' + esc(MSG_SETTINGS_TITLE) + '</button>';
   return h + closerHTML();
-}
-
-function prevMonthOf(k) {
-  var ms = monthsSorted(), i;
-  for (i = 0; i < ms.length; i++) if (idEq(ms[i].client_id, k)) return i > 0 ? ms[i - 1] : null;
-  return null;
-}
-function nextMonthOf(k) {
-  var ms = monthsSorted(), i;
-  for (i = 0; i < ms.length; i++) if (idEq(ms[i].client_id, k)) return i < ms.length - 1 ? ms[i + 1] : null;
-  return null;
 }
 
 function ordersCardHTML() {
@@ -3998,18 +4097,6 @@ function hebLabel(iso) {
   if (!h || !h.ok) return '';
   return h.dayLabel + ' ' + h.monthName + ' ' + h.yearLabel;
 }
-/*  ⛔ החודש נגזר מהתאריך ⛔ ואינו נבחר — ⚠️ שדה שני לאותו מושג הוא
- *  מקור אמת שני, ⭐ ושניהם היו מתפצלים ביום שאחד מהם נערך. */
-function monthKeyForDate(iso) {
-  var ms = monthsSorted(), i, m;
-  for (i = 0; i < ms.length; i++) {
-    m = ms[i];
-    if (m.start_date && m.end_date && iso >= m.start_date && iso <= m.end_date)
-      return m.client_id;
-  }
-  return view.monthKey;
-}
-
 function flowStart(kind) {
   view.flow = kind;
   view.step = 0;
@@ -4177,7 +4264,6 @@ function flowCommit() {
   var d = view.draft, isInc = view.flow === 'income';
   var row = {
     client_id: newClientId(),
-    month_client_id: monthKeyForDate(d.entry_date),
     type: isInc ? 'income' : 'tzedakah',
     amount: d.amount,
     description: d.description,
@@ -4191,7 +4277,7 @@ function flowCommit() {
     deleted: false
   };
   localPut('kp_entries', row);
-  view.monthKey = row.month_client_id;
+  view.monthKey = monthKeyOf(row.entry_date);
   var before = chainOf(view.monthKey);
   pushSoon();
   view.screen = 'done';
@@ -4209,7 +4295,7 @@ function doneScreenHTML() {
     '<div class="line1">' + esc(isInc ? MSG_OPENER : MSG_TZ_BLESS) + '</div>' +
     '<div class="line2">' + esc('נרשם · ' + (isInc
       ? 'הכנסות החודש ' + money(c.income || 0)
-      : 'נשאר לפלעזדש החודש ' + money(c.short || 0))) + '</div>' +
+      : 'נשאר לפלעדזש החודש ' + money(c.short || 0))) + '</div>' +
     '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div>' + closerHTML();
 }
 
@@ -4231,12 +4317,9 @@ function entryById(id) {
  *  ובשם העמודה שקושרת ביניהם; ⛔ **ומה מפיל**: זוג שחי בסכימה ואינו כאן —
  *  ⚠️ הוא נשאר יתום אחרי מחיקת האב. ⭐ **ולמה המבנה קיים**: המחיקה עוברת
  *  בנקודה אחת, ⛔ והיא צריכה לדעת את מי לגרור.
- *  ⛔ **וסדר האבות כאן הוא סדר ההכרעה** — ⚠️ לבן שיש לו שני אבות, האב
- *  שכתוב כאן ראשון הוא שנשאל ראשון: ⭐ החודש הוא האב שאין בלעדיו מקום
- *  בחישוב, ⛔ ואין לסדר אותו אחרי מי שהשיוך אליו אופציונלי. */
+ *  ⛔ **ואין כאן בן לשני אבות** — ⚠️ התקופה נגזרת ואינה טבלה, ⭐ ולכן
+ *  לכל בן אב אחד: ⛔ ואין סדר הכרעה שצריך להצהיר. */
 var KP_CHILDREN = {
-  kp_months:          [{ table: 'kp_so_instances', fk: 'month_client_id' },
-                       { table: 'kp_entries',      fk: 'month_client_id' }],
   kp_standing_orders: [{ table: 'kp_so_instances', fk: 'standing_order_client_id' }],
   kp_so_instances:    [{ table: 'kp_entries',      fk: 'so_instance_client_id' }]
 };
@@ -4310,13 +4393,13 @@ function entryUndo() {
 function orderNewVersion(o, patch, fromMonth) {
   var m = monthByKey(fromMonth) || monthByKey(view.monthKey);
   if (!m) { uiNoDialog('orderNewVersion', fromMonth); return null; }
-  var key = m.hebrew_year + '-' + String(m.ordinal);
-  var prev = prevMonthOf(m.client_id);
+  var key = m.key;
+  var prev = prevMonthOf(m.key);
   var old = kpLive(DATA.kp_standing_orders).filter(function (x) {
     return idEq(x.client_id, o.client_id);
   })[0];
   if (old) {
-    old.valid_to_month = prev ? (prev.hebrew_year + '-' + String(prev.ordinal)) : key;
+    old.valid_to_month = prev ? prev.key : key;
     old.active = false;
     old.updated_at = Date.now();
     localPut('kp_standing_orders', old);
@@ -4357,7 +4440,7 @@ function settingsScreenHTML() {
  *  ⛔ חודש אחד אינו סדרה. */
 function monthsChartHTML() {
   var rows = monthsSorted().map(function (m) {
-    var c = chainOf(m.client_id) || {};
+    var c = chainOf(m.key) || {};
     var got = Math.max(0, (c.tzedakah || 0) + Math.max(0, c.prevBalance || 0));
     var tgt = Math.max(0, c.chumash || 0);
     return { lab: m.name, val: got, tgt: tgt, end: plain(got),
@@ -4508,7 +4591,7 @@ function kpBoot() {
   cfgBoot();
   mirrorBoot(PUSH_TABLES, DATA);
   var ms = monthsSorted();
-  view.monthKey = ms.length ? ms[ms.length - 1].client_id : null;
+  view.monthKey = ms.length ? ms[ms.length - 1].key : null;
   kpRender();
   pendBoot();
   tombBoot();

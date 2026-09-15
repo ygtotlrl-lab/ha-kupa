@@ -28,25 +28,25 @@ export function kpSelfPct(rows) {
 
 /*  ⛔ השרשרת מצטברת לאורך כל חיי האפליקציה — ⚠️ גם בין שנים: ⭐ יתרת אלול
  *  היא יתרת הפתיחה של תשרי הבא, ⛔ ויתרת פתיחה מוצהרת רק לשנה הראשונה.
- *  ⚠️ **ורק עודף עובר** — ⛔ לעולם לא חוב: ⭐ הפלעזדש הוא מינימום חודשי,
+ *  ⚠️ **ורק עודף עובר** — ⛔ לעולם לא חוב: ⭐ הפלעדזש הוא מינימום חודשי,
  *  והחומש הוא המצטבר. */
 export function kpChain(months, opts) {
-  const pleziashOf = opts.pleziashOf;      /* שנה ⟵ מינימום חודשי */
+  const pledgeOf = opts.pledgeOf;      /* שנה ⟵ מינימום חודשי */
   let balance = opts.opening || 0;         /* יתרה מול חומש, מצטברת */
-  let carry = 0;                           /* עודף פלעזדש מחודש קודם */
+  let carry = 0;                           /* עודף פלעדזש מחודש קודם */
   const out = [];
   for (const m of months) {
     const income = kpIncome(m.rows);
     const tzedakah = kpTzedakah(m.rows);
     const chumash = kpChumash(income);
-    const pleziash = pleziashOf(m.year);
+    const pledge = pledgeOf(m.year);
     const prevBalance = balance;
     balance = prevBalance + tzedakah - chumash;
     const carryIn = carry;
     const fill = tzedakah + carryIn;
-    const short = Math.max(0, pleziash - fill);
-    carry = Math.max(0, tzedakah + carryIn - pleziash);
-    out.push({ key: m.key, year: m.year, income, tzedakah, chumash, pleziash,
+    const short = Math.max(0, pledge - fill);
+    carry = Math.max(0, tzedakah + carryIn - pledge);
+    out.push({ key: m.key, year: m.year, income, tzedakah, chumash, pledge,
                prevBalance, balance, carryIn, fill, short,
                done: short === 0, carryOut: carry, selfPct: kpSelfPct(m.rows) });
   }

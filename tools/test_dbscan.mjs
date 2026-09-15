@@ -48,7 +48,7 @@ const APP = {
    *  משותפת; ⛔ **ומה מפיל**: שם שנשאל ואינו כאן, ⛔ ושם שכאן ואין לו
    *  אתר שאילתה. ⭐ **ולמה המבנה קיים**: הצלבה מול הסכימה דורשת רשימה
    *  סגורה, ⚠️ ורשימה שאינה נמדדת משני צדדיה מתיישנת בשקט. */
-  dbTables: ['kp_settings', 'kp_years', 'kp_months', 'kp_standing_orders',
+  dbTables: ['kp_settings', 'kp_pledges', 'kp_standing_orders',
              'kp_so_instances', 'kp_entries', 'kp_lookups', 'sh_backup', 'sh_sync_log'],
   /*  ⛔ שכבת העימוד — ⚠️ הארגומנט השני שלה הוא **עמודת המיון**, ⭐ והיא
    *  אינה יושבת ב-`.order(…)`: ⛔ בלי ההצהרה הזו כל אתרי המיון האמיתיים
@@ -67,9 +67,9 @@ const APP = {
    *  בלי הצהרה, הצהרה בלי אתר, והצהרה שנוקבת בטבלה שאינה מוצהרת.
    *  ⭐ **ולמה המבנה קיים**: שם שמדולג בשתיקה הוא בדיוק מה ששרד. */
   dbDyn: {
-    t:        { tables: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups'],
+    t:        { tables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups'],
                 why: 'יעד הדחיפה — נבחר מרשימת הדחיפה בלולאה' },
-    's.name': { tables: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups', 'kp_settings'],
+    's.name': { tables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups', 'kp_settings'],
                 why: 'שם המקור בגיבוי היומי — הרשימה נבנית בזמן ריצה' },
     's.table': { tables: ['kp_settings'],
                 why: 'טבלת המפתח-ערך של מקור גיבוי, והיא אחת' },
@@ -86,7 +86,7 @@ const APP = {
 
 /*  ⛔ השורות בטבלת התשתית שהקובץ הזה אוכף — ⚠️ המיפוי נגזר מכאן ⛔ ואינו
  *  רשימה שנייה בבודק. */
-export const ROWS = [150, 139];
+export const ROWS = [152, 141];
 
 /*  ⛔ המרשם שהסורק מכריז — ⚠️ **מה נכנס**: שם הדפוס שהשער אוכף;
  *  ⛔ **ומה מפיל**: דפוס שאין לו מוטציה, ומוטציה שנוקבת בדפוס שאינו כאן.

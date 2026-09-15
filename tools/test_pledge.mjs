@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-/*  test_pleziash.mjs — עודף עובר, חוב לא.
+/*  test_pledge.mjs — עודף עובר, חוב לא.
  *
- *  **מה נאכף:** ⛔ החסר החודשי הוא `max(0, פלעזדש − מילוי)` בכל חודש
+ *  **מה נאכף:** ⛔ החסר החודשי הוא `max(0, פלעדזש − מילוי)` בכל חודש
  *  בשרשרת — ⚠️ ערך מול ערך, ⛔ ולא בדיקת נוכחות · ⛔ **והעודף עובר
  *  במלואו** — ⚠️ מה שנותר מעל המינימום הוא בדיוק המילוי-הנכנס של החודש
  *  הבא · ⛔⛔ **וחוב אינו עובר** — ⚠️ חודש שלא מילא את המינימום מעביר
  *  אפס, ⭐ והחודש שאחריו נמדד מול המינימום שלו בלבד.
  *
- *  **הנימוק המדוד:** ⛔ הפלעזדש הוא מינימום **חודשי** ⛔ ואינו חוב מצטבר —
+ *  **הנימוק המדוד:** ⛔ הפלעדזש הוא מינימום **חודשי** ⛔ ואינו חוב מצטבר —
  *  ⚠️ והחומש הוא המצטבר: ⭐ שני מושגים על אותו מסך, ⛔ ועודף שלילי שיעבור
  *  הלאה מערבב ביניהם — ⚠️ חודש שאחריו היה מציג חסר שאינו שלו, ⭐ והמשתמש
  *  היה משלים סכום שכבר אינו נדרש.
@@ -32,7 +32,7 @@ import { fileURLToPath } from 'node:url';
 import { kpChain } from './kp_calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
-const APP = { app: 'ha-kupa', core: 'kp_calc.mjs', pleziash: 1000 };
+const APP = { app: 'ha-kupa', core: 'kp_calc.mjs', pledge: 1000 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
 /*  ⛔ הקובץ הזה אינו אוכף שורה בטבלת התשתית — ⚠️ הצהרה ריקה ולא היעדר:
@@ -98,14 +98,14 @@ const MONTHS = [
   { key: 'ג', year: 5787, rows: [tz(100)] },
   { key: 'ד', year: 5787, rows: [tz(2000)] },
 ];
-const OPTS = { opening: 0, pleziashOf: () => APP.pleziash };
+const OPTS = { opening: 0, pledgeOf: () => APP.pledge };
 
 /*  ⛔ **מה נכנס**: שם הטענה ⟵ הערך שנמדד ⟵ הערך הצפוי; ⛔ **ומה מפיל**:
  *  מדידה שאינה הערך הצפוי. ⭐ **ולמה המבנה קיים**: המוטציה רצה על אותו
  *  מרשם בדיוק, ⚠️ ובלעדיו היא הייתה מודדת דבר אחר מזה שהשער מודד — ⛔ ולכן מרשם אחד לשתי הדרכים. */
 function checks(chain) {
   const c = chain(MONTHS, OPTS);
-  const P = APP.pleziash;
+  const P = APP.pledge;
   const badShort = c.filter((m) => Math.abs(m.short - Math.max(0, P - m.fill)) >= 0.005);
   const negShort = c.filter((m) => m.short < 0);
   const negCarry = c.filter((m) => m.carryOut < 0);
@@ -142,8 +142,8 @@ if (RUN_MUT) {
 
   /*  ⛔ המוטציה שוברת את המנגנון ⛔ ולא את הצורה — ⚠️ הסרת הרצפה מהעברת
    *  העודף היא בדיוק «חוב עובר», ⭐ וזה מה שהשער בא למנוע. */
-  const leaks = src.replace('carry = Math.max(0, tzedakah + carryIn - pleziash);',
-                            'carry = tzedakah + carryIn - pleziash;');
+  const leaks = src.replace('carry = Math.max(0, tzedakah + carryIn - pledge);',
+                            'carry = tzedakah + carryIn - pledge;');
   if (leaks === src) {
     fail('מוטציה · הרצפה לא הוסרה — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשורת העברת העודף שבליבה');

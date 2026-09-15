@@ -54,6 +54,13 @@ const APP = {
    *  הוא המקום הטבעי שבו סיכום שמור היה נשמר בלי שאיש יראה. */
   stateVar: 'DATA',
   chainFn: 'kpChain',
+  /*  ⛔ מה שקובצי המיגרציה מגדירים — ⚠️ **מה נכנס**: מספר הטבלאות ומספר
+   *  האינדקסים שנקראים מהקבצים; ⛔ **ומה מפיל**: סורק שאינו רואה את
+   *  הקבצים כלל — ⭐ אז «אפס עמודות סיכום» אינו אומר דבר. ⚠️ **והמספר
+   *  הוא של הקבצים ולא של המסד** — ⛔ מיגרציה שכבר רצה אינה נערכת,
+   *  ⭐ ולכן טבלה שהופלה מאוחר יותר עדיין נקראת כאן. */
+  sqlTables: 7,
+  sqlIndexes: 8,
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
@@ -172,8 +179,8 @@ function checks(ctx) {
   const chainRe = new RegExp('(function\\s+)?\\b' + APP.chainFn + '\\s*\\(', 'g');
   const calls = [...w.matchAll(chainRe)].filter((x) => !x[1]).length;
   return [
-    ['א · שבע הטבלאות נקראו', tables.size, 7],
-    ['ב · אינדקסים נקראו', nIdx, 6],
+    ['א · הטבלאות שהמיגרציות מגדירות נקראו', tables.size, APP.sqlTables],
+    ['ב · אינדקסים נקראו', nIdx, APP.sqlIndexes],
     ['ג · עמודת סיכום בלי הצהרה', bad.length, 0, bad.map((c) => c.table + '.' + c.col).join(', ')],
     ['ד · הצהרה בלי עמודה חיה', ghost.length, 0, ghost.join(', ')],
     ['ה · אתרי `.from(` — הסורק רואה את הלקוח החי', nFrom > 0 ? 1 : 0, 1, String(nFrom)],
@@ -192,7 +199,7 @@ const CTX = () => {
   const sql = fs.readdirSync(dir).filter((f) => f.endsWith('.sql')).sort()
     .map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
   return { html, sql, w: whiten(html, { markup: 'blank' }),
-           own: ['kp_years', 'kp_months', 'kp_standing_orders',
+           own: ['kp_pledges', 'kp_standing_orders',
                  'kp_so_instances', 'kp_entries', 'kp_lookups'] };
 };
 
@@ -211,8 +218,8 @@ mutStage();
 if (RUN_MUT) {
   /*  ⛔ המוטציה שוברת את המנגנון ⛔ ולא את הצורה — ⚠️ עמודה שנוספת לטבלה
    *  היא בדיוק מה שהשער בא למנוע, ⭐ והיא נכתבת על עותק **בזיכרון**. */
-  const withCol = { ...C0, sql: C0.sql.replace('  pleziash                numeric not null,',
-                                               '  pleziash                numeric not null,\n  balance                 numeric,') };
+  const withCol = { ...C0, sql: C0.sql.replace('  chumash_opening_balance numeric,',
+                                               '  chumash_opening_balance numeric,\n  balance                 numeric,') };
   if (withCol.sql === C0.sql) {
     fail('מוטציה · עמודת הסיכום לא נשתלה — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשורת העמודה שבמיגרציה');
@@ -229,8 +236,8 @@ if (RUN_MUT) {
 
   /*  ⛔ מוטציית-נגד היא שינוי חי שאסור לו להפיל — ⚠️ עמודה תקינה שנוספת
    *  לאותה טבלה, ⭐ ולא הוספת הערה. */
-  const withNote = { ...C0, sql: C0.sql.replace('  pleziash                numeric not null,',
-                                                '  pleziash                numeric not null,\n  note                    text,') };
+  const withNote = { ...C0, sql: C0.sql.replace('  chumash_opening_balance numeric,',
+                                                '  chumash_opening_balance numeric,\n  note                    text,') };
   if (withNote.sql === C0.sql) {
     fail('מוטציית-נגד · העמודה התקינה לא נשתלה — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשורת העמודה שבמיגרציה');

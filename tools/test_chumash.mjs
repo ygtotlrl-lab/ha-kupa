@@ -17,7 +17,7 @@
  *  עם עצמו, ⭐ והפער ייראה רק במי שיחשב ידנית מהשנה שקדמה.
  *
  *  **מה אינו נאכף כאן:** ⛔ **שיעור החומש עצמו** — ⚠️ הוא נמדד בשער
- *  הדוגמאות; ⛔ **והעודף החודשי** — ⚠️ הוא נמדד בשער הפלעזדש, ⭐ וכאן
+ *  הדוגמאות; ⛔ **והעודף החודשי** — ⚠️ הוא נמדד בשער הפלעדזש, ⭐ וכאן
  *  נמדדת היתרה בלבד.
  *
  *  ⛔ שער פרטי לאפליקציה אחת — ⚠️ שרשרת חודשים שיתרתה מצטברת לאורך שנים
@@ -37,7 +37,7 @@ const APP = {
   app: 'ha-kupa',
   core: 'kp_calc.mjs',
   /*  ⛔ שתי השנים שהשרשרת נמדדת עליהן — ⚠️ **מה נכנס**: שנה ⟵ המינימום
-   *  החודשי שלה; ⛔ **ומה מפיל**: שנה שאין לה מינימום — ⭐ `pleziashOf`
+   *  החודשי שלה; ⛔ **ומה מפיל**: שנה שאין לה מינימום — ⭐ `pledgeOf`
    *  היה מחזיר `undefined`, ⚠️ והחסר היה `NaN` בלי שאיש יראה. */
   years: { 5786: 2400, 5787: 3000 },
   openingCol: 'chumash_opening_balance',
@@ -126,7 +126,7 @@ const MONTHS = [
   { key: 'חשון-5787',  year: 5787, rows: [inc(9000), tz(400)] },
 ];
 const OPENING = 500;
-const OPTS = { opening: OPENING, pleziashOf: (y) => APP.years[y] };
+const OPTS = { opening: OPENING, pledgeOf: (y) => APP.years[y] };
 const sum = (a) => a.reduce((s, x) => s + x, 0);
 
 /*  ⛔ **מה נכנס**: שם הטענה ⟵ הערך שנמדד ⟵ הערך הצפוי; ⛔ **ומה מפיל**:
@@ -193,9 +193,9 @@ if (RUN_MUT) {
 
   /*  ⛔ מוטציית-נגד היא שינוי חי שאסור לו להפיל — ⚠️ שם מקומי שהוחלף
    *  בעקביות, ⭐ ולא הוספת הערה. */
-  const renamed = src.replace(/\bconst pleziashOf = opts\.pleziashOf;/, 'const _kpMinOf = opts.pleziashOf;')
-                     .replace(/\bpleziashOf\(m\.year\)/, '_kpMinOf(m.year)');
-  if (renamed === src || /pleziashOf\(m\.year\)/.test(renamed)) {
+  const renamed = src.replace(/\bconst pledgeOf = opts\.pledgeOf;/, 'const _kpMinOf = opts.pledgeOf;')
+                     .replace(/\bpledgeOf\(m\.year\)/, '_kpMinOf(m.year)');
+  if (renamed === src || /pledgeOf\(m\.year\)/.test(renamed)) {
     fail('מוטציית-נגד · השם לא הוחלף בעקביות — נמדדו 0 החלפות מלאות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשם שבליבה');
   } else {

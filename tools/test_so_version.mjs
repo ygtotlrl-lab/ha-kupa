@@ -155,7 +155,7 @@ if (RUN_MUT) {
    *  מהגרסה הישנה משאירה שתי הוראות חיות באותו חודש, ⭐ וזה מה שהשער בא
    *  למנוע. ⛔ והיא נכתבת על עותק **בזיכרון**. */
   const noClose = SRC.replace(
-    "    old.valid_to_month = prev ? (prev.hebrew_year + '-' + String(prev.ordinal)) : key;\n", '');
+    '    old.valid_to_month = prev ? prev.key : key;\n', '');
   if (noClose === SRC) {
     fail('מוטציה · סגירת התוקף לא הוסרה — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשורת «תוקף עד» שבמקור');

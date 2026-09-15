@@ -18,7 +18,7 @@
  *  אישור, ⚠️ ואיש לא יקשר בין השניים.
  *
  *  **מה אינו נאכף כאן:** ⛔ **הגרסאות** — ⚠️ עריכת מופע נמדדת בשער הגרסה;
- *  ⛔ **והעברת העודף** — ⚠️ היא נמדדת בשער הפלעזדש, ⭐ וכאן נמדד שהמופע
+ *  ⛔ **והעברת העודף** — ⚠️ היא נמדדת בשער הפלעדזש, ⭐ וכאן נמדד שהמופע
  *  נכנס למניין.
  *
  *  ⛔ שער פרטי לאפליקציה אחת — ⚠️ הוראת קבע שמייצרת מופע חודשי קיימת כאן
@@ -42,7 +42,7 @@ const APP = {
    *  חלה על גופה בלבד; ⛔ **ומה מפיל**: שם שאין לו גוף במקור. ⭐ **ולמה
    *  המבנה קיים**: סריקה על המקור כולו סופרת ליטרל שיושב במסך אחר. */
   fns: ['instancesOfMonth', 'instanceRows', 'monthRows', 'soEnsureInstances'],
-  pleziash: 4000,
+  pledge: 4000,
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
@@ -119,7 +119,7 @@ const n = (s, re) => (s.match(re) || []).length;
  *  ⛔ **ומה מפיל**: רשימה ריקה — ⭐ חודש בלי מופעים אינו מודד דבר כאן.
  *  ⚠️ **ולמה המבנה קיים**: המספר שנמדד הוא החסר, ⛔ והוא נגזר מהם. */
 const SO = [833, 300, 55];
-const OPTS = { opening: 0, pleziashOf: () => APP.pleziash };
+const OPTS = { opening: 0, pledgeOf: () => APP.pledge };
 const asRows = (amts) => amts.map((a) => ({ type: 'tzedakah', amount: a }));
 const sum = (a) => a.reduce((s, x) => s + x, 0);
 
@@ -140,7 +140,7 @@ function checks(src) {
     ['ז · המופע נוצר במצב ממתין', n(B.soEnsureInstances, /status:\s*'pending'/g), 1],
     ['ח · היצירה אידמפוטנטית — מופע אחד לצמד', n(B.soEnsureInstances, /if \(has\) continue;/g), 1],
     ['ט · החסר נגזר מהמופעים מא׳ דחודש',
-     Math.round(withSo.short), APP.pleziash - sum(SO), `חודש ריק — ${Math.round(empty.short)}`],
+     Math.round(withSo.short), APP.pledge - sum(SO), `חודש ריק — ${Math.round(empty.short)}`],
   ];
 }
 

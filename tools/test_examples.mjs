@@ -102,9 +102,9 @@ const tz = (amount, category) => ({ type: 'tzedakah', amount, category: category
 const inc = (amount) => ({ type: 'income', amount });
 const PL = { 5786: 2770, 5787: 4200 };
 const SO = [300, 150, 150, 150, 55, 28];               /* 833 */
-const OPTS = { opening: 700, pleziashOf: (y) => PL[y] };
+const OPTS = { opening: 700, pledgeOf: (y) => PL[y] };
 /*  ⛔ אב פותח ביתרה משלו — ⚠️ הוא שרשרת בפני עצמה, ⭐ ולא המשך של תשרי. */
-const AV_OPTS = { opening: 1695, pleziashOf: (y) => PL[y] };
+const AV_OPTS = { opening: 1695, pledgeOf: (y) => PL[y] };
 const TISHREI = { key: 'תשרי', year: 5787, rows: [inc(15400), tz(3750), tz(1450, 'אישי')] };
 const CHESHVAN = { key: 'חשון', year: 5787, rows: SO.map((a) => tz(a)) };
 const AV = { key: 'מנחם אב', year: 5786, rows: [inc(16900), tz(1179)] };
