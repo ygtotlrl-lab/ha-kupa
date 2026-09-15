@@ -4129,7 +4129,10 @@ function sensoryFire() {
   } catch (e) { console.warn('[snd] הצליל לא נוצר', e); }
 }
 
-var CONF_COLORS = ['--purple-3', '--peach-2', '--rasp', '--bg', '--purple-5'];
+/*  ⛔ הפטל אינו כאן — ⚠️ **מה נכנס**: אסימון צבע שהפתית נושאת;
+ *  ⛔ **ומה מפיל**: `--rasp` או `--rasp-ink` — ⭐ הם הסימן של שני המקומות,
+ *  ⛔ וצבע שמופיע בכל מקום מפסיק להיות סימן. */
+var CONF_COLORS = ['--purple-3', '--peach-2', '--purple-6', '--bg', '--purple-5'];
 function confetti() {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var box = document.createElement('div');
