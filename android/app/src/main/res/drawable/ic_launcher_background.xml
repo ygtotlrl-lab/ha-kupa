@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- brand teal, same #0f766e the PWA manifest uses for theme_color -->
-<!-- ⛔ משחזר את שוליי ic_launcher — ר' tools/test_round66_iconlayer.mjs -->
+<!-- ⛔ סגול הזהות, אותו ערך שהמחולל צובע בו את האריח — ⚠️ שני ערכים לאותו
+     רקע נראים זהים בקובץ ונבדלים על המכשיר: ⭐ שכבת הרקע של ה-adaptive
+     והאריח נפגשות בשוליים, ⛔ והפער נמדד שם. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="#0F766E"/>
+    <solid android:color="#9C7FD0"/>
 </shape>
