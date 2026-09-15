@@ -46,7 +46,9 @@ const APP = {
    *  ⛔ ואינו נשמט: ⚠️ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
    *  ⭐ **ולמה היא קיימת**: שער שמספרו נע נראה כריצה חלקית או כריצפה
    *  מיושנת, ⛔ והטווח הוא מה שמבדיל בין השניים. */
-  floorRange: {},
+  floorRange: {
+    'test_signeddead': '3-4 — ההצלבה מול הריפו האחיות רצה רק כשהן על הדיסק: ⛔ בעותק זמני הן אינן שם, ⚠️ והטענה מדווחת בשמן ואינה נספרת כטענה שעברה',
+  },
   app: 'ha-kupa',
   /* ⚠️ הכללים נמדדו מ-sw.js ומ-index.html של האפליקציה הזו — אלה כללי
      השער המקורי של gius (סבב 11), בצורת הנתונים של סבב 33.
@@ -103,7 +105,7 @@ const APP = {
           'test_swcore.mjs',
           'test_build.mjs',
           'test_shell.mjs', 'test_devid.mjs', 'test_passwords.mjs',
-          'test_md.mjs', 'test_orphans.mjs', 'test_period.mjs', 'test_removals.mjs', 'test_wiring.mjs', 'test_readonly.mjs', 'test_crossgate.mjs',
+          'test_md.mjs', 'test_docfacts.mjs', 'test_signeddead.mjs', 'test_orphans.mjs', 'test_period.mjs', 'test_removals.mjs', 'test_wiring.mjs', 'test_readonly.mjs', 'test_crossgate.mjs',
           'test_examples.mjs',
           'test_sums.mjs',
           'test_chumash.mjs',

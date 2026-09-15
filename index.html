@@ -572,7 +572,10 @@ function kpTableMeta(t) {
   return { t: t, key: 'client_id' };
 }
 function kpRowTs(r) { return (r && +r.updated_at) || 0; }
-function kpPendKey(t, r) { return t + ':' + (r && r.client_id); }
+/*  ⛔ מפתח הסימון הוא מפתח המיזוג — ⚠️ הוא נגזר מהמטא של הטבלה
+ *  ⛔ ואינו `client_id` מוקלד: ⭐ `kp_pledges` ממופתחת בשנה העברית,
+ *  ⚠️ ומפתח מוקלד היה מסמן שורה שמנוע המיזוג אינו מוצא. */
+function kpPendKey(t, r) { return t + ':' + (r && r[kpTableMeta(t).key]); }
 function kpStripRows(t, rows) { return rows; }
 /*  ⛔ נקודת ההסבה האחת — ⚠️ מזהה שנשמר בגרסה ישנה כמספר: ⭐ `legacyIdStamp`
  *  מחזירה 0 ⛔ ולא `NaN`, ⚠️ והשוואה נכשלת בשקט בלעדיה. */
@@ -2332,7 +2335,6 @@ function pendLateCount() {
   for (var i = 0; i < keys.length; i++) if (m[keys[i]] < cut) n++;
   return n;
 }
-function pendReset() { _pendMap = {}; _pendDrawHold = {}; pendSave(); pendRender(); }
 
 function pendFmtAge(ms) {
   if (!isFinite(ms) || ms < 0) ms = 0;
@@ -2471,6 +2473,8 @@ function _rtyVisible() {
 /*  ⛔ קוד מיושן עוצר את הניסיון החוזר — ⚠️ סכימה שהשתנתה אינה כשל
  *  חולף, ⭐ והלולאה שניסתה שוב ושוב היא ה«איטיות» שדווחה מהשטח. */
 function rtyReady() { return !_staleSchema && _rtyPending() && _rtyOnline() && _rtyVisible(); }
+/*  ⛔ הידית אומרת «יש ניסיון חוזר באוויר, או שאנחנו בתוך נסיגה» — ⚠️ פולינג
+ *  שדוחף נשען עליה כדי לא להציף, ⭐ והמצב הוא לאבחון ולשערים. */
 function rtyGate()  { return _rtyBusy || _rtyDelay > RTY_BASE_MS; }
 function rtyState() { return { armed: !!_rtyTimer, delay: _rtyDelay, busy: _rtyBusy }; }
 
@@ -2534,9 +2538,7 @@ function plNum(v) {
   return parseInt(v, 10) || 0;
 }
 
-function plBusy() { return _plBusy; }
 function _plSeen() { try { return plNum(PL_CFG.seen()); } catch (e) { return 0; } }
-function plState() { return { busy: _plBusy, armed: !!_plTimer, fullAt: _plFullAt, seen: _plSeen() }; }
 
 /* ⭐ נקראת אחרי כל כתיבה מוצלחת לענן. היא מקדמת קודם את «מה שכבר נראה»
    מקומית — כדי שהתקתוק הבא לא ימשוך מלא בגלל השינוי של המכשיר הזה
@@ -2584,7 +2586,6 @@ function plTick() {
   }, function () { return done(false); });
 }
 
-function plStop() { if (_plTimer) { clearInterval(_plTimer); _plTimer = null; } }
 
 function plBoot() {
   if (!_plWired) {
@@ -4053,7 +4054,9 @@ function localPut(table, row) {
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, row.client_id)) { l[i] = row; break; }
   if (i === l.length) l.push(row);
   mirrorSave(table, l);
-  pendMark(table, row.client_id);
+  /*  ⛔ המטפל מקבל מפתח אחד — ⚠️ קריאה בשני ארגומנטים מסמנת את שם
+   *  הטבלה ⛔ ולא את השורה: ⭐ והקורא מחפש `<טבלה>:<מפתח>`. */
+  pendMark(kpPendKey(table, row));
 }
 
 function flowCommit() {
