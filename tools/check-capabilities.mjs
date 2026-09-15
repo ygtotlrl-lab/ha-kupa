@@ -95,9 +95,6 @@ const APP = {
   bootFn: 'kpBoot',
   settingsFn: 'settingsScreenHTML',
   matrixCol: 5,
-  /*  ⛔ `guardonline` נעדרת כאן בהחלטה (סבב 84) — ⚠️ ארבעה אתרים שומרים
-   *  כאן על מצב הרשת בהודעה **ייעודית** לכתיבת משתמש, ⭐ והודעה כללית
-   *  במקומה הייתה מוחקת בדיוק את מה שהמשתמש צריך לדעת. */
   /*  ⛔ מנוע התאריך העברי נעדר כאן במכוון (סבב 107) — ⚠️ נמדדו אפס צרכני
    *  תאריך עברי באפליקציה הזו, ⭐ ומודול שאין לו קורא הוא קוד מת. */
   /*  ⛔ אזור שצבעיו ליטרליים בכוונה — ⚠️ **ההיעדר מוצהר ריק** ⛔ ואינו
@@ -187,7 +184,7 @@ const APP = {
    *  ⚠️ **מה נכנס**: שם המטפל ומה שהפולינג אינו מכסה, ⛔ **ומה מפיל**:
    *  הצהרה שאין לה אתר — ⭐ והריקה היא «נמדד ואין». */
   netListeners: { },
-  cloudPut: 'cfgWrite',
+  cloudPut: ['cfgWrite'],
   cloudPutWhy: '',
   cloudWrites: ['cfgWrite'],
   cloudWriteAllow: { },
@@ -945,16 +942,6 @@ const CAPS = {
              start: '/* ═══ עוזרי הרשת — מודול משותף (סבב 84)',
              end:   '/* ═══════════════ סוף מודול עוזרי הרשת' },
   },
-  /*  ⭐ סבב 84 — שער מצב הרשת. ⚠️ מודול נפרד מעוזרי הרשת ⛔ ולא שדה בתוכו:
-   *  הוא חי בשלוש אפליקציות ואינו בגיוס, ⭐ ובלוק אחד לשתי רמות קיום הוא
-   *  בלוק שאינו זהה. ⛔ ובגיוס ההיעדר מוצהר ב-`APP.skipCaps` ומנומק שם. */
-  guardonline: {
-    name: 'מודול שער מצב הרשת',
-    docRows: ['מאזיני מצב רשת'],
-    block: { sha: 'd1a744b78f22ee12', lines: 13,
-             start: '/* ═══ שער מצב הרשת — מודול משותף (סבב 84)',
-             end:   '/* ═══════════════ סוף מודול שער מצב הרשת' },
-  },
   /*  ⭐ סבב 42ג — ליבת ה-service worker. ⚠️ זה הבלוק המשותף הראשון שאינו
    *  יושב ב-`index.html` אלא ב-`sw.js`, ולכן הוא נושא `file`. אין לו
    *  `hooks`: `sw.js` אינו נטען בהקשר הדף ואין בו «פונקציית עלייה» —
@@ -1171,7 +1158,7 @@ function orderGaps() {
     .concat(BLOCK_ORDER.filter((k) => inFile.indexOf(k) < 0).map((k) => 'בסדר ואינו חתום: ' + k));
 }
 
-const BLOCK_ORDER = ['toastcss', 'bchartcss', 'scales', 'msgs', 'bp', 'neterr', 'rowswin', 'guardonline', 'storage', 'schemastale', 'busyguard', 'savepipe', 'swreg', 'backup',
+const BLOCK_ORDER = ['toastcss', 'bchartcss', 'scales', 'msgs', 'bp', 'neterr', 'rowswin', 'storage', 'schemastale', 'busyguard', 'savepipe', 'swreg', 'backup',
                      'pending', 'ids', 'retry', 'lock', 'sess', 'isAdmin', 'ctxguard', 'pull', 'push', 'hotwin', 'mirror',
                      'devid', 'mergecore', 'tomb', 'writeUser', 'hebdate', 'uihelp', 'readnum', 'uniq', 'keysave', 'kvval', 'bchart'];
 
@@ -1495,7 +1482,7 @@ const GATE_ID = new URL(import.meta.url).pathname.split('/').pop();
  *  הריפו, פרטית בלי נימוק, וסכום אפס. ⭐ **ולמה לא מספר אחד**: הוא מסתיר
  *  טענה משותפת שאבדה. */
 /* ⚠️ פר-אפליקציה — הריצפה הפרטית של השער נבדלת ביניהן לפי היכולת שכל אחת נושאת, והנימוק בשדה עצמו */
-const FLOOR = { shared: 84, app: 6, appWhy: 'שכבת המראה ושני בלוקי גרף העמודות; ומעליהם שער מצב הרשת ומנוע התאריך העברי — ⛔ ואין כאן שכבת כניסה' };
+const FLOOR = { shared: 84, app: 5, appWhy: 'שכבת המראה ושני בלוקי גרף העמודות; ומעליהם מנוע התאריך העברי — ⛔ ואין כאן שכבת כניסה' };
 /* ⚠️ סוף פר-אפליקציה */
 const EXPECTED = FLOOR.shared + FLOOR.app;
 /*  ⛔ הריצפה נמדדת בשני הכיוונים (סבב 118) — ⚠️ **מה נכנס**: מספר הטענות
@@ -4987,7 +4974,14 @@ function fnSpans(txt) {
 }
 function pollTouchGaps() {
   const out = [];
-  const put = (APP.cloudPut || '').trim();
+  /*  ⛔ הפרימיטיב הוא **רשימה** ⛔ ולא שם אחד — ⚠️ באפליקציה אחת כותבת
+   *  ההגדרה וכותבת המשתמש הן שתי נקודות מעבר נפרדות, ⭐ ושם אחד היה
+   *  משאיר את השנייה בלי מדידה: ⛔ וכתיבת משתמש שאינה מקדמת את האות
+   *  נשארת בלתי-נראית לכל מכשיר אחר בדיוק כמו כתיבת הגדרה. */
+  const puts = (Array.isArray(APP.cloudPut) ? APP.cloudPut
+                : (APP.cloudPut ? [APP.cloudPut] : []))
+    .map((x) => String(x).trim()).filter(Boolean);
+  const put = puts.length;
   const list = Array.isArray(APP.cloudWrites) ? APP.cloudWrites : null;
   const allow = APP.cloudWriteAllow || {};
   if (!list)
@@ -4997,14 +4991,15 @@ function pollTouchGaps() {
       out.push('`APP.cloudPut` ריק בלי נימוק ⛔ — מוסיפים `cloudPutWhy`');
     if (list && list.length)
       out.push('`APP.cloudWrites` מלאה בלי `cloudPut` ⛔ — נמדדו ' + list.length +
-               ' שמות מול פרימיטיב ריק: מצהירים את שם הפרימיטיב');
+               ' שמות מול רשימת פרימיטיבים ריקה: מצהירים את שמות הפרימיטיבים');
     return out;
   }
   if ((APP.cloudPutWhy || '').trim())
     out.push('`APP.cloudPutWhy` מלא לצד פרימיטיב קיים ⛔ — מרוקנים אותו');
   const spans = fnSpans(code);
   const seen = [];
-  const re = new RegExp('(?<![\\w$])' + put + '\\s*\\(', 'g');
+  for (const prim of puts) {
+  const re = new RegExp('(?<![\\w$])' + prim + '\\s*\\(', 'g');
   for (const m of code.matchAll(re)) {
     let host = null;
     for (const s of spans)
@@ -5015,6 +5010,7 @@ function pollTouchGaps() {
     if (!POLL_TOUCH.test(code.slice(host.a, host.b)))
       out.push('כותב ענן שאינו מקדם את אות הפולינג: ' + host.name +
                ' ⛔ — נמדדו 0 קריאות מול אחת נדרשת: מוסיפים קידום אחרי כתיבה שהצליחה');
+  }
   }
   for (const n of (list || []))
     if (seen.indexOf(n) < 0)
@@ -6754,7 +6750,7 @@ function idSites() {
 const GATES = {
   /*  ⭐ סבב 147 — ⛔ שם אפליקציה אחות בקוד: ⚠️ אפס אזכור לשם של ריפו
    *  אחר בקבצי המוצר והמעטפת, ⭐ ואפס נכס אייקון שזהה בית-לבית לאחות. */
-  200: { claims: { test_sistername: ['[sister-name]', '[sister-asset]'] } },
+  200: { claims: { test_sistername: ['[sister-name]', '[sister-asset]', '[sister-orphan]'] } },
   /*  ⭐ סבב 148 — ⛔ הערה אינה מפנה לאפליקציה אחרת: ⚠️ בשם הריפו או
    *  בשמה העברי, ⭐ וההכרזה על שם דו-משמעי נמדדת משני צדדיה. */
   106: { claims: { test_sistername: ['[sister-comment]', '[sister-ambig]'] } },
@@ -6766,7 +6762,7 @@ const GATES = {
   50: { claims: { test_rowscan: ['ז · כל מרשם מוכרז', 'ח · מפקד נגזר ואינו מוקלד'] } },
   /*  ⭐ סבב 145 — ⛔ אב-ובן: ⚠️ הבן יורש את המחיקה ואת החותמת,
    *  ⭐ והאב נדחף לפניו. */
-  164: { claim: '[pc-inherit]' },
+  164: { claims: { test_parentchild: ['[pc-inherit]', '[pc-order-live]'] } },
   /*  ⭐ סבב 144 — ⛔ הגדרת פונקציה נקראת מהמסד: ⚠️ `rename` אינו נוגע
    *  בגוף `plpgsql`, ⭐ ומיגרציה שרצה היא היסטוריה. */
   151: { claim: 'ל1 · ההגדרה החיה נקראה מהמסד' },
@@ -6818,7 +6814,10 @@ const GATES = {
   124: { claim: 'margin' },
   41: { manual: 'השוואת זמנים בין הריפו אינה בהישג ידו של שער שרץ בריפו אחד — ⛔ נאכפת בתוצאתה בלבד' },
   53: { claim: 'אין פרק פערים נפרד' },
-  109: { manual: '«סטייה מדפוס» היא קריאת משמעות — ⛔ נסרקת ידנית בכל סבב שנוגע' },
+  /*  ⭐ סבב 148 — ⛔ שם פונקציה שחוזר ביותר מריפו אחד בתוכן שונה:
+   *  ⚠️ מוצהר ב-`APP.productFns` עם היכולת שמצדיקה, ⭐ ונמדד בטביעת הגוף. */
+  109: { claims: { test_codescan: ['[fn-product]'] },
+         manual: 'הצד השני של השורה — ⛔ «סטייה מדפוס» היא קריאת משמעות, ונסרק ידנית בכל סבב שנוגע' },
   /*  ⛔ שני שערים לשורה אחת, ולכל אחד שם טענה משלו — ⚠️ שער ההסרות מודד
    *  מה שנמחק מול הקומיט הקודם, ⛔ ושער החיווט מודד את המצב **עכשיו**:
    *  ⭐ קורא שאיבד את הגדרתו לפני שני סבבים אינו נראה בהשוואת קומיטים. */
