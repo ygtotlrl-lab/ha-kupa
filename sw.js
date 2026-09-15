@@ -5,7 +5,7 @@
  *  ⚠️ כל הלוגיקה יושבת במודול המשותף שלמטה — זהה בית-לבית בכל
  *  האפליקציות. ⛔ מה שנבדל יושב ב-SW_CFG בלבד.
  */
-const CACHE_NAME = 'ha-kupa-v4';
+const CACHE_NAME = 'ha-kupa-v5';
 
 // קבצים מקומיים.
 var CORE = [
@@ -92,7 +92,7 @@ var SW_SHELL_PATHS = [SW_SCOPE.pathname, SW_SCOPE.pathname + 'index.html'];
 
 /*  ⚠️ שתי מפות חיפוש נפרדות, ⛔ ואין לאחד אותן (סבב 42ג): ignoreSearch
  *  מתעלם מה-query, וב-PostgREST כל הפילטרים יושבים דווקא שם. חיפוש כללי
- *  איתו גרם בהנהלה לכך שבקשת כניסה של משתמש אחד התאימה לתשובה שנשמרה
+ *  איתו גרם לכך שבקשת כניסה של משתמש אחד התאימה לתשובה שנשמרה
  *  עבור אחר — כניסה בזהות זרה. ניווט בלבד רשאי להשתמש ב-NAV_OPTS. */
 var SW_NAV_OPTS = { ignoreVary: true, ignoreSearch: true };
 var SW_SUB_OPTS = { ignoreVary: true };
@@ -127,7 +127,7 @@ function swOfflinePage() {
 
 /*  תת-משאב שאין לו עותק ואין רשת. ⛔ לעולם לא HTML (סבב 42ג) — ר' כותרת
  *  המודול. `Response.error()` הוא שגיאת הרשת האמיתית; 504 ריק הוא הווריאנט
- *  שנמדד ב-gius ונשמר כידית. */
+ *  שנמדד ונשמר כידית. */
 function swSubMiss() {
   if (SW_CFG.subMiss === '504') return new Response('', { status: 504, statusText: 'Offline' });
   try { return Response.error(); }
@@ -183,7 +183,7 @@ function swCachePut(cache, url, opts) {
   });
 }
 
-/*  ריפוי עצמי של מטמון ה-CDN (סבב 9 בהנהלה, סבב 35 בשלוש) — סקריפט CDN
+/*  ריפוי עצמי של מטמון ה-CDN (סבב 9, ובשאר סבב 35) — סקריפט CDN
  *  שחסר במטמון לא היה מושלם לעולם: install אינו רץ שוב לאותו CACHE_NAME,
  *  ובזמן-ריצה הדף מבקש אותו כ-no-cors ⇒ opaque ⇒ לא נשמר. רץ ב-activate
  *  וגם פעם אחת בכל עליית SW, משלים רק את מה שחסר, וכשל בו שקט. */
@@ -239,7 +239,7 @@ function swNetworkFirst(request) {
   });
 }
 
-/*  ⚠️ מטמון-קודם + רענון ברקע — ידית שנמדדה ב-gius (סבב 40) ונשמרה
+/*  ⚠️ מטמון-קודם + רענון ברקע — ידית שנמדדה (סבב 40) ונשמרה
  *  (סבב 42ג). ⛔ אין להפוך אותה ל'network-first' «לשם אחידות»: זו
  *  התנהגות שנמדדה ברתמת קו-הבסיס, והיפוכה משנה מה המשתמש רואה. */
 function swCacheFirst(request, u) {
@@ -314,7 +314,7 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(swNavigate(request, u));
     return;
   }
-  /*  ⚠️ `scoped` — ידית שנמדדה ב-gius: היא מטפלת אך ורק בנכסי ה-scope
+  /*  ⚠️ `scoped` — ידית שנמדדה: היא מטפלת אך ורק בנכסי ה-scope
    *  ובנכסי ה-CDN, וכל השאר עובר לדפדפן כפי שהוא. */
   if (SW_CFG.scoped && !swIsCdn(u) && !swInScope(u)) return;
 
