@@ -31,14 +31,14 @@ import vm from 'node:vm';
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
   app: 'ha-kupa',
-  names: ['rowTs', 'findRow', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
+  names: ['kpRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
   vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
   /*  ⛔ גלובלים שהארגז חול צריך מעבר לבדלים המשותפים — ⚠️ **מה נכנס**:
    *  שם ⟵ ערך. ⛔ **ומה מפיל**: הרצה שנופלת ב-`ReferenceError`.
    *  ⭐ **ולמה היא קיימת**: ליבת המיזוג נשענת על מודולים שאינם בה —
    *  ⛔ **וכאן אין צורך כזה**, ⚠️ וההצהרה ריקה ואינה נשמטת. */
   globals: {},
-  offlineFn: 'gVerifyOffline',
+  offlineFn: null,   // ⚠️ אין כאן משתמשים ואין כניסה
   // ⭐ סבב 38 — כלל ההכרעה עבר לליבה המשותפת, ולכן גם המוטציה מכוונת
   //    לשם. ⛔ הטענה לא נחלשה: היא עדיין דורשת שהסרת סעיף ה-⏳ תפיל את
   //    טענת הבסיס — רק שעכשיו זה קורה **בכל האפליקציות בבת אחת**.
@@ -54,7 +54,7 @@ const APP = {
    *  מאלה שמעליהם, ⛔ ולכן הם יושבים בקבוצה משלהם ואינם מתמזגים בהם. */
   core: {
     app: 'ha-kupa',
-    names: ['rowTs', 'findRow', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
+    names: ['kpRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
     vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
     globals: {},
     wrapFn: 'mergeRows',

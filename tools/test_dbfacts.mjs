@@ -65,27 +65,27 @@ const APP = {
   /*  ⛔ הטבלאות שנושאות `updated_at` — ⚠️ **וכולן `bigint`**: ⭐ חותמת
    *  שהמכשיר מייצר, ⛔ ובה אפס הוא **הישן ביותר** ולא «לא ידוע».
    *  ⛔ אין כאן טיפוס שני — ⚠️ שני טיפוסים לאותו מושג הם שני מנועי הכרעה. */
-  stamped: ['g_donors', 'g_pledges', 'g_txns', 'g_tasks',
-             'g_targets', 'g_config', 'g_users'],
+  stamped: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances',
+             'kp_entries', 'kp_lookups', 'kp_settings'],
   schemaSkip: ['sh_sync_log', 'sh_backup'],
   /*  ⛔ דפוסי קריאת מפתח ההגדרה — ⚠️ **מה נכנס**: `re` ביטוי עם קבוצת
    *  לכידה אחת לשם המפתח, ⛔ ו-`why` המסלול שהוא מכסה; ⛔ **ומה מפיל**:
    *  דפוס שאין לו אף אתר במקור. ⭐ **ולמה מרשם ולא קריאה**: הרשימות
    *  מוצהרות במרשם אחד, ⚠️ והמסך נבנה ממנו. */
   cfgReads: [
-    { re: "\\{\\s*key:\\s*'([a-z_0-9]+)',\\s*label:", why: 'מרשם הרשימות — כל רשומה בו היא מפתח בטבלת ההגדרות' },
+    { re: "\\{\\s*key:\\s*'([a-z_0-9]+)',\\s*label:", why: 'מרשם מפתחות ההגדרה — כל רשומה בו היא מפתח בטבלת ההגדרות' },
   ],
   /*  ⛔ מפתח חי שאין לו קורא — ⚠️ **מה נכנס**: השם ⟵ הנימוק; ⛔ **ומה
    *  מפיל**: מפתח חי שאינו כאן ואין לו קורא, ⛔ והכרזה שאין לה מפתח חי.
    *  ⭐ **ולמה ריק**: נמדד ואין. */
   cfgOrphans: {},
-  cfgTable: 'g_config',
+  cfgTable: 'kp_settings',
   /*  ⛔ טבלאות המפתח-ערך שבבעלות הריפו — ⚠️ **מה נכנס**: שם טבלה שעמודת
    *  `value` שלה נושאת JSON; ⛔ **ומה מפיל**: ערך שאינו מתפרש, ⭐ ורשימה
    *  ריקה. ⚠️ **ולמה היא קיימת**: הבעלות היא של ריפו אחד, ⛔ והמדידה
    *  רצה שם ⛔ ולא בשלושה. */
-  kvReadFn: 'gCfgParse',
-  kvTables: ['g_config'],
+  kvReadFn: 'kvParse',
+  kvTables: ['kp_settings'],
   backupTable: 'sh_backup',
   /*  ⛔ לגיוס פרויקט Supabase משלו — ⚠️ ולכן רשימת-ההיתר שלו היא שלו,
    *  ⭐ והיא נקראת מהמסד שלו. */
@@ -99,8 +99,9 @@ const APP = {
   /*  ⛔ הפרויקט שהריפו שואל — ⚠️ המפתח שמסנן את `DB_SCHEMA`; ⛔ **ומה
    *  מפיל**: שם שאין לו אף טבלה בסכימה. ⭐ **ולמה הוא כאן**: שני פרויקטים
    *  חיים בקובץ אחד, ⛔ וריפו שמודד את שניהם מדווח פער על טבלה שאינה שלו. */
-  project: 'ha-kupa',
-  ownTables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks', 'g_txns', 'g_users'],
+  project: 'kupa',
+  ownTables: ['kp_settings', 'kp_years', 'kp_months', 'kp_standing_orders',
+              'kp_so_instances', 'kp_entries', 'kp_lookups'],
   /*  ⛔ שמות עמודה שאין להם קורא **בכוונה** (סבב 104) — ⚠️ וכל אחד נושא
    *  את נימוקו: ⭐ שלישיית המחיקה הרכה ומשפחת הטבלאות המקבילות מחייבות
    *  את העמודה בסכימה, ⛔ גם באפליקציה שאינה כותבת אותה.
@@ -122,11 +123,12 @@ const APP = {
    *  ⛔ ו-`UPDATE` שיתווסף להם הוא זכות שאין לה קורא — ⭐ והיא בדיוק
    *  הזכות שמאפשרת לשכתב עקבה. */
   appendOnly: ['sh_backup', 'sh_sync_log'],
+  /*  ⛔ **ואין כאן טבלת משתמשים** — ⚠️ אין כניסה, ⭐ ולכן המשפחה מוצהרת
+   *  `null` ⛔ ואינה נשמטת: ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא
+   *  «נמדד ואין». */
   twinTables: {
-    users:    { table: 'g_users',
-                cols: ['client_id', 'username', 'full_name', 'role', 'active',
-                    'created_at', 'updated_at', 'pass_salt', 'pass_fp'] },
-    settings: { table: 'g_config',
+    users:    null,
+    settings: { table: 'kp_settings',
                 cols: ['key', 'value', 'updated_at', 'client_id',
                     'deleted', 'deleted_at', 'deleted_by'] },
   },

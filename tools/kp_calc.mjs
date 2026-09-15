@@ -2,6 +2,10 @@
  *  מהרישומים בזמן קריאה, ⭐ וזו הסיבה לאפליקציה — בגיליון, טעות בטבת
  *  נגררה חצי שנה. ⛔ ואין כאן קריאה למסד ואין `.rpc` — ⚠️ חישוב בשרת
  *  שובר אופליין ⛔ ואינו נסרק. */
+/*  ⛔ הקובץ הזה אינו אוכף שורה בטבלת התשתית — ⚠️ הצהרה ריקה ולא היעדר:
+ *  ⛔ מודול בלי הצהרה אינו נבדל ממודול שההצהרה שלו נשמטה. */
+export const ROWS = [];
+
 export const KP_CHUMASH_RATE = 0.2;
 export const KP_CAT_SELF = 'אישי';
 
@@ -13,7 +17,7 @@ export function kpTzedakah(rows) { return sum(live(rows).filter((r) => r.type ==
 export function kpChumash(income) { return income * KP_CHUMASH_RATE; }
 
 /*  ⛔ שתי הקטגוריות נספרות שווה — ⚠️ ההפרדה לתצוגה בלבד, ⭐ והאחוז
- *  הוא סימון ויזואלי: ⛔ אין חסימה, ו-100% לאחרים תקין. */
+ *  הוא סימון ויזואלי: ⛔ אין חסימה, ואחוז מלא לאחרים תקין. */
 export function kpSelfPct(rows) {
   const tz = kpTzedakah(rows);
   if (!tz) return 0;

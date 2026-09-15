@@ -5,7 +5,7 @@
  *  ⚠️ כל הלוגיקה יושבת במודול המשותף שלמטה — זהה בית-לבית בכל
  *  האפליקציות. ⛔ מה שנבדל יושב ב-SW_CFG בלבד.
  */
-const CACHE_NAME = 'kupa-v1';
+const CACHE_NAME = 'ha-kupa-v2';
 
 // קבצים מקומיים.
 var CORE = [
@@ -65,7 +65,7 @@ var SW_OFFLINE_HTML = `<!doctype html>
  *  ⛔ **ושתי ידיות בלבד נבדלות ביניהן** — ⚠️ `prefix` שהוא זהות
  *  האפליקציה, ⭐ ו-`cdnHosts` שהוא רשימת המארחים שהיא באמת טוענת. */
 var SW_CFG = {
-  prefix: 'kupa-',
+  prefix: 'ha-kupa-',
   cdnHosts: ['cdn.jsdelivr.net'],
   scoped: true,
   navFallback: 'shell',

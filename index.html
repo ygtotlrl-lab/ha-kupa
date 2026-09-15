@@ -11,10 +11,10 @@
  *  ⭐ המניפסט, העובד והאייקונים היו מחזירים 404, והעובד נרשם בהיקף שגוי.
  *  ⛔ אין להזיז אותו למטה. */
 (function () {
-  var seg = location.pathname.split('/').filter(Boolean);
-  var root = seg.length ? '/' + seg[0] + '/' : '/';
+  var p = location.pathname;
+  var m = p.match(/^(.*?\/ha-kupa\/)/);
   var b = document.createElement('base');
-  b.href = location.origin + root;
+  b.href = m ? m[1] : p.replace(/[^/]*$/, '');
   document.head.appendChild(b);
 })();
 </script>
@@ -31,12 +31,12 @@
   /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
    *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
    *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
-  --brand:var(--brand-fill); --on-brand:#FFFFFF;
+  --brand:#7C5CB0; --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
 
   --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
   --text:#352B3F; --text2:#7E6F90; --text3:#9F94AC;
-  --border:#E6DEF0; --border-2:#F1ECF7;
-  --brand-ink:#5E3F8F; --brand-fill:#9C7FD0; --brand-soft:#EFEAF6;
+  --border:#E6DEF0;
+  --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
   --ok:#2E6F4A; --ok-soft:#E8F3EC;
   --warn:#C46A4E; --warn-soft:#FDE6DC;
   --bad:#B3261E; --bad-soft:#FBE9E7;
@@ -50,18 +50,19 @@
    *  ו«אין עוד מלבדו!»: ⭐ צבע שמופיע בכל מקום מפסיק להיות סימן. */
   --purple-1:#EFEAF6; --purple-2:#B49EE0; --purple-3:#9C7FD0; --purple-4:#8A6BC0;
   --purple-5:#7C5CB0; --purple-6:#5E3F8F; --purple-7:#3A2540;
-  --peach-1:#FDE6DC; --peach-2:#F2A184; --peach-3:#C46A4E;
-  --rasp:#C9587E;
+  --peach-1:#FDE6DC; --peach-2:#F2A184; --peach-3:#A54D32;
+  --rasp:#B8446B; --rasp-ink:#B8446B;
   --line-soft:#EFEAF6;
+  --ring-soft:rgba(255,255,255,.3);
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --on-brand:#FFFFFF;
+    --on-brand:#FFFFFF; --on-rasp:#2A1B3D;
 
     --bg:#1B1420; --card:#251C2C; --card-2:#2E2336;
     --text:#EFE8F5; --text2:#C4B6D2; --text3:#9C8FAC;
-    --border:#3A2D45; --border-2:#2F2439;
-    --brand-ink:#C3AAE8; --brand-fill:#9C7FD0; --brand-soft:#332845;
+    --border:#3A2D45;
+    --brand:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
     --ok:#6FD79B; --ok-soft:#16281E;
     --warn:#F0A184; --warn-soft:#33211A;
     --bad:#F1938C; --bad-soft:#331A18;
@@ -71,8 +72,9 @@
     --purple-1:#332845; --purple-2:#8C74B8; --purple-3:#A98BDD; --purple-4:#B79BE6;
     --purple-5:#C3AAE8; --purple-6:#D6C5F0; --purple-7:#EFE8F5;
     --peach-1:#3A2620; --peach-2:#F2A184; --peach-3:#F0A184;
-    --rasp:#E896B0;
+    --rasp:#E896B0; --rasp-ink:#E896B0;
     --line-soft:#3A2D45;
+    --ring-soft:rgba(255,255,255,.3);
   }
 }
 
@@ -90,17 +92,14 @@ h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
 button{font:inherit; color:inherit}
 input,select,textarea{font:inherit; color:inherit}
 .hidden{display:none !important}
-.spin{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--brand-ink);
-  border-radius:var(--r-7);animation:sp var(--dur-6) linear infinite;display:inline-block;vertical-align:-4px}
-@keyframes sp{to{transform:rotate(360deg)}}
 
 /* ================================================== הפתיח והחתימה של מסך */
 /*  ⛔ שתי השורות בראש ובתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
  *  שהמשתמש ביקש לראות בכל פתיחה. */
-.opener{color:var(--rasp);font-size:12px;letter-spacing:var(--ls-1);text-align:center;
-  font-weight:500;padding:var(--sp-6) var(--sp-6) var(--sp-5)}
-.closer{color:var(--purple-5);font-size:10px;text-align:center;font-weight:400;
+.closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
   padding:var(--sp-7) var(--sp-6) var(--sp-6)}
+.opener{color:var(--rasp-ink);font-size:var(--fs-2);letter-spacing:var(--ls-1);text-align:center;
+  font-weight:500;padding:var(--sp-6) var(--sp-6) var(--sp-5)}
 
 /* =================================================================== קליפה */
 main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-bottom));
@@ -110,7 +109,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .card{
   background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
-.card > h2{font-size:17px;color:var(--text);display:flex;align-items:center;gap:var(--sp-4);
+.card > h2{font-size:var(--fs-5);color:var(--text);display:flex;align-items:center;gap:var(--sp-4);
   margin-bottom:var(--sp-5);font-weight:500}
 .card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-3)}
 .card > h2 .st.ok{color:var(--ok)}
@@ -121,32 +120,23 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 /* ============================================ שורת החודש והמעבר בין חודשים */
 .mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
   padding:var(--sp-5) 0}
-.mrow .mname{font-size:17px;font-weight:500;color:var(--text)}
+.mrow .mname{font-size:var(--fs-5);font-weight:500;color:var(--text)}
 .mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
   min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 
 /*  ⛔ פס החוב מהחודש הקודם — ⚠️ הוא אומר מה נשאר, ⭐ ואינו מבהיל:
  *  ⛔ אין בו אדום ואין בו סימן שגיאה. */
 .carry{display:flex;align-items:center;gap:var(--sp-4);background:var(--peach-1);
-  color:var(--peach-3);font-size:13px;font-weight:500;border-radius:var(--radius-sm);
+  color:var(--peach-3);font-size:var(--fs-3);font-weight:500;border-radius:var(--radius-sm);
   padding:var(--sp-5) var(--sp-5);margin-bottom:var(--sp-5);width:100%;border:0;
   cursor:pointer;text-align:start;min-height:44px}
 .carry .arw{margin-inline-start:auto;font-size:var(--fs-3)}
 
 /* ================================================================== מספרים */
-.big{font-size:28px;font-weight:500;line-height:var(--lh-1);color:var(--text)}
-.sml{font-size:13px;color:var(--text2);margin-top:var(--sp-4);line-height:var(--lh-3)}
+.big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
+.sml{font-size:var(--fs-3);color:var(--text2);margin-top:var(--sp-4);line-height:var(--lh-3)}
 .sml.strong{font-weight:500;color:var(--text)}
-.inc{font-size:17px;font-weight:500;color:var(--text);padding:var(--sp-5) 0}
-
-/* ===================================================================== פסים */
-/*  ⛔ הפס נגזר מאסימון רדיוס — ⚠️ קצה מעוגל מלא הוא `--r-7`: ⭐ ערך
- *  שנבחר לאתר הזה בלבד היה סולם שלא הוגדר. */
-.bar{height:10px;border-radius:var(--r-7);background:var(--purple-1);overflow:hidden}
-.bar > i{display:block;height:10px;border-radius:var(--r-7);background:var(--purple-3);
-  transition:width var(--dur-4) ease}
-.bar.peach{background:var(--peach-1)}
-.bar.peach > i{background:var(--peach-2)}
+.inc{font-size:var(--fs-5);font-weight:500;color:var(--text);padding:var(--sp-5) 0}
 
 /* ================================================================== הפירוט */
 .det{list-style:none;margin:0;padding:0}
@@ -154,37 +144,36 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
   border-bottom:.5px solid var(--line-soft);min-height:44px}
 .det li:last-child{border-bottom:0}
 .det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
-  justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-5)}
+  justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
 .det .ico svg{width:14px;height:14px}
 .det .ico.peach{background:var(--peach-1);color:var(--peach-3)}
-.det .nm{flex:1;font-size:13px;min-width:0}
-.det .tag{font-size:11px;color:var(--text3);flex:none}
-.det .amt{font-size:13px;min-width:36px;text-align:start;flex:none;font-weight:500}
+.det .nm{flex:1;font-size:var(--fs-3);min-width:0}
+.det .tag{font-size:var(--fs-1);color:var(--text3);flex:none}
+.det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
 .det li.pend .amt{color:var(--text3)}
 .det li.pend .nm{color:var(--text2)}
 
 /* =========================================================== הכפתור הצף */
-.fab{position:fixed;inset-block-end:16px;inset-inline-start:16px;z-index:var(--z-4);
+.fab{position:fixed;inset-block-end:var(--sp-6);inset-inline-start:var(--sp-6);z-index:var(--z-4);
   width:56px;height:56px;border-radius:var(--r-7);border:0;cursor:pointer;
-  background:var(--rasp);color:var(--on-brand);font-size:26px;line-height:var(--lh-1);
+  background:var(--rasp);color:var(--on-rasp);font-size:var(--fs-6);line-height:var(--lh-1);
   display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg)}
 
 /* ============================================================ מסך הזרימה */
 .flow{padding:var(--sp-6) 0}
-.flow h2{font-size:17px;font-weight:500;margin-bottom:var(--sp-5)}
-.flow .hint{font-size:13px;color:var(--text2);margin-bottom:var(--sp-6)}
+.flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
 .fld{margin-bottom:var(--sp-6)}
-.fld label{display:block;font-size:13px;color:var(--text2);margin-bottom:var(--sp-4)}
+.fld label{display:block;font-size:var(--fs-3);color:var(--text2);margin-bottom:var(--sp-4)}
 .fld input,.fld select{width:100%;background:var(--card);color:var(--text);
   border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:var(--sp-5) var(--sp-5);font-size:17px;min-height:44px}
+  padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
 .opts{display:grid;gap:var(--sp-4)}
 .opt{display:flex;align-items:center;gap:var(--sp-4);background:var(--card);
   border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-5);
   font-size:var(--fs-4);cursor:pointer;min-height:44px;text-align:start;width:100%}
 .opt.on{border-color:var(--purple-3);background:var(--brand-soft);color:var(--brand-ink)}
 .btn{display:block;width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
-  background:var(--purple-5);color:var(--on-brand);font-size:17px;font-weight:500;
+  background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
   padding:var(--sp-5);min-height:44px}
 .btn.ghost{background:var(--card);color:var(--text2);border:1px solid var(--border)}
 .btn[disabled]{opacity:var(--op-3);cursor:default}
@@ -192,25 +181,29 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
   min-width:44px;min-height:44px}
 .acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
 .acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:13px;
+  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
   text-align:start;min-height:44px}
 
 /* ======================================================= מסך אישור המטבע */
 .slide{position:fixed;inset:0;z-index:var(--z-6);background:var(--bg);
   display:flex;flex-direction:column;align-items:center}
-.slide .ttl{font-size:17px;font-weight:500;color:var(--text);margin-top:var(--sp-7)}
-.slide .sub{font-size:13px;color:var(--text2);margin-top:var(--sp-4)}
-.slide .bk{position:absolute;inset-block-start:16px;inset-inline-start:16px}
+.slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
+.slide .sub{font-size:var(--fs-3);color:var(--text2);margin-top:var(--sp-4)}
+.slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
 .target{margin-top:var(--sp-7)}
+/*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
+ *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
+.target.wide{width:270px}
+.target.narrow{width:230px}
 .coin{position:absolute;width:150px;height:150px;border-radius:var(--r-7);
   background:var(--peach-2);display:flex;align-items:center;justify-content:center;
-  color:var(--on-dark);font-size:30px;font-weight:500;touch-action:none;cursor:grab;
+  color:var(--on-dark);font-size:var(--fs-6);font-weight:500;touch-action:none;cursor:grab;
   box-shadow:var(--shadow-lg)}
 .coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
-  border:1px solid rgba(255,255,255,.3)}
+  border:1px solid var(--ring-soft)}
 .coin.over{transform:scale(1.05)}
 .done{text-align:center;padding:var(--sp-7) var(--sp-6)}
-.done .line1{font-size:28px;font-weight:500;color:var(--purple-5)}
+.done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
 .done .line2{font-size:var(--fs-4);color:var(--text2);margin-top:var(--sp-5)}
 .conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
 .conf i{position:absolute;width:8px;height:8px;border-radius:var(--r-1)}
@@ -221,29 +214,29 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 
 /* ================================================== באנר העדכון והמודאל */
 #updater{position:fixed;inset-inline:0;inset-block-end:0;z-index:var(--z-6);
-  background:var(--card);color:var(--text);border-top:1px solid var(--border);
-  padding:var(--sp-5) var(--sp-6);display:none;align-items:center;gap:var(--sp-5);
-  font-size:var(--fs-3);box-shadow:var(--shadow-lg)}
+  display:none;justify-content:center;padding:var(--sp-5) var(--sp-6)}
 #updater.show{display:flex}
-#updater button{background:var(--brand);color:var(--on-brand);border:0;cursor:pointer;
+#updater .in{
+  background:var(--brand);color:var(--on-brand);border-radius:var(--r-5);
+  padding:var(--sp-5) var(--sp-6);display:flex;align-items:center;gap:var(--sp-5);
+  box-shadow:var(--shadow-lg);font-size:var(--fs-3);font-weight:500;
+  max-width:520px;width:100%}
+#updater button{background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
   border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-6);font-weight:500;
   min-height:44px}
-#modal{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
+/*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
+ *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
+.veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
   display:none;align-items:center;justify-content:center;padding:var(--sp-6)}
-#modal.show{display:flex}
-#modal .box{background:var(--card);border-radius:var(--radius);width:100%;
+.veil.open{display:flex}
+.veil .box{background:var(--card);border-radius:var(--radius);width:100%;
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-#modal .hd{padding:var(--sp-6);font-size:17px;font-weight:500;
+.veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
   border-bottom:1px solid var(--border)}
-#modal .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text2)}
-#modal .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
+.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text2)}
+.veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
 
-@media (prefers-reduced-motion:reduce){
-  .bar > i{transition:none}
-  .conf{display:none}
-  .spin{animation:none}
-}
 
 /* ═══ שכבת הטוסט — מודול משותף (סבב 87ב) ════════════════════════════════════
    זהה בית-לבית בכל האפליקציות. ⛔ שני סיווגי המצב נשענים על אסימוני
@@ -278,6 +271,19 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .btrack.tgt i{opacity:var(--op-2)}
 .bval{color:var(--text2);text-align:end;white-space:nowrap}
 /* ═══ סוף CSS גרף העמודות ════════════════════════════════════════════════ */
+
+/* ===================================================================== פסים */
+/*  ⛔ הגוון פר-אפליקציה נכתב **אחרי** הבלוק החתום — ⚠️ שני הכללים באותה
+ *  סגוליות, ⭐ והמאוחר גובר: ⛔ גוון שנכתב לפניו אינו חל כלל. */
+.btrack{background:var(--purple-1)}
+.btrack i{transition:width var(--dur-4) var(--ease)}
+.btrack.peach{background:var(--peach-1)}
+.btrack.peach i{background:var(--peach-2)}
+
+@media (prefers-reduced-motion:reduce){
+  .btrack i{transition:none}
+  .conf{display:none}
+}
 
 /* ═══ סולמות הערך החזותי — מודול משותף (סבב 141) ═════════════════════════
    ⛔ שמונה סולמות, ⛔ ואותן דרגות בכל האפליקציות — ⚠️ כל ערך חזותי
@@ -369,7 +375,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
-<div id="modal" role="dialog" aria-modal="true">
+<div class="veil" id="modal" role="dialog" aria-modal="true">
   <div class="box">
     <div class="hd" id="modal-title"></div>
     <div class="bd" id="modal-body"></div>
@@ -377,11 +383,24 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
   </div>
 </div>
 
+<div class="veil" id="ask" role="alertdialog" aria-modal="true">
+  <div class="box">
+    <div class="hd" id="ask-title"></div>
+    <div class="bd" id="ask-body"></div>
+    <div class="ft">
+      <button class="btn ghost" data-act="ask-no">ביטול</button>
+      <button class="btn" data-act="ask-yes" id="ask-yes">אישור</button>
+    </div>
+  </div>
+</div>
+
 <div id="toasts" aria-live="polite"></div>
 
-<div id="updater" role="status">
-  <span class="u-fx-1" id="updater-text"></span>
-  <button data-act="sw-reload">רענן</button>
+<div id="updater">
+  <div class="in">
+    <span class="u-fx-1">🔄 גרסה חדשה זמינה</span>
+    <button data-act="sw-reload">רענן</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
@@ -399,17 +418,19 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 var sb = null;
 var EPS = 0.005;
-var LS_PREFIX = 'kupa_';
 
 /*  ⛔ ההודעה נכתבת בלשון הקופה — ⚠️ ואינה מועתקת מאחות: ⭐ נוסח שזהה
  *  לזה שבאחות הוא הודעה שיותר מאפליקציה אחת אומרת, ⛔ ומקומה אז בבלוק
  *  החתום. ⚠️ **ואין כאן `MSG_BAD_LOGIN`** — ⛔ אין כניסה, ואין לו אתר. */
-var MSG_OFFLINE = '⚠️ אין חיבור — הרישום נשמר במכשיר ויעלה כשהרשת תחזור';
+var MSG_OFFLINE = 'אין חיבור — הרישום נשמר במכשיר ויעלה כשהרשת תחזור';
 
-/* ══ הודעות פר-אפליקציה — מה שרק כאן נאמר ═══════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   הודעות פר-אפליקציה — מה שרק כאן נאמר
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ ההודעה היא קבוע ⛔ ואינה ליטרל באתר התצוגה — ⚠️ טקסט שנכתב במקום
    שבו הוא נאמר נכתב שוב במסך הבא, ⭐ ושני ניסוחים לאותו מצב הם שני
-   מסלולים בעיני הקורא. */
+   מסלולים בעיני הקורא.
+   ══════════════════════════════════════════════════════════════════════════ */
 var MSG_OPENER = 'אין עוד מלבדו!';
 var MSG_CLOSER = 'יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד';
 var MSG_MONTH_DONE = 'החודש הושלם ✓';
@@ -426,25 +447,38 @@ var MSG_DELETED = 'נמחק';
 var MSG_EMPTY_PRE = 'חודש טוב! עוד לא נרשם כלום ב-';
 var MSG_NO_INCOME = 'עוד לא נרשמו';
 var MSG_GOAL_FROM_INCOME = 'היעד ייקבע לפי ההכנסות';
-var MSG_PENDING_SYNC = 'ממתין לסנכרון';
+var MSG_WHAT_TO_ADD = 'מה נרשם?';
+var MSG_ADD_INCOME = 'רישום הכנסה';
+var MSG_ADD_TZEDAKAH = 'צדקה';
 var MSG_ORDERS_TITLE = 'הוראות קבע';
 var MSG_SETTINGS_TITLE = 'הגדרות';
 var MSG_SENSORY = 'צליל ורטט באישור';
+var MSG_MONTHS_CHART = 'חודשים — נגבה מול יעד';
 var MSG_CARRY_PRE = 'בחודש ';
 var MSG_CARRY_MID = ' נשאר לתת ₪';
 var MSG_EDIT = 'עריכה';
 
-/* ══ תצורת האפליקציה ════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   תצורת האפליקציה
+   ══════════════════════════════════════════════════════════════════════════
    ⚠️ **מה נכנס**: הטבלאות שנדחפות ושמותיהן במראה, וסדרן; ⛔ **ומה מפיל**:
    טבלה שנכתבת מקומית ואינה כאן — שורותיה אינן עולות לעולם.
-   ⭐ **ולמה הסדר**: האב נדחף לפני הבן, ⛔ אחרת הבן נקרא כיתום. */
+   ⭐ **ולמה הסדר**: האב נדחף לפני הבן, ⛔ אחרת הבן נקרא כיתום.
+   ══════════════════════════════════════════════════════════════════════════ */
 var PUSH_TABLES = ['kp_years', 'kp_months', 'kp_standing_orders',
                    'kp_so_instances', 'kp_entries', 'kp_lookups'];
 var KV_TABLE = 'kp_settings';
 
 /*  ⛔ העידן — ⚠️ מספר בענן שמכשיר מיושן זורק מולו את העותק המקומי:
  *  ⭐ תיקון בקוד אינו מנקה מכשיר שכבר מזוהם. */
-var CFG_KEYS = ['sensory', 'lookups_epoch'];
+/*  ⛔ מרשם מפתחות ההגדרה — ⚠️ **מה נכנס**: המפתח שבטבלת ההגדרות ⟵
+ *  התווית שלצידו; ⛔ **ומה מפיל**: מפתח שהקוד קורא ואינו במסד.
+ *  ⭐ **ולמה מרשם**: `cfgBoot` ו-`cfgRefresh` עוברים עליו, ⛔ ושתי
+ *  רשימות לאותם מפתחות הן שני מקומות לתקן. */
+var CFG_KEYS = [
+  { key: 'sensory', label: MSG_SENSORY },
+  { key: 'lookups_epoch', label: 'עידן הרשימות' }
+];
 
 /*  ⛔ הרגישות — ⚠️ צליל ורטט עוברים כאן בלבד: ⭐ מתג אחד בהגדרות,
  *  ⛔ ואין אתר שני שמשמיע. */
@@ -511,10 +545,13 @@ function kpChain(months, opts) {
 }
 /* ═══════════════ סוף ליבת החישוב ═══════════════════════════════════════ */
 
-/* ══ מטא-הטבלאות — מקור אחד לשם, למפתח ולחותמת ══════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   מטא-הטבלאות — מקור אחד לשם, למפתח ולחותמת
+   ══════════════════════════════════════════════════════════════════════════
    ⚠️ **מה נכנס**: שם הטבלה, מפתח הזהות ועמודת ההתנגשות; ⛔ **ומה מפיל**:
    טבלה שנכתבת מקומית ואינה כאן. ⭐ **ולמה המבנה קיים**: שם שנכתב פעמיים
-   מתפצל ביום שאחד משני האתרים נערך. */
+   מתפצל ביום שאחד משני האתרים נערך.
+   ══════════════════════════════════════════════════════════════════════════ */
 var TABLES = [
   { t: 'kp_years',          key: 'client_id' },
   { t: 'kp_months',         key: 'client_id' },
@@ -534,8 +571,6 @@ function kpStripRows(t, rows) { return rows; }
 /*  ⛔ נקודת ההסבה האחת — ⚠️ מזהה שנשמר בגרסה ישנה כמספר: ⭐ `legacyIdStamp`
  *  מחזירה 0 ⛔ ולא `NaN`, ⚠️ והשוואה נכשלת בשקט בלעדיה. */
 function kpAdoptId(r) { return r; }
-function kpToday() { return new Date().toISOString().slice(0, 10); }
-
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
 var _kpPushedAt = {};
@@ -556,8 +591,8 @@ function kpDirtyRows(t) {
 }
 
 var MIRROR_CFG = {
-  prefix: 'kupa_mirror_',
-  app:    'kupa_',
+  prefix: 'kp_mirror_',
+  app:    'kp_',
   tables: function () { return TABLES.map(function (m) { return m.t; }); },
   /*  ⛔ ריק ומוצהר — ⚠️ אין בקופה טבלה שנכתבת מחוץ לדחיפה:
    *  ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין». */
@@ -570,7 +605,7 @@ var MIRROR_CFG = {
 };
 
 var LS_CFG = {
-  cachePrefix: 'kupa-',
+  cachePrefix: 'ha-kupa-',
   logKey: 'kp_ls_log',
   hzPrefix: 'kp_ls_hz_',
   dismissKey: 'kp_sw_dismissed',
@@ -691,9 +726,12 @@ function hwHorizonDate() {
   return d.toISOString().slice(0, 10);
 }
 
-/* ══ המשיכה, המיזוג והדחיפה ═════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   המשיכה, המיזוג והדחיפה
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ משיכה ← מיזוג ← דחיפה, פר-טבלה — ⚠️ וכשל מחזיר «אין ראיה»:
-   ⭐ מיזוג מול מערך ריק מוחק את מה שלא הספיק לעלות. */
+   ⭐ מיזוג מול מערך ריק מוחק את מה שלא הספיק לעלות.
+   ══════════════════════════════════════════════════════════════════════════ */
 function pullTable(t) {
   return withTimeout(sb.from(t).select('*')).then(function (r) {
     if (!r || r.error || !Array.isArray(r.data)) return { ok: false, rows: [] };
@@ -703,9 +741,12 @@ function pullTable(t) {
 
 function mergeTable(t, remote) {
   var m = kpTableMeta(t);
-  var merged = mergeCore(DATA[t] || [], remote, function (r) { return r[m.key]; },
-    function (a, b) { return kpRowTs(a) >= kpRowTs(b) ? a : b; },
-    function (r) { return pendHas(kpPendKey(t, r)); });
+  /*  ⛔ המיזוג עובר בעוטף האחד — ⚠️ קריאה ישירה לליבה בארגומנטים
+   *  מסודרים אינה החוזה שלה: ⭐ היא מקבלת אובייקט אפשרויות, ⛔ ומפתח
+   *  שאינו מגיע אליה מפיל את המיזוג בזמן ריצה. */
+  var merged = mergeRows(DATA[t] || [], remote, m.key, function (k) {
+    return pendHas(t + ':' + k);
+  });
   DATA[t] = merged;
   mirrorSave(t, merged);
   return merged;
@@ -743,9 +784,12 @@ function pushSoon() { schedulePush(); }
 function saveRefresh() { kpRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
-/* ══ ההגדרות שבמסד — קריאה וכתיבה פר-מפתח ═══════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   ההגדרות שבמסד — קריאה וכתיבה פר-מפתח
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ הקריאה אינה ב-`single` — ⚠️ שורה שאינה קיימת מסומנת שם כשגיאה,
-   ⭐ ומסך שנתוניו תקינים מכריז «הרענון מהענן נכשל». */
+   ⭐ ומסך שנתוניו תקינים מכריז «הרענון מהענן נכשל».
+   ══════════════════════════════════════════════════════════════════════════ */
 function cfgRead(key) {
   return withTimeout(sb.from(KV_TABLE).select('value').eq('key', key).maybeSingle())
     .then(function (r) {
@@ -760,17 +804,43 @@ function cfgWrite(key, value) {
   if (!sb) return Promise.resolve(false);
   return withTimeout(sb.from(KV_TABLE).upsert(
     { key: key, value: JSON.stringify(value), updated_at: Date.now() },
-    { onConflict: 'key' })).then(function (r) { return !(r && r.error); },
-    function () { return false; });
+    { onConflict: 'key' })).then(function (r) {
+      if (r && r.error) return false;
+      /*  ⛔ כתיבה שהצליחה מקדמת את החותמת — ⚠️ בלעדיה השינוי נשאר
+       *  בלתי-נראה לכל מכשיר אחר לנצח: ⭐ הם מושכים רק כשהיא מתקדמת. */
+      plTouch();
+      return true;
+    }, function () { return false; });
 }
 function cfgBoot() {
   var i, k, raw;
   for (i = 0; i < CFG_KEYS.length; i++) {
-    k = CFG_KEYS[i];
+    k = CFG_KEYS[i].key;
     raw = lsGet('kp_cfg_' + k);
     if (raw !== null) { try { CFG[k] = JSON.parse(raw); } catch (e) {} }
   }
   if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
+  cfgRefresh();
+}
+/*  ⛔ הרענון מהענן בא **אחרי** הציור מהדיסק — ⚠️ המסך מציג מיד את מה
+ *  שכבר יש, ⭐ והקריאה היא רענון: ⛔ כשל מחזיר `null` ⛔ ואינו דורס את
+ *  הערך המקומי — ⚠️ «לא ידעתי» אינו «אין שם כלום». */
+function cfgRefresh() {
+  if (!sb) return Promise.resolve(false);
+  return Promise.all(CFG_KEYS.map(function (c) {
+    var k = c.key;
+    return cfgRead(k).then(function (v) {
+      if (v === null) return false;
+      CFG[k] = v;
+      lsSet('kp_cfg_' + k, JSON.stringify(v));
+      return true;
+    });
+  })).then(function (hits) {
+    if (hits.indexOf(true) < 0) return false;
+    if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
+    kpRender();
+    return true;
+  });
 }
 
 /* ═══ מחרוזות ההודעה המשותפות — מודול משותף (סבב 141) ════════════════════
@@ -3016,6 +3086,18 @@ function mergeCore(local, remote, opts) {
 }
 /* ═══════════════ סוף מודול המיזוג ══════════════════════════════════════ */
 
+/*  ⛔ המפתח הוא שם עמודה ולא פונקציה, ⚠️ ו-`String()` עליו לעולם אינו
+ *  `null` — ⭐ ולכן ענף `keyless` אינו נגיש כאן.
+ *  ⛔ `dedupe: false` — ⚠️ כפילות נשארת גלויה ואינה מכווצת בשקט.
+ *  ⚠️ `localPick: 'first'` — ⛔ ההתאמה הראשונה היא זו שמתמודדת מול הענן. */
+function mergeRows(local, remote, keyName, isPending) {
+  return tombPruneMerged(mergeCore(local, remote, {
+    getKey: function (r) { return String(r[keyName]); },
+    ts: kpRowTs, isPending: isPending, keepUnversionedLocal: true,
+    dedupe: false, keyless: 'drop', localPick: 'first'
+  }));
+}
+
 /* ═══ גריעת tombstones — מודול משותף (סבב 93) ════════════════════════════
    ⛔ שינוי כאן (סבב 93) — כל האפליקציות **וכל עותקי השער**, באותו
       סבב: אחרת החתימה נשברת בריפו אחד, והשער מאשר את הסטייה בשלושה.
@@ -3081,6 +3163,120 @@ function tombPruneMerged(arr) {
 //    בכל שלוש שניות, ⚠️ וזה בדיוק מה שהדגל בא למנוע.
 function tombBoot() { _tombPrunePending = true; }
 /* ═══════════════ סוף מודול גריעת ה-tombstones ══════════════════════════ */
+
+window.DAYS_HEB=["","א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","ט׳","י׳","י״א","י״ב","י״ג","י״ד","ט״ו","ט״ז","י״ז","י״ח","י״ט","כ׳","כ״א","כ״ב","כ״ג","כ״ד","כ״ה","כ״ו","כ״ז","כ״ח","כ״ט","ל׳"];
+window.MONTHS_HEB     =["תשרי","חשון","כסלו","טבת","שבט","אדר","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
+window.MONTHS_HEB_LEAP=["תשרי","חשון","כסלו","טבת","שבט","אדר א׳","אדר ב׳","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
+window.YS_DOW_HEB=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+
+// שנה מעוברת — מחזור 19 השנים (7 שנים מעוברות)
+window.ysHebIsLeap=function(hy){return ((7*(+hy)+1)%19)<7;};
+window.ysHebMonthNames=function(hy){return window.ysHebIsLeap(hy)?window.MONTHS_HEB_LEAP:window.MONTHS_HEB;};
+
+// גימטריה — מספר → אותיות (כולל ט״ו/ט״ז). sep = התו שלפני האות האחרונה
+window.ysGematria=function(n,sep){
+  n=Math.floor(Math.abs(+n))||0;
+  if(!n) return '';
+  if(n>=1000) n=n%1000;
+  var HUN=['','ק','ר','ש','ת'],TENS=['','י','כ','ל','מ','נ','ס','ע','פ','צ'],ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
+  var s='',h=Math.floor(n/100),r=n%100;
+  while(h>4){s+='ת';h-=4;}
+  s+=HUN[h]||'';
+  if(r===15) s+='טו';
+  else if(r===16) s+='טז';
+  else s+=TENS[Math.floor(r/10)]+ONES[r%10];
+  if(sep===undefined) sep='״';
+  if(!sep||!s) return s;
+  if(s.length===1) return s+'׳';
+  return s.slice(0,-1)+sep+s.slice(-1);
+};
+window.ysHebDayLabel=function(day){var T=window.DAYS_HEB;return (T&&T[day])||window.ysGematria(day)||String(day);};
+// תווית שנה קצרה — תשפ"ו (גרשיים ישרים, כפי שהוצג עד היום בלוח)
+window.ysHebYearLabel=function(hy){return window.ysGematria((+hy)%1000,'"');};
+// תווית שנה מלאה — ה׳תשפ״ו
+window.ysHebYearLabelFull=function(hy){
+  var ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'],th=Math.floor((+hy)/1000);
+  return ((th>0&&th<10)?ONES[th]+'׳':'')+window.ysGematria((+hy)%1000,'״');
+};
+
+// ---- קריאת הלוח העברי של הדפדפן ----
+// שמות החודשים נקראים באנגלית ('en-u-ca-hebrew') כי הם יציבים בין גרסאות ICU,
+// וממופים לאינדקס בטבלאות התצוגה שלנו.
+window._ysMICodeLeap={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar1:5,adar2:6,nisan:7,iyar:8,sivan:9,tamuz:10,av:11,elul:12};
+window._ysMICodeStd ={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar:5,nisan:6,iyar:7,sivan:8,tamuz:9,av:10,elul:11};
+window._ysMonthCode=function(name){
+  var s=(name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(s.indexOf('adar')===0){
+    var t=s.slice(4);
+    if(t==='i'||t==='1'||t==='a') return 'adar1';
+    if(t==='ii'||t==='2'||t==='b') return 'adar2';
+    return 'adar';
+  }
+  if(s.indexOf('tishr')===0) return 'tishri';
+  if(s.indexOf('hesh')!==-1||s.indexOf('chesh')!==-1) return 'heshvan';
+  if(s.indexOf('kislev')===0||s.indexOf('chislev')===0) return 'kislev';
+  if(s.indexOf('tevet')===0||s.indexOf('teveth')===0) return 'tevet';
+  if(s.indexOf('shevat')===0||s.indexOf('shvat')===0||s.indexOf('shebat')===0) return 'shevat';
+  if(s.indexOf('nisan')===0||s.indexOf('nissan')===0) return 'nisan';
+  if(s.indexOf('iyar')===0||s.indexOf('iyyar')===0) return 'iyar';
+  if(s.indexOf('sivan')===0) return 'sivan';
+  if(s.indexOf('tamuz')===0||s.indexOf('tammuz')===0) return 'tamuz';
+  if(s==='av'||s==='ab') return 'av';
+  if(s.indexOf('elul')===0) return 'elul';
+  return null;
+};
+window._ysIntlFmt=null;window._ysIntlOK=null;
+// גרגוריאני → {hy,mi,day,leap} דרך Intl. מחזיר null אם לא זמין / תוצאה לא צפויה
+window.ysIntlHeb=function(d){
+  try{
+    if(window._ysIntlOK===false) return null;
+    if(!window._ysIntlFmt){
+      if(typeof Intl==='undefined'||!Intl.DateTimeFormat){window._ysIntlOK=false;return null;}
+      var f=new Intl.DateTimeFormat('en-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'});
+      var ro=f.resolvedOptions?f.resolvedOptions():null;
+      if(!ro||ro.calendar!=='hebrew'||!f.formatToParts){window._ysIntlOK=false;return null;}
+      window._ysIntlFmt=f;window._ysIntlOK=true;
+    }
+    var o={};
+    window._ysIntlFmt.formatToParts(d).forEach(function(p){o[p.type]=p.value;});
+    var hy=parseInt(String(o.year||'').replace(/[^0-9]/g,''),10);
+    var day=parseInt(String(o.day||'').replace(/[^0-9]/g,''),10);
+    var code=window._ysMonthCode(o.month);
+    if(!(hy>=4000&&hy<=7000)||!(day>=1&&day<=30)||!code) return null;
+    var leap=window.ysHebIsLeap(hy);
+    var mi=leap?window._ysMICodeLeap[code]:window._ysMICodeStd[code];
+    if(mi===undefined){
+      // אי-התאמה בין חישוב העיבור לשם החודש — סימן שמשהו לא צפוי; לא מנחשים
+      return null;
+    }
+    return {hy:hy,mi:mi,day:day,leap:leap};
+  }catch(e){ window._ysIntlOK=false; return null; }
+};
+
+/*  ⛔ אין לבדוק `d instanceof Date` ואין ליפול-חזרה ל«היום» (סבב 57) —
+ *  `instanceof` תלוי-realm: אובייקט תאריך שנוצר ב-realm אחר (iframe,
+ *  רתמת `vm`) מחזיר `false`, והשורה שהייתה כאן החליפה אותו **בשקט**
+ *  בתאריך של היום. שני כשלים בשורה אחת — בדיקה שתלויה במי יצר את
+ *  האובייקט, ⛔ ונפילה-חזרה שקטה שמציגה תאריך שגוי כאילו הוא נכון.
+ *  ⭐ הבדיקה כאן היא על **החוזה** (`getTime` שמחזיר מספר) ואינה
+ *  תלוית-realm; ⛔ וקלט שאינו עובר אותה מוחזר כ«לא תקף» ונרשם.
+ *  ⚠️ קריאה **בלי ארגומנט** היא חוזה קיים ומשמעה «היום» — היא נשארת,
+ *  ורק ארגומנט שנמסר ואינו תאריך תקף נחשב שגיאה.                       */
+window._ysIsDate=function(d){
+  return !!d&&typeof d.getTime==='function'&&!isNaN(d.getTime());
+};
+window._ysBadDates=[];
+window._ysBadDate=function(where,d){
+  var got;
+  try{ got=Object.prototype.toString.call(d); }catch(e){ got='?'; }
+  window._ysBadDates.push({at:Date.now(),where:where,got:got});
+  if(window._ysBadDates.length>12) window._ysBadDates.shift();
+  try{ console.warn('ysHebDate: קלט שאינו תאריך תקף ב-'+where+' — '+got); }catch(e){}
+};
+window._ysHebNone=function(src){
+  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',yearLabel:'',
+          yearLabelFull:'',leap:false,ok:false,src:src};
+};
 
 /* ═══ מנוע התאריך העברי — מודול משותף (סבב 107) ═══════════════════════════
    ⛔ מנוע אחד לכל צרכני התאריך — ⚠️ `ysHebDate` מעל `Intl`, ⛔ ובנפילה-חזרה
@@ -3439,9 +3635,12 @@ function barChart(rows, label) {
 /* ═══════════════ סוף מודול גרף העמודות ══════════════════════════════════ */
 
 
-/* ══ מצב הריצה ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   מצב הריצה
+   ══════════════════════════════════════════════════════════════════════════
    ⚠️ **מה נכנס**: העותק המקומי של הטבלאות, והמסך שמוצג עכשיו;
-   ⛔ **ומה מפיל**: סיכום שנשמר כאן — ⭐ כל מספר נגזר בזמן קריאה. */
+   ⛔ **ומה מפיל**: סיכום שנשמר כאן — ⭐ כל מספר נגזר בזמן קריאה.
+   ══════════════════════════════════════════════════════════════════════════ */
 var DATA = { kp_years: [], kp_months: [], kp_standing_orders: [],
              kp_so_instances: [], kp_entries: [], kp_lookups: [] };
 var CFG = {};
@@ -3463,7 +3662,9 @@ function kpSortEntries(list) {
   });
 }
 
-/* ══ החודשים והשנים ═════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   החודשים והשנים
+   ══════════════════════════════════════════════════════════════════════════ */
 function monthsSorted() {
   return kpLive(DATA.kp_months).slice().sort(function (a, b) {
     var y = String(a.hebrew_year).localeCompare(String(b.hebrew_year));
@@ -3520,7 +3721,9 @@ function chainOf(k) {
   return null;
 }
 
-/* ══ הוראות קבע ═════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   הוראות קבע
+   ══════════════════════════════════════════════════════════════════════════ */
 function ordersLive() {
   return kpLive(DATA.kp_standing_orders).filter(function (o) { return o.active !== false; });
 }
@@ -3566,7 +3769,9 @@ function soEnsureInstances(monthKey) {
   return made;
 }
 
-/* ══ הרינדור ════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   הרינדור
+   ══════════════════════════════════════════════════════════════════════════ */
 function openerHTML() { return '<div class="opener">' + esc(MSG_OPENER) + '</div>'; }
 function closerHTML() { return '<div class="closer">' + esc(MSG_CLOSER) + '</div>'; }
 
@@ -3638,7 +3843,7 @@ function monthScreenHTML() {
        '</span></h2>' +
        '<div class="big">' + money(fill) + '</div>' +
        '<div class="sml">' + (noGoal ? esc(MSG_GOAL_FROM_INCOME) : 'יעד ' + plain(goal)) + '</div>' +
-       '<div class="bar u-mt-5"><i style="width:' + pct.toFixed(1) + '%"></i></div></div>';
+       '<div class="u-mt-5">' + bar(pct.toFixed(1)) + '</div></div>';
 
   /* 5 — כרטיס הפלעזדש. */
   var pp = c.pleziash > EPS ? Math.min(100, c.fill / c.pleziash * 100) : 0;
@@ -3650,7 +3855,7 @@ function monthScreenHTML() {
        '<div class="sml' + (c.selfPct > 50 ? ' strong' : '') + '">אישי ' +
        Math.round(c.selfPct) + '%</div>' +
        (c.carryIn > EPS ? '<div class="sml">מחודש קודם +' + plain(c.carryIn) + '</div>' : '') +
-       '<div class="bar peach u-mt-5"><i style="width:' + pp.toFixed(1) + '%"></i></div></div>';
+       '<div class="u-mt-5">' + bar(pp.toFixed(1), 'peach') + '</div></div>';
 
   /* 6 — הפירוט. */
   if (!rows.length) {
@@ -3660,6 +3865,11 @@ function monthScreenHTML() {
     h += '<div class="card"><h2>פירוט</h2><ul class="det">' +
          rows.map(detailRowHTML).join('') + '</ul></div>';
   }
+  /*  ⛔ הביטול הוא כפתור על המסך ⛔ ולא טקסט בטוסט — ⚠️ טוסט הוא הודעה
+   *  ואינו אתר לחיצה: ⭐ «בטל» שאין לו כפתור הוא הבטחה שאין לה מסלול. */
+  if (UNDO.row)
+    h += '<button class="btn ghost" data-act="entry-undo">' + esc(MSG_UNDO) + '</button>';
+  h += '<button class="btn ghost" data-act="settings-open">' + esc(MSG_SETTINGS_TITLE) + '</button>';
   return h + closerHTML();
 }
 
@@ -3687,9 +3897,12 @@ function ordersCardHTML() {
     }).join('') + '</ul></div>';
 }
 
-/* ══ שני תהליכי הרישום — מסך אחר מסך, שדה אחד ═══════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   שני תהליכי הרישום — מסך אחר מסך, שדה אחד
+   ══════════════════════════════════════════════════════════════════════════
    ⚠️ **מה נכנס**: הטיוטה והשלב שבו היא נמצאת; ⛔ **ומה מפיל**: שדה שנקרא
-   ישירות מה-DOM אחרי מעבר מסך — ⭐ האלמנט כבר אינו שם. */
+   ישירות מה-DOM אחרי מעבר מסך — ⭐ האלמנט כבר אינו שם.
+   ══════════════════════════════════════════════════════════════════════════ */
 var FLOW_TZ = ['amount', 'desc', 'source', 'category', 'date'];
 var FLOW_INC = ['amount', 'desc', 'method', 'date'];
 
@@ -3775,7 +3988,13 @@ function flowScreenHTML() {
  *  ⭐ `ysHebDate` מעל `Intl`, ובנפילה-חזרה טבלה אריתמטית. */
 function hebLabel(iso) {
   if (!iso) return '';
-  try { return ysHebDate(new Date(iso + 'T12:00:00')); } catch (e) { return ''; }
+  /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף. */
+  var h;
+  try { h = ysHebDate(new Date(iso + 'T12:00:00')); } catch (e) { return ''; }
+  /*  ⛔ המנוע מחזיר מבנה ⛔ ולא מחרוזת — ⚠️ הצבתו כלשונו במסך מדפיסה
+   *  «[object Object]»: ⭐ והתצוגה נגזרת מהשדות שהוא מחזיר. */
+  if (!h || !h.ok) return '';
+  return h.dayLabel + ' ' + h.monthName + ' ' + h.yearLabel;
 }
 /*  ⛔ החודש נגזר מהתאריך ⛔ ואינו נבחר — ⚠️ שדה שני לאותו מושג הוא
  *  מקור אמת שני, ⭐ ושניהם היו מתפצלים ביום שאחד מהם נערך. */
@@ -3828,9 +4047,12 @@ function flowValid() {
   return '';
 }
 
-/* ══ מסך אישור המטבע ════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   מסך אישור המטבע
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ המטבע נגרר חופשי ומשוחרר מעל היעד — ⚠️ שחרור בצד מחזיר אותו למקום:
-   ⭐ האישור הוא התנועה עצמה, ⛔ ואין כפתור שני שמאשר. */
+   ⭐ האישור הוא התנועה עצמה, ⛔ ואין כפתור שני שמאשר.
+   ══════════════════════════════════════════════════════════════════════════ */
 var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false };
 
 function slideScreenHTML() {
@@ -3840,7 +4062,7 @@ function slideScreenHTML() {
     '<button class="back bk" data-act="flow-back" aria-label="חזרה">›</button>' +
     '<div class="ttl">' + esc(isInc ? MSG_SLIDE_WALLET : MSG_SLIDE_KUPA) + '</div>' +
     '<div class="sub">' + esc(MSG_SLIDE_SUB) + '</div>' +
-    '<div class="target" id="slide-target" style="width:' + (isInc ? 270 : 230) + 'px">' +
+    '<div class="target ' + (isInc ? 'wide' : 'narrow') + '" id="slide-target">' +
     (art ? art.innerHTML : '') + '</div>' +
     '<div class="coin" id="coin"><span class="ring"></span>' +
     plain(Math.abs(view.draft.amount)) + '</div></div>';
@@ -3924,18 +4146,20 @@ function confetti() {
 
 function coinSwallow() {
   var c = COIN.el, b = COIN.tgt.getBoundingClientRect();
-  c.style.transition = 'left 280ms ease, top 280ms ease';
+  c.style.transition = 'left var(--dur-4) ease, top var(--dur-4) ease';
   c.style.left = (b.left + b.width / 2 - 75) + 'px';
   c.style.top = (b.top) + 'px';
   setTimeout(function () {
-    c.style.transition = 'transform 320ms ease, opacity 320ms ease';
+    c.style.transition = 'transform var(--dur-4) ease, opacity var(--dur-4) ease';
     c.style.transform = 'scale(.9,.06)';
     c.style.opacity = '0';
   }, 280);
   setTimeout(function () { sensoryFire(); confetti(); flowCommit(); }, 600);
 }
 
-/* ══ הכתיבה — מקומית-תחילה, והדחיפה היא רענון ═══════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   הכתיבה — מקומית-תחילה, והדחיפה היא רענון
+   ══════════════════════════════════════════════════════════════════════════ */
 function localPut(table, row) {
   var l = DATA[table], i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, row.client_id)) { l[i] = row; break; }
@@ -3981,18 +4205,64 @@ function doneScreenHTML() {
     '<div class="line2">' + esc('נרשם · ' + (isInc
       ? 'הכנסות החודש ' + money(c.income || 0)
       : 'נשאר לפלעזדש החודש ' + money(c.short || 0))) + '</div>' +
-    '<button class="btn u-mt-7" data-act="done-close">חזרה</button></div>' + closerHTML();
+    '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div>' + closerHTML();
 }
 
-/* ══ עריכה ומחיקה רכה ═══════════════════════════════════════════════════
-   ⛔ המחיקה רכה, ⚠️ ואחריה «בטל» לחמש שניות: ⭐ החלון הוא מה שמפריד בין
-   טעות לפעולה, ⛔ ומחיקה פיזית אינה קיימת בשום מסלול. */
+/* ══════════════════════════════════════════════════════════════════════════
+   עריכה ומחיקה רכה
+   ══════════════════════════════════════════════════════════════════════════
+   ⛔ המחיקה רכה — ⚠️ ואחריה «בטל» לחמש שניות: ⭐ החלון הוא מה שמפריד בין
+   טעות לפעולה, ⛔ ומחיקה פיזית אינה קיימת בשום מסלול.
+   ══════════════════════════════════════════════════════════════════════════ */
 var UNDO = { row: null, timer: null };
 
 function entryById(id) {
   var l = kpLive(DATA.kp_entries), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
   return null;
+}
+
+/*  ⛔ מפת האב-ובן — ⚠️ **מה נכנס**: טבלת האב ⟵ כל בן שתלוי בשורה שלה
+ *  ובשם העמודה שקושרת ביניהם; ⛔ **ומה מפיל**: זוג שחי בסכימה ואינו כאן —
+ *  ⚠️ הוא נשאר יתום אחרי מחיקת האב. ⭐ **ולמה המבנה קיים**: המחיקה עוברת
+ *  בנקודה אחת, ⛔ והיא צריכה לדעת את מי לגרור. */
+var KP_CHILDREN = {
+  kp_standing_orders: [{ table: 'kp_so_instances', fk: 'standing_order_client_id' }],
+  kp_months:          [{ table: 'kp_so_instances', fk: 'month_client_id' },
+                       { table: 'kp_entries',      fk: 'month_client_id' }],
+  kp_so_instances:    [{ table: 'kp_entries',      fk: 'so_instance_client_id' }]
+};
+
+/*  ⛔ הבן יורש את מחיקת האב ואת חותמתה — ⚠️ דגל המחיקה, חותמת המחיקה
+ *  וחותמת העריכה נלקחים מרשומת האב: ⭐ מחיקת אב ובניו היא אירוע אחד,
+ *  ⛔ ושתי חותמות לאותה מחיקה הן שתי הכרעות במנוע המיזוג. */
+function kpChildKill(parent, kid) {
+  kid.deleted = !!parent.deleted;
+  kid.deleted_at = parent.deleted_at;
+  kid.deleted_by = parent.deleted_by;
+  kid.updated_at = parent.updated_at;
+  return kid;
+}
+
+/*  ⛔ כל מחיקה רכה עוברת כאן — ⚠️ הרשומה מסומנת, ⭐ וכל בן שתלוי בה יורש
+ *  את אותה חותמת בדיוק: ⛔ מחיקה שנכתבת באתר הקריאה משאירה בן יתום,
+ *  ⚠️ והוא נספר בסיכום של חודש שכבר אינו קיים. */
+function kpKill(table, row) {
+  row.deleted = true;
+  row.deleted_at = new Date().toISOString();
+  row.deleted_by = devId();
+  row.updated_at = Date.now();
+  localPut(table, row);
+  var kids = KP_CHILDREN[table] || [], i, j, list, kid;
+  for (i = 0; i < kids.length; i++) {
+    list = kpLive(DATA[kids[i].table] || []);
+    for (j = 0; j < list.length; j++) {
+      kid = list[j];
+      if (!idEq(kid[kids[i].fk], row.client_id)) continue;
+      localPut(kids[i].table, kpChildKill(row, kid));
+    }
+  }
+  return row;
 }
 
 function entryDelete(id) {
@@ -4002,9 +4272,7 @@ function entryDelete(id) {
              MSG_DELETE).then(function (yes) {
     if (!yes) return;
     var copy = JSON.parse(JSON.stringify(r));
-    r.deleted = true; r.deleted_at = new Date().toISOString();
-    r.deleted_by = devId(); r.updated_at = Date.now();
-    localPut('kp_entries', r);
+    kpKill('kp_entries', r);
     UNDO.row = copy;
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
@@ -4024,10 +4292,13 @@ function entryUndo() {
   kpRender();
 }
 
-/* ══ הוראות קבע — עריכה פותחת גרסה ══════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   הוראות קבע — עריכה פותחת גרסה
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ עריכת מופע היא עריכת ההוראה **מהחודש והלאה** — ⚠️ הישנה מקבלת
    «תוקף עד» החודש הקודם, ⭐ והחדשה מתחילה כאן: ⛔ מופעים קודמים אינם
-   משתנים, שהם כבר נספרו. */
+   משתנים, שהם כבר נספרו.
+   ══════════════════════════════════════════════════════════════════════════ */
 function orderNewVersion(o, patch, fromMonth) {
   var m = monthByKey(fromMonth) || monthByKey(view.monthKey);
   if (!m) { uiNoDialog('orderNewVersion', fromMonth); return null; }
@@ -4054,7 +4325,9 @@ function orderNewVersion(o, patch, fromMonth) {
   return next;
 }
 
-/* ══ ההגדרות ════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   ההגדרות
+   ══════════════════════════════════════════════════════════════════════════ */
 function settingsScreenHTML() {
   return openerHTML() +
     '<div class="mrow"><span class="mname">' + esc(MSG_SETTINGS_TITLE) + '</span></div>' +
@@ -4067,10 +4340,28 @@ function settingsScreenHTML() {
       return '<li><span class="ico">' + iconFor('other') + '</span>' +
              '<span class="nm">' + esc(s) + '</span></li>';
     }).join('') + '</ul></div>' +
+    monthsChartHTML() +
     '<button class="btn ghost" data-act="settings-close">חזרה</button>' + closerHTML();
 }
 
-/* ══ הרינדור האחד ═══════════════════════════════════════════════════════ */
+/*  ⛔ הסדרה נבנית מהרכיב המשותף ⛔ ולא מספרייה — ⚠️ פס יחיד ופס בסדרה
+ *  הם רכיב אחד, ⭐ ו-`barChart` מחזיר מחרוזת ריקה בפחות משתי נקודות:
+ *  ⛔ חודש אחד אינו סדרה. */
+function monthsChartHTML() {
+  var rows = monthsSorted().map(function (m) {
+    var c = chainOf(m.client_id) || {};
+    var got = Math.max(0, (c.tzedakah || 0) + Math.max(0, c.prevBalance || 0));
+    var tgt = Math.max(0, c.chumash || 0);
+    return { lab: m.name, val: got, tgt: tgt, end: plain(got),
+             txt: m.name + ' · ' + plain(got) + ' מתוך ' + plain(tgt) };
+  });
+  var h = barChart(rows, MSG_MONTHS_CHART);
+  return h ? '<div class="card"><h2>' + esc(MSG_MONTHS_CHART) + '</h2>' + h + '</div>' : '';
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   הרינדור האחד
+   ══════════════════════════════════════════════════════════════════════════ */
 function kpRender() {
   var root = kpQ('#app');
   if (!root) { uiNoDialog('kpRender', 'app'); return; }
@@ -4080,19 +4371,28 @@ function kpRender() {
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
   else if (view.screen === 'settings') root.innerHTML = settingsScreenHTML();
-  if (fab) fab.classList.toggle('hidden', view.screen !== 'month');
+  var onMonth = view.screen === 'month';
+  if (fab) fab.classList.toggle('hidden', !onMonth);
   if (view.screen === 'slide') coinWire();
 }
 
-/* ══ מפת הפעולות — הניתוב האחד ══════════════════════════════════════════
-   ⛔ כל `<button>` נושא `data-act`, ⚠️ והמטפל נמצא כאן: ⭐ מטפל שממתין
-   לכתיבה מחזיר את ההבטחה, ⛔ והניתוב מנטרל את הכפתור עד שהסתיימה. */
+/* ══════════════════════════════════════════════════════════════════════════
+   מפת הפעולות — הניתוב האחד
+   ══════════════════════════════════════════════════════════════════════════
+   ⛔ כל כפתור נושא `data-act`, ⚠️ והמטפל נמצא כאן: ⭐ מטפל שממתין
+   לכתיבה מחזיר את ההבטחה, ⛔ והניתוב מנטרל את הכפתור עד שהסתיימה.
+   ══════════════════════════════════════════════════════════════════════════ */
 var DOM_ACTIONS = {
+  /*  ⛔ הבחירה בין שני הרישומים היא דיאלוג עם שני כפתורים מתויגים —
+   *  ⚠️ ולא «כן/לא»: ⭐ `ask` נותן «ביטול» לצד השני, ⛔ ומי שלוחץ אינו
+   *  יודע שהוא בחר הכנסה. */
   'add-open': function () {
-    return ask(MSG_WHAT_TO_ADD, '', 'צדקה').then(function (yes) {
-      flowStart(yes ? 'tzedakah' : 'income');
-    });
+    openModal(MSG_WHAT_TO_ADD, '',
+      '<button class="btn ghost" data-act="add-income">' + esc(MSG_ADD_INCOME) + '</button>' +
+      '<button class="btn" data-act="add-tzedakah">' + esc(MSG_ADD_TZEDAKAH) + '</button>');
   },
+  'add-income':   function () { closeModal(); flowStart('income'); },
+  'add-tzedakah': function () { closeModal(); flowStart('tzedakah'); },
   'month-prev': function () {
     var p = prevMonthOf(view.monthKey);
     if (p) { view.monthKey = p.client_id; kpRender(); }
@@ -4122,6 +4422,15 @@ var DOM_ACTIONS = {
     if (!f) { uiNoDialog('flow-ac', 'f-desc'); return; }
     f.value = el.dataset.v;
   },
+  /*  ⛔ שני מטפלי ההתראה של הבלוקים המשותפים — ⚠️ הכפתורים נבנים בתוך
+   *  הבלוק החתום, ⭐ והניתוב אליהם חי במפה: ⛔ כפתור בלי מטפל הוא חצי
+   *  חיווט, ⚠️ והמשתמש לוחץ ודבר אינו קורה. */
+  /*  ⛔ שני מסלולי ההכרעה של דיאלוג האישור — ⚠️ הרקע ו-`Escape` עונים
+   *  «לא», ⭐ והכפתורים הם המסלול שעונה «כן». */
+  'ask-yes': function () { closeAsk(true); },
+  'ask-no':  function () { closeAsk(false); },
+  'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.style.display = 'none'; },
+  'pend-alert-ok':       function () { _pendAlertDismissed = Date.now(); pendRenderAlert(); },
   'entry-menu': function (el) { return entryDelete(el.dataset.id); },
   'entry-undo': function () { entryUndo(); },
   'order-edit': function (el) {
@@ -4159,9 +4468,12 @@ var DOM_ACTIONS = {
   'sw-reload': function () { swApply(); }
 };
 
-/* ══ המאזינים הגלובליים ═════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
+   המאזינים הגלובליים
+   ══════════════════════════════════════════════════════════════════════════
    ⛔ מאזין אחד לכל אירוע, בהאצלה מ-`document` — ⚠️ המסכים נבנים מחדש
-   בכל רינדור, ⭐ ומאזין שנקשר לאלמנט מת איתו. */
+   בכל רינדור, ⭐ ומאזין שנקשר לאלמנט מת איתו.
+   ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener('click', function (e) {
   if (modalBackdrop(e)) return;
   var el = e.target.closest('[data-act]');
@@ -4178,7 +4490,9 @@ document.addEventListener('keydown', function (e) {
   modalEsc(e);
 });
 
-/* ══ העלייה ═════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   העלייה
+   ══════════════════════════════════════════════════════════════════════════ */
 function kpBoot() {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   lsBoot();

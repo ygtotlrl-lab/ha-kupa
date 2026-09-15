@@ -34,7 +34,7 @@ const APP = {
      המשותף מחזיק קובץ אחד, ועותק שני בכל ריפו היה מקור אמת שני (אותו
      כלל של 004). שם נאכף צד התיעוד בלבד, והשקילות מול ה-SQL נאכפת
      בריפו שמחזיק את הקובץ. */
-  migration: 'migrations/008_backup_retention_cap.sql',
+  migration: null,
   migrationDoc: 'gius/migrations/008_backup_retention_cap.sql',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
@@ -61,7 +61,7 @@ const GATE_ID = new URL(import.meta.url).pathname.split('/').pop();
  *  הריפו, פרטית בלי נימוק, וסכום אפס. ⭐ **ולמה לא מספר אחד**: הוא מסתיר
  *  טענה משותפת שאבדה. */
 /* ⚠️ פר-אפליקציה — הריצפה הפרטית של השער נבדלת ביניהן לפי היכולת שכל אחת נושאת, והנימוק בשדה עצמו */
-const FLOOR = { shared: 6, app: 29, appWhy: 'מספר הטבלאות והמשימות — הבעלות על מיגרציית הגיבוי כאן' };
+const FLOOR = { shared: 6, app: 0, appWhy: '' };
 /* ⚠️ סוף פר-אפליקציה */
 const EXPECTED = FLOOR.shared + FLOOR.app;
 let RAN = 0;

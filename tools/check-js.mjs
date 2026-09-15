@@ -52,11 +52,11 @@ const APP = {
      השער המקורי של gius (סבב 11), בצורת הנתונים של סבב 33.
      [file, regex, expect, msg] */
   rules: [
-    ['sw',   "CACHE_NAME\\s*=\\s*'kupa-v\\d+'", true,
-             "sw.js: CACHE_NAME בתבנית 'kupa-v<N>' (תבנית, לא מספר קבוע — הלקח מסבב 11)"],
+    ['sw',   "CACHE_NAME\\s*=\\s*'ha-kupa-v\\d+'", true,
+             "sw.js: CACHE_NAME בתבנית 'ha-kupa-v<N>' (תבנית, לא מספר קבוע)"],
     ['sw',   "supabase\\.co", true, "sw.js: דילוג על בקשות supabase.co"],
-    ['sw',   "prefix:\\s*'kupa-'", true,
-             "sw.js: SW_CFG.prefix = 'kupa-'"],
+    ['sw',   "prefix:\\s*'ha-kupa-'", true,
+             "sw.js: SW_CFG.prefix = 'ha-kupa-'"],
     ['sw',   "indexOf\\(SW_CFG\\.prefix\\)\\s*===\\s*0", true,
              "sw.js: ניקוי המטמון לפי SW_CFG.prefix בלבד"],
     ['sw',   "mode:\\s*'cors'", true, "sw.js: משיכת CDN ב-mode:'cors'"],
@@ -79,6 +79,7 @@ const APP = {
           'test_dbscan.mjs',
           'test_sharedsync.mjs',
           'test_signedshared.mjs',
+          'test_sistername.mjs',
           'test_toolsid.mjs',
           'test_filesets.mjs',
           'test_inputlayer.mjs',
@@ -101,7 +102,7 @@ const APP = {
           'test_build.mjs',
           'test_shell.mjs', 'test_devid.mjs', 'test_passwords.mjs',
           'test_md.mjs', 'test_orphans.mjs', 'test_removals.mjs', 'test_wiring.mjs', 'test_readonly.mjs', 'test_crossgate.mjs',
-          'test_offline_login.mjs', 'test_roles.mjs', 'test_users_patch.mjs',
+          'test_examples.mjs',
           'test_stage_a.mjs', 'test_hotwin.mjs', 'test_cron.mjs',
           'test_parentchild.mjs',
           'test_merge_pending.mjs', 'test_matrix.mjs', 'test_ids.mjs'],

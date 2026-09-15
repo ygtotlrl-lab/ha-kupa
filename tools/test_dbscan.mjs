@@ -36,7 +36,7 @@ const APP = {
    *  `dbSchema`; ⛔ **ומה מפיל**: שם שאין לו אף טבלה בסכימה. ⭐ **ולמה
    *  המבנה קיים**: שני פרויקטים חיים בסכימה אחת, ⛔ וריפו ששואל טבלה
    *  של הפרויקט השני היה עובר על סכימה מאוחדת. */
-  project: 'ha-kupa',
+  project: 'kupa',
   /*  ⛔ סכימת שני הפרויקטים, מהמודול המשותף — ⚠️ **מה נכנס**: `p` הפרויקט · `t` שם הטבלה ·
    *  `c` עמודותיה מופרדות בפסיק; ⛔ **ומה מפיל**: טבלה כפולה באותו
    *  פרויקט, רשומה בלי עמודות, ושם שהקוד שואל ואינו כאן. ⭐ **ולמה המבנה
@@ -48,8 +48,8 @@ const APP = {
    *  משותפת; ⛔ **ומה מפיל**: שם שנשאל ואינו כאן, ⛔ ושם שכאן ואין לו
    *  אתר שאילתה. ⭐ **ולמה המבנה קיים**: הצלבה מול הסכימה דורשת רשימה
    *  סגורה, ⚠️ ורשימה שאינה נמדדת משני צדדיה מתיישנת בשקט. */
-  dbTables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks',
-             'g_txns', 'g_users', 'sh_backup', 'sh_sync_log'],
+  dbTables: ['kp_settings', 'kp_years', 'kp_months', 'kp_standing_orders',
+             'kp_so_instances', 'kp_entries', 'kp_lookups', 'sh_backup', 'sh_sync_log'],
   /*  ⛔ שכבת העימוד — ⚠️ הארגומנט השני שלה הוא **עמודת המיון**, ⭐ והיא
    *  אינה יושבת ב-`.order(…)`: ⛔ בלי ההצהרה הזו כל אתרי המיון האמיתיים
    *  אינם נסרקים כלל. */
@@ -67,15 +67,11 @@ const APP = {
    *  בלי הצהרה, הצהרה בלי אתר, והצהרה שנוקבת בטבלה שאינה מוצהרת.
    *  ⭐ **ולמה המבנה קיים**: שם שמדולג בשתיקה הוא בדיוק מה ששרד. */
   dbDyn: {
-    tbl:      { tables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks', 'g_txns'],
-                why: 'שם המראה המקומית — הוא נגזר מרשימת הדחיפה בזמן ריצה' },
-    t:        { tables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks', 'g_txns'],
+    t:        { tables: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups'],
                 why: 'יעד הדחיפה — נבחר מרשימת הדחיפה בלולאה' },
-    'm.t':    { tables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks', 'g_txns', 'g_users'],
-                why: 'שדה במפת המטא של הטבלאות, והלולאה עוברת על כולן' },
-    's.name': { tables: ['g_config', 'g_donors', 'g_pledges', 'g_targets', 'g_tasks', 'g_txns', 'g_users'],
+    's.name': { tables: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups', 'kp_settings'],
                 why: 'שם המקור בגיבוי היומי — הרשימה נבנית בזמן ריצה' },
-    's.table': { tables: ['g_config'],
+    's.table': { tables: ['kp_settings'],
                 why: 'טבלת המפתח-ערך של מקור גיבוי, והיא אחת' },
   },
   /*  ⛔ עמודת מיון שאינה ליטרל — ⚠️ **מה נכנס**: נוסח הביטוי והעמודות;
@@ -83,7 +79,6 @@ const APP = {
    *  פירושו שהעמודה נמדדת בזוג עם הטבלה שלצידה** — ⚠️ ולא מול כל טבלה
    *  בקבוצה. */
   dbOrderDyn: {
-    'm.key': { cols: ['client_id'], why: 'מפתח העימוד במפת המטא, והוא אחד לכל הטבלאות' },
     's.order || null': { cols: null, why: 'עמודת המיון מוצהרת בזוג עם שם הטבלה, ונמדדת מול אותו זוג' },
   },
 };

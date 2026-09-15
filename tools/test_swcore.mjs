@@ -41,8 +41,8 @@ import { spawnSync } from 'node:child_process';
 const APP = {
   app: 'ha-kupa',
   origin: 'https://ygtotlrl-lab.github.io',
-  scope: '/gius/',
-  prefix: 'kupa-',
+  scope: '/ha-kupa/',
+  prefix: 'ha-kupa-',
   /* ⚠️ הנכס הראשון ב-CDN_ASSETS — משותף לכולן, ולכן התרחיש משווה כמו מול כמו. */
   cdn: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.js',
   /*  ⚠️ הטבלה **נמדדה** מהקוד ב-SW_RECORD ולא הוצהרה (סבב 42).
@@ -68,7 +68,7 @@ const APP = {
    *  שנפלה מאליה, ⭐ **ושבע מהן זהות בכולן**: ⚠️ מה שנבדל הוא
    *  `prefix` ו-`cdnHosts` בלבד, ⛔ וכל סטייה נוספת מוצהרת בשמה. */
   cfg: {
-    prefix: "'kupa-'",
+    prefix: "'ha-kupa-'",
     scoped: 'true',
     navFallback: "'shell'",
     navIgnoreSearch: 'true',

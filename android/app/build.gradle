@@ -16,7 +16,7 @@ android {
         // ב-`android/README.md`, ⛔ שהיא מקור האמת היחיד להיסטוריה
         // (כלל ברזל 21); `tools/test_gradle.mjs` אוכף את הקידום מול
         // קומיט הקידום האחרון.
-        versionCode 1
+        versionCode 2
         versionName "1.0"
     }
 
@@ -32,7 +32,7 @@ android {
     }
 }
 
-// No dependencies, on purpose: yoman's shell needs androidx.webkit + androidx.core for
-// its origin-restricted share bridge (navigator.share → FileProvider). gius's
-// page has no navigator.share, the bridge is omitted entirely, and nothing androidx
-// is used. See MainActivity.java.
+// No dependencies, on purpose: a shell that carries an origin-restricted share
+// bridge (navigator.share → FileProvider) needs androidx.webkit + androidx.core.
+// This app's page has no navigator.share, the bridge is omitted entirely, and
+// nothing androidx is used. See MainActivity.java.

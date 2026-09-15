@@ -17,8 +17,8 @@ package com.ha.kupa;
     protected String appUrl() { return "https://ygtotlrl-lab.github.io/ha-kupa/"; }
 
     @Override
-    protected String offlineLine() { return "גיוס לא הצליח להתחבר."; }
+    protected String offlineLine() { return "הקופה לא הצליחה להתחבר."; }
 
     @Override
-    protected String accentColor() { return "#0f766e"; }
+    protected String accentColor() { return "#9c7fd0"; }
 }

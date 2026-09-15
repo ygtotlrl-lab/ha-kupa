@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url';
 const APP = {
   app: 'ha-kupa',
   /* ⛔ המפתח ההיסטורי — אינו משתנה לעולם (סבב 40). */
-  deviceKey: 'g_device_id',
+  deviceKey: 'kp_device_id',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 

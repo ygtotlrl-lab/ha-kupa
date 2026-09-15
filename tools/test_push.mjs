@@ -32,25 +32,23 @@ import { PEERS } from './peers.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'ניהול גיוס כספים',
+  app: 'הקופה',
   file: 'index.html',
-  /*  ⛔ תורמים לפני התחייבויות ותנועות — ⚠️ זה מה ששומר על המפתח הזר. */
-  tables: ['g_donors', 'g_pledges', 'g_txns', 'g_tasks', 'g_targets', 'g_config'],
-  /*  ⛔ טבלת מפתח-ערך — ⚠️ היא גם ב-`PUSH_TABLES`, ⭐ שהיא נושאת גם את
-   *  רשימות ההגדרות וגם את שורת החותמת. */
-  kvTables: ['g_config'],
-  userWriteFn: 'writeUser',
-  userTables: ['g_users'],
-  /*  ⛔ שכבת הטביעה — ⚠️ **מה נכנס**: שלוש פונקציות הליבה בשלוש
-   *  שיש בהן כניסה, ⛔ **ומה מפיל**: אחת שחסרה, או עזר שקיים כאן בלבד
-   *  ואין לו נימוק — ⭐ ושכבה שנבדלת היא התנהגות שנייה באותו מקש. */
-  passFns: {
-    fp: 'gPassFp',
-    make: 'gMakePassFp',
-    fields: 'passFields',
-  },
-  passScreen: { open: 'formMyPassword', open_act: 'my-pass', act: 'my-pass-save' },
-  usersScreen: 'saveUser',
+  /*  ⛔ החודש לפני המופע והרישום, וההוראה לפני המופע — ⚠️ זה מה ששומר
+   *  על סדר האב-ובן: ⛔ בן שנדחף לפני אביו נקרא כיתום. */
+  tables: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances',
+           'kp_entries', 'kp_lookups'],
+  /*  ⛔ טבלת מפתח-ערך — ⚠️ **ההיעדר מוצהר ריק** ⛔ ואינו נשמט: ⭐ כאן היא
+   *  אינה ב-`PUSH_TABLES`, ⚠️ שהכתיבה אליה עוברת ב-`cfgWrite` ישירות. */
+  kvTables: [],
+  /*  ⛔ אין כאן טבלת משתמשים ואין כניסה — ⚠️ שני משתמשים ונתונים
+   *  משותפים: ⭐ ולכן אין כתיבת משתמש שתעבור בפונקציה אחת, ⛔ ואין טביעה
+   *  ואין מסך סיסמה. ⛔ **וההיעדר מוצהר** ⛔ ואינו נשמט. */
+  userWriteFn: null,
+  userTables: [],
+  passFns: null,
+  passScreen: null,
+  usersScreen: '',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 

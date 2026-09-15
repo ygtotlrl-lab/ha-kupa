@@ -34,9 +34,9 @@ const APP = {
   app: 'ha-kupa',
   /* ⭐ הליבה המשותפת (סבב 41) — זהה בית-לבית בכל הריפו פרט לשורת
      ה-`package`, וכל חוזה ההתנהגות יושב בה. */
-  core:  'android/app/src/main/java/com/gius/app/ShellActivity.java',
+  core:  'android/app/src/main/java/com/ha/kupa/ShellActivity.java',
   /* המעטפת הפר-אפליקציתית — זהות בלבד, ואצל יומן גם הגשר. */
-  shell: 'android/app/src/main/java/com/gius/app/MainActivity.java',
+  shell: 'android/app/src/main/java/com/ha/kupa/MainActivity.java',
   /* אין `navigator.share` בקוד (אומת ב-grep) — ולכן אין גשר, ואין צורך באחד. */
   shareBridge: false,
   /* חתימות הלוגיקה — הערות, מחרוזות ושם החבילה מנורמלים החוצה. */

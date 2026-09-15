@@ -35,20 +35,20 @@ import { execFileSync } from 'node:child_process';
 const APP = {
   app: 'ha-kupa',
   actMap: 'DOM_ACTIONS',
-  sortFn: 'byName',
+  sortFn: 'kpSortEntries',
   cdnSym: 'supabase',
   /* ⚠️ אתרי הקריאה של מסלול הייצוא, וההחלפה שמנטרלת כל אחד — ריק כשאין ייצוא */
   exportCalls: [],
   /* ⚠️ חותמת זריקה לערך מפתח-ערך — ריקה כשאין כאן ערך שלם שממוזג */
   kvResetKey: '',
   /* ⚠️ מפתח מראת המשתמשים — ריק כשאין כאן כניסה */
-  mirrorKey: 'g_mirror_users',
+  mirrorKey: '',
   /* ⚠️ מקור המשתמש המחובר — ריק כשאין כאן כניסה */
-  authUser: 'state.user',
+  authUser: '',
   /* ⚠️ דרגה שאיש אינו נושא — ריקה כשאין כאן מודל הרשאות */
-  roleUnused: 'junior',
+  roleUnused: '',
   /* ⚠️ המאמת האופליין — ריק כשאין כאן כניסה */
-  verifyFn: 'gVerifyOffline',
+  verifyFn: '',
   /* ⚠️ מרשם מימדי הסריקה — קיים ביומן בלבד, ששם יש מסך טבלה */
   dimsName: '',
 };

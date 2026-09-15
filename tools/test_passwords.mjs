@@ -33,14 +33,23 @@ import { fileURLToPath } from 'node:url';
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
   app: 'ha-kupa',
-  usersTable: 'g_users',
-  plainCol: 'password',
-  verifyFn: 'gVerifyOffline',
-  backfillFn: 'gBackfillPassFp',
-  authPaths: [['function doLogin', 'הכניסה המקוונת'],
-              ['function formSaveMyPassword', 'שינוי סיסמה עצמי']],
-  migrationA: '007_users_drop_plaintext_password.sql',
-  migrationB: '010_drop_g_users_password.sql',
+  /* ⛔ אין כאן טבלת משתמשים, אין מסך כניסה ואין תפקידים — ⚠️ שני משתמשים
+     ונתונים משותפים: ⭐ «נמדד ואין», ⛔ ולא «❌». */
+  usersTable: null,
+  /*  ⛔ עם `usersTable:null` הטענות כאן הן טענות-חסר, ⛔ ובלוק
+   *  המוטציות מדולג — ⚠️ אין טבלת משתמשים שאפשר למוטט. ⭐ המוטציות רצות
+   *  בשלוש האפליקציות שיש בהן סיסמאות, ⛔ ומוטציית דגל נתיב-החזרה רצה
+   *  **גם כאן**: ⚠️ אפליקציה בלי משתמשים היא בדיוק המקום שבו דגל כזה
+   *  יצמח בשקט. */
+  /*  ⛔ המסלול שדורש את השדות האלה אינו רץ באפליקציה הזו —
+      ⚠️ והם מוצהרים ריקים ⛔ ואינם נשמטים: ⭐ שדה חסר נקרא «לא נשאל»,
+      וריק נקרא «נמדד ואין», ⛔ וטענה שמשווה מול חסר עוברת תמיד. */
+  plainCol: null,
+  verifyFn: null,
+  backfillFn: null,
+  authPaths: null,
+  migrationA: null,
+  migrationB: null,
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
@@ -100,7 +109,7 @@ const GATE_ID = new URL(import.meta.url).pathname.split('/').pop();
  *  הריפו, פרטית בלי נימוק, וסכום אפס. ⭐ **ולמה לא מספר אחד**: הוא מסתיר
  *  טענה משותפת שאבדה. */
 /* ⚠️ פר-אפליקציה — הריצפה הפרטית של השער נבדלת ביניהן לפי היכולת שכל אחת נושאת, והנימוק בשדה עצמו */
-const FLOOR = { shared: 5, app: 11, appWhy: 'מסלולי הסיסמה — גזירת הטביעה, האימות והמראה קיימים בשלוש שיש בהן כניסה' };
+const FLOOR = { shared: 5, app: 0, appWhy: '' };
 /* ⚠️ סוף פר-אפליקציה */
 const EXPECTED = FLOOR.shared + FLOOR.app;
 let RAN = 0;

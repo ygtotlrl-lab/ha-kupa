@@ -35,7 +35,8 @@ import { DB_SCHEMA } from './db_schema.mjs';
 /* ⚠️ סוף פר-אפליקציה */
 const APP = {
   name: 'ha-kupa',
-  keys: ['g_donors', 'g_pledges', 'g_txns', 'g_tasks', 'g_targets', 'g_config', 'g_users'],
+  keys: ['kp_years', 'kp_months', 'kp_standing_orders', 'kp_so_instances',
+         'kp_entries', 'kp_lookups', 'kp_settings'],
   prefixes: [''],
   /*  ⛔ שמות גיבוי שרצו בעבר ואינם נגזרים מהקוד — ⚠️ **מה נכנס**: שם מפתח
    *  שיושב במסד ואינו ב-`BK_CFG.sources()`; ⛔ **ומה מפיל**: שם שאין לו
@@ -49,18 +50,18 @@ const APP = {
   sisterKeys: [],
   /*  ⛔ הפרויקט שהאפליקציה חיה בו — ⚠️ שתי סכימות חיות ב-`DB_SCHEMA`,
       ⭐ וההצלבה היא מול זו של הפרויקט הזה בלבד. */
-  project: 'ha-kupa',
+  project: 'kupa',
   /*  ⛔ טבלת הגיבוי בשמה החי — ⚠️ מוטציית-הנגד נוקבת בה, ⭐ ושם מוקלד
       בגוף השער היה נשבר בהסבה הבאה. */
   backupTableName: 'sh_backup',
   /*  ⛔ המיגרציה האחרונה שכותבת מחדש את גוף הפינוי — ⚠️ מיגרציה שכבר רצה
       אינה נערכת, ⭐ והמאוחרת היא ההגדרה: ⛔ `null` בריפו שאינו הבעלים. */
-  sweepMigration: 'migrations/022_rename_shared_tables_to_sh.sql',
+  sweepMigration: null,
   /*  ⛔ ה-RPC שמחזיר `pg_get_functiondef` לשלוש פונקציות הפינוי — ⚠️ רשימה
       סגורה בצד המסד, ⭐ והוא מחזיר טקסט הגדרה ⛔ ולא נתון. */
   fnDefRpc: 'bk_fn_def',
   fnNames: ['bk_retention_keys', 'bk_retention_sweep', 'bk_prune_layer'],
-  migration: 'migrations/005_backup_retention_cron.sql',
+  migration: null,
   migrationDoc: 'gius/migrations/005_backup_retention_cron.sql',
   /*  ⛔ המסלול שדורש את השדות האלה אינו רץ באפליקציה הזו (סבב 72) —
       ⚠️ והם מוצהרים ריקים ⛔ ואינם נשמטים: ⭐ שדה חסר נקרא «לא נשאל»,
@@ -108,7 +109,7 @@ const GATE_ID = new URL(import.meta.url).pathname.split('/').pop();
  *  הריפו, פרטית בלי נימוק, וסכום אפס. ⭐ **ולמה לא מספר אחד**: הוא מסתיר
  *  טענה משותפת שאבדה. */
 /* ⚠️ פר-אפליקציה — הריצפה הפרטית של השער נבדלת ביניהן לפי היכולת שכל אחת נושאת, והנימוק בשדה עצמו */
-const FLOOR = { shared: 25, app: 31, appWhy: 'מספר הטבלאות והמשימות — הבעלות על מיגרציית הגיבוי כאן' };
+const FLOOR = { shared: 25, app: 0, appWhy: '' };
 /* ⚠️ סוף פר-אפליקציה */
 const EXPECTED = FLOOR.shared + FLOOR.app;
 let RAN = 0;

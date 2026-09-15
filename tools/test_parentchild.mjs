@@ -40,38 +40,46 @@ import { DB_SCHEMA } from './db_schema.mjs';
  *  אותו זהה בכולן. */
 const APP = {
   app: 'ha-kupa',
-  tablePrefix: 'g_',
+  tablePrefix: 'kp_',
   dbSchema: DB_SCHEMA,
+  /*  ⛔ שרשרת שלושת המפלסים — ⚠️ הוראת קבע ⟵ מופע חודשי ⟵ רישום, ⭐ ולצידה
+   *  החודש שהוא אב לשניהם: ⛔ מופע ורישום שנותרו אחרי שהחודש נמחק נספרים
+   *  בסיכום של חודש שאינו קיים. */
   parentChild: [
-    { parent: 'g_donors', child: 'g_pledges', fk: 'donor_client_id',
-      fkMode: 'restrict', push: 'list',
-      why: 'ההתחייבות תלויה בתורם — ⛔ והיא חסרת משמעות בלי מי שהתחייב' },
-    { parent: 'g_donors', child: 'g_txns', fk: 'donor_client_id',
-      fkMode: 'restrict', push: 'list',
-      why: 'התנועה תלויה בתורם — ⛔ וזה האב היחיד שאין בלעדיו תנועה' },
-    { parent: 'g_pledges', child: 'g_txns', fk: 'pledge_client_id',
-      fkMode: 'restrict', push: 'list',
-      why: 'התנועה נזקפת להתחייבות — ⛔ והשיוך אופציונלי, ⚠️ ולכן זה אב שני ולא ראשון' },
+    { parent: 'kp_months', child: 'kp_so_instances', fk: 'month_client_id',
+      fkMode: 'none', push: 'list',
+      why: 'המופע שייך לחודש אחד — ⛔ וזה האב שאין בלעדיו מקום בחישוב' },
+    { parent: 'kp_standing_orders', child: 'kp_so_instances', fk: 'standing_order_client_id',
+      fkMode: 'none', push: 'list',
+      why: 'המופע החודשי נגזר מהוראת הקבע — ⚠️ והשיוך הוא מה שנשאל אחרי החודש' },
+    { parent: 'kp_months', child: 'kp_entries', fk: 'month_client_id',
+      fkMode: 'none', push: 'list',
+      why: 'הרישום נזקף לחודש — ⛔ וזה האב שאין בלעדיו מקום בחישוב' },
+    { parent: 'kp_so_instances', child: 'kp_entries', fk: 'so_instance_client_id',
+      fkMode: 'none', push: 'list',
+      why: 'רישום שנוצר ממופע הוראת קבע נושא את מזההו — ⚠️ והשיוך אופציונלי, ⛔ ולכן זה אב שני ולא ראשון' },
   ],
   /*  ⛔ נימוק ההיעדר — ⚠️ **ולמה ריק כאן**: נמדד ויש, ⭐ ויש כאן זוגות
    *  אב-ובן מוצהרים: ⛔ נימוק לצד זוגות היה מצהיר היעדר וקיום כאחד. */
   noPairs: '',
-  /*  ⛔ `g_txns` תלויה בשני אבות — ⚠️ התורם חובה וההתחייבות אופציונלית:
-   *  ⭐ **והסדר הוא סדר השאלה** — ⛔ התורם נשאל ראשון, ⚠️ שמחיקתו מפילה
-   *  את התנועה בכל מקרה, ⛔ ורק אז ההתחייבות: ⭐ שני אבות שנמחקו בזמנים
-   *  שונים הם שתי חותמות לאותה מחיקה, ⛔ והראשון שמכריע הוא זה שקובע. */
+  /*  ⛔ שני בנים נושאים שני אבות — ⚠️ **והסדר הוא סדר השאלה**: ⭐ החודש
+   *  הוא האב שאין בלעדיו מקום בחישוב, ⛔ ולכן הוא נשאל ראשון; ⚠️ והוראת
+   *  הקבע והמופע הם שיוך שנשאל אחריו: ⭐ שני אבות שנמחקו בזמנים שונים הם
+   *  שתי חותמות לאותה מחיקה, ⛔ והראשון שמכריע הוא זה שקובע. */
   twoParents: {
-    g_txns: { order: ['g_donors', 'g_pledges'],
-              why: 'התורם הוא האב שאין בלעדיו תנועה ⛔ ולכן הוא נשאל ראשון, וההתחייבות היא שיוך אופציונלי שנשאל אחריו' },
+    kp_so_instances: { order: ['kp_months', 'kp_standing_orders'],
+                       why: 'החודש הוא האב שאין בלעדיו מופע ⛔ ולכן הוא נשאל ראשון, והוראת הקבע היא השיוך שנשאל אחריו' },
+    kp_entries: { order: ['kp_months', 'kp_so_instances'],
+              why: 'החודש הוא האב שאין בלעדיו רישום ⛔ ולכן הוא נשאל ראשון, והמופע הוא שיוך אופציונלי שנשאל אחריו' },
   },
   pushWriter: null,
   /*  ⚠️ רתמת הירושה — ⛔ הבן הוא שורה עצמאית, ⭐ ולכן הירושה היא פונקציה
    *  שמקבלת את האב ואת הבן: ⛔ הרתמה חותכת אותה מהמקור ומריצה אותה. */
   inherit: {
-    why: 'התחייבות ותנועה יורשות את מחיקת התורם — ⛔ אחרת הן נספרות ביעד החודש בלי אב',
+    why: 'מופע ורישום יורשים את מחיקת החודש ואת מחיקת הוראת הקבע — ⛔ אחרת הם נספרים בחישוב בלי אב',
     cols: ['deleted', 'deleted_at', 'deleted_by', 'updated_at'],
     cut: (src) => {
-      const a = src.indexOf('function pcChildKill(');
+      const a = src.indexOf('function kpChildKill(');
       if (a < 0) return '';
       let d = 0;
       for (let k = src.indexOf('{', a); k < src.length; k++) {
@@ -81,9 +89,9 @@ const APP = {
       return '';
     },
     stubs: () => ({}),
-    call: (sb, parent, kid) => sb.pcChildKill(parent, kid),
-    mutStamp: (code) => code.replace('updated_at: parent.updated_at', 'updated_at: Date.now()'),
-    mutDel: (code) => code.replace('deleted: !!parent.deleted', 'deleted: false'),
+    call: (sb, parent, kid) => sb.kpChildKill(parent, kid),
+    mutStamp: (code) => code.replace('kid.updated_at = parent.updated_at', 'kid.updated_at = Date.now()'),
+    mutDel: (code) => code.replace('kid.deleted = !!parent.deleted', 'kid.deleted = false'),
   },
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */

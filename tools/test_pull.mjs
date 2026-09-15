@@ -29,18 +29,15 @@ import crypto from 'node:crypto';
 const APP = {
   app: 'ha-kupa',
   file: 'index.html',
-  bootFn: 'start',
+  bootFn: 'kpBoot',
   /*  פונקציית המשיכה — מה ש-`PL_CFG.pull` מפעיל. */
-  syncFn: 'syncNow',
+  syncFn: 'kpSyncNow',
   /*  ⛔ משפכי הכתיבה לענן **שמחוץ לשכבת הדחיפה** — ⚠️ הדחיפה עצמה מקדמת
    *  את החותמת בתוך הבלוק החתום, ⭐ ומדידה נוספת עליה כאן הייתה טענה
-   *  כפולה: ⛔ מה שנשאר הוא `writeUser`, ש-`g_users` נמשכת גם היא. */
-  /*  ⛔ מסלול הכתיבה שמקדם את החותמת הוא **הווו של האפליקציה** — ⚠️ הכתיבה
-   *  עצמה יושבת בבלוק החתום, ⭐ ומה שנעשה אחריה הוא פר-אפליקציה: ⛔ ולכן
-   *  הנמדד הוא `USER_CFG` ⚠️ ולא `writeUser`. */
-  touchFns: ['USER_CFG'],
+   *  כפולה: ⛔ מה שנשאר הוא כתיבת ההגדרה, שאינה עוברת בדחיפה. */
+  touchFns: ['cfgWrite'],
   every: 3000,
-  stampKey: 'g_last_changed',
+  stampKey: 'kp_last_changed',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 

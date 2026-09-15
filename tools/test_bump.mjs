@@ -37,7 +37,7 @@ import { tmpdir } from 'node:os';
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
   app: 'ha-kupa',
-  applicationId: 'com.gius.app',
+  applicationId: 'com.ha.kupa',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 

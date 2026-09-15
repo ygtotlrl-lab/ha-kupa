@@ -42,10 +42,10 @@ const APP = {
   repo: 'ha-kupa',
   /* שם הריפו — מוכרז פרטי בחתימת ה-workflows ומנורמל החוצה. */
   slug: 'ha-kupa',
-  keystore: 'gius.keystore',
+  keystore: 'kupa.keystore',
   alias: 'ha-kupa',
-  pass: 'gius123',
-  out: 'kupa-signed.apk',
+  pass: 'hakupa123',
+  out: 'ha-kupa-signed.apk',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
