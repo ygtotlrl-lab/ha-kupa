@@ -110,9 +110,9 @@ hanhala ו-schar כמעט זהות בית-לבית, gius נבדלת בניסוח
 `.github/workflows/build-apk.yml`: Actions → **Build APK** → **Run workflow**.
 ה-APK **החתום** יורד כ-artifact בשם `ha-kupa-apk`.
 
-החתימה נעשית ב-`signing/sign-apk.sh` מול `signing/ha-kupa.keystore` שבריפו —
-**אין secret ואין קלט ידני**, ולכן אין דרך לבנות בטעות APK במפתח אחר. הסקריפט
-מסרב לחתום אם טביעת האצבע של ה-keystore אינה `92:33:21:96:...:81:7D`, ואחרי
+החתימה נעשית ב-`signing/sign-apk.sh` מול המפתח שמגיע מ-GitHub Secrets —
+**ואין קלט ידני**, ולכן אין דרך לבנות בטעות APK במפתח אחר. הסקריפט
+מסרב לחתום אם טביעת האצבע של ה-keystore אינה `66:07:D2:37:...:9D:B5`, ואחרי
 החתימה מוודא שה-APK אכן נושא את התעודה הזו — ה-workflow נכשל בכל אחד מהמקרים.
 
 > ⚠️ **המפתח הוחלף ב-2026-08-19 (סבב 39).** APK חדש ⛔ אינו מתקין על גבי התקנה
@@ -138,14 +138,14 @@ cd android && gradle wrapper --gradle-version 8.7 && ./gradlew :app:assembleRele
 
 | | |
 |---|---|
-| **קובץ** | `signing/ha-kupa.keystore` (PKCS12, RSA 2048, SHA256withRSA) |
+| **קובץ** | ⛔ אינו בריפו — GitHub Secret `KEYSTORE_B64`, מפוענח לקובץ זמני בזמן בנייה ונמחק אחריה (PKCS12, RSA 2048) |
 | **נוצר** | 2026-08-19 (סבב 39), `keytool -genkeypair` |
 | **Package ID** | `com.ha.kupa` |
-| **alias** | `ha-kupa` |
-| **storepass / keypass** | `hakupa123` (זהה לשניהם) |
+| **alias** | ⛔ אינו מוקלד — `sign-apk.sh` גוזר אותו מהמפתח עצמו |
+| **storepass / keypass** | ⛔ אינה בריפו — GitHub Secret `KEYSTORE_PASS` |
 | **תוקף** | 10,000 יום — 110.08.2026 עד 04.01.2054 |
-| **SHA256** | `92:33:21:96:75:17:2D:54:91:35:12:1D:64:46:A6:74:E0:E2:0C:24:9F:68:4A:C3:FA:A2:B7:CC:B8:D3:81:7D` |
-| **SHA1** | `FA:AA:8E:84:8C:71:95:5B:E0:62:33:13:C5:BB:50:A3:04:E5:86:DE` |
+| **SHA256** | `66:07:D2:37:FD:3F:36:8A:9F:46:AB:64:EE:3A:71:5E:5A:F6:48:42:73:E5:54:F1:D2:04:FF:45:74:9B:9D:B5` |
+| **SHA1** | `45:17:74:D4:22:1F:61:C7:01:45:9C:87:F2:A0:BA:6F:26:76:77:01` |
 | **DN** | `CN=ha-kupa, OU=Yeshiva, O=Yeshiva, L=Rishon LeZion, ST=Israel, C=IL` |
 
 ### פרטי המעטפת
@@ -174,8 +174,8 @@ apktool d <app>.apk -o /tmp/hakupa_work -f
 rm -rf /tmp/hakupa_work/build          # חובה לפני בנייה חוזרת
 apktool b /tmp/hakupa_work -o built.apk
 zipalign -f 4 built.apk aligned.apk
-apksigner sign --ks signing/ha-kupa.keystore --ks-key-alias ha-kupa \
-  --ks-pass pass:hakupa123 --key-pass pass:hakupa123 --out output.apk aligned.apk
+SIGN_KEYSTORE=<עותק מקומי של המפתח> SIGN_PASS=<הערך שב-KEYSTORE_PASS> \
+  signing/sign-apk.sh aligned.apk output.apk
 ```
 
 ⚠️ **ה-APK הישן כאן היה TWA** שנבנה ב-PWABuilder, ⛔ ואין לבנות אותו מחדש
