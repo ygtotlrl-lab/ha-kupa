@@ -3103,8 +3103,6 @@ window.ysGematria=function(n,sep){
   return s.slice(0,-1)+sep+s.slice(-1);
 };
 window.ysHebDayLabel=function(day){var T=window.DAYS_HEB;return (T&&T[day])||window.ysGematria(day)||String(day);};
-// תווית שנה קצרה — תשפ"ו (גרשיים ישרים, כפי שהוצג עד היום בלוח)
-window.ysHebYearLabel=function(hy){return window.ysGematria((+hy)%1000,'"');};
 // תווית שנה מלאה — ה׳תשפ״ו
 window.ysHebYearLabelFull=function(hy){
   var ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'],th=Math.floor((+hy)/1000);
@@ -3186,8 +3184,8 @@ window._ysBadDate=function(where,d){
   try{ console.warn('ysHebDate: קלט שאינו תאריך תקף ב-'+where+' — '+got); }catch(e){}
 };
 window._ysHebNone=function(src){
-  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',yearLabel:'',
-          yearLabelFull:'',leap:false,ok:false,src:src};
+  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',
+          yearLabelFull:'',ok:false,src:src};
 };
 
 /* ═══ שכבת המודאל — מודול משותף (סבב 86) ══════════════════════════════════
@@ -3870,17 +3868,12 @@ function flowScreenHTML() {
   return h + closerHTML();
 }
 
-/*  ⛔ הציון העברי נגזר מהמנוע האחד — ⚠️ ואין ספריית לוח חיצונית:
- *  ⭐ `ysHebDate` מעל `Intl`, ובנפילה-חזרה טבלה אריתמטית. */
+/*  ⛔ הרשומה נושאת תאריך כמחרוזת ISO — ⚠️ וצרכן התצוגה מקבל `Date`:
+ *  ⭐ ההמרה יושבת כאן פעם אחת, ⛔ והתווית עצמה נגזרת מהמנוע המשותף.
+ *  ⛔ והעוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף. */
 function hebLabel(iso) {
   if (!iso) return '';
-  /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף. */
-  var h;
-  try { h = ysHebDate(new Date(iso + 'T12:00:00')); } catch (e) { return ''; }
-  /*  ⛔ המנוע מחזיר מבנה ⛔ ולא מחרוזת — ⚠️ הצבתו כלשונו במסך מדפיסה
-   *  «[object Object]»: ⭐ והתצוגה נגזרת מהשדות שהוא מחזיר. */
-  if (!h || !h.ok) return '';
-  return h.dayLabel + ' ' + h.monthName + ' ' + h.yearLabel;
+  return hebrewDate(new Date(iso + 'T12:00:00'));
 }
 function flowStart(kind) {
   view.flow = kind;
