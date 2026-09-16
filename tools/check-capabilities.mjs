@@ -146,7 +146,7 @@ const APP = {
   offlineLoginFn: 'gVerifyOffline',
   /*  ⛔ חתימת ה-keystore — ⚠️ היא מה שהופך «מפתח קבוע» למדיד:
    *  ⭐ keystore חדש הוא גם קובץ קיים, ⛔ וחתימה שונה מפילה. */
-  keystoreSha: '4fb7b27b4a9c84e6',
+  keystoreSha: 'b6203db6111d7504',
   schemaFile: 'migrations/000_initial_schema.sql',
   /*  ⛔ אין כאן מסך התקנה (סבב 53) — ההתקנה נעשית מ-`migrations/` בלוח
    *  הבקרה, ולכן «המתנה אוטומטית להרצה» היא מושג שאינו קיים כאן. */
