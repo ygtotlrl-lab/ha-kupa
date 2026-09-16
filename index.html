@@ -34,7 +34,7 @@
   --brand:#7C5CB0; --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
 
   --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
-  --text:#352B3F; --text2:#7E6F90; --text3:#9F94AC;
+  --text:#352B3F; --text-2:#7E6F90; --text-3:#9F94AC;
   --border:#E6DEF0;
   --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
   --ok:#2E6F4A; --ok-soft:#E8F3EC;
@@ -60,7 +60,7 @@
     --on-brand:#FFFFFF; --on-rasp:#2A1B3D;
 
     --bg:#1B1420; --card:#251C2C; --card-2:#2E2336;
-    --text:#EFE8F5; --text2:#C4B6D2; --text3:#9C8FAC;
+    --text:#EFE8F5; --text-2:#C4B6D2; --text-3:#9C8FAC;
     --border:#3A2D45;
     --brand:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
     --ok:#6FD79B; --ok-soft:#16281E;
@@ -115,7 +115,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .card > h2 .st.ok{color:var(--ok)}
 .card > h2 .st.left{color:var(--purple-5)}
 .card > h2 .st.peach{color:var(--peach-3)}
-.empty{color:var(--text3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
+.empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
 
 /* ============================================ שורת החודש והמעבר בין חודשים */
 .mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
@@ -134,7 +134,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 
 /* ================================================================== מספרים */
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
-.sml{font-size:var(--fs-3);color:var(--text2);margin-top:var(--sp-4);line-height:var(--lh-3)}
+.sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
 .sml.strong{font-weight:500;color:var(--text)}
 .inc{font-size:var(--fs-5);font-weight:500;color:var(--text);padding:var(--sp-5) 0}
 
@@ -148,10 +148,10 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .det .ico svg{width:14px;height:14px}
 .det .ico.peach{background:var(--peach-1);color:var(--peach-3)}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
-.det .tag{font-size:var(--fs-1);color:var(--text3);flex:none}
+.det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
 .det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
-.det li.pend .amt{color:var(--text3)}
-.det li.pend .nm{color:var(--text2)}
+.det li.pend .amt{color:var(--text-3)}
+.det li.pend .nm{color:var(--text-2)}
 
 /* =========================================================== הכפתור הצף */
 .fab{position:fixed;inset-block-end:var(--sp-6);inset-inline-start:var(--sp-6);z-index:var(--z-4);
@@ -163,7 +163,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .flow{padding:var(--sp-6) 0}
 .flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
 .fld{margin-bottom:var(--sp-6)}
-.fld label{display:block;font-size:var(--fs-3);color:var(--text2);margin-bottom:var(--sp-4)}
+.fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
 .fld input,.fld select{width:100%;background:var(--card);color:var(--text);
   border:1px solid var(--border);border-radius:var(--radius-sm);
   padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
@@ -175,7 +175,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .btn{display:block;width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
   background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
   padding:var(--sp-5);min-height:44px}
-.btn.ghost{background:var(--card);color:var(--text2);border:1px solid var(--border)}
+.btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
 .btn[disabled]{opacity:var(--op-3);cursor:default}
 .back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-4);
   min-width:44px;min-height:44px}
@@ -188,7 +188,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .slide{position:fixed;inset:0;z-index:var(--z-6);background:var(--bg);
   display:flex;flex-direction:column;align-items:center}
 .slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
-.slide .sub{font-size:var(--fs-3);color:var(--text2);margin-top:var(--sp-4)}
+.slide .sub{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4)}
 .slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
 .target{margin-top:var(--sp-7)}
 /*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
@@ -204,7 +204,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .coin.over{transform:scale(1.05)}
 .done{text-align:center;padding:var(--sp-7) var(--sp-6)}
 .done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
-.done .line2{font-size:var(--fs-4);color:var(--text2);margin-top:var(--sp-5)}
+.done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
 .conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
 .conf i{--cf-x:50%;--cf-y:20%;--cf-c:var(--purple-3);position:absolute;left:var(--cf-x);top:var(--cf-y);background:var(--cf-c);width:8px;height:8px;border-radius:var(--r-1)}
 
@@ -233,7 +233,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
 .veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
   border-bottom:1px solid var(--border)}
-.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text2)}
+.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
 .veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
 
@@ -263,13 +263,13 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
       לצבע קיים, ⭐ והשורה על תפקיד אחד לאסימון אוסרת אותו. */
 .bchart{display:grid;gap:var(--sp-4);padding:var(--sp-2) 0}
 .brow{display:grid;grid-template-columns:4.6rem 1fr 4.4rem;align-items:center;gap:var(--sp-4);font-size:var(--fs-3)}
-.blab{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blab{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bbars{display:grid;gap:var(--sp-2)}
 .btrack{display:block;height:8px;border-radius:var(--r-6);background:var(--card-2);overflow:hidden}
 .btrack i{--bar-w:0%;display:block;height:100%;width:var(--bar-w);border-radius:var(--r-6);background:var(--brand)}
 .btrack.tgt{height:4px}
 .btrack.tgt i{opacity:var(--op-2)}
-.bval{color:var(--text2);text-align:end;white-space:nowrap}
+.bval{color:var(--text-2);text-align:end;white-space:nowrap}
 /* ═══ סוף CSS גרף העמודות ════════════════════════════════════════════════ */
 
 /* ===================================================================== פסים */
