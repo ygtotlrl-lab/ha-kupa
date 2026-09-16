@@ -28,10 +28,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { kpChain } from './kp_calc.mjs';
+import { kpChain } from './kp-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
-const APP = { app: 'ha-kupa', core: 'kp_calc.mjs' };
+const APP = { app: 'ha-kupa', core: 'kp-calc.mjs' };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
 /*  ⛔ הקובץ הזה אינו אוכף שורה בטבלת התשתית — ⚠️ הצהרה ריקה ולא היעדר:

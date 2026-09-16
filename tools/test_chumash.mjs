@@ -30,12 +30,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { whiten } from './whiten.mjs';
-import { kpChain } from './kp_calc.mjs';
+import { kpChain } from './kp-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
   app: 'ha-kupa',
-  core: 'kp_calc.mjs',
+  core: 'kp-calc.mjs',
   /*  ⛔ שתי השנים שהשרשרת נמדדת עליהן — ⚠️ **מה נכנס**: שנה ⟵ המינימום
    *  החודשי שלה; ⛔ **ומה מפיל**: שנה שאין לה מינימום — ⭐ `pledgeOf`
    *  היה מחזיר `undefined`, ⚠️ והחסר היה `NaN` בלי שאיש יראה. */
