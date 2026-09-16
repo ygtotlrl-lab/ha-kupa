@@ -62,7 +62,7 @@ const APP = {
   fnDefRpc: 'bk_fn_def',
   fnNames: ['bk_retention_keys', 'bk_retention_sweep', 'bk_prune_layer'],
   migration: null,
-  migrationDoc: 'gius/migrations/025_rename_g_config_to_g_settings.sql',
+  migrationDoc: 'gius/migrations/024_rename_g_config_to_g_settings.sql',
   /*  ⛔ המסלול שדורש את השדות האלה אינו רץ באפליקציה הזו (סבב 72) —
       ⚠️ והם מוצהרים ריקים ⛔ ואינם נשמטים: ⭐ שדה חסר נקרא «לא נשאל»,
       וריק נקרא «נמדד ואין», ⛔ וטענה שמשווה מול חסר עוברת תמיד. */

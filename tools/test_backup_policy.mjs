@@ -35,7 +35,7 @@ const APP = {
      כלל של 004). שם נאכף צד התיעוד בלבד, והשקילות מול ה-SQL נאכפת
      בריפו שמחזיק את הקובץ. */
   migration: null,
-  migrationDoc: 'gius/migrations/008_backup_retention_cap.sql',
+  migrationDoc: 'gius/migrations/007_backup_retention_cap.sql',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
