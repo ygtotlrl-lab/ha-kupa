@@ -29,10 +29,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { kpChain } from './kp-calc.mjs';
+import { kChain } from './k-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
-const APP = { app: 'ha-kupa', core: 'kp-calc.mjs', pledge: 1000 };
+const APP = { app: 'ha-kupa', core: 'k-calc.mjs', pledge: 1000 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
 /*  ⛔ הקובץ הזה אינו אוכף שורה בטבלת התשתית — ⚠️ הצהרה ריקה ולא היעדר:
@@ -132,7 +132,7 @@ function checks(chain) {
 const run = (chain) => checks(chain).filter(([, got, want]) => got !== want);
 
 console.log(`· ${APP.app} — עודף עובר, חוב לא`);
-for (const [name, got, want, extra] of checks(kpChain)) {
+for (const [name, got, want, extra] of checks(kChain)) {
   if (got === want) pass(`${name} — נמדד ${got}${extra ? ` (${extra})` : ''}`);
   else fail(`${name} — נמדד ${got} והצפוי ${want}${extra ? ` (${extra})` : ''}. ` +
             'מחזירים את ה-`max` להעברת העודף, ⛔ וחוב אינו עובר לחודש הבא');
@@ -144,7 +144,7 @@ if (RUN_MUT) {
   /*  ⛔ הליבה המוטנטית נטענת מכתובת `data:` — ⚠️ היא טקסט בזיכרון,
    *  ⭐ ואין קובץ שנכתב: ⛔ המוטציה אינה נוגעת בעץ בשום שלב. */
   const src = rd('tools/' + APP.core);
-  const load = async (text) => (await import('data:text/javascript,' + encodeURIComponent(text))).kpChain;
+  const load = async (text) => (await import('data:text/javascript,' + encodeURIComponent(text))).kChain;
 
   /*  ⛔ המוטציה שוברת את המנגנון ⛔ ולא את הצורה — ⚠️ הסרת הרצפה מהעברת
    *  העודף היא בדיוק «חוב עובר», ⭐ וזה מה שהשער בא למנוע. */
@@ -158,7 +158,7 @@ if (RUN_MUT) {
     const named = fellOn.find(([n]) => n.startsWith('ד ·'));
     if (named)
       pass(`מ1 · מוטציה: עודף בלי רצפה מפיל את הטענה «${named[0]}» — ` +
-           `${fellOn.length} טענות מתוך ${checks(kpChain).length} התהפכו`);
+           `${fellOn.length} טענות מתוך ${checks(kChain).length} התהפכו`);
     else
       fail('מ1 · מוטציה: עודף בלי רצפה ⛔ לא הפיל את טענה ד — נמדדו ' +
            `${fellOn.length} טענות שהתהפכו והצפוי את הטענה הנקובה. מחזירים את מדידת העודף של חודש הגירעון`);
@@ -168,12 +168,12 @@ if (RUN_MUT) {
    *  ⛔ ולא את הצורה: ⭐ הקלט הריק הוא מצב ההתקנה הטרייה, ⛔ וטענה
    *  שנבדקה רק על קלט מלא עוברת בדיוק במקום שבו היא הכי עלולה להישבר. */
   {
-    const forced = (ms, o) => kpChain(ms, o).map((m, i) => (i === 0 ? { ...m, short: 0, done: true } : m));
+    const forced = (ms, o) => kChain(ms, o).map((m, i) => (i === 0 ? { ...m, short: 0, done: true } : m));
     const fellOn = run(forced);
     const named = fellOn.find(([nm]) => nm.startsWith('ט ·') || nm.startsWith('י ·'));
     if (named)
       pass(`מ2 · מוטציה: חודש ריק שסומן «הושלם» מפיל את הטענה «${named[0]}» — ` +
-           `${fellOn.length} טענות מתוך ${checks(kpChain).length} התהפכו`);
+           `${fellOn.length} טענות מתוך ${checks(kChain).length} התהפכו`);
     else
       fail('מ2 · מוטציה: חודש ריק שסומן «הושלם» ⛔ לא הפיל את טענות ט–י — נמדדו ' +
            `${fellOn.length} טענות שהתהפכו והצפוי את הטענה הנקובה. מחזירים את מדידת החודש הריק`);
@@ -184,7 +184,7 @@ if (RUN_MUT) {
   const renamed = src.replace(/\bconst out = \[\];/, 'const rowsOut = [];')
                      .replace(/\bout\.push\(/, 'rowsOut.push(')
                      .replace(/\breturn out;/, 'return rowsOut;');
-  if (renamed === src || /\bout\b/.test(renamed.slice(renamed.indexOf('export function kpChain')))) {
+  if (renamed === src || /\bout\b/.test(renamed.slice(renamed.indexOf('export function kChain')))) {
     fail('מוטציית-נגד · השם לא הוחלף בעקביות — נמדדו החלפות חלקיות והצפוי החלפה מלאה. ' +
          'מיישרים את תבנית ההחלפה לשם שבליבה');
   } else {

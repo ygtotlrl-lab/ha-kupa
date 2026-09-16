@@ -72,13 +72,13 @@ const APP = {
   rowKeys: {
     layers: ['merge', 'pend'],
     defaultKey: 'client_id',
-    keyFn: { name: 'kpPendKey', arg: 't', why: '' },
+    keyFn: { name: 'kPendKey', arg: 't', why: '' },
     tables: { k_pledges: 'hebrew_year', k_standing_orders: 'client_id',
               k_so_instances: 'client_id', k_entries: 'client_id',
               k_lookups: 'client_id' },
-    gapWhy: { k_pledges: 'ההתחייבות ממופתחת בשנה העברית ⛔ ולא במזהה שנוצר במכשיר — ⚠️ ולכן הסימון נגזר מהטבלה ב-`kpTableMeta`' },
+    gapWhy: { k_pledges: 'ההתחייבות ממופתחת בשנה העברית ⛔ ולא במזהה שנוצר במכשיר — ⚠️ ולכן הסימון נגזר מהטבלה ב-`kTableMeta`' },
   },
-  childMap: 'KP_CHILDREN',
+  childMap: 'K_CHILDREN',
   pushWriter: null,
   /*  ⚠️ רתמת הירושה — ⛔ הבן הוא שורה עצמאית, ⭐ ולכן הירושה היא פונקציה
    *  שמקבלת את האב ואת הבן: ⛔ הרתמה חותכת אותה מהמקור ומריצה אותה. */
@@ -86,7 +86,7 @@ const APP = {
     why: 'מופע ורישום יורשים את מחיקת החודש ואת מחיקת הוראת הקבע — ⛔ אחרת הם נספרים בחישוב בלי אב',
     cols: ['deleted', 'deleted_at', 'deleted_by', 'updated_at'],
     cut: (src) => {
-      const a = src.indexOf('function kpChildKill(');
+      const a = src.indexOf('function kChildKill(');
       if (a < 0) return '';
       let d = 0;
       for (let k = src.indexOf('{', a); k < src.length; k++) {
@@ -96,7 +96,7 @@ const APP = {
       return '';
     },
     stubs: () => ({}),
-    call: (sb, parent, kid) => sb.kpChildKill(parent, kid),
+    call: (sb, parent, kid) => sb.kChildKill(parent, kid),
     mutStamp: (code) => code.replace('kid.updated_at = parent.updated_at', 'kid.updated_at = Date.now()'),
     mutDel: (code) => code.replace('kid.deleted = !!parent.deleted', 'kid.deleted = false'),
   },
@@ -106,7 +106,7 @@ const APP = {
 /*  ⛔ השורות בטבלת התשתית שהקובץ הזה אוכף — ⚠️ הרשימה ריקה עד שהשורה
  *  נכנסת לטבלה, ⛔ והשער מוכרז עד אז ב-`gateNoRows` עם נימוקו: ⭐ הצהרה
  *  ריקה ולא היעדר — ⛔ שער בלי הצהרה אינו נבדל משער שההצהרה שלו נשמטה. */
-export const ROWS = [174, 175];
+export const ROWS = [175, 176];
 
 /*  ⛔ המוטציות אינן ברירת המחדל — ⚠️ כל מוטציה היא שינוי ⟵ הרצה ⟵ שחזור,
  *  ⭐ והן רצות ברמה המלאה (`--full`), בסוף הסבב ולפני מיזוג. */
@@ -661,7 +661,7 @@ if (APP.inherit) {
   /*  ⭐ נ4 · מוטציית-נגד: קריאה במפתח אחד ⛔ אינה מפילה — ⚠️ גם כשהיא
    *  בונה אותו מקריאה מקוננת שיש בה פסיק. */
   {
-    const got = arityGaps("pendMark(kpPendKey(table, row)); pendHas(t + ':' + k);", PEND_FNS);
+    const got = arityGaps("pendMark(kPendKey(table, row)); pendHas(t + ':' + k);", PEND_FNS);
     t(got.length === 0,
       `נ4 · ⭐ מוטציית-נגד: קריאה במפתח אחד ⛔ **אינה** מפילה — נמדדו ${got.length} והצפוי 0`);
   }

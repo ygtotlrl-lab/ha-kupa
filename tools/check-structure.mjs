@@ -37,7 +37,7 @@ const APP = {
        קורא אותם — הטבלה עצמה נשארה ב-CLAUDE.md. */
     '_capability-notes.md': 'נימוקי המטריצה שנמחקה בסבב 69 — טקסט היסטורי בלבד; ⛔ אינו נקרא בשום שער והנימוקים החיים עברו לעמודת ההערות שבטבלה',
     '_prune-lessons.md': 'חילוץ הלקחים מ-14 פרקי הסבבים שנגזמו בסבב 48ג — טקסט בלבד, אינו נאכף בשום שער ואינו מקור אמת',
-    'kp-calc.mjs': 'ליבת חישוב החומש, היתרה והמילוי — ⛔ אף סיכום אינו נשמר, ⚠️ והכל נגזר מהרישומים בזמן קריאה: ⭐ ולשאר אין שרשרת חודשים שנגזרת',
+    'k-calc.mjs': 'ליבת חישוב החומש, היתרה והמילוי — ⛔ אף סיכום אינו נשמר, ⚠️ והכל נגזר מהרישומים בזמן קריאה: ⭐ ולשאר אין שרשרת חודשים שנגזרת',
   },
   keystore: 'kupa.keystore',
   /*  ⛔ חריגות ב-`android/` ובתת-תיקיות `tools/` — ⚠️ **מה נכנס**: שם ⟵
@@ -331,17 +331,20 @@ function walk(dir, base) {
   const got = walk('signing', '');
   const keys = got.filter((f) => f.endsWith('.keystore'));
   const rest = got.filter((f) => !f.endsWith('.keystore'));
-  if (keys.length !== 1) fail(`signing/ מחזיקה ${keys.length} קובצי keystore והצפוי בדיוק אחד. ` +
+  /*  ⛔ הקובץ עצמו אינו בריפו — ⚠️ הוא ב-GitHub Secrets ונמשך בזמן בנייה:
+   *  ⭐ ולכן אפס הוא המצב התקין בשכפול טרי, ⛔ ושניים בתיקייה מפילים —
+   *  ⚠️ עותק מקומי, כשהוא קיים, מושווה לשם שב-`APP`. */
+  if (keys.length > 1) fail(`signing/ מחזיקה ${keys.length} קובצי keystore והצפוי אפס או אחד. ` +
         `מסירים את העודפים — ⛔ ולעולם לא keystore חדש`);
-  else if (keys[0] !== APP.keystore) fail(`signing/: נמדד keystore בשם ${keys[0]} והצפוי ${APP.keystore} ` +
+  else if (keys.length === 1 && keys[0] !== APP.keystore) fail(`signing/: נמדד keystore בשם ${keys[0]} והצפוי ${APP.keystore} ` +
         `שבבלוק APP. מיישרים את השם — ⛔ ולא מחליפים מפתח`);
   const bad = rest.filter((f) => f !== 'sign-apk.sh');
   if (bad.length) fail(`קבצים לא-רשומים ב-signing/: ${bad.join(', ')} — נמדדו ` +
         `${bad.length} מעבר לרשימה והצפוי אפס. מסירים אותם`);
   if (!rest.includes('sign-apk.sh')) fail('signing/sign-apk.sh חסר — נמדד שאינו בעץ והצפוי שיהיה. ' +
         'מוסיפים אותו מריפו אחות, עם חמשת הערכים הפרטיים');
-  if (keys.length === 1 && keys[0] === APP.keystore && !bad.length && rest.includes('sign-apk.sh'))
-    pass(`signing/ — ${APP.keystore} + sign-apk.sh`);
+  if (keys.length <= 1 && (!keys.length || keys[0] === APP.keystore) && !bad.length && rest.includes('sign-apk.sh'))
+    pass(`signing/ — ${keys.length ? APP.keystore : 'המפתח ב-GitHub Secrets'} + sign-apk.sh`);
 }
 
 /* ה3 — `migrations/` */

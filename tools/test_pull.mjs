@@ -29,9 +29,9 @@ import crypto from 'node:crypto';
 const APP = {
   app: 'ha-kupa',
   file: 'index.html',
-  bootFn: 'kpBoot',
+  bootFn: 'kBoot',
   /*  פונקציית המשיכה — מה ש-`PL_CFG.pull` מפעיל. */
-  syncFn: 'kpSyncNow',
+  syncFn: 'kSyncNow',
   /*  ⛔ משפכי הכתיבה לענן **שמחוץ לשכבת הדחיפה** — ⚠️ הדחיפה עצמה מקדמת
    *  את החותמת בתוך הבלוק החתום, ⭐ ומדידה נוספת עליה כאן הייתה טענה
    *  כפולה: ⛔ מה שנשאר הוא כתיבת ההגדרה, שאינה עוברת בדחיפה. */

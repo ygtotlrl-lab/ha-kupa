@@ -35,7 +35,7 @@ import { execFileSync } from 'node:child_process';
 const APP = {
   app: 'ha-kupa',
   actMap: 'DOM_ACTIONS',
-  sortFn: 'kpSortEntries',
+  sortFn: 'kSortEntries',
   cdnSym: 'supabase',
   /* ⚠️ אתרי הקריאה של מסלול הייצוא, וההחלפה שמנטרלת כל אחד — ריק כשאין ייצוא */
   exportCalls: [],

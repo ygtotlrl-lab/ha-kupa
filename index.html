@@ -426,10 +426,7 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var sb = null;
 var EPS = 0.005;
 
-/*  ⛔ ההודעה נכתבת בלשון הקופה — ⚠️ ואינה מועתקת מאחות: ⭐ נוסח שזהה
- *  לזה שבאחות הוא הודעה שיותר מאפליקציה אחת אומרת, ⛔ ומקומה אז בבלוק
- *  החתום. ⚠️ **ואין כאן `MSG_BAD_LOGIN`** — ⛔ אין כניסה, ואין לו אתר. */
-var MSG_OFFLINE = 'אין חיבור — הרישום נשמר במכשיר ויעלה כשהרשת תחזור';
+/*  ⚠️ **ואין כאן `MSG_BAD_LOGIN`** — ⛔ אין כניסה, ואין לו אתר. */
 
 /* ══════════════════════════════════════════════════════════════════════════
    הודעות פר-אפליקציה — מה שרק כאן נאמר
@@ -501,41 +498,41 @@ var APP_SENSORY = { on: true };
    ⛔ **והעודף עובר, והחוב לא** — ⚠️ פלעדזש שהושלם ועבר מוסיף לחודש הבא,
       ⭐ ופלעדזש שלא הושלם אינו נגרר: ⛔ הוא חודשי, והחומש הוא המצטבר.
    ═══════════════════════════════════════════════════════════════════════ */
-var KP_CHUMASH_RATE = 0.2;
-var KP_CAT_SELF = 'אישי';
+var K_CHUMASH_RATE = 0.2;
+var K_CAT_SELF = 'אישי';
 
-function kpSum(a) { var s = 0, i; for (i = 0; i < a.length; i++) s += a[i]; return s; }
-function kpLive(rows) { return rows.filter(function (r) { return !r.deleted; }); }
+function kSum(a) { var s = 0, i; for (i = 0; i < a.length; i++) s += a[i]; return s; }
+function kLive(rows) { return rows.filter(function (r) { return !r.deleted; }); }
 
-function kpIncome(rows) {
-  return kpSum(kpLive(rows).filter(function (r) { return r.type === 'income'; })
+function kIncome(rows) {
+  return kSum(kLive(rows).filter(function (r) { return r.type === 'income'; })
     .map(function (r) { return +r.amount || 0; }));
 }
-function kpTzedakah(rows) {
-  return kpSum(kpLive(rows).filter(function (r) { return r.type === 'tzedakah'; })
+function kTzedakah(rows) {
+  return kSum(kLive(rows).filter(function (r) { return r.type === 'tzedakah'; })
     .map(function (r) { return +r.amount || 0; }));
 }
-function kpChumash(income) { return income * KP_CHUMASH_RATE; }
+function kChumash(income) { return income * K_CHUMASH_RATE; }
 
-function kpSelfPct(rows) {
-  var tz = kpTzedakah(rows);
+function kSelfPct(rows) {
+  var tz = kTzedakah(rows);
   if (!tz) return 0;
-  var self = kpSum(kpLive(rows).filter(function (r) {
-    return r.type === 'tzedakah' && r.category === KP_CAT_SELF;
+  var self = kSum(kLive(rows).filter(function (r) {
+    return r.type === 'tzedakah' && r.category === K_CAT_SELF;
   }).map(function (r) { return +r.amount || 0; }));
   return self / tz * 100;
 }
 
-function kpChain(months, opts) {
+function kChain(months, opts) {
   var pledgeOf = opts.pledgeOf;
   var balance = opts.opening || 0;
   var carry = 0;
   var out = [], i, m;
   for (i = 0; i < months.length; i++) {
     m = months[i];
-    var income = kpIncome(m.rows);
-    var tzedakah = kpTzedakah(m.rows);
-    var chumash = kpChumash(income);
+    var income = kIncome(m.rows);
+    var tzedakah = kTzedakah(m.rows);
+    var chumash = kChumash(income);
     var pledge = pledgeOf(m.year);
     var prevBalance = balance;
     balance = prevBalance + tzedakah - chumash;
@@ -546,7 +543,7 @@ function kpChain(months, opts) {
     out.push({ key: m.key, year: m.year, income: income, tzedakah: tzedakah,
                chumash: chumash, pledge: pledge, prevBalance: prevBalance,
                balance: balance, carryIn: carryIn, fill: fill, short: short,
-               done: short === 0, carryOut: carry, selfPct: kpSelfPct(m.rows) });
+               done: short === 0, carryOut: carry, selfPct: kSelfPct(m.rows) });
   }
   return out;
 }
@@ -566,36 +563,36 @@ var TABLES = [
   { t: 'k_entries',        key: 'client_id' },
   { t: 'k_lookups',        key: 'client_id' }
 ];
-function kpTableMeta(t) {
+function kTableMeta(t) {
   var i;
   for (i = 0; i < TABLES.length; i++) if (TABLES[i].t === t) return TABLES[i];
   return { t: t, key: 'client_id' };
 }
-function kpRowTs(r) { return (r && +r.updated_at) || 0; }
+function kRowTs(r) { return (r && +r.updated_at) || 0; }
 /*  ⛔ מפתח הסימון הוא מפתח המיזוג — ⚠️ הוא נגזר מהמטא של הטבלה
  *  ⛔ ואינו `client_id` מוקלד: ⭐ `k_pledges` ממופתחת בשנה העברית,
  *  ⚠️ ומפתח מוקלד היה מסמן שורה שמנוע המיזוג אינו מוצא. */
-function kpPendKey(t, r) { return t + ':' + (r && r[kpTableMeta(t).key]); }
-function kpStripRows(t, rows) { return rows; }
+function kPendKey(t, r) { return t + ':' + (r && r[kTableMeta(t).key]); }
+function kStripRows(t, rows) { return rows; }
 /*  ⛔ נקודת ההסבה האחת — ⚠️ מזהה שנשמר בגרסה ישנה כמספר: ⭐ `legacyIdStamp`
  *  מחזירה 0 ⛔ ולא `NaN`, ⚠️ והשוואה נכשלת בשקט בלעדיה. */
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
-var _kpPushedAt = {};
-var KP_PUSHED_KEY = 'k_pushed_at';
-function _kpLoadPushed() {
-  try { _kpPushedAt = JSON.parse(lsGet(KP_PUSHED_KEY) || '{}') || {}; } catch (e) { _kpPushedAt = {}; }
+var _kPushedAt = {};
+var K_PUSHED_KEY = 'k_pushed_at';
+function _kLoadPushed() {
+  try { _kPushedAt = JSON.parse(lsGet(K_PUSHED_KEY) || '{}') || {}; } catch (e) { _kPushedAt = {}; }
 }
-function _kpMarkPushed(t) {
-  _kpPushedAt[t] = Date.now();
-  lsSet(KP_PUSHED_KEY, JSON.stringify(_kpPushedAt));
+function _kMarkPushed(t) {
+  _kPushedAt[t] = Date.now();
+  lsSet(K_PUSHED_KEY, JSON.stringify(_kPushedAt));
 }
-function _kpPushedFor(t) { return function () { return _kpPushedAt[t] || 0; }; }
+function _kPushedFor(t) { return function () { return _kPushedAt[t] || 0; }; }
 
 /*  ⛔ השורות המלוכלכות — ⚠️ מה שסומן ⏳ ולא הוכרע: ⭐ הסימון יורד רק
  *  כשהכתיבה הוכרעה, ⛔ וכשל רשת משאיר אותו. */
-function kpDirtyRows(t) {
-  return (DATA[t] || []).filter(function (r) { return pendHas(kpPendKey(t, r)); });
+function kDirtyRows(t) {
+  return (DATA[t] || []).filter(function (r) { return pendHas(kPendKey(t, r)); });
 }
 
 var MIRROR_CFG = {
@@ -606,8 +603,8 @@ var MIRROR_CFG = {
    *  ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין». */
   noPush: [],
   empty:  function () { return []; },
-  ts:     function (r) { return kpRowTs(r); },
-  clean:  function (t, rows) { return kpStripRows(t, rows); },
+  ts:     function (r) { return kRowTs(r); },
+  clean:  function (t, rows) { return kStripRows(t, rows); },
   fail:   function (where, e) { console.error('[mirror] ' + where, e); },
 };
 
@@ -621,8 +618,8 @@ var LS_CFG = {
   tier1: [],
   /*  ⛔ ושלב ב — הרישומים הישנים שכבר סונכרנו, הישן קודם: ⚠️ והעֵד
    *  נבדק פר-פריט, ⭐ ולא בכניסה לרשימה. */
-  tier2: [{ key: mirrorKey('k_entries'), syncedThrough: _kpPushedFor('k_entries') },
-          { key: mirrorKey('k_so_instances'), syncedThrough: _kpPushedFor('k_so_instances') }],
+  tier2: [{ key: mirrorKey('k_entries'), syncedThrough: _kPushedFor('k_entries') },
+          { key: mirrorKey('k_so_instances'), syncedThrough: _kPushedFor('k_so_instances') }],
 };
 
 var DEV_CFG = { key: 'k_device_id' };
@@ -652,51 +649,51 @@ var BK_CFG = {
 
 var PEND_CFG = {
   app: 'kupa', key: 'k_pending',
-  redraw: function () { try { kpRender(); } catch (e) { } }
+  redraw: function () { try { kRender(); } catch (e) { } }
 };
 
 var RTY_CFG = {
-  flush:   function () { return kpSyncNow(); },
+  flush:   function () { return kSyncNow(); },
   pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
 };
 
-var KP_STAMP_KEY = 'k_last_changed';
-var _kpSeenTs = null, _lastSeenOk = 0;
+var K_STAMP_KEY = 'k_last_changed';
+var _kSeenTs = null, _lastSeenOk = 0;
 var PL_CFG = {
   every:  3000,
   /*  ⛔ אין כניסה ואין סשן — ⚠️ הפולינג פעיל כל עוד הלשונית גלויה:
    *  ⭐ תנאי שנשען על משתמש מחובר לא היה נכון כאן לעולם. */
   active: function () { return document.visibilityState !== 'hidden'; },
-  seen:   function () { return _kpSeenTs; },
-  note:   function (ts) { _kpSeenTs = ts; },
+  seen:   function () { return _kSeenTs; },
+  note:   function (ts) { _kSeenTs = ts; },
   ok:     function () { _lastSeenOk = Date.now(); },
   stamp:  function (ts) {
-    return sb.from(KV_TABLE).upsert({ key: KP_STAMP_KEY, value: JSON.stringify(ts),
+    return sb.from(KV_TABLE).upsert({ key: K_STAMP_KEY, value: JSON.stringify(ts),
                                       updated_at: Date.now() }, { onConflict: 'key' });
   },
-  pull:   function () { return kpSyncNow(); },
+  pull:   function () { return kSyncNow(); },
   remote: function () {
-    return withTimeout(sb.from(KV_TABLE).select('value').eq('key', KP_STAMP_KEY).maybeSingle())
+    return withTimeout(sb.from(KV_TABLE).select('value').eq('key', K_STAMP_KEY).maybeSingle())
       .then(function (r) {
         if (!r || r.error) return { ok: false, ts: null };
-        return { ok: true, ts: r.data ? plNum(kvParse(KP_STAMP_KEY, r.data.value).value) : null };
+        return { ok: true, ts: r.data ? plNum(kvParse(K_STAMP_KEY, r.data.value).value) : null };
       }, function () { return { ok: false, ts: null }; });
   },
 };
 
-var _kpPushEp = 0;
+var _kPushEp = 0;
 var PUSH_CFG = {
   tables: PUSH_TABLES,
   chunk:  500,
   delay:  400,
-  dirty:  function (t) { _kpPushEp = ctxEpoch(); return kpDirtyRows(t); },
-  key:    function (t, row) { return kpPendKey(t, row); },
+  dirty:  function (t) { _kPushEp = ctxEpoch(); return kDirtyRows(t); },
+  key:    function (t, row) { return kPendKey(t, row); },
   send:   function (t, rows) {
-    var m = kpTableMeta(t);
+    var m = kTableMeta(t);
     return withTimeout(sb.from(t).upsert(rows, { onConflict: m.key }));
   },
-  mark:   function (t) { if (!ctxStale(_kpPushEp)) _kpMarkPushed(t); },
-  run:    function () { kpSyncNow(); },
+  mark:   function (t) { if (!ctxStale(_kPushEp)) _kMarkPushed(t); },
+  run:    function () { kSyncNow(); },
 };
 
 var HW_CFG = {
@@ -713,8 +710,8 @@ var HW_CFG = {
       return d >= hwHorizonDate();
     },
     idOf: function (r) { return r && r.client_id; },
-    ts: function (r) { return kpRowTs(r); },
-    isPending: function (r) { return pendHas(kpPendKey('k_entries', r)); },
+    ts: function (r) { return kRowTs(r); },
+    isPending: function (r) { return pendHas(kPendKey('k_entries', r)); },
     fetch: function () {
       return withTimeout(sb.from('k_entries').select('*'))
         .then(function (r) {
@@ -746,7 +743,7 @@ function pullTable(t) {
 }
 
 function mergeTable(t, remote) {
-  var m = kpTableMeta(t);
+  var m = kTableMeta(t);
   /*  ⛔ המיזוג עובר בעוטף האחד — ⚠️ קריאה ישירה לליבה בארגומנטים
    *  מסודרים אינה החוזה שלה: ⭐ היא מקבלת אובייקט אפשרויות, ⛔ ומפתח
    *  שאינו מגיע אליה מפיל את המיזוג בזמן ריצה. */
@@ -759,7 +756,7 @@ function mergeTable(t, remote) {
 }
 
 var _syncBusy = false;
-function kpSyncPull() {
+function kSyncPull() {
   if (!sb) return Promise.resolve(false);
   if (_syncBusy) return Promise.resolve(false);
   _syncBusy = true;
@@ -773,11 +770,11 @@ function kpSyncPull() {
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
     if (any) { tombPruneMerged(); hwNoteCloud(); }
-    if (any && !_kpPullLogged) { _kpPullLogged = true; kpSyncLog('pull', null, null); }
+    if (any && !_kPullLogged) { _kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
     _syncBusy = false;
-    if (any) kpRender();
+    if (any) kRender();
     return any;
   }, function (e) {
     _syncBusy = false;
@@ -793,16 +790,16 @@ function kpSyncPull() {
    ו-`sh_sync_log` היא יומן ראיות ב-insert בלבד שאי-אפשר לדלל.
    ⚠️ ואין כאן כניסה — ⛔ `user_name` נרשם `null` מוצהר, ⭐ והמכשיר
    הוא מה שמזהה את הרישום. */
-function kpSyncLog(action, key, recordCount, details) {
+function kSyncLog(action, key, recordCount, details) {
   try { logAction(action, key, recordCount, details); } catch (e) { }
 }
-var _kpPullLogged = false;
-function kpSyncNow() {
-  return kpSyncPull().then(function () { return pushDirty(); })
-    .then(function (r) { if (r && r.n) kpSyncLog('push', null, r.n); return r; });
+var _kPullLogged = false;
+function kSyncNow() {
+  return kSyncPull().then(function () { return pushDirty(); })
+    .then(function (r) { if (r && r.n) kSyncLog('push', null, r.n); return r; });
 }
 function pushSoon() { schedulePush(); }
-function saveRefresh() { kpRender(); }
+function saveRefresh() { kRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -864,7 +861,7 @@ function cfgRefresh() {
   })).then(function (hits) {
     if (hits.indexOf(true) < 0) return false;
     if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
-    kpRender();
+    kRender();
     return true;
   });
 }
@@ -877,23 +874,35 @@ function cfgRefresh() {
    ⛔ **והמשפחה תשתית ולא מפקד** — ⚠️ אפליקציה שאינה אומרת הודעה נושאת
    אותה בכל זאת: ⭐ המושג חי בכולן, ⛔ ורשימה שנגזרת ממי שמציג אותה
    היום משתנה עם המוצר ⛔ ואיש אינו מיישר אותה בחזרה.
-   ⚠️ **ומה שנבדל בהחלטה אינו כאן** — ⛔ `MSG_OFFLINE` ו-`MSG_BAD_LOGIN`
-   נבדלים פר-אפליקציה בהחלטת מנהל, ⭐ ונשארים עם נימוקם במקומם.
+   ⛔⛔ **ונוסח הכשל נגזר מההתנהגות** — ⚠️ שלושת אתריו החיים של
+   `MSG_OFFLINE` הם **קריאה** שנכשלה, ⭐ ולא נכתב שם דבר שאפשר לסנכרן:
+   ⛔ «תסתנכרן כשהחיבור יחזור» הוא הבטחה על נתון שאינו קיים, ⚠️ והיא
+   נמדדה בשתיים. ⭐ **וההבטחה נכונה רק על כתיבה שכבר בתור** —
+   `MSG_SAVED_LOCAL` ו-`MSG_CLOUD_SYNC_FAIL`, ⛔ ושם היא נאמרת מפורשות.
+   ⚠️ **ומה שנבדל בהחלטה אינו כאן** — ⛔ `MSG_BAD_LOGIN` נבדל פר-אפליקציה
+   בהחלטת מנהל, ⭐ ונשאר עם נימוקו במקומו.
    ⛔ **וכל הודעת חסימה מתארת מצב אחר** — ⚠️ אין לאחד אותן זו עם זו ולא עם
    «סיסמה שגויה»: ⭐ הודעה מאוחדת שולחת את המשתמש להקליד שוב ושוב סיסמה
    נכונה, ⛔ במקום לומר לו את הדבר היחיד שיפתור — חיבור אחד.
    ═══════════════════════════════════════════════════════════════════════ */
 var MSG_SAVED = '✅ נשמר בהצלחה';
 var MSG_SAVED_LOCAL = '✅ נשמר במכשיר — יסונכרן כשתחזור הרשת';
+var MSG_SAVE_FAIL = '❌ השמירה נכשלה';
 var MSG_SYNC_BACK = '☁️ הסנכרון חזר לפעול';
+var MSG_CLOUD_SYNC_FAIL = '⚠️ הסנכרון לענן נכשל — הנתונים שמורים במכשיר ויישלחו כשהרשת תחזור';
+var MSG_OFFLINE = '📴 אין חיבור לאינטרנט — הפעולה לא בוצעה';
 var MSG_STALE_CODE = '⚠️ הגרסה הזו מיושנת — יש לעדכן';
 var MSG_DELETE = 'מחק';
 var MSG_FILL_ALL = '⚠️ נא למלא את כל השדות';
+var MSG_FILL_LOGIN = '⚠️ נא למלא שם משתמש וסיסמה';
 var MSG_LOAD_FAIL_PRE = '⚠️ טעינת הנתונים נכשלה (';
+var MSG_KV_BAD = 'ערך פגום בענן';
+var MSG_LOGIN_ERR = '❌ הכניסה נכשלה — ';
 var MSG_MY_PASS_TITLE = '🔑 שינוי הסיסמה שלי';
 var MSG_OFFLINE_LOGIN = '📴 כניסה במצב אופליין — הנתונים יסונכרנו כשהרשת תחזור';
 var MSG_PASS_CUR_BAD = '❌ הסיסמה הנוכחית שגויה';
 var MSG_PASS_MISMATCH = '⚠️ הסיסמאות החדשות אינן זהות';
+var MSG_PASS_SIX = '⚠️ הסיסמה חייבת להיות שש ספרות';
 var MSG_PASS_UPDATE_FAIL = '❌ עדכון הסיסמה נכשל: ';
 var MSG_PASS_VERIFY_FAIL = '❌ לא ניתן לאמת את הסיסמה הנוכחית: ';
 var MSG_SERVER_ERR = 'שגיאת שרת';
@@ -1723,7 +1732,7 @@ window.actRun = actRun;
    ⛔ שינוי כאן — כל האפליקציות **וכל עותקי השער**, באותו סבב. */
 function errToast(e) {
   console.error('[save]', e);
-  toast((e && (e.message || e.error_description)) || 'שגיאה בשמירה', null, 'bad');
+  toast((e && (e.message || e.error_description)) || MSG_SAVE_FAIL, null, 'bad');
 }
 function afterSave(msg) {
   closeModal();
@@ -2920,7 +2929,7 @@ var ERA_CFG = {
   /*  ⛔ הדחיפה היא ראיה טרייה ⛔ ואינה זיכרון — ⚠️ שכבת הדחיפה מחזירה
    *  `{ok, still}` לכל הטבלאות, ⭐ ומכשיר נקי מקבל `ok` עם `still` ריק. */
   push:   function () { return pushDirty(null); },
-  refresh: function () { return kpSyncNow(); }
+  refresh: function () { return kSyncNow(); }
 };
 
 /* ═══ עידן הנתונים — מודול משותף (סבב 148) ═════════════════════════════════
@@ -3076,7 +3085,7 @@ function _randDeviceId() {
 function mergeRows(local, remote, keyName, isPending) {
   return tombPruneMerged(mergeCore(local, remote, {
     getKey: function (r) { return String(r[keyName]); },
-    ts: kpRowTs, isPending: isPending, keepUnversionedLocal: true,
+    ts: kRowTs, isPending: isPending, keepUnversionedLocal: true,
     dedupe: false, keyless: 'drop', localPick: 'first'
   }));
 }
@@ -3361,19 +3370,18 @@ function ksKey(e) {
       לאותה תקלה.
    ⛔ שינוי כאן — כל האפליקציות **וכל עותקי השער**, באותו סבב: ⚠️ אחרת
       החתימה נשברת בריפו אחד, והשער מאשר את הסטייה בשלושה. */
-var KV_BAD = 'ערך פגום בענן';
 function kvParse(key, raw) {
   if (raw === null || raw === undefined || raw === '') return { ok: true, value: null, bad: false };
   try { return { ok: true, value: JSON.parse(raw), bad: false }; }
   catch (e) {
     /*  ⛔ ההודעה יוצאת מכאן ⛔ ולא מאתר הקריאה — ⚠️ כשל שאינו אומר מה קרה
      *  שקול לכשל שקט, ⭐ ונקודת יציאה אחת היא מה שמשאיר את הנוסח אחד. */
-    console.error('[sync] ' + KV_BAD + ' [' + key + ']:', e);
+    console.error('[sync] ' + MSG_KV_BAD + ' [' + key + ']:', e);
     toast('⚠️ ' + kvBadLabel(key), null, 'bad');
     return { ok: false, value: null, bad: true };
   }
 }
-function kvBadLabel(name) { return name + ' (' + KV_BAD + ')'; }
+function kvBadLabel(name) { return name + ' (' + MSG_KV_BAD + ')'; }
 /* ═══════════════ סוף מודול ערך מפתח-ערך ═════════════════════════════════ */
 
 /* ═══ גרף העמודות — מודול משותף (סבב 137) ═══════════════════════════════════
@@ -3434,7 +3442,7 @@ var DATA = { k_pledges: [], k_standing_orders: [],
 var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
 
-var kpQ = function (s) { return document.querySelector(s); };
+var kQ = function (s) { return document.querySelector(s); };
 
 /*  ⛔ מפריד אלפים, ו-₪ אחרי המספר עם רווח — ⚠️ אובייקט אחד ברמת המודול:
  *  ⭐ `Intl` בגוף פונקציה שנקראת בכל שורה נבנה מחדש בכל קריאה. */
@@ -3443,7 +3451,7 @@ function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
 function plain(n) { return NUM_FMT.format(Math.round(n)); }
 
 /*  ⛔ המיון האחד — ⚠️ הפירוט כרונולוגי, ⭐ ואין מיון מקומי בשום מסך. */
-function kpSortEntries(list) {
+function kSortEntries(list) {
   return list.slice().sort(function (a, b) {
     var d = String(a.entry_date || '').localeCompare(String(b.entry_date || ''));
     return d !== 0 ? d : String(a.client_id).localeCompare(String(b.client_id));
@@ -3462,20 +3470,20 @@ function kpSortEntries(list) {
    ⛔ **וטבלה שנושאת ערך לתקופה אינה טבלת תקופה** — ⚠️ `k_pledges` נושאת
       את הפלעדזש לשנה, ⭐ ושמה אומר את הערך ⛔ ולא את התקופה.
    ══════════════════════════════════════════════════════════════════════════ */
-function kpPad2(n) { return (n < 10 ? '0' : '') + n; }
+function kPad2(n) { return (n < 10 ? '0' : '') + n; }
 
 /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף,
  *  ⭐ והמנוע האחד הוא `ysHebDate`. */
-function kpHeb(iso) {
+function kHeb(iso) {
   var h;
   if (!iso) return null;
   try { h = ysHebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
   return (h && h.ok) ? h : null;
 }
-function yearOf(iso) { var h = kpHeb(iso); return h ? String(h.year) : ''; }
+function yearOf(iso) { var h = kHeb(iso); return h ? String(h.year) : ''; }
 function monthKeyOf(iso) {
-  var h = kpHeb(iso);
-  return h ? yearOf(iso) + '-' + kpPad2(h.monthIndex + 1) : '';
+  var h = kHeb(iso);
+  return h ? yearOf(iso) + '-' + kPad2(h.monthIndex + 1) : '';
 }
 function keyYear(k) { return String(k || '').slice(0, 4); }
 function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
@@ -3490,38 +3498,38 @@ function monthLabel(k) {
 
 /*  ⛔ אריתמטיקת ימים על מספר יום שלם ⛔ ולא על מילישניות — ⚠️ חיבור של
  *  24 שעות חוצה גבול שעון-קיץ ונופל ליום הקודם. */
-function kpDayNum(y, m, d) { return Math.floor(Date.UTC(y, m, d) / 86400000); }
-function kpIsoOfDay(n) {
+function kDayNum(y, m, d) { return Math.floor(Date.UTC(y, m, d) / 86400000); }
+function kIsoOfDay(n) {
   var d = new Date(n * 86400000);
-  return d.getUTCFullYear() + '-' + kpPad2(d.getUTCMonth() + 1) + '-' + kpPad2(d.getUTCDate());
+  return d.getUTCFullYear() + '-' + kPad2(d.getUTCMonth() + 1) + '-' + kPad2(d.getUTCDate());
 }
-function kpAddDays(iso, n) {
+function kAddDays(iso, n) {
   var p = String(iso).slice(0, 10).split('-');
-  return kpIsoOfDay(kpDayNum(+p[0], +p[1] - 1, +p[2]) + n);
+  return kIsoOfDay(kDayNum(+p[0], +p[1] - 1, +p[2]) + n);
 }
-function kpScale(iso) { var h = kpHeb(iso); return h ? h.year * 100 + h.monthIndex + 1 : 0; }
+function kScale(iso) { var h = kHeb(iso); return h ? h.year * 100 + h.monthIndex + 1 : 0; }
 
 /*  ⛔ ראש החודש נגזר מהמנוע בחיפוש בינארי ⛔ ואינו נשלף משורה — ⚠️ המנוע
  *  ממפה לועזי ⟵ עברי בכיוון אחד, ⭐ והסולם «שנה×100 + מספר החודש» עולה
  *  מונוטונית עם התאריך: ⛔ ולכן היום הראשון שסולמו מגיע ליעד הוא ראש החודש.
  *  ⚠️ **והתוצאה נשמרת במטמון** — ⭐ כל קריאה היא כתריסר גזירות. */
-var _kpMonthStart = {};
+var _kMonthStart = {};
 function monthStart(k) {
   var y = +keyYear(k), ord = keyOrdinal(k), want, lo, hi, mid, out = '';
-  if (_kpMonthStart[k] !== undefined) return _kpMonthStart[k];
+  if (_kMonthStart[k] !== undefined) return _kMonthStart[k];
   if (y && ord) {
     want = y * 100 + ord;
-    lo = kpDayNum(y - 3762, 0, 1);
-    hi = kpDayNum(y - 3760, 11, 31);
-    if (kpScale(kpIsoOfDay(lo)) < want && kpScale(kpIsoOfDay(hi)) >= want) {
+    lo = kDayNum(y - 3762, 0, 1);
+    hi = kDayNum(y - 3760, 11, 31);
+    if (kScale(kIsoOfDay(lo)) < want && kScale(kIsoOfDay(hi)) >= want) {
       while (hi - lo > 1) {
         mid = Math.floor((lo + hi) / 2);
-        if (kpScale(kpIsoOfDay(mid)) >= want) hi = mid; else lo = mid;
+        if (kScale(kIsoOfDay(mid)) >= want) hi = mid; else lo = mid;
       }
-      if (kpScale(kpIsoOfDay(hi)) === want) out = kpIsoOfDay(hi);
+      if (kScale(kIsoOfDay(hi)) === want) out = kIsoOfDay(hi);
     }
   }
-  _kpMonthStart[k] = out;
+  _kMonthStart[k] = out;
   return out;
 }
 
@@ -3529,11 +3537,11 @@ function monthStart(k) {
  *  מהמשתמש לאן הגיע. */
 function prevMonthOf(k) {
   var s = monthStart(k);
-  return s ? monthByKey(monthKeyOf(kpAddDays(s, -1))) : null;
+  return s ? monthByKey(monthKeyOf(kAddDays(s, -1))) : null;
 }
 function nextMonthOf(k) {
   var s = monthStart(k);
-  return s ? monthByKey(monthKeyOf(kpAddDays(s, 31))) : null;
+  return s ? monthByKey(monthKeyOf(kAddDays(s, 31))) : null;
 }
 
 function monthByKey(k) {
@@ -3548,11 +3556,11 @@ function monthByKey(k) {
  *  להתקנה. */
 function monthsWithData() {
   var seen = {}, out = [], l, i, k;
-  l = kpLive(DATA.k_entries);
+  l = kLive(DATA.k_entries);
   for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
-  l = kpLive(DATA.k_so_instances);
+  l = kLive(DATA.k_so_instances);
   for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
-  k = monthKeyOf(kpIsoOfDay(Math.floor(Date.now() / 86400000)));
+  k = monthKeyOf(kIsoOfDay(Math.floor(Date.now() / 86400000)));
   if (k) seen[k] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
   return out.sort();
@@ -3575,12 +3583,12 @@ function monthsSorted() {
 }
 
 function entriesOfMonth(k) {
-  return kpLive(DATA.k_entries).filter(function (r) { return monthKeyOf(r.entry_date) === k; });
+  return kLive(DATA.k_entries).filter(function (r) { return monthKeyOf(r.entry_date) === k; });
 }
 /*  ⛔ מופע ממתין נספר בצדקה בפועל **מיד** — ⚠️ אחרת ה«חסר» שגוי מא׳
  *  דחודש ועד יום החיוב: ⭐ ההוראה כבר ידועה, ⛔ והתאריך אינו משנה אותה. */
 function instancesOfMonth(k) {
-  return kpLive(DATA.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
+  return kLive(DATA.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
 }
 function instanceRows(k) {
   return instancesOfMonth(k).map(function (r) {
@@ -3596,12 +3604,12 @@ function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 /*  ⛔ הפלעדזש נקרא מהטבלה לפי השנה — ⚠️ **ושנה בלי שורה היא אפס**:
  *  ⭐ ולא כשל, ⛔ שהתקנה טרייה אינה נושאת אף שורה. */
 function pledgeOfYear(y) {
-  var l = kpLive(DATA.k_pledges), i;
+  var l = kLive(DATA.k_pledges), i;
   for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === String(y)) return +l[i].pledge || 0;
   return 0;
 }
 function openingBalance() {
-  var l = kpLive(DATA.k_pledges).slice().sort(function (a, b) {
+  var l = kLive(DATA.k_pledges).slice().sort(function (a, b) {
     return String(a.hebrew_year).localeCompare(String(b.hebrew_year));
   });
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
@@ -3613,7 +3621,7 @@ function chainAll() {
   var ms = monthsSorted().map(function (m) {
     return { key: m.key, year: m.year, rows: monthRows(m.key) };
   });
-  return kpChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
+  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
 }
 function chainOf(k) {
   var c = chainAll(), i;
@@ -3625,10 +3633,10 @@ function chainOf(k) {
    הוראות קבע
    ══════════════════════════════════════════════════════════════════════════ */
 function ordersLive() {
-  return kpLive(DATA.k_standing_orders).filter(function (o) { return o.active !== false; });
+  return kLive(DATA.k_standing_orders).filter(function (o) { return o.active !== false; });
 }
 function orderById(id) {
-  var l = kpLive(DATA.k_standing_orders), i;
+  var l = kLive(DATA.k_standing_orders), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
   return null;
 }
@@ -3646,7 +3654,7 @@ function orderAppliesTo(o, m) {
 function soDate(monthKey, o) {
   var s = monthStart(monthKey);
   if (!s) return '';
-  return o ? kpAddDays(s, Math.max(1, +o.day_of_month || 1) - 1) : s;
+  return o ? kAddDays(s, Math.max(1, +o.day_of_month || 1) - 1) : s;
 }
 
 /*  ⛔ המופעים נוצרים בתחילת כל חודש עברי — ⚠️ פעם אחת לכל צמד
@@ -3710,7 +3718,7 @@ function monthScreenHTML() {
   if (!m) return openerHTML() + '<div class="card"><div class="empty">' +
              '<div class="skel"></div><div class="skel"></div></div></div>' + closerHTML();
   var c = chainOf(view.monthKey) || {};
-  var rows = kpSortEntries(monthRows(view.monthKey));
+  var rows = kSortEntries(monthRows(view.monthKey));
   var prev = prevMonthOf(view.monthKey);
   var pc = prev ? chainOf(prev.key) : null;
 
@@ -3797,10 +3805,10 @@ var FLOW_INC = ['amount', 'desc', 'method', 'date'];
 
 var SRC_DEFAULT = ['מזומן', 'ביט', 'אשראי מענדי', 'אשראי חני', 'העברה', 'אחר'];
 var METHOD_DEFAULT = ['העברה ישירה', 'ביט ופייבוקס', 'מזומן', 'צ׳קים'];
-var CAT_LIST = ['לאחרים', KP_CAT_SELF];
+var CAT_LIST = ['לאחרים', K_CAT_SELF];
 
 function lookupList(kind, dflt) {
-  var l = kpLive(DATA.k_lookups).filter(function (r) { return r.kind === kind; })
+  var l = kLive(DATA.k_lookups).filter(function (r) { return r.kind === kind; })
     .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); })
     .map(function (r) { return r.label; });
   return l.length ? l : dflt;
@@ -3809,7 +3817,7 @@ function lookupList(kind, dflt) {
 /*  ⛔ ההשלמה נגזרת מהפירוטים שכבר נרשמו — ⚠️ distinct לפי תדירות:
  *  ⭐ מה שנרשם הרבה עולה ראשון, ⛔ ואין רשימה שנייה לתחזק. */
 function descSuggest(q) {
-  var seen = {}, l = kpLive(DATA.k_entries), i, d;
+  var seen = {}, l = kLive(DATA.k_entries), i, d;
   for (i = 0; i < l.length; i++) {
     d = (l[i].description || '').trim();
     if (!d) continue;
@@ -3886,20 +3894,20 @@ function flowStart(kind) {
   view.screen = 'flow';
   view.draft = { amount: null, description: '', method: '', category: '',
                  entry_date: new Date().toISOString().slice(0, 10) };
-  kpRender();
+  kRender();
 }
 
 function flowCollect() {
   var steps = flowSteps(), key = steps[view.step], el;
   if (key === 'amount') {
-    el = kpQ('#f-amount');
+    el = kQ('#f-amount');
     /*  ⛔ הקריאה עוברת ב-`readNum` — ⚠️ המרה ישירה מחזירה `NaN` על שדה
      *  ריק, ⭐ ו-`NaN` בהשוואה נכשל בשקט. */
     view.draft.amount = el ? readNum(el, null) : null;
   } else if (key === 'desc') {
-    el = kpQ('#f-desc'); view.draft.description = el ? el.value.trim() : '';
+    el = kQ('#f-desc'); view.draft.description = el ? el.value.trim() : '';
   } else if (key === 'date') {
-    el = kpQ('#f-date'); if (el && el.value) view.draft.entry_date = el.value;
+    el = kQ('#f-date'); if (el && el.value) view.draft.entry_date = el.value;
   }
 }
 
@@ -4047,7 +4055,7 @@ function localPut(table, row) {
   mirrorSave(table, l);
   /*  ⛔ המטפל מקבל מפתח אחד — ⚠️ קריאה בשני ארגומנטים מסמנת את שם
    *  הטבלה ⛔ ולא את השורה: ⭐ והקורא מחפש `<טבלה>:<מפתח>`. */
-  pendMark(kpPendKey(table, row));
+  pendMark(kPendKey(table, row));
 }
 
 function flowCommit() {
@@ -4072,7 +4080,7 @@ function flowCommit() {
   pushSoon();
   view.screen = 'done';
   view.doneInc = isInc;
-  kpRender();
+  kRender();
   if (before && before.done) {
     toast(MSG_MONTH_DONE, 4000, 'good');
   }
@@ -4098,7 +4106,7 @@ function doneScreenHTML() {
 var UNDO = { row: null, timer: null };
 
 function entryById(id) {
-  var l = kpLive(DATA.k_entries), i;
+  var l = kLive(DATA.k_entries), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
   return null;
 }
@@ -4109,7 +4117,7 @@ function entryById(id) {
  *  בנקודה אחת, ⛔ והיא צריכה לדעת את מי לגרור.
  *  ⛔ **ואין כאן בן לשני אבות** — ⚠️ התקופה נגזרת ואינה טבלה, ⭐ ולכן
  *  לכל בן אב אחד: ⛔ ואין סדר הכרעה שצריך להצהיר. */
-var KP_CHILDREN = {
+var K_CHILDREN = {
   k_standing_orders: [{ table: 'k_so_instances', fk: 'standing_order_client_id' }],
   k_so_instances:    [{ table: 'k_entries',      fk: 'so_instance_client_id' }]
 };
@@ -4117,7 +4125,7 @@ var KP_CHILDREN = {
 /*  ⛔ הבן יורש את מחיקת האב ואת חותמתה — ⚠️ דגל המחיקה, חותמת המחיקה
  *  וחותמת העריכה נלקחים מרשומת האב: ⭐ מחיקת אב ובניו היא אירוע אחד,
  *  ⛔ ושתי חותמות לאותה מחיקה הן שתי הכרעות במנוע המיזוג. */
-function kpChildKill(parent, kid) {
+function kChildKill(parent, kid) {
   kid.deleted = !!parent.deleted;
   kid.deleted_at = parent.deleted_at;
   kid.deleted_by = parent.deleted_by;
@@ -4128,19 +4136,19 @@ function kpChildKill(parent, kid) {
 /*  ⛔ כל מחיקה רכה עוברת כאן — ⚠️ הרשומה מסומנת, ⭐ וכל בן שתלוי בה יורש
  *  את אותה חותמת בדיוק: ⛔ מחיקה שנכתבת באתר הקריאה משאירה בן יתום,
  *  ⚠️ והוא נספר בסיכום של חודש שכבר אינו קיים. */
-function kpKill(table, row) {
+function kKill(table, row) {
   row.deleted = true;
   row.deleted_at = new Date().toISOString();
   row.deleted_by = devId();
   row.updated_at = Date.now();
   localPut(table, row);
-  var kids = KP_CHILDREN[table] || [], i, j, list, kid;
+  var kids = K_CHILDREN[table] || [], i, j, list, kid;
   for (i = 0; i < kids.length; i++) {
-    list = kpLive(DATA[kids[i].table] || []);
+    list = kLive(DATA[kids[i].table] || []);
     for (j = 0; j < list.length; j++) {
       kid = list[j];
       if (!idEq(kid[kids[i].fk], row.client_id)) continue;
-      localPut(kids[i].table, kpChildKill(row, kid));
+      localPut(kids[i].table, kChildKill(row, kid));
     }
   }
   return row;
@@ -4153,11 +4161,11 @@ function entryDelete(id) {
              MSG_DELETE).then(function (yes) {
     if (!yes) return;
     var copy = JSON.parse(JSON.stringify(r));
-    kpKill('k_entries', r);
+    kKill('k_entries', r);
     UNDO.row = copy;
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
-    kpRender();
+    kRender();
     toast(MSG_DELETED + ' · ' + MSG_UNDO, 5000);
   });
 }
@@ -4170,7 +4178,7 @@ function entryUndo() {
   UNDO.row = null;
   if (UNDO.timer) clearTimeout(UNDO.timer);
   pushSoon();
-  kpRender();
+  kRender();
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -4185,7 +4193,7 @@ function orderNewVersion(o, patch, fromMonth) {
   if (!m) { uiNoDialog('orderNewVersion', fromMonth); return null; }
   var key = m.key;
   var prev = prevMonthOf(m.key);
-  var old = kpLive(DATA.k_standing_orders).filter(function (x) {
+  var old = kLive(DATA.k_standing_orders).filter(function (x) {
     return idEq(x.client_id, o.client_id);
   })[0];
   if (old) {
@@ -4243,10 +4251,10 @@ function monthsChartHTML() {
 /* ══════════════════════════════════════════════════════════════════════════
    הרינדור האחד
    ══════════════════════════════════════════════════════════════════════════ */
-function kpRender() {
-  var root = kpQ('#app');
-  if (!root) { uiNoDialog('kpRender', 'app'); return; }
-  var fab = kpQ('#fab');
+function kRender() {
+  var root = kQ('#app');
+  if (!root) { uiNoDialog('kRender', 'app'); return; }
+  var fab = kQ('#fab');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'flow') root.innerHTML = flowScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
@@ -4276,30 +4284,30 @@ var DOM_ACTIONS = {
   'add-tzedakah': function () { closeModal(); flowStart('tzedakah'); },
   'month-prev': function () {
     var p = prevMonthOf(view.monthKey);
-    if (p) { view.monthKey = p.client_id; kpRender(); }
+    if (p) { view.monthKey = p.client_id; kRender(); }
   },
   'month-next': function () {
     var n = nextMonthOf(view.monthKey);
-    if (n) { view.monthKey = n.client_id; kpRender(); }
+    if (n) { view.monthKey = n.client_id; kRender(); }
   },
-  'month-goto': function (el) { view.monthKey = el.dataset.id; kpRender(); },
+  'month-goto': function (el) { view.monthKey = el.dataset.id; kRender(); },
   'flow-next': function () {
     flowCollect();
     var bad = flowValid();
     if (bad) { toast(bad, 4000, 'bad'); return; }
-    if (view.step === flowSteps().length - 1) { view.screen = 'slide'; kpRender(); return; }
+    if (view.step === flowSteps().length - 1) { view.screen = 'slide'; kRender(); return; }
     view.step++;
-    kpRender();
+    kRender();
   },
   'flow-back': function () {
-    if (view.screen === 'slide') { view.screen = 'flow'; kpRender(); return; }
-    if (view.step === 0) { view.screen = 'month'; view.flow = null; kpRender(); return; }
+    if (view.screen === 'slide') { view.screen = 'flow'; kRender(); return; }
+    if (view.step === 0) { view.screen = 'month'; view.flow = null; kRender(); return; }
     view.step--;
-    kpRender();
+    kRender();
   },
-  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; kpRender(); },
+  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; kRender(); },
   'flow-ac': function (el) {
-    var f = kpQ('#f-desc');
+    var f = kQ('#f-desc');
     if (!f) { uiNoDialog('flow-ac', 'f-desc'); return; }
     f.value = el.dataset.v;
   },
@@ -4325,7 +4333,7 @@ var DOM_ACTIONS = {
       '" data-ksave>שמור</button>');
   },
   'order-save': function (el) {
-    var inp = kpQ('#o-amt');
+    var inp = kQ('#o-amt');
     if (!inp) { uiNoDialog('order-save', 'o-amt'); return; }
     var o = orderById(el.dataset.id);
     if (!o) { uiNoDialog('order-save', el.dataset.id); return; }
@@ -4334,18 +4342,18 @@ var DOM_ACTIONS = {
     return runSave(function () {
       orderNewVersion(o, { amount: v }, view.monthKey);
       closeModal();
-      kpRender();
+      kRender();
       return Promise.resolve();
     }, MSG_SAVED_LOCAL);
   },
   'sensory-toggle': function () {
     APP_SENSORY.on = !APP_SENSORY.on;
     cfgWrite('sensory', APP_SENSORY.on);
-    kpRender();
+    kRender();
   },
-  'settings-open': function () { view.screen = 'settings'; kpRender(); },
-  'settings-close': function () { view.screen = 'month'; kpRender(); },
-  'done-close': function () { view.screen = 'month'; view.flow = null; kpRender(); },
+  'settings-open': function () { view.screen = 'settings'; kRender(); },
+  'settings-close': function () { view.screen = 'month'; kRender(); },
+  'done-close': function () { view.screen = 'month'; view.flow = null; kRender(); },
   'sw-reload': function () { swApply(); }
 };
 
@@ -4382,7 +4390,7 @@ document.addEventListener('keydown', function (e) {
  *  ⚠️ **והיא סורקת את האחסון עצמו** ⛔ ולא רשימת שמות — ⭐ שלוש קידומות
  *  בונות כאן מפתחות ששמם המלא אינו ידוע מראש.
  *  ⛔ **והיא יורדת בסבב שאחרי זה שהריץ אותה** — ⚠️ רצה כאן (סבב 148). */
-function kpMigrateLegacyPrefix() {
+function kMigrateLegacyPrefix() {
   var OLD = 'kp_', NEW = 'k_';
   /*  ⛔ התור, המזהה ותור היומן ראשונים — ⚠️ מכשיר שנסגר באמצע ההגירה
    *  מאבד אותם אחרונים: ⭐ הם מה שאין לו מקור שני בענן. */
@@ -4432,16 +4440,16 @@ function kpMigrateLegacyPrefix() {
   if (moved) console.log('[ls] תחילית האחסון הוסבה — ' + moved + ' מפתחות');
   return moved;
 }
-function kpBoot() {
+function kBoot() {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  kpMigrateLegacyPrefix();
+  kMigrateLegacyPrefix();
   lsBoot();
-  _kpLoadPushed();
+  _kLoadPushed();
   cfgBoot();
   mirrorBoot(PUSH_TABLES, DATA);
   var ms = monthsSorted();
   view.monthKey = ms.length ? ms[ms.length - 1].key : null;
-  kpRender();
+  kRender();
   pendBoot();
   tombBoot();
   /*  ⛔ בדיקת העידן — ⚠️ נקודת ההפעלה היחידה, פעם אחת לעלייה: ⭐ היא
@@ -4453,14 +4461,14 @@ function kpBoot() {
   plBoot();
   swRegister();
   sbWatch();
-  kpSyncPull().then(function () {
+  kSyncPull().then(function () {
     var made = soEnsureInstances(view.monthKey), i;
     for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
     if (made.length) pushSoon();
-    kpRender();
+    kRender();
   });
 }
-kpBoot();
+kBoot();
 
 })();
 </script>

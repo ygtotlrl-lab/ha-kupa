@@ -30,12 +30,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { whiten } from './whiten.mjs';
-import { kpChain } from './kp-calc.mjs';
+import { kChain } from './k-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
   app: 'ha-kupa',
-  core: 'kp-calc.mjs',
+  core: 'k-calc.mjs',
   /*  ⛔ שתי השנים שהשרשרת נמדדת עליהן — ⚠️ **מה נכנס**: שנה ⟵ המינימום
    *  החודשי שלה; ⛔ **ומה מפיל**: שנה שאין לה מינימום — ⭐ `pledgeOf`
    *  היה מחזיר `undefined`, ⚠️ והחסר היה `NaN` בלי שאיש יראה. */
@@ -163,7 +163,7 @@ const CTX = (chain) => ({ chain, w: whiten(rd('index.html'), { markup: 'blank' }
 const run = (ctx) => checks(ctx).filter(([, got, want]) => got !== want);
 
 console.log(`· ${APP.app} — היתרה מצטברת חוצה שנים`);
-const C0 = CTX(kpChain);
+const C0 = CTX(kChain);
 for (const [name, got, want, extra] of checks(C0)) {
   if (got === want) pass(`${name} — נמדד ${got}${extra ? ` (${extra})` : ''}`);
   else fail(`${name} — נמדד ${got} והצפוי ${want}${extra ? ` (${extra})` : ''}. ` +
@@ -176,7 +176,7 @@ if (RUN_MUT) {
   /*  ⛔ הליבה המוטנטית נטענת מכתובת `data:` — ⚠️ היא טקסט בזיכרון,
    *  ⭐ ואין קובץ שנכתב: ⛔ המוטציה אינה נוגעת בעץ בשום שלב. */
   const src = rd('tools/' + APP.core);
-  const load = async (text) => (await import('data:text/javascript,' + encodeURIComponent(text))).kpChain;
+  const load = async (text) => (await import('data:text/javascript,' + encodeURIComponent(text))).kChain;
 
   /*  ⛔ המוטציה שוברת את המנגנון ⛔ ולא את הצורה — ⚠️ איפוס היתרה במעבר
    *  השנה הוא בדיוק מה שהשער בא למנוע. */
@@ -198,8 +198,8 @@ if (RUN_MUT) {
 
   /*  ⛔ מוטציית-נגד היא שינוי חי שאסור לו להפיל — ⚠️ שם מקומי שהוחלף
    *  בעקביות, ⭐ ולא הוספת הערה. */
-  const renamed = src.replace(/\bconst pledgeOf = opts\.pledgeOf;/, 'const _kpMinOf = opts.pledgeOf;')
-                     .replace(/\bpledgeOf\(m\.year\)/, '_kpMinOf(m.year)');
+  const renamed = src.replace(/\bconst pledgeOf = opts\.pledgeOf;/, 'const _kMinOf = opts.pledgeOf;')
+                     .replace(/\bpledgeOf\(m\.year\)/, '_kMinOf(m.year)');
   if (renamed === src || /pledgeOf\(m\.year\)/.test(renamed)) {
     fail('מוטציית-נגד · השם לא הוחלף בעקביות — נמדדו 0 החלפות מלאות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשם שבליבה');

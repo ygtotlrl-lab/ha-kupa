@@ -39,7 +39,7 @@ const APP = {
    *  קידום עידן מוחק עותק מקומי במכשירים חיים, ⛔ והוא נעשה רק כשצורת
    *  השורה השתנתה. */
   dataEra: { base: 1, era: 2, why: 'תחילית הטבלאות והאחסון הוסבה מ-`kp_` ל-`k_` (סבב 148) — ⚠️ שם הטבלה הוא מפתח במראה ובמפת ה-⏳: ⛔ ומכשיר שיחזיק את הצורה הישנה ימזג מפתחות שאין להם מקבילה בענן' },
-  names: ['kpRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
+  names: ['kRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
   vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
   /*  ⛔ גלובלים שהארגז חול צריך מעבר לבדלים המשותפים — ⚠️ **מה נכנס**:
    *  שם ⟵ ערך. ⛔ **ומה מפיל**: הרצה שנופלת ב-`ReferenceError`.
@@ -62,7 +62,7 @@ const APP = {
    *  מאלה שמעליהם, ⛔ ולכן הם יושבים בקבוצה משלהם ואינם מתמזגים בהם. */
   core: {
     app: 'ha-kupa',
-    names: ['kpRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
+    names: ['kRowTs', 'tombStamp', 'prunePastTombstones', 'tombPruneMerged', '_mergePick', 'mergeCore', 'mergeRows'],
     vars: ['var TOMBSTONE_TTL_MS = ', 'var _tombPrunePending = '],
     globals: {},
     wrapFn: 'mergeRows',

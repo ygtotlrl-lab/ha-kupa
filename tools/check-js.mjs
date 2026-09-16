@@ -107,6 +107,7 @@ const APP = {
           'test_swcore.mjs',
           'test_build.mjs',
           'test_shell.mjs', 'test_devid.mjs', 'test_passwords.mjs',
+          'test_failsurface.mjs',
           'test_md.mjs', 'test_docfacts.mjs', 'test_signeddead.mjs', 'test_orphans.mjs', 'test_period.mjs', 'test_removals.mjs', 'test_wiring.mjs', 'test_readonly.mjs', 'test_crossgate.mjs',
           'test_examples.mjs',
           'test_sums.mjs',

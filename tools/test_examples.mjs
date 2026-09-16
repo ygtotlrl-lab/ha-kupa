@@ -2,7 +2,7 @@
 /*  test_examples.mjs — שלוש הדוגמאות המספריות מול ליבת החישוב.
  *
  *  **מה נאכף:** ⛔ שלוש שרשראות חודשים שהמספרים שלהן נמסרו בכתב רצות
- *  דרך `kpChain`, ⚠️ וכל מספר שהיא מחזירה מושווה לערך שנמסר — ⭐ חומש ·
+ *  דרך `kChain`, ⚠️ וכל מספר שהיא מחזירה מושווה לערך שנמסר — ⭐ חומש ·
  *  יתרה · מילוי · חסר · עודף · ואחוז האישי. ⛔ ואין כאן בדיקת נוכחות:
  *  ⚠️ כל טענה היא ערך מול ערך, ⛔ וסטייה של אגורה מפילה.
  *
@@ -28,10 +28,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { kpChain } from './kp-calc.mjs';
+import { kChain } from './k-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
-const APP = { app: 'ha-kupa', core: 'kp-calc.mjs' };
+const APP = { app: 'ha-kupa', core: 'k-calc.mjs' };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
 /*  ⛔ הקובץ הזה אינו אוכף שורה בטבלת התשתית — ⚠️ הצהרה ריקה ולא היעדר:
@@ -134,13 +134,13 @@ const CASES = [
 /*  ⛔ שלוש השרשראות באותה קריאה — ⚠️ חשון תלוי בעודף של תשרי, ⭐ ואב הוא
  *  שרשרת בפני עצמה: ⛔ הפרדתן לשלוש קריאות הייתה מנתקת את מעבר העודף. */
 function chainsOf(calc) {
-  const two = calc.kpChain([TISHREI, CHESHVAN], OPTS);
-  const one = calc.kpChain([AV], AV_OPTS);
+  const two = calc.kChain([TISHREI, CHESHVAN], OPTS);
+  const one = calc.kChain([AV], AV_OPTS);
   return [two[0], two[1], one[0]];
 }
 
 console.log(`· ${APP.app} — שלוש הדוגמאות המספריות של ליבת החישוב`);
-const live = chainsOf({ kpChain });
+const live = chainsOf({ kChain });
 for (const [name, want, pick] of CASES) eq(name, pick(live), want);
 
 /* ── מוטציות ───────────────────────────────────────────────────────────── */
@@ -160,7 +160,7 @@ if (RUN_MUT) {
 
   /*  ⛔ המוטציה שוברת את המנגנון ⛔ ולא את הצורה — ⚠️ שיעור החומש הוא
    *  ההכרעה עצמה, ⭐ והיפוכו מזיז כל מספר בשרשרת. */
-  const broken = src.replace('KP_CHUMASH_RATE = 0.2', 'KP_CHUMASH_RATE = 0.25');
+  const broken = src.replace('K_CHUMASH_RATE = 0.2', 'K_CHUMASH_RATE = 0.25');
   if (broken === src) {
     fail('מוטציה · שיעור החומש לא הוחלף — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשם הקבוע שבליבה');
@@ -177,9 +177,9 @@ if (RUN_MUT) {
 
   /*  ⛔ מוטציית-נגד היא שינוי חי שאסור לו להפיל — ⚠️ שם מקומי שהוחלף
    *  בעקביות, ⭐ ולא הוספת הערה. */
-  const renamed = src.replace(/\bconst live = /, 'const _kpLiveRows = ')
-                     .replace(/\blive\(/g, '_kpLiveRows(')
-                     .replace('const _kpLiveRows = (rows)', 'const _kpLiveRows = (rows)');
+  const renamed = src.replace(/\bconst live = /, 'const _kLiveRows = ')
+                     .replace(/\blive\(/g, '_kLiveRows(')
+                     .replace('const _kLiveRows = (rows)', 'const _kLiveRows = (rows)');
   if (renamed === src) {
     fail('מוטציית-נגד · שם העוזר לא הוחלף — נמדדו 0 החלפות והצפוי אחת. ' +
          'מיישרים את תבנית ההחלפה לשם שבליבה');

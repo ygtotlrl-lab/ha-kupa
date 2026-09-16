@@ -33,7 +33,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { kpChain } from './kp-calc.mjs';
+import { kChain } from './k-calc.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
@@ -128,8 +128,8 @@ const sum = (a) => a.reduce((s, x) => s + x, 0);
  *  מרשם בדיוק, ⚠️ ובלעדיו היא הייתה מודדת דבר אחר מזה שהשער מודד — ⛔ ולכן מרשם אחד לשתי הדרכים. */
 function checks(src) {
   const B = Object.fromEntries(APP.fns.map((f) => [f, fnBody(src, f)]));
-  const withSo = kpChain([{ key: 'ח', year: 5787, rows: asRows(SO) }], OPTS)[0];
-  const empty = kpChain([{ key: 'ר', year: 5787, rows: [] }], OPTS)[0];
+  const withSo = kChain([{ key: 'ח', year: 5787, rows: asRows(SO) }], OPTS)[0];
+  const empty = kChain([{ key: 'ר', year: 5787, rows: [] }], OPTS)[0];
   return [
     ['א · גופי הפונקציות חולצו', APP.fns.filter((f) => B[f].length > 10).length, APP.fns.length],
     ['ב · המיפוי חל על כל המופעים, בלי סינון', n(B.instanceRows, /instancesOfMonth\(k\)\.map\(/g), 1],
