@@ -5,7 +5,7 @@
 - **GitHub Pages:** `https://ygtotlrl-lab.github.io/ha-kupa/`
 - **טוקן:** מנוהל ב-Windows Credential Manager (host `github.com`) — לעולם לא בקובץ
 - **קובץ ראשי:** `index.html`
-- **Supabase:** project `zrftjkghhjhqzopvdzou` | טבלאות `kp_*` — ⚠️ **הפרויקט
+- **Supabase:** project `zrftjkghhjhqzopvdzou` | טבלאות `k_*` — ⚠️ **הפרויקט
   משותף**, ⛔ ומפתח ה-anon משותף לכל מי שבו: ⭐ ולכן הגיבוי, הפינוי הלילי
   ורשימת-ההיתר שלהם אינם בבעלות הריפו הזה.
 - **הלקוח והצורך:** ניהול צדקה אישי-משפחתי — שני משתמשים על נתונים

@@ -36,8 +36,8 @@ const APP = {
   file: 'index.html',
   /*  ⛔ ההוראה לפני המופע, והמופע לפני הרישום — ⚠️ זה מה ששומר על סדר
    *  האב-ובן: ⛔ בן שנדחף לפני אביו נקרא כיתום. */
-  tables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances',
-           'kp_entries', 'kp_lookups'],
+  tables: ['k_pledges', 'k_standing_orders', 'k_so_instances',
+           'k_entries', 'k_lookups'],
   /*  ⛔ טבלת מפתח-ערך — ⚠️ **ההיעדר מוצהר ריק** ⛔ ואינו נשמט: ⭐ כאן היא
    *  אינה ב-`PUSH_TABLES`, ⚠️ שהכתיבה אליה עוברת ב-`cfgWrite` ישירות. */
   kvTables: [],

@@ -66,8 +66,8 @@ const APP = {
   /*  ⛔ הטבלאות שנושאות `updated_at` — ⚠️ **וכולן `bigint`**: ⭐ חותמת
    *  שהמכשיר מייצר, ⛔ ובה אפס הוא **הישן ביותר** ולא «לא ידוע».
    *  ⛔ אין כאן טיפוס שני — ⚠️ שני טיפוסים לאותו מושג הם שני מנועי הכרעה. */
-  stamped: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances',
-             'kp_entries', 'kp_lookups', 'kp_settings'],
+  stamped: ['k_pledges', 'k_standing_orders', 'k_so_instances',
+             'k_entries', 'k_lookups', 'k_settings'],
   schemaSkip: ['sh_sync_log', 'sh_backup'],
   /*  ⛔ דפוסי קריאת מפתח ההגדרה — ⚠️ **מה נכנס**: `re` ביטוי עם קבוצת
    *  לכידה אחת לשם המפתח, ⛔ ו-`why` המסלול שהוא מכסה; ⛔ **ומה מפיל**:
@@ -80,13 +80,13 @@ const APP = {
    *  מפיל**: מפתח חי שאינו כאן ואין לו קורא, ⛔ והכרזה שאין לה מפתח חי.
    *  ⭐ **ולמה ריק**: נמדד ואין. */
   cfgOrphans: {},
-  cfgTable: 'kp_settings',
+  cfgTable: 'k_settings',
   /*  ⛔ טבלאות המפתח-ערך שבבעלות הריפו — ⚠️ **מה נכנס**: שם טבלה שעמודת
    *  `value` שלה נושאת JSON; ⛔ **ומה מפיל**: ערך שאינו מתפרש, ⭐ ורשימה
    *  ריקה. ⚠️ **ולמה היא קיימת**: הבעלות היא של ריפו אחד, ⛔ והמדידה
    *  רצה שם ⛔ ולא בשלושה. */
   kvReadFn: 'kvParse',
-  kvTables: ['kp_settings'],
+  kvTables: ['k_settings'],
   backupTable: 'sh_backup',
   /*  ⛔ לגיוס פרויקט Supabase משלו — ⚠️ ולכן רשימת-ההיתר שלו היא שלו,
    *  ⭐ והיא נקראת מהמסד שלו. */
@@ -101,8 +101,8 @@ const APP = {
    *  מפיל**: שם שאין לו אף טבלה בסכימה. ⭐ **ולמה הוא כאן**: שני פרויקטים
    *  חיים בקובץ אחד, ⛔ וריפו שמודד את שניהם מדווח פער על טבלה שאינה שלו. */
   project: 'kupa',
-  ownTables: ['kp_settings', 'kp_pledges', 'kp_standing_orders',
-              'kp_so_instances', 'kp_entries', 'kp_lookups'],
+  ownTables: ['k_settings', 'k_pledges', 'k_standing_orders',
+              'k_so_instances', 'k_entries', 'k_lookups'],
   /*  ⛔ שמות עמודה שאין להם קורא **בכוונה** (סבב 104) — ⚠️ וכל אחד נושא
    *  את נימוקו: ⭐ שלישיית המחיקה הרכה ומשפחת הטבלאות המקבילות מחייבות
    *  את העמודה בסכימה, ⛔ גם באפליקציה שאינה כותבת אותה.
@@ -129,7 +129,7 @@ const APP = {
    *  «נמדד ואין». */
   twinTables: {
     users:    null,
-    settings: { table: 'kp_settings',
+    settings: { table: 'k_settings',
                 cols: ['key', 'value', 'updated_at', 'client_id',
                     'deleted', 'deleted_at', 'deleted_by'] },
   },

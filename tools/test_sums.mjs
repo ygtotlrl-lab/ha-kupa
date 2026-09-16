@@ -41,7 +41,7 @@ const APP = {
    *  כסיכום אינו בהכרח סיכום, ⚠️ ובלי ההצהרה היה צריך לצמצם את הרשימה —
    *  ⛔ וצמצום כזה הוא היתר שקט לשם הבא. */
   sumColsAllow: {
-    'kp_so_instances.status': 'מצבו של המופע היחיד — ⚠️ ממתין או שולם, ⛔ ואינו צבירה של רשומות אחרות: ⭐ עובדה על שורה אחת, והיא זו שנרשמה',
+    'k_so_instances.status': 'מצבו של המופע היחיד — ⚠️ ממתין או שולם, ⛔ ואינו צבירה של רשומות אחרות: ⭐ עובדה על שורה אחת, והיא זו שנרשמה',
   },
   /*  ⛔ שמות שאסור להם להיות שם עמודה — ⚠️ **מה נכנס**: שם באנגלית שמציין
    *  סכום שנגזר; ⛔ **ומה מפיל**: עמודה ששמה **בדיוק** אחד מהם ואינה
@@ -120,9 +120,28 @@ const pass = (m) => (RAN++, console.log('✅ ' + m));
  *  שבראש הקובץ, ⭐ וספירה גולמית מדווחת פער על קובץ תקין. */
 const sqlCode = (sql) => sql.replace(/--[^\n]*/g, ' ');
 
+/*  ⛔ ושם טבלה שהוסב נקרא בשמו המאוחר — ⚠️ **מה נכנס**: כל `rename to`
+ *  שבמיגרציות, בסדר שבו הן רצות; ⛔ **ומה מפיל**: הצהרה שנוקבת בשם שכבר
+ *  הוסב. ⭐ **ולמה המבנה קיים**: מיגרציה שכבר רצה אינה נערכת, ⚠️ והשם
+ *  שבתוכה מתאר את המסד כפי שהיה — ⛔ והמאוחרת היא ההגדרה.
+ *  ⚠️ **והשרשרת נסגרת בתקרה** — ⛔ שתי הסבות הפוכות היו לולאה. */
+function renameMap(sql) {
+  const map = new Map();
+  const re = /alter\s+table\s+(?:if\s+exists\s+)?(?:public\.)?([a-z_]+)\s+rename\s+to\s+(?:public\.)?([a-z_]+)/gi;
+  let r;
+  while ((r = re.exec(sql)) !== null) map.set(r[1].toLowerCase(), r[2].toLowerCase());
+  return map;
+}
+function liveName(map, t) {
+  let n = t.toLowerCase();
+  for (let i = 0; i < 20 && map.has(n); i++) n = map.get(n);
+  return n;
+}
+
 /*  ⛔ גוף הטבלה נחתך בהתאמת סוגריים ⛔ ולא בחלון קבוע — ⚠️ גוף ארוך מהחלון
  *  היה נחתך באמצע, ⭐ והעמודות שאחריו לא היו נספרות כלל. */
 function tableCols(sql) {
+  const ren = renameMap(sql);
   const out = [];
   const re = /create\s+table\s+(?:if\s+not\s+exists\s+)?(?:public\.)?([a-z_]+)\s*\(/gi;
   let m;
@@ -148,7 +167,7 @@ function tableCols(sql) {
     for (const p of parts) {
       const t = p.trim().split(/\s+/)[0];
       if (!t || /^(constraint|primary|unique|check|foreign)$/i.test(t)) continue;
-      out.push({ table: m[1], col: t.toLowerCase() });
+      out.push({ table: liveName(ren, m[1]), col: t.toLowerCase() });
     }
   }
   return out;
@@ -199,8 +218,8 @@ const CTX = () => {
   const sql = fs.readdirSync(dir).filter((f) => f.endsWith('.sql')).sort()
     .map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
   return { html, sql, w: whiten(html, { markup: 'blank' }),
-           own: ['kp_pledges', 'kp_standing_orders',
-                 'kp_so_instances', 'kp_entries', 'kp_lookups'] };
+           own: ['k_pledges', 'k_standing_orders',
+                 'k_so_instances', 'k_entries', 'k_lookups'] };
 };
 
 const run = (ctx) => checks(ctx).filter(([, got, want]) => got !== want);

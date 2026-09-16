@@ -173,8 +173,8 @@ if (RUN_MUT) {
   /*  ⛔ מוטציית-נגד היא שינוי חי שאסור לו להפיל — ⚠️ שם מקומי שהוחלף
    *  בעקביות, ⭐ ולא הוספת הערה. */
   const renamed = SRC.replace('  var next = {\n', '  var fresh = {\n')
-                     .replace("  localPut('kp_standing_orders', next);\n  return next;",
-                              "  localPut('kp_standing_orders', fresh);\n  return fresh;");
+                     .replace("  localPut('k_standing_orders', next);\n  return next;",
+                              "  localPut('k_standing_orders', fresh);\n  return fresh;");
   if (renamed === SRC || /\bnext\b/.test(fnBody(whiten(renamed, { markup: 'blank' }), 'orderNewVersion'))) {
     fail('מוטציית-נגד · השם לא הוחלף בעקביות — נמדדו החלפות חלקיות והצפוי החלפה מלאה. ' +
          'מיישרים את תבנית ההחלפה לשם שבמקור');

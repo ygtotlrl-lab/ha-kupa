@@ -35,8 +35,8 @@ import { DB_SCHEMA } from './db_schema.mjs';
 /* ⚠️ סוף פר-אפליקציה */
 const APP = {
   name: 'ha-kupa',
-  keys: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances',
-         'kp_entries', 'kp_lookups', 'kp_settings'],
+  keys: ['k_pledges', 'k_standing_orders', 'k_so_instances',
+         'k_entries', 'k_lookups', 'k_settings'],
   prefixes: [''],
   /*  ⛔ שמות גיבוי שרצו בעבר ואינם נגזרים מהקוד — ⚠️ **מה נכנס**: שם מפתח
    *  שיושב במסד ואינו ב-`BK_CFG.sources()`; ⛔ **ומה מפיל**: שם שאין לו
@@ -62,7 +62,7 @@ const APP = {
   fnDefRpc: 'bk_fn_def',
   fnNames: ['bk_retention_keys', 'bk_retention_sweep', 'bk_prune_layer'],
   migration: null,
-  migrationDoc: 'gius/migrations/024_rename_g_config_to_g_settings.sql',
+  migrationDoc: 'gius/migrations/027_retention_keys_kupa_prefix.sql',
   /*  ⛔ המסלול שדורש את השדות האלה אינו רץ באפליקציה הזו (סבב 72) —
       ⚠️ והם מוצהרים ריקים ⛔ ואינם נשמטים: ⭐ שדה חסר נקרא «לא נשאל»,
       וריק נקרא «נמדד ואין», ⛔ וטענה שמשווה מול חסר עוברת תמיד. */

@@ -38,6 +38,7 @@ const APP = {
     '001_updated_at_bigint.sql': 'kp_updated_at_bigint',
     '002_settings_value_json.sql': 'kp_updated_at_bigint',
     '003_period_derived.sql': 'kp_003_period_derived',
+    '004_prefix_kp_to_k.sql': 'round148_kupa_prefix_to_k',
   },
   /*  ⛔ קובץ שאין לו רשומה במעקב — ⚠️ **מה נכנס**: שם הקובץ ⟵ למה אין
    *  לו רשומה; ⛔ **ומה מפיל**: הצהרה שאין לה `null` במרשם, ו-`null`

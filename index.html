@@ -472,9 +472,9 @@ var MSG_EDIT = 'עריכה';
    טבלה שנכתבת מקומית ואינה כאן — שורותיה אינן עולות לעולם.
    ⭐ **ולמה הסדר**: האב נדחף לפני הבן, ⛔ אחרת הבן נקרא כיתום.
    ══════════════════════════════════════════════════════════════════════════ */
-var PUSH_TABLES = ['kp_pledges', 'kp_standing_orders',
-                   'kp_so_instances', 'kp_entries', 'kp_lookups'];
-var KV_TABLE = 'kp_settings';
+var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
+                   'k_so_instances', 'k_entries', 'k_lookups'];
+var KV_TABLE = 'k_settings';
 
 /*  ⛔ העידן — ⚠️ מספר בענן שמכשיר מיושן זורק מולו את העותק המקומי:
  *  ⭐ תיקון בקוד אינו מנקה מכשיר שכבר מזוהם. */
@@ -560,11 +560,11 @@ function kpChain(months, opts) {
    מתפצל ביום שאחד משני האתרים נערך.
    ══════════════════════════════════════════════════════════════════════════ */
 var TABLES = [
-  { t: 'kp_pledges',         key: 'hebrew_year' },
-  { t: 'kp_standing_orders', key: 'client_id' },
-  { t: 'kp_so_instances',   key: 'client_id' },
-  { t: 'kp_entries',        key: 'client_id' },
-  { t: 'kp_lookups',        key: 'client_id' }
+  { t: 'k_pledges',         key: 'hebrew_year' },
+  { t: 'k_standing_orders', key: 'client_id' },
+  { t: 'k_so_instances',   key: 'client_id' },
+  { t: 'k_entries',        key: 'client_id' },
+  { t: 'k_lookups',        key: 'client_id' }
 ];
 function kpTableMeta(t) {
   var i;
@@ -573,7 +573,7 @@ function kpTableMeta(t) {
 }
 function kpRowTs(r) { return (r && +r.updated_at) || 0; }
 /*  ⛔ מפתח הסימון הוא מפתח המיזוג — ⚠️ הוא נגזר מהמטא של הטבלה
- *  ⛔ ואינו `client_id` מוקלד: ⭐ `kp_pledges` ממופתחת בשנה העברית,
+ *  ⛔ ואינו `client_id` מוקלד: ⭐ `k_pledges` ממופתחת בשנה העברית,
  *  ⚠️ ומפתח מוקלד היה מסמן שורה שמנוע המיזוג אינו מוצא. */
 function kpPendKey(t, r) { return t + ':' + (r && r[kpTableMeta(t).key]); }
 function kpStripRows(t, rows) { return rows; }
@@ -582,7 +582,7 @@ function kpStripRows(t, rows) { return rows; }
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
 var _kpPushedAt = {};
-var KP_PUSHED_KEY = 'kp_pushed_at';
+var KP_PUSHED_KEY = 'k_pushed_at';
 function _kpLoadPushed() {
   try { _kpPushedAt = JSON.parse(lsGet(KP_PUSHED_KEY) || '{}') || {}; } catch (e) { _kpPushedAt = {}; }
 }
@@ -599,8 +599,8 @@ function kpDirtyRows(t) {
 }
 
 var MIRROR_CFG = {
-  prefix: 'kp_mirror_',
-  app:    'kp_',
+  prefix: 'k_mirror_',
+  app:    'k_',
   tables: function () { return TABLES.map(function (m) { return m.t; }); },
   /*  ⛔ ריק ומוצהר — ⚠️ אין בקופה טבלה שנכתבת מחוץ לדחיפה:
    *  ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין». */
@@ -613,25 +613,25 @@ var MIRROR_CFG = {
 
 var LS_CFG = {
   cachePrefix: 'ha-kupa-',
-  logKey: 'kp_ls_log',
-  hzPrefix: 'kp_ls_hz_',
-  dismissKey: 'kp_sw_dismissed',
+  logKey: 'k_ls_log',
+  hzPrefix: 'k_ls_hz_',
+  dismissKey: 'k_sw_dismissed',
   /*  ⛔ שלב א ריק ומוצהר — ⚠️ אין בקופה מראה שהיא מטמון מהירות בלבד:
    *  ⭐ כל מראה כאן היא הנתון עצמו. */
   tier1: [],
   /*  ⛔ ושלב ב — הרישומים הישנים שכבר סונכרנו, הישן קודם: ⚠️ והעֵד
    *  נבדק פר-פריט, ⭐ ולא בכניסה לרשימה. */
-  tier2: [{ key: mirrorKey('kp_entries'), syncedThrough: _kpPushedFor('kp_entries') },
-          { key: mirrorKey('kp_so_instances'), syncedThrough: _kpPushedFor('kp_so_instances') }],
+  tier2: [{ key: mirrorKey('k_entries'), syncedThrough: _kpPushedFor('k_entries') },
+          { key: mirrorKey('k_so_instances'), syncedThrough: _kpPushedFor('k_so_instances') }],
 };
 
-var DEV_CFG = { key: 'kp_device_id' };
+var DEV_CFG = { key: 'k_device_id' };
 var TOAST_DEFAULT_MS = 2600;
 
 var BK_CFG = {
   client: function () { return sb; },
-  flagKey: 'kp_last_backup',
-  logQueueKey: 'kp_log_queue',
+  flagKey: 'k_last_backup',
+  logQueueKey: 'k_log_queue',
   prefix: '',
   device: function () { try { return getDeviceId(); } catch (e) { return null; } },
   /*  ⛔ אין כניסה בקופה — ⚠️ ולכן אין שם משתמש לרשום: ⭐ המכשיר הוא
@@ -640,18 +640,18 @@ var BK_CFG = {
   secrets: [],
   sources: function () {
     return [
-      { kind: 'table', name: 'kp_pledges',         order: 'hebrew_year', ts: 'updated_at' },
-      { kind: 'table', name: 'kp_standing_orders', order: 'client_id', ts: 'updated_at' },
-      { kind: 'table', name: 'kp_so_instances',    order: 'client_id', ts: 'updated_at' },
-      { kind: 'table', name: 'kp_entries',         order: 'client_id', ts: 'updated_at' },
-      { kind: 'table', name: 'kp_lookups',         order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_pledges',         order: 'hebrew_year', ts: 'updated_at' },
+      { kind: 'table', name: 'k_standing_orders', order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_lookups',         order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: KV_TABLE,             order: 'key' }
     ];
   }
 };
 
 var PEND_CFG = {
-  app: 'kupa', key: 'kp_pending',
+  app: 'kupa', key: 'k_pending',
   redraw: function () { try { kpRender(); } catch (e) { } }
 };
 
@@ -660,7 +660,7 @@ var RTY_CFG = {
   pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
 };
 
-var KP_STAMP_KEY = 'kp_last_changed';
+var KP_STAMP_KEY = 'k_last_changed';
 var _kpSeenTs = null, _lastSeenOk = 0;
 var PL_CFG = {
   every:  3000,
@@ -705,7 +705,7 @@ var HW_CFG = {
    *  ⭐ אין כניסה, ואין דרגה שתוכרע. */
   admin: function () { return true; },
   specs: [{
-    key: mirrorKey('kp_entries'),
+    key: mirrorKey('k_entries'),
     label: 'רישומי חודשים שנסגרו',
     inWindow: function (r) {
       var d = r && r.entry_date;
@@ -714,9 +714,9 @@ var HW_CFG = {
     },
     idOf: function (r) { return r && r.client_id; },
     ts: function (r) { return kpRowTs(r); },
-    isPending: function (r) { return pendHas(kpPendKey('kp_entries', r)); },
+    isPending: function (r) { return pendHas(kpPendKey('k_entries', r)); },
     fetch: function () {
-      return withTimeout(sb.from('kp_entries').select('*'))
+      return withTimeout(sb.from('k_entries').select('*'))
         .then(function (r) {
           return (r && !r.error && Array.isArray(r.data)) ? { ok: true, rows: r.data }
                                                           : { ok: false, rows: [] };
@@ -811,6 +811,11 @@ function devId() { try { return getDeviceId(); } catch (e) { return null; } }
    ⛔ הקריאה אינה ב-`single` — ⚠️ שורה שאינה קיימת מסומנת שם כשגיאה,
    ⭐ ומסך שנתוניו תקינים מכריז «הרענון מהענן נכשל».
    ══════════════════════════════════════════════════════════════════════════ */
+/*  ⛔ תחילית ההגדרות המקומיות היא קבוע אחד — ⚠️ המפתח נבנה ממנה בשרשור עם
+ *  שם ההגדרה, ⭐ ושלושה אתרים כתבו אותה כליטרל: ⛔ תחילית פזורה אינה ניתנת
+ *  לשינוי ממקום אחד, ⚠️ וההסבה הבאה הייתה מפספסת את האתר שלא נמצא. */
+var CFG_PREFIX = 'k_cfg_';
+
 function cfgRead(key) {
   return withTimeout(sb.from(KV_TABLE).select('value').eq('key', key).maybeSingle())
     .then(function (r) {
@@ -821,7 +826,7 @@ function cfgRead(key) {
 }
 function cfgWrite(key, value) {
   CFG[key] = value;
-  lsSet('kp_cfg_' + key, JSON.stringify(value));
+  lsSet(CFG_PREFIX + key, JSON.stringify(value));
   if (!sb) return Promise.resolve(false);
   return withTimeout(sb.from(KV_TABLE).upsert(
     { key: key, value: JSON.stringify(value), updated_at: Date.now() },
@@ -837,7 +842,7 @@ function cfgBoot() {
   var i, k, raw;
   for (i = 0; i < CFG_KEYS.length; i++) {
     k = CFG_KEYS[i].key;
-    raw = lsGet('kp_cfg_' + k);
+    raw = lsGet(CFG_PREFIX + k);
     if (raw !== null) { try { CFG[k] = JSON.parse(raw); } catch (e) {} }
   }
   if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
@@ -853,7 +858,7 @@ function cfgRefresh() {
     return cfgRead(k).then(function (v) {
       if (v === null) return false;
       CFG[k] = v;
-      lsSet('kp_cfg_' + k, JSON.stringify(v));
+      lsSet(CFG_PREFIX + k, JSON.stringify(v));
       return true;
     });
   })).then(function (hits) {
@@ -2901,9 +2906,9 @@ function mirrorBoot() { mirrorLoad(); }
 /*  ⛔ העידן שהקוד הזה כותב בו — ⚠️ הוא עולה **רק בשינוי צורת שורה**:
  *  ⭐ וצורת השורה כאן לא השתנתה, ⛔ ולכן הוא בערך ההתחלתי — ⚠️ והמנגנון קיים
  *  כדי שהשינוי הבא יוכל לזרוק. */
-var DATA_ERA = 1;
+var DATA_ERA = 2;
 var ERA_CFG = {
-  prefix: 'kp_',
+  prefix: 'k_',
   client: function () { return sb; },
   table:  function () { return KV_TABLE; },
   /*  ⛔ המוחק — ⚠️ מפתחות המראה **ואופק הפינוי שלהם**: ⭐ אופק ששרד מסנן
@@ -3424,8 +3429,8 @@ function barChart(rows, label) {
    ⚠️ **מה נכנס**: העותק המקומי של הטבלאות, והמסך שמוצג עכשיו;
    ⛔ **ומה מפיל**: סיכום שנשמר כאן — ⭐ כל מספר נגזר בזמן קריאה.
    ══════════════════════════════════════════════════════════════════════════ */
-var DATA = { kp_pledges: [], kp_standing_orders: [],
-             kp_so_instances: [], kp_entries: [], kp_lookups: [] };
+var DATA = { k_pledges: [], k_standing_orders: [],
+             k_so_instances: [], k_entries: [], k_lookups: [] };
 var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
 
@@ -3454,7 +3459,7 @@ function kpSortEntries(list) {
    ⛔ **והמפתח הוא `YYYY-NN`** — ⚠️ השנה העברית ומספר החודש בתוכה,
       ⭐ מרופד לשתי ספרות: ⛔ בלי הריפוד ההשוואה הלקסיקוגרפית מסדרת את
       החודש העשירי לפני השני.
-   ⛔ **וטבלה שנושאת ערך לתקופה אינה טבלת תקופה** — ⚠️ `kp_pledges` נושאת
+   ⛔ **וטבלה שנושאת ערך לתקופה אינה טבלת תקופה** — ⚠️ `k_pledges` נושאת
       את הפלעדזש לשנה, ⭐ ושמה אומר את הערך ⛔ ולא את התקופה.
    ══════════════════════════════════════════════════════════════════════════ */
 function kpPad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -3543,9 +3548,9 @@ function monthByKey(k) {
  *  להתקנה. */
 function monthsWithData() {
   var seen = {}, out = [], l, i, k;
-  l = kpLive(DATA.kp_entries);
+  l = kpLive(DATA.k_entries);
   for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
-  l = kpLive(DATA.kp_so_instances);
+  l = kpLive(DATA.k_so_instances);
   for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
   k = monthKeyOf(kpIsoOfDay(Math.floor(Date.now() / 86400000)));
   if (k) seen[k] = true;
@@ -3570,12 +3575,12 @@ function monthsSorted() {
 }
 
 function entriesOfMonth(k) {
-  return kpLive(DATA.kp_entries).filter(function (r) { return monthKeyOf(r.entry_date) === k; });
+  return kpLive(DATA.k_entries).filter(function (r) { return monthKeyOf(r.entry_date) === k; });
 }
 /*  ⛔ מופע ממתין נספר בצדקה בפועל **מיד** — ⚠️ אחרת ה«חסר» שגוי מא׳
  *  דחודש ועד יום החיוב: ⭐ ההוראה כבר ידועה, ⛔ והתאריך אינו משנה אותה. */
 function instancesOfMonth(k) {
-  return kpLive(DATA.kp_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
+  return kpLive(DATA.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
 }
 function instanceRows(k) {
   return instancesOfMonth(k).map(function (r) {
@@ -3591,12 +3596,12 @@ function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 /*  ⛔ הפלעדזש נקרא מהטבלה לפי השנה — ⚠️ **ושנה בלי שורה היא אפס**:
  *  ⭐ ולא כשל, ⛔ שהתקנה טרייה אינה נושאת אף שורה. */
 function pledgeOfYear(y) {
-  var l = kpLive(DATA.kp_pledges), i;
+  var l = kpLive(DATA.k_pledges), i;
   for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === String(y)) return +l[i].pledge || 0;
   return 0;
 }
 function openingBalance() {
-  var l = kpLive(DATA.kp_pledges).slice().sort(function (a, b) {
+  var l = kpLive(DATA.k_pledges).slice().sort(function (a, b) {
     return String(a.hebrew_year).localeCompare(String(b.hebrew_year));
   });
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
@@ -3620,10 +3625,10 @@ function chainOf(k) {
    הוראות קבע
    ══════════════════════════════════════════════════════════════════════════ */
 function ordersLive() {
-  return kpLive(DATA.kp_standing_orders).filter(function (o) { return o.active !== false; });
+  return kpLive(DATA.k_standing_orders).filter(function (o) { return o.active !== false; });
 }
 function orderById(id) {
-  var l = kpLive(DATA.kp_standing_orders), i;
+  var l = kpLive(DATA.k_standing_orders), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
   return null;
 }
@@ -3795,7 +3800,7 @@ var METHOD_DEFAULT = ['העברה ישירה', 'ביט ופייבוקס', 'מז�
 var CAT_LIST = ['לאחרים', KP_CAT_SELF];
 
 function lookupList(kind, dflt) {
-  var l = kpLive(DATA.kp_lookups).filter(function (r) { return r.kind === kind; })
+  var l = kpLive(DATA.k_lookups).filter(function (r) { return r.kind === kind; })
     .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); })
     .map(function (r) { return r.label; });
   return l.length ? l : dflt;
@@ -3804,7 +3809,7 @@ function lookupList(kind, dflt) {
 /*  ⛔ ההשלמה נגזרת מהפירוטים שכבר נרשמו — ⚠️ distinct לפי תדירות:
  *  ⭐ מה שנרשם הרבה עולה ראשון, ⛔ ואין רשימה שנייה לתחזק. */
 function descSuggest(q) {
-  var seen = {}, l = kpLive(DATA.kp_entries), i, d;
+  var seen = {}, l = kpLive(DATA.k_entries), i, d;
   for (i = 0; i < l.length; i++) {
     d = (l[i].description || '').trim();
     if (!d) continue;
@@ -4061,7 +4066,7 @@ function flowCommit() {
     updated_at: Date.now(),
     deleted: false
   };
-  localPut('kp_entries', row);
+  localPut('k_entries', row);
   view.monthKey = monthKeyOf(row.entry_date);
   var before = chainOf(view.monthKey);
   pushSoon();
@@ -4093,7 +4098,7 @@ function doneScreenHTML() {
 var UNDO = { row: null, timer: null };
 
 function entryById(id) {
-  var l = kpLive(DATA.kp_entries), i;
+  var l = kpLive(DATA.k_entries), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
   return null;
 }
@@ -4105,8 +4110,8 @@ function entryById(id) {
  *  ⛔ **ואין כאן בן לשני אבות** — ⚠️ התקופה נגזרת ואינה טבלה, ⭐ ולכן
  *  לכל בן אב אחד: ⛔ ואין סדר הכרעה שצריך להצהיר. */
 var KP_CHILDREN = {
-  kp_standing_orders: [{ table: 'kp_so_instances', fk: 'standing_order_client_id' }],
-  kp_so_instances:    [{ table: 'kp_entries',      fk: 'so_instance_client_id' }]
+  k_standing_orders: [{ table: 'k_so_instances', fk: 'standing_order_client_id' }],
+  k_so_instances:    [{ table: 'k_entries',      fk: 'so_instance_client_id' }]
 };
 
 /*  ⛔ הבן יורש את מחיקת האב ואת חותמתה — ⚠️ דגל המחיקה, חותמת המחיקה
@@ -4148,7 +4153,7 @@ function entryDelete(id) {
              MSG_DELETE).then(function (yes) {
     if (!yes) return;
     var copy = JSON.parse(JSON.stringify(r));
-    kpKill('kp_entries', r);
+    kpKill('k_entries', r);
     UNDO.row = copy;
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
@@ -4161,7 +4166,7 @@ function entryUndo() {
   if (!UNDO.row) return;
   var r = UNDO.row;
   r.deleted = false; r.deleted_at = null; r.deleted_by = null; r.updated_at = Date.now();
-  localPut('kp_entries', r);
+  localPut('k_entries', r);
   UNDO.row = null;
   if (UNDO.timer) clearTimeout(UNDO.timer);
   pushSoon();
@@ -4180,14 +4185,14 @@ function orderNewVersion(o, patch, fromMonth) {
   if (!m) { uiNoDialog('orderNewVersion', fromMonth); return null; }
   var key = m.key;
   var prev = prevMonthOf(m.key);
-  var old = kpLive(DATA.kp_standing_orders).filter(function (x) {
+  var old = kpLive(DATA.k_standing_orders).filter(function (x) {
     return idEq(x.client_id, o.client_id);
   })[0];
   if (old) {
     old.valid_to_month = prev ? prev.key : key;
     old.active = false;
     old.updated_at = Date.now();
-    localPut('kp_standing_orders', old);
+    localPut('k_standing_orders', old);
   }
   var next = {
     client_id: newClientId(), name: patch.name != null ? patch.name : o.name,
@@ -4197,7 +4202,7 @@ function orderNewVersion(o, patch, fromMonth) {
     valid_from_month: key, valid_to_month: null,
     supersedes_id: o.client_id, updated_at: Date.now(), deleted: false
   };
-  localPut('kp_standing_orders', next);
+  localPut('k_standing_orders', next);
   return next;
 }
 
@@ -4369,8 +4374,67 @@ document.addEventListener('keydown', function (e) {
 /* ══════════════════════════════════════════════════════════════════════════
    העלייה
    ══════════════════════════════════════════════════════════════════════════ */
+/*  ⛔ ההגירה המקומית של התחילית — ⚠️ **מה נכנס**: כל מפתח שבאחסון המקומי
+ *  שנושא את התחילית הישנה, מלא או בנוי מקידומת; ⛔ **ומה מפיל**: מפתח
+ *  שנשאר תחתיה אחרי שהיא רצה. ⭐ **ולמה היא קיימת**: התחילית הוסבה במסד
+ *  ובקוד באותו סבב, ⛔ ומפתח שאינו מוסב הוא תור שלא נדחף ומראה שאיש אינו
+ *  קורא — ⚠️ והנתון שבו אבוד בלי שאיש יראה.
+ *  ⚠️ **והיא סורקת את האחסון עצמו** ⛔ ולא רשימת שמות — ⭐ שלוש קידומות
+ *  בונות כאן מפתחות ששמם המלא אינו ידוע מראש.
+ *  ⛔ **והיא יורדת בסבב שאחרי זה שהריץ אותה** — ⚠️ רצה כאן (סבב 148). */
+function kpMigrateLegacyPrefix() {
+  var OLD = 'kp_', NEW = 'k_';
+  /*  ⛔ התור, המזהה ותור היומן ראשונים — ⚠️ מכשיר שנסגר באמצע ההגירה
+   *  מאבד אותם אחרונים: ⭐ הם מה שאין לו מקור שני בענן. */
+  var head = ['pending', 'device_id', 'log_queue'];
+  var all = [], i, k, to, v, moved = 0;
+  try {
+    for (i = 0; i < localStorage.length; i++) {
+      k = localStorage.key(i);
+      if (k && k.indexOf(OLD) === 0) all.push(k);
+    }
+  } catch (e) { console.warn('[ls] סריקת האחסון נכשלה בהגירת התחילית', e); return 0; }
+  all.sort(function (a, b) {
+    var ra = head.indexOf(a.slice(OLD.length)), rb = head.indexOf(b.slice(OLD.length));
+    if (ra < 0) ra = head.length;
+    if (rb < 0) rb = head.length;
+    return ra - rb || (a < b ? -1 : a > b ? 1 : 0);
+  });
+  for (i = 0; i < all.length; i++) {
+    k = all[i];
+    /*  ⛔ כל מופע מוחלף ⛔ ולא הפותח בלבד — ⚠️ מפתח האופק נבנה מקידומת
+     *  ועל מפתח המראה, ⭐ ונושא את התחילית פעמיים: ⛔ החלפת הפותח לבדו
+     *  הייתה משאירה אופק יתום שחוסם את המשיכה לנצח. */
+    to = k.split(OLD).join(NEW);
+    v = lsGet(k);
+    if (v === null) { lsRemove(k); continue; }
+    /*  ⛔ ומפה שמפתחותיה שמות טבלה מוסבת בתוכה — ⚠️ מפת ה-⏳ ועֵד הדחיפה
+     *  ממופתחות בשם הטבלה: ⭐ שינוי שם המפתח באחסון לבדו היה משאיר בתוכן
+     *  את השם הישן, ⛔ והסימון היה יורד בשקט — ⚠️ והשורה שלא נדחפה אבודה.
+     *  ⛔ **והמפתחות בלבד מוסבים** ⛔ ולא הערכים — ⚠️ ערך הוא טקסט שהמשתמש
+     *  הקליד, ⭐ והמפתח נבנה בקוד. */
+    v = (function (txt) {
+      var o, out, ks, j;
+      try { o = JSON.parse(txt); } catch (e2) { return txt; }
+      if (!o || typeof o !== 'object' || Array.isArray(o)) return txt;
+      ks = Object.keys(o);
+      if (!ks.some(function (x) { return x.indexOf(OLD) >= 0; })) return txt;
+      out = {};
+      for (j = 0; j < ks.length; j++) out[ks[j].split(OLD).join(NEW)] = o[ks[j]];
+      return JSON.stringify(out);
+    })(v);
+    /*  ⛔ קוראת · כותבת · ורק אז מוחקת — ⚠️ ריצה שנייה על מפתח שכבר עבר
+     *  אינה משנה דבר, ⭐ ומחיקה שקודמת לכתיבה מאבדת אותו במכשיר שנסגר. */
+    if (lsGet(to) === null && !lsSet(to, v)) continue;
+    lsRemove(k);
+    moved++;
+  }
+  if (moved) console.log('[ls] תחילית האחסון הוסבה — ' + moved + ' מפתחות');
+  return moved;
+}
 function kpBoot() {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  kpMigrateLegacyPrefix();
   lsBoot();
   _kpLoadPushed();
   cfgBoot();
@@ -4391,7 +4455,7 @@ function kpBoot() {
   sbWatch();
   kpSyncPull().then(function () {
     var made = soEnsureInstances(view.monthKey), i;
-    for (i = 0; i < made.length; i++) localPut('kp_so_instances', made[i]);
+    for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
     if (made.length) pushSoon();
     kpRender();
   });

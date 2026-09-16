@@ -40,16 +40,16 @@ import { DB_SCHEMA } from './db_schema.mjs';
  *  אותו זהה בכולן. */
 const APP = {
   app: 'ha-kupa',
-  tablePrefix: 'kp_',
+  tablePrefix: 'k_',
   dbSchema: DB_SCHEMA,
   /*  ⛔ שרשרת שלושת המפלסים — ⚠️ הוראת קבע ⟵ מופע חודשי ⟵ רישום: ⭐ מופע
    *  ורישום שנותרו אחרי שאביהם נמחק נספרים בסיכום של מה שאינו קיים.
    *  ⚠️ **והתקופה אינה אב** — ⛔ היא נגזרת מתאריך הרשומה ואין לה טבלה. */
   parentChild: [
-    { parent: 'kp_standing_orders', child: 'kp_so_instances', fk: 'standing_order_client_id',
+    { parent: 'k_standing_orders', child: 'k_so_instances', fk: 'standing_order_client_id',
       fkMode: 'none', push: 'list',
       why: 'המופע החודשי נגזר מהוראת הקבע — ⚠️ והוא נמחק איתה' },
-    { parent: 'kp_so_instances', child: 'kp_entries', fk: 'so_instance_client_id',
+    { parent: 'k_so_instances', child: 'k_entries', fk: 'so_instance_client_id',
       fkMode: 'none', push: 'list',
       why: 'רישום שנוצר ממופע הוראת קבע נושא את מזההו — ⚠️ והוא נמחק איתו' },
   ],
@@ -73,10 +73,10 @@ const APP = {
     layers: ['merge', 'pend'],
     defaultKey: 'client_id',
     keyFn: { name: 'kpPendKey', arg: 't', why: '' },
-    tables: { kp_pledges: 'hebrew_year', kp_standing_orders: 'client_id',
-              kp_so_instances: 'client_id', kp_entries: 'client_id',
-              kp_lookups: 'client_id' },
-    gapWhy: { kp_pledges: 'ההתחייבות ממופתחת בשנה העברית ⛔ ולא במזהה שנוצר במכשיר — ⚠️ ולכן הסימון נגזר מהטבלה ב-`kpTableMeta`' },
+    tables: { k_pledges: 'hebrew_year', k_standing_orders: 'client_id',
+              k_so_instances: 'client_id', k_entries: 'client_id',
+              k_lookups: 'client_id' },
+    gapWhy: { k_pledges: 'ההתחייבות ממופתחת בשנה העברית ⛔ ולא במזהה שנוצר במכשיר — ⚠️ ולכן הסימון נגזר מהטבלה ב-`kpTableMeta`' },
   },
   childMap: 'KP_CHILDREN',
   pushWriter: null,

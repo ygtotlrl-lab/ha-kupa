@@ -524,12 +524,12 @@ const APP = {
    *  שאין לו אתר בפועל, ⛔ והכרזה בלי נימוק. ⭐ **ולמה היא קיימת**: יש
    *  הגירה שהמכשירים לא בהכרח עברו, ⚠️ ומחיקתה מאבדת נתון. */
   migrateKeep: {},
-  mirrorTables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups'],
+  mirrorTables: ['k_pledges', 'k_standing_orders', 'k_so_instances', 'k_entries', 'k_lookups'],
   /*  ⛔ אין כאן מפתח `ls*` בשם מפורש שאינו טבלה — ⚠️ **וההיעדר מוצהר
    *  ריק** ⛔ ואינו נשמט: ⭐ שדה חסר נקרא «לא נשאל», וריק «נמדד ואין». */
   flatKeys: {
-    kp_sw_dismissed: 'סימן דחיית באנר העדכון — נושא את שם המטמון שנדחה, ואינו בענן כלל',
-    kp_cfg_: 'תחילית ההגדרות המקומיות — ⛔ מפתח נבנה ממנה בשרשור עם שם ההגדרה, ⚠️ ואין לה שורה בטבלה במסד',
+    k_sw_dismissed: 'סימן דחיית באנר העדכון — נושא את שם המטמון שנדחה, ואינו בענן כלל',
+    k_cfg_: 'תחילית ההגדרות המקומיות — ⛔ מפתח נבנה ממנה בשרשור עם שם ההגדרה, ⚠️ ואין לה שורה בטבלה במסד',
   },
   mirrorKey: 'g_mirror_users',
   mirrorFns: { sanitize: 'usersSanitize', saveAll: 'usersCacheSaveAll',
@@ -5837,6 +5837,16 @@ function mirrorLayerGaps() {
    *  בכולן ⭐ והשם עצמו פר-אפליקציה: ⛔ ולכן אין ליטרל באתר הכתיבה,
    *  ⚠️ והסריקה קוראת את הערך מהתצורה: ⛔ **ושדה שמשורשר אינו מפתח** —
    *  ⚠️ הוא תחילית שמפתח נבנה ממנה, ⭐ ונמדד בשער המפתחות. */
+  /*  ⛔ ותחילית שנמסרה כקבוע נפתרת לערכה — ⚠️ שם פזור אינו ניתן לשינוי
+   *  ממקום אחד, ⭐ ולכן התחילית חיה בקבוע: ⛔ וסורק שקורא ליטרל בלבד
+   *  מדווח «הכרזה שאין לה אתר» על תחילית שנכתבת בכל טעינה. */
+  for (const m of src.matchAll(/ls(?:Get|Set|SetArray|Remove)\(\s*([A-Za-z_$][\w$]*)\s*\+/g)) {
+    const k = constValOf(m[1]);
+    if (!k || !app || k.indexOf(app) !== 0) continue;
+    seen.add(k);
+    if (!Object.prototype.hasOwnProperty.call(flat, k))
+      out.push('מפתח מקומי שאינו טבלה ואינו מוכרז ב-flatKeys: ' + k);
+  }
   const lsCfg = (/var\s+LS_CFG\s*=\s*\{([\s\S]*?)\n\};/.exec(src) || [])[1] || '';
   for (const m of src.matchAll(/ls(?:Get|Set|SetArray|Remove)\(\s*LS_CFG\.([A-Za-z_$][\w$]*)\s*[,)]/g)) {
     const v = new RegExp("(?<![\\w$.])" + m[1] + ":\\s*'([^']+)'").exec(lsCfg);

@@ -48,8 +48,8 @@ const APP = {
    *  משותפת; ⛔ **ומה מפיל**: שם שנשאל ואינו כאן, ⛔ ושם שכאן ואין לו
    *  אתר שאילתה. ⭐ **ולמה המבנה קיים**: הצלבה מול הסכימה דורשת רשימה
    *  סגורה, ⚠️ ורשימה שאינה נמדדת משני צדדיה מתיישנת בשקט. */
-  dbTables: ['kp_settings', 'kp_pledges', 'kp_standing_orders',
-             'kp_so_instances', 'kp_entries', 'kp_lookups', 'sh_backup', 'sh_sync_log'],
+  dbTables: ['k_settings', 'k_pledges', 'k_standing_orders',
+             'k_so_instances', 'k_entries', 'k_lookups', 'sh_backup', 'sh_sync_log'],
   /*  ⛔ שכבת העימוד — ⚠️ הארגומנט השני שלה הוא **עמודת המיון**, ⭐ והיא
    *  אינה יושבת ב-`.order(…)`: ⛔ בלי ההצהרה הזו כל אתרי המיון האמיתיים
    *  אינם נסרקים כלל. */
@@ -67,13 +67,13 @@ const APP = {
    *  בלי הצהרה, הצהרה בלי אתר, והצהרה שנוקבת בטבלה שאינה מוצהרת.
    *  ⭐ **ולמה המבנה קיים**: שם שמדולג בשתיקה הוא בדיוק מה ששרד. */
   dbDyn: {
-    eraTbl:   { tables: ['kp_settings'],
+    eraTbl:   { tables: ['k_settings'],
                 why: 'טבלת המפתח-ערך שעידן הנתונים נקרא ממנה — ⛔ היא של האפליקציה הזו, ⭐ ולכל אחת מספר משלה' },
-    t:        { tables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups'],
+    t:        { tables: ['k_pledges', 'k_standing_orders', 'k_so_instances', 'k_entries', 'k_lookups'],
                 why: 'יעד הדחיפה — נבחר מרשימת הדחיפה בלולאה' },
-    's.name': { tables: ['kp_pledges', 'kp_standing_orders', 'kp_so_instances', 'kp_entries', 'kp_lookups', 'kp_settings'],
+    's.name': { tables: ['k_pledges', 'k_standing_orders', 'k_so_instances', 'k_entries', 'k_lookups', 'k_settings'],
                 why: 'שם המקור בגיבוי היומי — הרשימה נבנית בזמן ריצה' },
-    's.table': { tables: ['kp_settings'],
+    's.table': { tables: ['k_settings'],
                 why: 'טבלת המפתח-ערך של מקור גיבוי, והיא אחת' },
   },
   /*  ⛔ עמודת מיון שאינה ליטרל — ⚠️ **מה נכנס**: נוסח הביטוי והעמודות;

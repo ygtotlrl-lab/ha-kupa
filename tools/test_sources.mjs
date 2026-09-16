@@ -39,8 +39,8 @@ const APP = {
   name: 'ha-kupa',
   /* ⛔ שבע הטבלאות של האפליקציה הזו. ⚠️ נגזרו מקובץ הסכימה שרץ במסד,
      ⛔ ולא מרשימת הדחיפה — ⭐ רשימה שנגזרת מהקוד מאשרת את עצמה. */
-  tables: ['kp_pledges', 'kp_standing_orders',
-           'kp_so_instances', 'kp_entries', 'kp_lookups', 'kp_settings'],
+  tables: ['k_pledges', 'k_standing_orders',
+           'k_so_instances', 'k_entries', 'k_lookups', 'k_settings'],
   /* דגלים שמותר להם לשער מקור — ⛔ מקור מאחורי דגל אינו נדרש להיות
      ב-`tables`, מפני שהוא אינו נשלף עד שהדגל יידלק. ⛔ **והרשימה אינה
      נשמטת** — ⚠️ שדה חסר נקרא «לא נשאלתי». */

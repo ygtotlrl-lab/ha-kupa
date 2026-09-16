@@ -28,7 +28,7 @@ import { appSrc } from './appsrc.mjs';
 const APP = {
   checks: [
     [/HW_CFG = \{\s*\n\s*enabled: true,/, 'החלון החם פעיל (HW_CFG.enabled)'],
-    [/key: mirrorKey\('kp_entries'\),\s*\n\s*label:/, 'מפרט החלון על מפתח המראה של הרישומים'],
+    [/key: mirrorKey\('k_entries'\),\s*\n\s*label:/, 'מפרט החלון על מפתח המראה של הרישומים'],
     [/return d >= hwHorizonDate\(\);/, 'ההכרעה בחלון היא מול אופק הפינוי ⛔ ולא מול תאריך מוקלד'],
     [/admin: function \(\) \{ return true; \}/, 'אין תפקיד שמכריע — החלון פתוח למי שמחזיק את המכשיר'],
   ],
