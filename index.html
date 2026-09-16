@@ -26,8 +26,9 @@
 /* ========================================================= אסימוני העיצוב */
 :root{
   /*  ⛔ מרחק הטוסט מתחתית המסך — ⚠️ הערך היחיד שנבדל בשכבת הטוסט:
-   *  ⭐ כאן אין סרגל תחתון, ⛔ ורק הכפתור הצף מעליו. */
-  --toast-bottom:80px;
+   *  ⭐ הוא נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו, ⛔ וטוסט
+   *  שנמוך מהם מוסתר מאחוריהם. */
+  --toast-bottom:150px;
   /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
    *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
    *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
@@ -96,14 +97,31 @@ input,select,textarea{font:inherit; color:inherit}
 /* ================================================== הפתיח והחתימה של מסך */
 /*  ⛔ שתי השורות בראש ובתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
  *  שהמשתמש ביקש לראות בכל פתיחה. */
+/*  ⛔ שתי השורות בתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
+ *  שהמשתמש ביקש לראות בכל פתיחה: ⛔ והפתיחה מתחת לחתימה, ⚠️ בגופן
+ *  גדול מעט ממנה.
+ *  ⚠️ **וכפתור החזרה נכנס לאותו בלוק** — ⛔ הוא אינו כפתור פעולה,
+ *  ⭐ ואינו נפרש לרוחב המסך כמותם. */
+.foot{text-align:center;padding:var(--sp-7) var(--sp-6) var(--sp-6)}
 .closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
-  padding:var(--sp-7) var(--sp-6) var(--sp-6)}
+  padding:0 0 var(--sp-3)}
 .opener{color:var(--rasp-ink);font-size:var(--fs-2);letter-spacing:var(--ls-1);text-align:center;
-  font-weight:500;padding:var(--sp-6) var(--sp-6) var(--sp-5)}
+  font-weight:500;padding:0}
 
 /* =================================================================== קליפה */
-main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-bottom));
-  max-width:560px;margin:0 auto}
+/*  ⛔ העמודה ברוחב מכשיר ⛔ ואינה נמרחת עד לקצה — ⚠️ לא בדסקטופ ולא
+ *  במובייל: ⭐ המסך כאן הוא ערימת כרטיסים קצרה, ⛔ ורוחב שנמתח מפריד
+ *  את המספר מהתווית שלו בשורה אחת.
+ *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
+main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
+  max-width:390px;margin:0 auto}
+
+/* ================================================================== הלוגו */
+/*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
+ *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
+.brand{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);
+  padding:var(--sp-6) 0 var(--sp-2)}
+.brand img{width:40px;height:40px;border-radius:var(--r-4)}
 
 /* ================================================================= כרטיסים */
 .card{
@@ -120,7 +138,11 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 /* ============================================ שורת החודש והמעבר בין חודשים */
 .mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
   padding:var(--sp-5) 0}
-.mrow .mname{font-size:var(--fs-5);font-weight:500;color:var(--text)}
+.mrow .mid{text-align:center;flex:1}
+.mrow .mname{font-size:var(--fs-5);font-weight:500;color:var(--text);display:block}
+/*  ⛔ טווח התאריכים הלועזי מתחת לשם — ⚠️ הוא נגזר מראש החודש ומראש
+ *  הבא אחריו, ⭐ ואינו נשלף משורה שמישהו מילא. */
+.mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
 .mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
   min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 
@@ -136,7 +158,18 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
 .sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
 .sml.strong{font-weight:500;color:var(--text)}
-.inc{font-size:var(--fs-5);font-weight:500;color:var(--text);padding:var(--sp-5) 0}
+.inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
+  font-size:var(--fs-3);color:var(--text-2);padding:var(--sp-5) var(--sp-2)}
+.inc b{font-size:var(--fs-5);font-weight:500;color:var(--text)}
+
+/*  ⛔ היעד שהושלם הוא המחשה ⛔ ולא טקסט בפינה — ⚠️ פינה היא מקום שאיש
+ *  אינו מסתכל בו, ⭐ והסכום שהושלם נכתב בתוכה. */
+.goal{display:flex;align-items:center;gap:var(--sp-4);margin-top:var(--sp-5);
+  background:var(--ok-soft);color:var(--ok);border-radius:var(--radius-sm);
+  padding:var(--sp-5) var(--sp-5);font-size:var(--fs-3);font-weight:500}
+.goal .gi{width:22px;height:22px;border-radius:var(--r-7);flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--ok);color:var(--ok-soft);font-size:var(--fs-2)}
 
 /* ================================================================== הפירוט */
 .det{list-style:none;margin:0;padding:0}
@@ -146,7 +179,10 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
   justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
 .det .ico svg{width:14px;height:14px}
-.det .ico.peach{background:var(--peach-1);color:var(--peach-3)}
+/*  ⛔ אייקון שהוא הציור עצמו אינו יושב בשבשבת — ⚠️ הצבע בא מן
+ *  הציור, ⭐ ורקע שמתחתיו הופך אותו לכתם. */
+.det .ico.art{background:none;color:inherit}
+.det .ico.art svg{width:24px;height:24px}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
 .det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
 .det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
@@ -154,14 +190,51 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .det li.pend .nm{color:var(--text-2)}
 
 /* =========================================================== הכפתור הצף */
-.fab{position:fixed;inset-block-end:var(--sp-6);inset-inline-start:var(--sp-6);z-index:var(--z-4);
-  width:56px;height:56px;border-radius:var(--r-7);border:0;cursor:pointer;
-  background:var(--rasp);color:var(--on-rasp);font-size:var(--fs-6);line-height:var(--lh-1);
-  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg)}
+/*  ⛔ הכפתור בקצה **השמאלי** — ⚠️ המסמך ימין-לשמאל, ⭐ ולכן הקצה המסיים
+ *  הוא שמאל: ⛔ והוא יושב מעל סרגל הלשוניות ⛔ ולא עליו.
+ *  ⚠️ **והפלוס הוא ציור** ⛔ ולא תו — ⭐ תו נשען על קו הבסיס של הגופן,
+ *  ⛔ ומרכזו האופטי זז בין מנוע למנוע: ⚠️ בדסקטופ הוא נראה גבוה מדי.
+ *  ⚠️ **והמיקום האופקי נגזר מרוחב העמודה** — ⛔ מעל רוחב העמודה הכפתור
+ *  נצמד לקצה שלה ⛔ ולא לקצה החלון. */
+.fab{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
+  inset-inline-end:var(--sp-6);z-index:var(--z-4);
+  width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
+  background:var(--rasp);color:var(--on-rasp);line-height:var(--lh-1);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
+  transition:transform var(--dur-3)}
+.fab svg{width:28px;height:28px;display:block}
+.fab:active{transform:scale(.93)}
+@media (min-width:480px){.fab{inset-inline-end:calc(50% - 195px + 16px)}}
+
+/* ======================================================= סרגל הלשוניות */
+/*  ⛔ ארבע לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
+ *  כל החלון מנתק את הניווט מהתוכן שמעליו. */
+.tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-3);
+  display:flex;justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom);
+  background:var(--card);border-top:1px solid var(--border)}
+.tabbar .in{display:flex;width:100%;max-width:390px}
+.tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
+  padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
+  transition:color var(--dur-3)}
+.tab-btn .ti{display:flex;align-items:center;justify-content:center}
+.tab-btn svg{width:20px;height:20px;display:block}
+.tab-btn.on{color:var(--purple-5);font-weight:500}
+.tab-btn:hover{color:var(--purple-5)}
 
 /* ============================================================ מסך הזרימה */
 .flow{padding:var(--sp-6) 0}
 .flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
+/*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
+ *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
+ *  המסך עוסק. */
+.fhd{text-align:center;margin-bottom:var(--sp-6)}
+.fhd h2{margin-bottom:0}
+.fic{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;
+  border-radius:var(--r-7);background:var(--brand-soft);color:var(--brand-ink);
+  margin-bottom:var(--sp-5)}
+.fic svg{width:26px;height:26px;display:block}
 .fld{margin-bottom:var(--sp-6)}
 .fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
 .fld input,.fld select{width:100%;background:var(--card);color:var(--text);
@@ -176,9 +249,12 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
   background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
   padding:var(--sp-5);min-height:44px}
 .btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
-.btn[disabled]{opacity:var(--op-3);cursor:default}
-.back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-4);
-  min-width:44px;min-height:44px}
+.btn:hover{box-shadow:var(--shadow-lg)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:var(--op-3);cursor:default}
+.back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-2);
+  min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
+.back:hover{text-decoration:underline}
 .acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
 .acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
   border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
@@ -190,7 +266,10 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
 .slide .sub{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4)}
 .slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
-.target{margin-top:var(--sp-7)}
+/*  ⛔ היעד יושב **מתחת** למטבע — ⚠️ המטבע נגרר כלפי מטה אל תוכו,
+ *  ⭐ וזו התנועה שהאגודל עושה מעצמו: ⛔ יעד שמעליו דורש גרירה כלפי מעלה,
+ *  ⚠️ והיד מכסה את מה שהיא גוררת אליו. */
+.target{margin-top:auto;margin-bottom:var(--sp-7)}
 /*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
  *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
 .target.wide{width:270px}
@@ -202,10 +281,15 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 .coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
   border:1px solid var(--ring-soft)}
 .coin.over{transform:scale(1.05)}
+/*  ⛔ הכיתוב יושב **מתחת** לפס הקונפטי — ⚠️ הפתיתים נדגמים בשליש העליון,
+ *  ⭐ והכיתוב מתחיל אחריו: ⛔ שניהם באותו אזור נקראים כרעש, ⚠️ ואיש אינו
+ *  קורא את המספר. */
+.donewrap{display:flex;align-items:flex-end;justify-content:center;min-height:58vh}
 .done{text-align:center;padding:var(--sp-7) var(--sp-6)}
 .done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
 .done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
-.conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
+.conf{position:fixed;inset-block-start:0;inset-inline:0;height:50vh;
+  z-index:var(--z-7);pointer-events:none}
 .conf i{--cf-x:50%;--cf-y:20%;--cf-c:var(--purple-3);position:absolute;left:var(--cf-x);top:var(--cf-y);background:var(--cf-c);width:8px;height:8px;border-radius:var(--r-1)}
 
 /* ================================================================== שלד */
@@ -369,9 +453,15 @@ main{padding:0 var(--sp-6); padding-bottom:calc(84px + env(safe-area-inset-botto
 </svg>
 </div>
 
-<div id="app"></div>
+<main id="app"></main>
 
-<button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש">+</button>
+<!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
+      הגופן, ⭐ ומרכזו האופטי זז בין מנוע למנוע. -->
+<button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button>
+
+<!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
+      ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
+<nav id="tabbar" class="tabbar" aria-label="ניווט"></nav>
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
@@ -452,15 +542,22 @@ var MSG_EMPTY_PRE = 'חודש טוב! עוד לא נרשם כלום ב-';
 var MSG_NO_INCOME = 'עוד לא נרשמו';
 var MSG_GOAL_FROM_INCOME = 'היעד ייקבע לפי ההכנסות';
 var MSG_WHAT_TO_ADD = 'מה נרשם?';
-var MSG_ADD_INCOME = 'רישום הכנסה';
+var MSG_ADD_INCOME = 'הכנסה';
 var MSG_ADD_TZEDAKAH = 'צדקה';
 var MSG_ORDERS_TITLE = 'הוראות קבע';
 var MSG_SETTINGS_TITLE = 'הגדרות';
+var MSG_BACK = 'חזרה';
 var MSG_SENSORY = 'צליל ורטט באישור';
 var MSG_MONTHS_CHART = 'חודשים — נגבה מול יעד';
 var MSG_CARRY_PRE = 'בחודש ';
-var MSG_CARRY_MID = ' נשאר לתת ₪';
+var MSG_CARRY_MID = ' נשאר לתת ';
+var MSG_CARRY_SUR = ' נותר עודף ';
 var MSG_EDIT = 'עריכה';
+var MSG_ORDER_NEW = 'הוראת קבע חדשה';
+var MSG_PLEDGE_EDIT = 'יעד הפלעדזש · ';
+var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר בין 1 ל-30';
+var MSG_GOAL_DONE = 'הפלעדזש הושלם · ';
+var MSG_GOAL_CARRY = ' · לחודש הבא ';
 
 /* ══════════════════════════════════════════════════════════════════════════
    תצורת האפליקציה
@@ -750,8 +847,8 @@ function mergeTable(t, remote) {
   var merged = mergeRows(DATA[t] || [], remote, m.key, function (k) {
     return pendHas(t + ':' + k);
   });
-  DATA[t] = merged;
-  mirrorSave(t, merged);
+  kAdopt(t, merged);
+  mirrorSave(t);
   return merged;
 }
 
@@ -3439,6 +3536,11 @@ function barChart(rows, label) {
    ══════════════════════════════════════════════════════════════════════════ */
 var DATA = { k_pledges: [], k_standing_orders: [],
              k_so_instances: [], k_entries: [], k_lookups: [] };
+/*  ⛔ `DATA[t]` ו-`MIRROR[t]` הם **אותו מערך** — ⚠️ המסך קורא את
+ *  הראשון ושכבת המראה כותבת לדיסק את השני: ⛔ שני מערכים
+ *  נפרדים משאירים כל כתיבה מקומית בזיכרון בלבד, ⭐ והיא נעלמת
+ *  בטעינה הבאה — ⚠️ וכל החלפה של מערך עוברת כאן. */
+function kAdopt(t, rows) { DATA[t] = rows; MIRROR[t] = rows; return rows; }
 var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
 
@@ -3448,7 +3550,6 @@ var kQ = function (s) { return document.querySelector(s); };
  *  ⭐ `Intl` בגוף פונקציה שנקראת בכל שורה נבנה מחדש בכל קריאה. */
 var NUM_FMT = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 });
 function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
-function plain(n) { return NUM_FMT.format(Math.round(n)); }
 
 /*  ⛔ המיון האחד — ⚠️ הפירוט כרונולוגי, ⭐ ואין מיון מקומי בשום מסך. */
 function kSortEntries(list) {
@@ -3562,6 +3663,10 @@ function monthsWithData() {
   for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
   k = monthKeyOf(kIsoOfDay(Math.floor(Date.now() / 86400000)));
   if (k) seen[k] = true;
+  /*  ⛔ והחודש שמוצג נכנס אף הוא — ⚠️ הניווט אינו מוגבל, ⭐ והשרשרת
+   *  היא מה שגוזר את היעד ואת המצטבר: ⛔ חודש שמחוץ לטווח היה נפתח
+   *  באפסים גם כשלשנה שלו יש יעד. */
+  if (view.monthKey) seen[view.monthKey] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
   return out.sort();
 }
@@ -3590,14 +3695,36 @@ function entriesOfMonth(k) {
 function instancesOfMonth(k) {
   return kLive(DATA.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
 }
+/*  ⛔ הוראה שחלה על החודש נספרת גם בלי מופע שמור — ⚠️ המופע נכתב
+ *  בעלייה לחודש הנוכחי בלבד: ⭐ אחרת כל חודש שמנווטים אליו היה כותב
+ *  שורות לעתיד, ⛔ ו«יש בו נתונים» היה נכון לחודש שאיש לא מילא.
+ *  ⛔ **ואין כפילות** — ⚠️ הוראה שכבר יש לה מופע אינה נוספת שוב. */
+function orderRowsPending(k, m) {
+  var os = ordersLive(), have = instancesOfMonth(k), out = [], i, j, o, dup;
+  for (i = 0; i < os.length; i++) {
+    o = os[i];
+    if (!orderAppliesTo(o, m)) continue;
+    dup = false;
+    for (j = 0; j < have.length; j++)
+      if (idEq(have[j].standing_order_client_id, o.client_id)) { dup = true; break; }
+    if (dup) continue;
+    out.push({ client_id: o.client_id, order_id: o.client_id, type: 'tzedakah',
+               amount: +o.amount || 0, description: o.name, entry_date: soDate(k, o),
+               category: o.category, method: o.method,
+               source: 'standing', pending: true, deleted: false });
+  }
+  return out;
+}
 function instanceRows(k) {
+  var m = monthByKey(k);
   return instancesOfMonth(k).map(function (r) {
-    var o = orderById(r.standing_order_client_id);
-    return { client_id: r.client_id, type: 'tzedakah', amount: +r.amount || 0,
-             description: o ? o.name : '', entry_date: soDate(k, o),
-             category: o ? o.category : '', method: o ? o.method : '',
+    var o2 = orderById(r.standing_order_client_id);
+    return { client_id: r.client_id, order_id: o2 ? o2.client_id : '', type: 'tzedakah',
+             amount: +r.amount || 0,
+             description: o2 ? o2.name : '', entry_date: soDate(k, o2),
+             category: o2 ? o2.category : '', method: o2 ? o2.method : '',
              source: 'standing', pending: r.status === 'pending', deleted: false };
-  });
+  }).concat(m ? orderRowsPending(k, m) : []);
 }
 function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 
@@ -3680,20 +3807,66 @@ function soEnsureInstances(monthKey) {
 /* ══════════════════════════════════════════════════════════════════════════
    הרינדור
    ══════════════════════════════════════════════════════════════════════════ */
-function openerHTML() { return '<div class="opener">' + esc(MSG_OPENER) + '</div>'; }
-function closerHTML() { return '<div class="closer">' + esc(MSG_CLOSER) + '</div>'; }
+/*  ⛔ שלוש השורות בתחתית כל מסך — ⚠️ כפתור החזרה, «יחי אדוננו»,
+ *  ומתחתיו «אין עוד מלבדו»: ⭐ וכפתור החזרה אינו כפתור פעולה,
+ *  ⛔ ואינו נפרש לרוחב המסך כמותם.
+ *  ⚠️ **ו-`data-kesc` נכנס בהיקף `ksave` בלבד** — ⛔ מחוצה לו המקש
+ *  אינו מנותב, ⭐ והכפתור נראה זהה ואינו עונה. */
+var BACK_HOME = '<button class="back" data-act="back-home">' + MSG_BACK + '</button>';
+var BACK_FLOW = '<button class="back" data-act="flow-back" data-kesc>' + MSG_BACK + '</button>';
+function footHTML(back) {
+  return '<div class="foot">' + (back || '') +
+    '<div class="closer">' + esc(MSG_CLOSER) + '</div>' +
+    '<div class="opener">' + esc(MSG_OPENER) + '</div></div>';
+}
+
+/*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
+ *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
+function brandHTML() {
+  return '<div class="brand"><img src="icons/icon-192.png" alt="" ' +
+         'width="40" height="40"></div>';
+}
+
+/*  ⛔ טווח התאריכים הלועזי נגזר מראש החודש ומראש הבא — ⚠️ ואינו נשמר
+ *  בשום שדה: ⭐ יום.חודש, ⛔ ושתי צורות לאותו ערך הן שני מקורות אמת. */
+function gregShort(iso) {
+  var t = String(iso || '');
+  return t ? (+t.slice(8, 10)) + '.' + (+t.slice(5, 7)) : '';
+}
+function monthGreg(k) {
+  var a = monthStart(k), nx = nextMonthOf(k), b = nx ? monthStart(nx.key) : '';
+  if (!a) return '';
+  return gregShort(a) + ' – ' + (b ? gregShort(kAddDays(b, -1)) : '');
+}
+/*  ⛔ שם החודש נושא את השנה — ⚠️ ותווית השנה באה מהמנוע המשותף:
+ *  ⭐ צורה שנייה כאן הייתה מקור אמת שני לתצוגה. */
+function monthTitle(m) {
+  return m.name + ' ' + window.ysHebYearLabelFull(m.year);
+}
+
+/*  ⛔ האייקון של ההכנסה ושל הצדקה הוא הציור שהאפליקציה כבר מציגה —
+ *  ⚠️ ואינו ציור שני: ⭐ שני ציורים לאותו מושג הם שני מקורות אמת. */
+function assetIcon(id) {
+  var el = document.getElementById(id);
+  if (!el) { uiNoDialog('assetIcon', id); return ''; }
+  return el.innerHTML;
+}
 
 function iconFor(kind) {
   /*  ⛔ סט קווי-מעוגל אחד, עובי 1.75 — ⚠️ ואייקון קבוע לכל מקור:
    *  ⭐ צבע נגזר מהתפקיד ⛔ ולא מהמקור. */
   var p = {
-    cash:     'M3 7h18v10H3z M7 12h.01 M17 12h.01',
-    bit:      'M12 3v18 M7 8h7a3 3 0 010 6H7',
-    card:     'M3 7h18v10H3z M3 11h18',
-    transfer: 'M4 12h16 M14 6l6 6-6 6',
     other:    'M12 4v16 M4 12h16',
-    income:   'M12 20V4 M6 10l6-6 6 6',
-    standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    home:     'M4 11l8-7 8 7 M7 10v10h10V10',
+    upload:   'M12 16V4 M8 8l4-4 4 4 M4 20h16',
+    archive:  'M4 8h16v12H4z M3 4h18v4H3z M10 12h4',
+    gear:     'M4 7h10 M18 7h2 M4 12h4 M12 12h8 M4 17h10 M18 17h2',
+    amount:   'M12 3v18 M7 8h7a3 3 0 010 6H7',
+    desc:     'M5 6h14 M5 11h14 M5 16h9',
+    method:   'M3 7h18v10H3z M3 11h18',
+    date:     'M4 6h16v14H4z M4 10h16 M8 3v4 M16 3v4',
+    category: 'M4 5h7l2 3h7v11H4z'
   }[kind] || 'M12 4v16 M4 12h16';
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
          'stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">' +
@@ -3701,71 +3874,99 @@ function iconFor(kind) {
          '</svg>';
 }
 
+/*  ⛔ הכנסה ⟵ ארנק · צדקה ⟵ קופה — ⚠️ בדיוק אותם ציורים שהאפליקציה
+ *  מציגה במסך האישור: ⭐ אייקון שני לאותו מושג הוא מקור אמת שני.
+ *  ⚠️ **ושורה של הוראת קבע נפתחת בעורך ההוראה** — ⛔ ולא בעורך התנועה:
+ *  ⭐ אין לה שורה ב-`k_entries`, ⛔ והעורך היה מוצא ריק. */
 function detailRowHTML(r) {
   var isInc = r.type === 'income';
-  var tag = r.source === 'standing' ? 'הו״ק' : (isInc ? 'הכנסה' : (r.verified ? 'אומת' : ''));
-  var kind = isInc ? 'income' : (r.source === 'standing' ? 'standing' : (r.method || 'other'));
-  return '<li data-act="entry-menu" data-id="' + esc(r.client_id) + '"' +
+  var so = r.source === 'standing';
+  var tag = so ? 'הו״ק' : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : ''));
+  return (so ? '<li data-act="order-edit" data-id="' + esc(r.order_id || '')
+             : '<li data-act="entry-menu" data-id="' + esc(r.client_id)) + '"' +
          (r.pending ? ' class="pend"' : '') + '>' +
-         '<span class="ico' + (isInc ? ' peach' : '') + '">' + iconFor(kind) + '</span>' +
+         '<span class="ico art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
          '<span class="tag">' + esc(tag) + '</span>' +
-         '<span class="amt">' + plain(r.amount) + '</span></li>';
+         '<span class="amt">' + money(r.amount) + '</span></li>';
+}
+
+/*  ⛔ המצטבר הוא שארית החודש הקודם בלבד — ⚠️ יתרה או חסר, ⭐ ובתוך
+ *  הניווט: ⛔ סכום שמצטבר על פני חודשים אינו אומר מה נשאר מאחד. */
+function carryHTML(prev, pc) {
+  var txt = '';
+  if (!prev || !pc) return '';
+  if (pc.short > EPS) txt = MSG_CARRY_PRE + prev.name + MSG_CARRY_MID + money(pc.short);
+  else if (pc.carryOut > EPS) txt = MSG_CARRY_PRE + prev.name + MSG_CARRY_SUR + money(pc.carryOut);
+  if (!txt) return '';
+  return '<button class="carry" data-act="month-goto" data-id="' + esc(prev.key) + '">' +
+         esc(txt) + '<span class="arw">‹</span></button>';
+}
+
+/*  ⛔ היעד שהושלם הוא המחשה ⛔ ולא טקסט בפינה — ⚠️ והסכום שהושלם נכתב
+ *  בתוכה: ⭐ «הושלם» לבדו אינו אומר כמה. */
+/*  ⛔ יעד שלא נקבע אינו יעד שהושלם — ⚠️ `short` הוא אפס גם כשהפלעדזש
+ *  אפס: ⭐ והמחשה שעולה שם מבשרת על כלום, ⛔ והסכום שבה הוא 0 ₪. */
+function goalShown(c) { return !!c.done && +c.pledge > EPS; }
+function goalHTML(c) {
+  return '<div class="goal"><span class="gi">✓</span>' +
+         esc(MSG_GOAL_DONE) + money(c.fill) +
+         (c.carryOut > EPS ? esc(MSG_GOAL_CARRY) + money(c.carryOut) : '') + '</div>';
 }
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
-  if (!m) return openerHTML() + '<div class="card"><div class="empty">' +
-             '<div class="skel"></div><div class="skel"></div></div></div>' + closerHTML();
+  if (!m) return brandHTML() + '<div class="card"><div class="empty">' +
+             '<div class="skel"></div><div class="skel"></div></div></div>' + footHTML('');
   var c = chainOf(view.monthKey) || {};
   var rows = kSortEntries(monthRows(view.monthKey));
   var prev = prevMonthOf(view.monthKey);
   var pc = prev ? chainOf(prev.key) : null;
 
-  var h = openerHTML();
+  /* 1 — הלוגו. */
+  var h = brandHTML();
 
-  /* 2 — שם החודש והחצים, ומעליהם פס החוב מהחודש הקודם. */
+  /* 2 — שם החודש, טווח התאריכים הלועזי והחצים. */
   h += '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
-       '<span class="mname">' + esc(m.name) + '</span>' +
+       '<span class="mid"><span class="mname">' + esc(monthTitle(m)) + '</span>' +
+       '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
-  if (pc && pc.short > EPS)
-    h += '<button class="carry" data-act="month-goto" data-id="' + esc(prev.key) + '">' +
-         esc(MSG_CARRY_PRE + prev.name + MSG_CARRY_MID + plain(pc.short)) +
-         '<span class="arw">‹</span></button>';
 
-  /* 3 — הכנסות החודש. */
+  /* 3 — המצטבר מהחודש הקודם, בתוך הניווט. */
+  h += carryHTML(prev, pc);
+
+  /* 4 — הכנסות החודש. */
   h += '<div class="inc">' + esc('הכנסות החודש · ') +
        (c.income > EPS ? money(c.income) : esc(MSG_NO_INCOME)) + '</div>';
 
-  /* 4 — כרטיס החומש. */
+  /* 5 — כרטיס החומש. */
   var fill = Math.max(0, c.tzedakah + Math.max(0, c.prevBalance));
   var goal = c.chumash;
   var noGoal = goal <= EPS;
   var pct = noGoal ? 100 : Math.min(100, fill / goal * 100);
   h += '<div class="card"><h2>חומש' +
        '<span class="st ' + (fill + EPS >= goal ? 'ok' : 'left') + '">' +
-       (noGoal ? '' : (fill + EPS >= goal ? 'עקפנו ב־' + plain(fill - goal) + ' ✓'
-                                          : 'עוד ' + plain(goal - fill) + ' ליעד')) +
+       (noGoal ? '' : (fill + EPS >= goal ? 'עקפנו ב־' + money(fill - goal) + ' ✓'
+                                          : 'עוד ' + money(goal - fill) + ' ליעד')) +
        '</span></h2>' +
        '<div class="big">' + money(fill) + '</div>' +
-       '<div class="sml">' + (noGoal ? esc(MSG_GOAL_FROM_INCOME) : 'יעד ' + plain(goal)) + '</div>' +
+       '<div class="sml">' + (noGoal ? esc(MSG_GOAL_FROM_INCOME) : 'יעד ' + money(goal)) + '</div>' +
        '<div class="u-mt-5">' + bar(pct.toFixed(1)) + '</div></div>';
 
-  /* 5 — כרטיס הפלעדזש. */
+  /* 6 — כרטיס הפלעדזש, ומתחתיו ההמחשה כשהיעד הושלם. */
   var pp = c.pledge > EPS ? Math.min(100, c.fill / c.pledge * 100) : 0;
   h += '<div class="card"><h2>פלעדזש' +
-       '<span class="st ' + (c.done ? 'ok' : 'peach') + '">' +
-       (c.done ? 'הושלם ✓ · +' + plain(c.carryOut) + ' לחודש הבא'
-               : 'נשאר ' + plain(c.short)) + '</span></h2>' +
-       '<div class="big">' + plain(c.fill) + ' מתוך ' + plain(c.pledge) + '</div>' +
+       (c.done ? '' : '<span class="st peach">נשאר ' + money(c.short) + '</span>') +
+       '</h2>' +
+       '<div class="big">' + money(c.fill) + ' מתוך ' + money(c.pledge) + '</div>' +
        '<div class="sml' + (c.selfPct > 50 ? ' strong' : '') + '">אישי ' +
        Math.round(c.selfPct) + '%</div>' +
-       (c.carryIn > EPS ? '<div class="sml">מחודש קודם +' + plain(c.carryIn) + '</div>' : '') +
-       '<div class="u-mt-5">' + bar(pp.toFixed(1), 'peach') + '</div></div>';
+       '<div class="u-mt-5">' + bar(pp.toFixed(1), 'peach') + '</div>' +
+       (goalShown(c) ? goalHTML(c) : '') + '</div>';
 
-  /* 6 — הפירוט. */
+  /* 7 — הפירוט. */
   if (!rows.length) {
     h += '<div class="card"><div class="empty">' + esc(MSG_EMPTY_PRE + m.name) + '</div></div>';
     h += ordersCardHTML();
@@ -3777,8 +3978,63 @@ function monthScreenHTML() {
    *  ואינו אתר לחיצה: ⭐ «בטל» שאין לו כפתור הוא הבטחה שאין לה מסלול. */
   if (UNDO.row)
     h += '<button class="btn ghost" data-act="entry-undo">' + esc(MSG_UNDO) + '</button>';
-  h += '<button class="btn ghost" data-act="settings-open">' + esc(MSG_SETTINGS_TITLE) + '</button>';
-  return h + closerHTML();
+  return h + footHTML('');
+}
+
+/*  ⛔ ארבע הלשוניות, ומרשם אחד — ⚠️ **מה נכנס**: מפתח המסך, התווית
+ *  והאייקון; ⛔ **ומה מפיל**: מפתח שאין לו מסך — ⭐ הלחיצה עוברת
+ *  והמסך אינו מתחלף. */
+var TABS = [
+  { k: 'month',    lab: 'בית',    ic: 'home' },
+  { k: 'import',   lab: 'יבוא',   ic: 'upload' },
+  { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
+  { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
+];
+function tabbarHTML() {
+  return '<div class="in">' + TABS.map(function (t) {
+    return '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
+           '" data-act="tab-go" data-id="' + esc(t.k) + '">' +
+           '<span class="ti">' + iconFor(t.ic) + '</span>' + esc(t.lab) + '</button>';
+  }).join('') + '</div>';
+}
+
+/*  ⛔ כותרת המסך זהה בשלוש הלשוניות שאינן «בית» — ⚠️ והיא אינה ניווט:
+ *  ⭐ אין בה חצים, ⛔ והחצים שייכים לחודש בלבד. */
+function tabHeadHTML(lab) {
+  return '<div class="mrow"><span class="mid"><span class="mname">' +
+         esc(lab) + '</span></span></div>';
+}
+
+/*  ⛔ לשונית היבוא ריקה — ⚠️ והיא מציגה את מה שיש בה, ⭐ ולא תהליך
+ *  שעוד ייבנה: ⛔ תיאור של מה שאינו קיים מתיישן בלי שאיש יראה. */
+function importScreenHTML() {
+  return brandHTML() + tabHeadHTML(TABS[1].lab) +
+    '<div class="card"><div class="empty">אין כאן עדיין כלום</div></div>' +
+    footHTML(BACK_HOME);
+}
+
+/*  ⛔ הארכיון מקבץ את החודשים לפי השנה העברית — ⚠️ והקיבוץ נגזר מהמפתח,
+ *  ⭐ ואין טבלת שנים: ⛔ טבלה כזו נשברת בכל שנה שלא הוזנה. */
+function archiveScreenHTML() {
+  var ms = monthsSorted().slice().reverse(), h = brandHTML() + tabHeadHTML(TABS[2].lab);
+  var y = '', i, m, c;
+  if (!ms.length) return h + '<div class="card"><div class="empty">אין כאן עדיין כלום' +
+                             '</div></div>' + footHTML(BACK_HOME);
+  for (i = 0; i < ms.length; i++) {
+    m = ms[i];
+    if (m.year !== y) {
+      if (y) h += '</ul></div>';
+      y = m.year;
+      h += '<div class="card"><h2>' + esc(window.ysHebYearLabelFull(y)) + '</h2><ul class="det">';
+    }
+    c = chainOf(m.key) || {};
+    h += '<li data-act="month-goto" data-id="' + esc(m.key) + '">' +
+         '<span class="ico">' + iconFor('archive') + '</span>' +
+         '<span class="nm">' + esc(m.name) + '</span>' +
+         '<span class="tag">' + esc(monthGreg(m.key)) + '</span>' +
+         '<span class="amt">' + money(c.tzedakah || 0) + '</span></li>';
+  }
+  return h + '</ul></div>' + footHTML(BACK_HOME);
 }
 
 function ordersCardHTML() {
@@ -3790,7 +4046,7 @@ function ordersCardHTML() {
              '<span class="ico">' + iconFor('standing') + '</span>' +
              '<span class="nm">' + esc(o.name) + '</span>' +
              '<span class="tag">' + esc('יום ' + o.day_of_month) + '</span>' +
-             '<span class="amt">' + plain(o.amount) + '</span></li>';
+             '<span class="amt">' + money(o.amount) + '</span></li>';
     }).join('') + '</ul></div>';
 }
 
@@ -3816,9 +4072,12 @@ function lookupList(kind, dflt) {
 
 /*  ⛔ ההשלמה נגזרת מהפירוטים שכבר נרשמו — ⚠️ distinct לפי תדירות:
  *  ⭐ מה שנרשם הרבה עולה ראשון, ⛔ ואין רשימה שנייה לתחזק. */
-function descSuggest(q) {
+function descSuggest(q, type) {
   var seen = {}, l = kLive(DATA.k_entries), i, d;
   for (i = 0; i < l.length; i++) {
+    /*  ⛔ פירוטי ההכנסה אינם עולים בצדקה ולהפך — ⚠️ הם שני אוצרות
+     *  מילים: ⭐ ורשימה מעורבת מציעה את מה שאינו שייך. */
+    if (type && l[i].type !== type) continue;
     d = (l[i].description || '').trim();
     if (!d) continue;
     seen[d] = (seen[d] || 0) + 1;
@@ -3831,30 +4090,41 @@ function descSuggest(q) {
 
 function flowSteps() { return view.flow === 'income' ? FLOW_INC : FLOW_TZ; }
 
+/*  ⛔ ארבעת השלבים המשותפים נושאים שם אחד בשני המסלולים — ⚠️ סכום ·
+ *  פירוט · אופן · תאריך: ⭐ שני שמות לאותו שלב הם שני מסכים בעיני
+ *  הקורא, ⛔ והקטגוריה היא השלב החמישי שקיים בצדקה בלבד. */
+var STEP_META = {
+  amount:   { lab: 'סכום',    ic: 'amount' },
+  desc:     { lab: 'פירוט',   ic: 'desc' },
+  source:   { lab: 'אופן',    ic: 'method' },
+  method:   { lab: 'אופן',    ic: 'method' },
+  category: { lab: 'קטגוריה', ic: 'category' },
+  date:     { lab: 'תאריך',   ic: 'date' }
+};
+
 function flowScreenHTML() {
   var steps = flowSteps(), key = steps[view.step], d = view.draft;
-  var isInc = view.flow === 'income';
-  var h = openerHTML() +
-    '<div class="flow ksave"><button class="back" data-act="flow-back" ' +
-    'aria-label="חזרה">›</button>';
+  var meta = STEP_META[key] || STEP_META.amount;
+  var h = '<div class="flow ksave">' + brandHTML() +
+    '<div class="fhd"><span class="fic">' + iconFor(meta.ic) + '</span>' +
+    '<h2>' + esc(meta.lab) + '</h2></div>';
 
   if (key === 'amount') {
-    h += '<h2>' + (isInc ? 'סכום ההכנסה' : 'סכום הצדקה') + '</h2>' +
-      '<div class="fld"><label for="f-amount">סכום</label>' +
+    h += '<div class="fld"><label for="f-amount">סכום</label>' +
       '<input id="f-amount" type="text" inputmode="decimal" autocomplete="off" ' +
       'value="' + esc(d.amount === null ? '' : String(d.amount)) + '"></div>';
   } else if (key === 'desc') {
-    h += '<h2>פירוט</h2>' +
-      '<div class="fld"><label for="f-desc">פירוט</label>' +
+    h += '<div class="fld"><label for="f-desc">פירוט</label>' +
       '<input id="f-desc" type="text" autocomplete="off" value="' + esc(d.description) + '">' +
-      '<div class="acbox" id="f-ac">' + descSuggest('').map(function (s) {
+      '<div class="acbox" id="f-ac">' +
+      descSuggest('', view.flow === 'income' ? 'income' : 'tzedakah').map(function (s) {
         return '<button type="button" data-act="flow-ac" data-v="' + esc(s) + '">' +
                esc(s) + '</button>';
       }).join('') + '</div></div>';
   } else if (key === 'source' || key === 'method') {
     var list = key === 'source' ? lookupList('source', SRC_DEFAULT)
                                 : lookupList('method', METHOD_DEFAULT);
-    h += '<h2>' + (key === 'source' ? 'מקור' : 'אופן') + '</h2><div class="opts">' +
+    h += '<div class="opts">' +
       list.map(function (s) {
         var on = (key === 'source' ? d.method : d.method) === s;
         return '<button type="button" class="opt' + (on ? ' on' : '') +
@@ -3862,23 +4132,20 @@ function flowScreenHTML() {
                esc(s) + '</button>';
       }).join('') + '</div>';
   } else if (key === 'category') {
-    h += '<h2>קטגוריה</h2><div class="opts">' + CAT_LIST.map(function (s) {
+    h += '<div class="opts">' + CAT_LIST.map(function (s) {
       return '<button type="button" class="opt' + (d.category === s ? ' on' : '') +
              '" data-act="flow-pick" data-k="category" data-v="' + esc(s) + '">' +
              esc(s) + '</button>';
     }).join('') + '</div>';
   } else if (key === 'date') {
-    h += '<h2>תאריך</h2>' +
-      '<div class="fld"><label for="f-date">תאריך</label>' +
+    h += '<div class="fld"><label for="f-date">תאריך</label>' +
       '<input id="f-date" type="date" value="' + esc(d.entry_date) + '">' +
       '<div class="sml" id="f-hdate">' + esc(hebLabel(d.entry_date)) + '</div></div>';
   }
 
   h += '<button class="btn" data-act="flow-next" data-ksave>' +
-       (view.step === steps.length - 1 ? 'אישור' : 'המשך') + '</button>' +
-       '<button class="btn ghost u-mt-5" data-act="flow-back" data-kesc>חזרה</button>' +
-       '</div>';
-  return h + closerHTML();
+       (view.step === steps.length - 1 ? 'אישור' : 'המשך') + '</button>';
+  return h + footHTML(BACK_FLOW) + '</div>';
 }
 
 /*  ⛔ הרשומה נושאת תאריך כמחרוזת ISO — ⚠️ וצרכן התצוגה מקבל `Date`:
@@ -3937,24 +4204,29 @@ var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false };
 
 function slideScreenHTML() {
   var isInc = view.flow === 'income';
-  var art = document.getElementById(isInc ? 'asset-wallet' : 'asset-kupa');
   return '<div class="slide" id="slide">' +
     '<button class="back bk" data-act="flow-back" aria-label="חזרה">›</button>' +
     '<div class="ttl">' + esc(isInc ? MSG_SLIDE_WALLET : MSG_SLIDE_KUPA) + '</div>' +
     '<div class="sub">' + esc(MSG_SLIDE_SUB) + '</div>' +
     '<div class="target ' + (isInc ? 'wide' : 'narrow') + '" id="slide-target">' +
-    (art ? art.innerHTML : '') + '</div>' +
+    assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</div>' +
     '<div class="coin" id="coin"><span class="ring"></span>' +
-    plain(Math.abs(view.draft.amount)) + '</div></div>';
+    money(Math.abs(view.draft.amount)) + '</div></div>';
 }
 
+/*  ⛔ המטבע מתחיל **מעל** היעד — ⚠️ הקופה והארנק יושבים מתחתיו:
+ *  ⭐ המטבע נופל לתוכם, ⛔ והחלקה כלפי מעלה אינה תנועה שמישהו מצפה לה. */
+function coinHome() {
+  var b = COIN.tgt.getBoundingClientRect();
+  return { x: window.innerWidth / 2 - 75, y: Math.max(0, b.top - 190) };
+}
 function coinWire() {
   var c = document.getElementById('coin'), t = document.getElementById('slide-target');
   if (!c || !t) { uiNoDialog('coinWire', 'coin'); return; }
   COIN.el = c; COIN.tgt = t;
-  var box = t.getBoundingClientRect();
-  c.style.left = (window.innerWidth / 2 - 75) + 'px';
-  c.style.top = (box.bottom + 40) + 'px';
+  var p = coinHome();
+  c.style.left = p.x + 'px';
+  c.style.top = p.y + 'px';
   c.addEventListener('pointerdown', coinDown);
 }
 function coinDown(e) {
@@ -3974,7 +4246,7 @@ function coinMove(e) {
 function coinOverTarget() {
   var a = COIN.el.getBoundingClientRect(), b = COIN.tgt.getBoundingClientRect();
   var cx = a.left + a.width / 2, cy = a.top + a.height / 2;
-  return cx > b.left && cx < b.right && cy > b.top && cy < b.bottom + 40;
+  return cx > b.left && cx < b.right && cy > b.top - 40 && cy < b.bottom;
 }
 function coinUp(e) {
   var c = COIN.el;
@@ -3984,11 +4256,11 @@ function coinUp(e) {
   coinSwallow();
 }
 function coinReturn() {
-  var c = COIN.el, box = COIN.tgt.getBoundingClientRect();
+  var c = COIN.el, p = coinHome();
   c.classList.remove('over');
   c.style.transition = 'left var(--dur-4) ease, top var(--dur-4) ease';
-  c.style.left = (window.innerWidth / 2 - 75) + 'px';
-  c.style.top = (box.bottom + 40) + 'px';
+  c.style.left = p.x + 'px';
+  c.style.top = p.y + 'px';
 }
 
 /*  ⛔ הרגישות עוברת כאן בלבד — ⚠️ הצליל נוצר ב-`AudioContext`:
@@ -4049,10 +4321,10 @@ function coinSwallow() {
    הכתיבה — מקומית-תחילה, והדחיפה היא רענון
    ══════════════════════════════════════════════════════════════════════════ */
 function localPut(table, row) {
-  var l = DATA[table], i;
+  var l = DATA[table] || kAdopt(table, []), i;
   for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, row.client_id)) { l[i] = row; break; }
   if (i === l.length) l.push(row);
-  mirrorSave(table, l);
+  mirrorSave(table);
   /*  ⛔ המטפל מקבל מפתח אחד — ⚠️ קריאה בשני ארגומנטים מסמנת את שם
    *  הטבלה ⛔ ולא את השורה: ⭐ והקורא מחפש `<טבלה>:<מפתח>`. */
   pendMark(kPendKey(table, row));
@@ -4081,20 +4353,23 @@ function flowCommit() {
   view.screen = 'done';
   view.doneInc = isInc;
   kRender();
-  if (before && before.done) {
+  if (goalShown(before || {})) {
     toast(MSG_MONTH_DONE, 4000, 'good');
   }
 }
 
+/*  ⛔ הכיתוב יושב בתחתית המסך והקונפטי בחציו העליון — ⚠️ הם אינם
+ *  מרוחים זה על זה: ⭐ פתית שנופל על אות מסתיר אותה בדיוק ברגע שבו
+ *  היא נקראת. */
 function doneScreenHTML() {
   var c = chainOf(view.monthKey) || {};
   var isInc = view.doneInc;
-  return openerHTML() + '<div class="done">' +
+  return '<div class="donewrap"><div class="done">' +
     '<div class="line1">' + esc(isInc ? MSG_OPENER : MSG_TZ_BLESS) + '</div>' +
-    '<div class="line2">' + esc('נרשם · ' + (isInc
-      ? 'הכנסות החודש ' + money(c.income || 0)
-      : 'נשאר לפלעדזש החודש ' + money(c.short || 0))) + '</div>' +
-    '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div>' + closerHTML();
+    '<div class="line2">' + esc('נרשם · ' + (isInc ? 'הכנסות החודש ' : 'נשאר לפלעדזש החודש ')) +
+    money(isInc ? (c.income || 0) : (c.short || 0)) + '</div>' +
+    '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div></div>' +
+    footHTML('');
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -4156,6 +4431,7 @@ function kKill(table, row) {
 
 function entryDelete(id) {
   var r = entryById(id);
+  closeModal();
   if (!r) { uiNoDialog('entryDelete', id); return Promise.resolve(); }
   return ask(MSG_DELETE, MSG_DEL_PRE + r.description + ' ' + money(r.amount) + MSG_DEL_POST,
              MSG_DELETE).then(function (yes) {
@@ -4206,7 +4482,8 @@ function orderNewVersion(o, patch, fromMonth) {
     client_id: newClientId(), name: patch.name != null ? patch.name : o.name,
     amount: patch.amount != null ? patch.amount : o.amount,
     day_of_month: patch.day_of_month != null ? patch.day_of_month : o.day_of_month,
-    method: o.method, category: o.category, active: true,
+    method: patch.method != null ? patch.method : o.method,
+    category: o.category, active: true,
     valid_from_month: key, valid_to_month: null,
     supersedes_id: o.client_id, updated_at: Date.now(), deleted: false
   };
@@ -4214,13 +4491,76 @@ function orderNewVersion(o, patch, fromMonth) {
   return next;
 }
 
+/*  ⛔ ארבעת השדות של הוראת קבע — ⚠️ סכום · פירוט · אופן · תאריך:
+ *  ⭐ אותם ארבעה בהוספה ובעריכה, ⛔ ושני טפסים לאותה ישות הם שני
+ *  מקומות לתקן, ⚠️ ואחד מהם יישכח. */
+function orderFormHTML(o) {
+  var list = lookupList('method', METHOD_DEFAULT);
+  return '<div class="ksave">' +
+    '<div class="fld"><label for="o-amt">סכום</label>' +
+    '<input id="o-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+    esc(o ? o.amount : '') + '"></div>' +
+    '<div class="fld"><label for="o-name">פירוט</label>' +
+    '<input id="o-name" type="text" autocomplete="off" value="' +
+    esc(o ? o.name : '') + '"></div>' +
+    '<div class="fld"><label for="o-method">אופן</label><select id="o-method">' +
+    list.map(function (x) {
+      return '<option value="' + esc(x) + '"' +
+             (o && o.method === x ? ' selected' : '') + '>' + esc(x) + '</option>';
+    }).join('') + '</select></div>' +
+    '<div class="fld"><label for="o-day">תאריך</label>' +
+    '<input id="o-day" type="text" inputmode="numeric" autocomplete="off" value="' +
+    esc(o ? o.day_of_month : '') + '"></div></div>';
+}
+
+/*  ⛔ הקריאה עוברת כאן פעם אחת — ⚠️ והיא מחזירה `null` כששדה אינו
+ *  ב-DOM: ⭐ שומר שקורא ערך משדה שאינו קיים זורק, ⛔ והמסלול נגמר
+ *  בלי שהמשתמש יודע למה. */
+function orderRead() {
+  var a = kQ('#o-amt'), nm = kQ('#o-name'), me = kQ('#o-method'), dy = kQ('#o-day');
+  if (!a || !nm || !me || !dy) { uiNoDialog('orderRead', 'o-amt'); return null; }
+  return { amount: readNum(a, null), name: nm.value.trim(),
+           method: me.value, day_of_month: readNum(dy, null) };
+}
+function orderValid(p) {
+  if (!p) return MSG_FILL_ALL;
+  if (p.amount === null || p.amount <= EPS) return MSG_NEED_AMOUNT;
+  if (!p.name) return MSG_NEED_DESC;
+  if (p.day_of_month === null || p.day_of_month < 1 || p.day_of_month > 30) return MSG_NEED_DAY;
+  return '';
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    ההגדרות
    ══════════════════════════════════════════════════════════════════════════ */
+/*  ⛔ השנים נגזרות מהחודשים שבשרשרת ומהשורות שכבר יש — ⚠️ ואין רשימת
+ *  שנים מוקלדת: ⭐ הקודמת הייתה נגמרת, ⛔ ומאותו יום לא היה מה לבחור. */
+function pledgeYears() {
+  var seen = {}, out = [], ms = monthsSorted(), l = kLive(DATA.k_pledges), i;
+  for (i = 0; i < ms.length; i++) seen[ms[i].year] = true;
+  for (i = 0; i < l.length; i++) seen[String(l[i].hebrew_year)] = true;
+  for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
+  return out.sort().reverse();
+}
+/*  ⛔ יעד הפלעדזש הוא סכום אחד לכל חודש בשנה — ⚠️ ולכל שנה בנפרד:
+ *  ⭐ ושנה שאין לה שורה היא אפס, ⛔ ולא כשל. */
+function pledgeCardHTML() {
+  var ys = pledgeYears();
+  if (!ys.length) return '';
+  return '<div class="card"><h2>יעד פלעדזש שנתי</h2><ul class="det">' +
+    ys.map(function (y) {
+      return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
+             '<span class="ico">' + iconFor('amount') + '</span>' +
+             '<span class="nm">' + esc(window.ysHebYearLabelFull(y)) + '</span>' +
+             '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
+    }).join('') + '</ul></div>';
+}
+
 function settingsScreenHTML() {
-  return openerHTML() +
-    '<div class="mrow"><span class="mname">' + esc(MSG_SETTINGS_TITLE) + '</span></div>' +
+  return brandHTML() + tabHeadHTML(MSG_SETTINGS_TITLE) +
+    pledgeCardHTML() +
     ordersCardHTML() +
+    '<button class="btn ghost" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
     '<div class="card"><h2>' + esc(MSG_SENSORY) + '</h2>' +
     '<button class="opt' + (APP_SENSORY.on ? ' on' : '') + '" data-act="sensory-toggle">' +
     esc(APP_SENSORY.on ? 'פועל' : 'כבוי') + '</button></div>' +
@@ -4230,7 +4570,7 @@ function settingsScreenHTML() {
              '<span class="nm">' + esc(s) + '</span></li>';
     }).join('') + '</ul></div>' +
     monthsChartHTML() +
-    '<button class="btn ghost" data-act="settings-close">חזרה</button>' + closerHTML();
+    footHTML(BACK_HOME);
 }
 
 /*  ⛔ הסדרה נבנית מהרכיב המשותף ⛔ ולא מספרייה — ⚠️ פס יחיד ופס בסדרה
@@ -4241,8 +4581,8 @@ function monthsChartHTML() {
     var c = chainOf(m.key) || {};
     var got = Math.max(0, (c.tzedakah || 0) + Math.max(0, c.prevBalance || 0));
     var tgt = Math.max(0, c.chumash || 0);
-    return { lab: m.name, val: got, tgt: tgt, end: plain(got),
-             txt: m.name + ' · ' + plain(got) + ' מתוך ' + plain(tgt) };
+    return { lab: m.name, val: got, tgt: tgt, end: money(got),
+             txt: m.name + ' · ' + money(got) + ' מתוך ' + money(tgt) };
   });
   var h = barChart(rows, MSG_MONTHS_CHART);
   return h ? '<div class="card"><h2>' + esc(MSG_MONTHS_CHART) + '</h2>' + h + '</div>' : '';
@@ -4254,14 +4594,23 @@ function monthsChartHTML() {
 function kRender() {
   var root = kQ('#app');
   if (!root) { uiNoDialog('kRender', 'app'); return; }
-  var fab = kQ('#fab');
+  var fab = kQ('#fab'), tb = kQ('#tabbar');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'flow') root.innerHTML = flowScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
+  else if (view.screen === 'import') root.innerHTML = importScreenHTML();
+  else if (view.screen === 'archive') root.innerHTML = archiveScreenHTML();
   else if (view.screen === 'settings') root.innerHTML = settingsScreenHTML();
   var onMonth = view.screen === 'month';
+  /*  ⛔ הסרגל עולה בארבע הלשוניות ⛔ ואינו עולה בזרימה — ⚠️ מסך שהוא
+   *  שדה אחד אינו מקום לנווט ממנו, ⭐ והניווט באמצעו מאבד את הטיוטה. */
+  var onTab = TABS.some(function (t) { return t.k === view.screen; });
   if (fab) fab.classList.toggle('hidden', !onMonth);
+  if (tb) {
+    tb.classList.toggle('hidden', !onTab);
+    tb.innerHTML = tabbarHTML();
+  }
   if (view.screen === 'slide') coinWire();
 }
 
@@ -4282,15 +4631,22 @@ var DOM_ACTIONS = {
   },
   'add-income':   function () { closeModal(); flowStart('income'); },
   'add-tzedakah': function () { closeModal(); flowStart('tzedakah'); },
+  /*  ⛔ הניווט בין החודשים בלי הגבלה — ⚠️ קדימה ואחורה, ⭐ והמפתח הוא
+   *  `key` ⛔ ולא `client_id`: ⚠️ לחודש אין שורה, ⭐ ולכן אין לו מזהה
+   *  רשומה — ⛔ והשדה שנקרא היה `undefined`, והניווט לא זז. */
   'month-prev': function () {
     var p = prevMonthOf(view.monthKey);
-    if (p) { view.monthKey = p.client_id; kRender(); }
+    if (p) { view.monthKey = p.key; view.screen = 'month'; kRender(); }
   },
   'month-next': function () {
-    var n = nextMonthOf(view.monthKey);
-    if (n) { view.monthKey = n.client_id; kRender(); }
+    var nx = nextMonthOf(view.monthKey);
+    if (nx) { view.monthKey = nx.key; view.screen = 'month'; kRender(); }
   },
-  'month-goto': function (el) { view.monthKey = el.dataset.id; kRender(); },
+  'month-goto': function (el) {
+    view.monthKey = el.dataset.id; view.screen = 'month'; kRender();
+  },
+  'tab-go': function (el) { view.screen = el.dataset.id; kRender(); },
+  'back-home': function () { view.screen = 'month'; kRender(); },
   'flow-next': function () {
     flowCollect();
     var bad = flowValid();
@@ -4320,27 +4676,114 @@ var DOM_ACTIONS = {
   'ask-no':  function () { closeAsk(false); },
   'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.style.display = 'none'; },
   'pend-alert-ok':       function () { _pendAlertDismissed = Date.now(); pendRenderAlert(); },
-  'entry-menu': function (el) { return entryDelete(el.dataset.id); },
+  /*  ⛔ לחיצה על תנועה פותחת עורך ⛔ ולא מחיקה — ⚠️ המחיקה היא כפתור
+   *  בתוכו: ⭐ מסלול שמחיקתו היא הלחיצה היחידה מוחק על טעות. */
+  'entry-menu': function (el) {
+    var r = entryById(el.dataset.id);
+    if (!r) { uiNoDialog('entry-menu', el.dataset.id); return; }
+    openModal(MSG_EDIT + ' · ' + r.description,
+      '<div class="ksave">' +
+      '<div class="fld"><label for="e-amt">סכום</label>' +
+      '<input id="e-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+      esc(r.amount) + '"></div>' +
+      '<div class="fld"><label for="e-desc">פירוט</label>' +
+      '<input id="e-desc" type="text" autocomplete="off" value="' +
+      esc(r.description || '') + '"></div>' +
+      '<div class="fld"><label for="e-date">תאריך</label>' +
+      '<input id="e-date" type="date" value="' + esc(r.entry_date || '') + '"></div></div>',
+      '<button class="btn ghost" data-act="entry-del" data-id="' + esc(r.client_id) +
+      '">' + esc(MSG_DELETE) + '</button>' +
+      '<button class="btn" data-act="entry-save" data-id="' + esc(r.client_id) +
+      '" data-ksave>שמור</button>');
+  },
+  'entry-save': function (el) {
+    var a = kQ('#e-amt'), ds = kQ('#e-desc'), dt = kQ('#e-date');
+    if (!a || !ds || !dt) { uiNoDialog('entry-save', 'e-amt'); return; }
+    var r = entryById(el.dataset.id);
+    if (!r) { uiNoDialog('entry-save', el.dataset.id); return; }
+    var v = readNum(a, null), txt = ds.value.trim(), day = dt.value;
+    if (v === null || (r.type !== 'income' && v <= EPS) || Math.abs(v) <= EPS) {
+      toast(MSG_NEED_AMOUNT, 4000, 'bad'); return;
+    }
+    if (!txt) { toast(MSG_NEED_DESC, 4000, 'bad'); return; }
+    return runSave(function () {
+      r.amount = v; r.description = txt;
+      if (day) r.entry_date = day;
+      r.updated_at = Date.now();
+      localPut('k_entries', r);
+      pushSoon();
+      closeModal();
+      kRender();
+      return Promise.resolve();
+    }, MSG_SAVED_LOCAL);
+  },
+  'entry-del': function (el) { return entryDelete(el.dataset.id); },
   'entry-undo': function () { entryUndo(); },
+  'order-add': function () {
+    openModal(MSG_ORDER_NEW, orderFormHTML(null),
+      '<button class="btn" data-act="order-new" data-ksave>שמור</button>');
+  },
+  'order-new': function () {
+    var p = orderRead(), bad = orderValid(p);
+    if (bad) { toast(bad, 4000, 'bad'); return; }
+    return runSave(function () {
+      localPut('k_standing_orders', {
+        client_id: newClientId(), name: p.name, amount: p.amount,
+        day_of_month: p.day_of_month, method: p.method, category: CAT_LIST[0],
+        active: true, valid_from_month: view.monthKey, valid_to_month: null,
+        supersedes_id: null, updated_at: Date.now(), deleted: false
+      });
+      pushSoon();
+      closeModal();
+      kRender();
+      return Promise.resolve();
+    }, MSG_SAVED_LOCAL);
+  },
   'order-edit': function (el) {
     var o = orderById(el.dataset.id);
     if (!o) { uiNoDialog('order-edit', el.dataset.id); return; }
-    openModal(MSG_EDIT + ' · ' + o.name,
-      '<div class="ksave"><div class="fld"><label for="o-amt">סכום</label>' +
-      '<input id="o-amt" type="text" inputmode="decimal" value="' + esc(o.amount) + '">' +
-      '</div></div>',
+    openModal(MSG_EDIT + ' · ' + o.name, orderFormHTML(o),
       '<button class="btn" data-act="order-save" data-id="' + esc(o.client_id) +
       '" data-ksave>שמור</button>');
   },
   'order-save': function (el) {
-    var inp = kQ('#o-amt');
-    if (!inp) { uiNoDialog('order-save', 'o-amt'); return; }
     var o = orderById(el.dataset.id);
     if (!o) { uiNoDialog('order-save', el.dataset.id); return; }
-    var v = readNum(inp, null);
-    if (v === null || v <= EPS) { toast(MSG_NEED_AMOUNT, 4000, 'bad'); return; }
+    var p = orderRead(), bad = orderValid(p);
+    if (bad) { toast(bad, 4000, 'bad'); return; }
     return runSave(function () {
-      orderNewVersion(o, { amount: v }, view.monthKey);
+      orderNewVersion(o, p, view.monthKey);
+      pushSoon();
+      closeModal();
+      kRender();
+      return Promise.resolve();
+    }, MSG_SAVED_LOCAL);
+  },
+  /*  ⛔ היעד נשמר לשנה ⛔ ולא לחודש — ⚠️ מפתח המיזוג הוא `hebrew_year`:
+   *  ⭐ שורה לחודש הייתה טבלת תקופות, ⛔ והיא נשברת בכל תקופה שלא הוזנה. */
+  'pledge-edit': function (el) {
+    var y = String(el.dataset.id || '');
+    if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
+    openModal(MSG_PLEDGE_EDIT + window.ysHebYearLabelFull(y),
+      '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
+      '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+      esc(pledgeOfYear(y)) + '"></div></div>',
+      '<button class="btn" data-act="pledge-save" data-id="' + esc(y) +
+      '" data-ksave>שמור</button>');
+  },
+  'pledge-save': function (el) {
+    var inp = kQ('#p-amt'), y = String(el.dataset.id || '');
+    if (!inp) { uiNoDialog('pledge-save', 'p-amt'); return; }
+    var v = readNum(inp, null);
+    if (v === null || v < 0) { toast(MSG_NEED_AMOUNT, 4000, 'bad'); return; }
+    return runSave(function () {
+      var l = kLive(DATA.k_pledges), i, row = null;
+      for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === y) { row = l[i]; break; }
+      if (!row) row = { client_id: newClientId(), hebrew_year: y, deleted: false };
+      row.pledge = v;
+      row.updated_at = Date.now();
+      localPut('k_pledges', row);
+      pushSoon();
       closeModal();
       kRender();
       return Promise.resolve();
@@ -4351,8 +4794,6 @@ var DOM_ACTIONS = {
     cfgWrite('sensory', APP_SENSORY.on);
     kRender();
   },
-  'settings-open': function () { view.screen = 'settings'; kRender(); },
-  'settings-close': function () { view.screen = 'month'; kRender(); },
   'done-close': function () { view.screen = 'month'; view.flow = null; kRender(); },
   'sw-reload': function () { swApply(); }
 };
@@ -4446,7 +4887,8 @@ function kBoot() {
   lsBoot();
   _kLoadPushed();
   cfgBoot();
-  mirrorBoot(PUSH_TABLES, DATA);
+  mirrorBoot();
+  mirrorTables().forEach(function (t) { kAdopt(t, MIRROR[t] || []); });
   var ms = monthsSorted();
   view.monthKey = ms.length ? ms[ms.length - 1].key : null;
   kRender();
