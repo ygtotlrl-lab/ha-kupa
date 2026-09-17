@@ -175,10 +175,17 @@ main > .foot{margin-top:auto}
 .empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
 
 /* ============================================ שורת החודש והמעבר בין חודשים */
+/*  ⛔ ומתחתיה אוויר — ⚠️ הרכיבים נצמדו אל הכותרת ונקראו כחלק ממנה:
+ *  ⭐ והמרווח הוא מה שמפריד בין ההקשר לבין מה שנמדד בו. */
 .mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
-  padding:var(--sp-5) 0}
+  padding:var(--sp-5) 0 var(--sp-7)}
 .mrow .mid{text-align:center;flex:1}
-.mrow .mname{font-size:var(--fs-5);font-weight:500;color:var(--text);display:block}
+/*  ⛔ שם החודש בשורה משלו ומעל השנה — ⚠️ הוא מה שהמסך עוסק בו, ⭐ והשנה
+ *  היא ההקשר: ⛔ שורה אחת נתנה לשניהם אותו משקל, ⚠️ והעין קראה אותם
+ *  כשם אחד ארוך. */
+.mrow .mname{font-size:var(--fs-6);font-weight:500;color:var(--text);display:block;
+  line-height:var(--lh-2)}
+.mrow .myear{display:block;font-size:var(--fs-3);color:var(--text-2);font-weight:400}
 /*  ⛔ טווח התאריכים הלועזי מתחת לשם — ⚠️ הוא נגזר מראש החודש ומראש
  *  הבא אחריו, ⭐ ואינו נשלף משורה שמישהו מילא. */
 .mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
@@ -198,9 +205,12 @@ main > .foot{margin-top:auto}
   font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
 .inc b{font-size:var(--fs-3);font-weight:500;color:var(--text-2)}
 /*  ⛔ פיצול הצדקה קטן משתיהן — ⚠️ הוא אינו סכום נוסף אלא חלוקה של זה
- *  שמעליו: ⭐ ושתי המנות שלו שוות במשקלן. */
-.inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-start;
-  gap:var(--sp-6);padding-top:0}
+ *  שמעליו: ⭐ ושתי המנות שלו שוות במשקלן.
+ *  ⛔ **והוא נצמד לצד המספרים** ⛔ ולא לצד התוויות — ⚠️ המסמך ימין-לשמאל,
+ *  ⭐ ולכן הקצה המסיים: ⛔ הוא מתאר את המספרים שמעליו, ⚠️ ושורה שנצמדת
+ *  לצד השני נקראת כתווית שאיבדה את ערכה. */
+.inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-end;
+  gap:var(--sp-5);padding-top:0}
 
 /* ================================================================== הפירוט */
 .det{list-style:none;margin:0;padding:0}
@@ -709,16 +719,13 @@ function kTzedakah(rows) {
 }
 function kChumash(income) { return income * K_CHUMASH_RATE; }
 
-/*  ⛔ הסכום האישי נגזר פעם אחת — ⚠️ האחוז והפירוט שניהם נשענים עליו:
- *  ⭐ שתי גזירות לאותו סכום הן שתי הזדמנויות להיבדל. */
-function kSelfSum(rows) {
-  return kSum(kLive(rows).filter(function (r) {
-    return r.type === 'tzedakah' && r.category === K_CAT_SELF;
-  }).map(function (r) { return +r.amount || 0; }));
-}
 function kSelfPct(rows) {
   var tz = kTzedakah(rows);
-  return tz ? kSelfSum(rows) / tz * 100 : 0;
+  if (!tz) return 0;
+  var self = kSum(kLive(rows).filter(function (r) {
+    return r.type === 'tzedakah' && r.category === K_CAT_SELF;
+  }).map(function (r) { return +r.amount || 0; }));
+  return self / tz * 100;
 }
 
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
@@ -767,7 +774,6 @@ function kChain(months, opts) {
                chumashLeft: chumashLeft, pledgeOpen: pledgeOpen,
                pledgeBalance: -pledgeLeft, pledgeCarry: pledgeCarry,
                pledgeDue: pledgeDue, pledgeLeft: pledgeLeft,
-               self: kSelfSum(m.rows), others: tzedakah - kSelfSum(m.rows),
                selfPct: kSelfPct(m.rows) });
   }
   return out;
@@ -4053,6 +4059,19 @@ function signed(n) {
   return '<span class="ltr">' + esc(v < 0 ? '−' + money(-v) : money(v)) + '</span>';
 }
 
+/*  ⛔ פיצול הצדקה באחוזים ⛔ ולא בסכומים — ⚠️ הסכומים כבר בשורה שמעליו,
+ *  ⭐ והחלוקה היא מה שהשורה הזו אומרת: ⛔ **וחודש בלי צדקה מציג אפס בשניהם**
+ *  ⛔ ולא אפס ומלוא המניין — ⚠️ אחוז מתוך אפס אינו חלוקה, ⭐ והמשלים שם
+ *  מדווח על חלוקה שלא נעשתה.
+ *  ⚠️ **והמשלים נגזר מהמעוגל** ⛔ ולא מעוגל בנפרד — ⭐ שני עיגולים
+ *  נפרדים נותנים 99 או 101. */
+function splitHTML(c) {
+  var tz = c.tzedakah || 0;
+  var self = tz > EPS ? Math.round(c.selfPct || 0) : 0;
+  return '<span>' + esc(MSG_SUM_SELF + (tz > EPS ? self : 0) + '%') + '</span>' +
+         '<span>' + esc(MSG_SUM_OTHERS + (tz > EPS ? 100 - self : 0) + '%') + '</span>';
+}
+
 /*  ⛔ הפס מודד מה שניתן החודש מול החובה הכוללת — ⚠️ וחובה שאינה חיובית
  *  היא פס מלא: ⭐ אין מה להשלים, ⛔ וחלוקה בה הייתה אינסוף. */
 function compPct(given, due) {
@@ -4092,7 +4111,8 @@ function monthScreenHTML() {
   /* 2 — שם החודש, טווח התאריכים הלועזי והחצים. */
   h += '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
-       '<span class="mid"><span class="mname">' + esc(monthTitle(m)) + '</span>' +
+       '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
+       '<span class="myear">' + esc(window.ysHebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
@@ -4111,9 +4131,7 @@ function monthScreenHTML() {
        '<b>' + esc(money(c.income || 0)) + '</b></div>' +
        '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
        '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
-       '<div class="inc sub"><span>' + esc(MSG_SUM_SELF) +
-       esc(money(c.self || 0)) + '</span><span>' + esc(MSG_SUM_OTHERS) +
-       esc(money(c.others || 0)) + '</span></div>';
+       '<div class="inc sub">' + splitHTML(c) + '</div>';
 
   /* 5 — הפירוט: התאריכים תחילה, והוראות הקבע תחתיהם. */
   var dated = rows.filter(function (r) { return r.source !== 'standing'; });
