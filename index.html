@@ -239,10 +239,16 @@ main > .foot{margin-top:auto}
 .card > .fold .st{color:var(--purple-5)}
 /*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
  *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה. */
-.det.drag li{cursor:grab}
 .det.drag li.dragging{opacity:var(--op-3)}
-.grip{width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex:none;
-  color:var(--text-3);font-size:var(--fs-4);letter-spacing:var(--ls-n1)}
+/*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
+ *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה.
+ *  ⛔ **ו-`touch-action` עליה בלבד** — ⚠️ באצבע, אלמנט שאינו מבטל את
+ *  פעולת המגע גולל את הדף במקום לגרור; ⭐ וביטולו על כל השורה היה נועל
+ *  את גלילת המסך בכל הרשימה. */
+.grip{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex:none;
+  color:var(--text-3);font-size:var(--fs-4);letter-spacing:var(--ls-n1);
+  touch-action:none;cursor:grab}
+.grip:active{cursor:grabbing;color:var(--purple-5)}
 /*  ⛔ חודש בארכיון הוא שמו ומתחתיו שני פסיו — ⚠️ ואין בו מספרים:
  *  ⭐ הפס הוא כל מה שנשאל, ⛔ ומספר לצידו מחזיר את המסך שהארכיון בא
  *  להחליף. */
@@ -593,7 +599,7 @@ main > .foot{margin-top:auto}
 /*  ⛔ הליבה המשותפת נטענת כמודול ⛔ ואינה מוכפלת כאן — ⚠️ והמסמך עצמו הוא
  *  מודול: ⭐ סקריפט קלאסי רץ **לפני** כל מודול, ⛔ וקריאה אליו בעלייה
  *  הייתה מוצאת `undefined`. */
-import { readNum } from './core/util.js';
+import { readNum, uniqHas } from './core/util.js';
 import { newClientId, idEq, mergeCore, tombPruneMerged, tombBoot,
          ctxEpoch, ctxStale } from './core/sync.js';
 import './core/hebrew.js';
@@ -651,14 +657,14 @@ var MSG_SENSORY = 'צליל ורטט באישור';
 var MSG_EDIT = 'עריכה';
 var MSG_ORDER_NEW = 'הוראת קבע חדשה';
 var MSG_ORDER_FROM = 'חודש תחילת פעילות';
-var MSG_SRC_INCOME = 'מקורות הכנסה';
-var MSG_SRC_TZEDAKAH = 'מקורות צדקה';
-var MSG_SRC_NEW = 'מקור חדש';
-var MSG_SRC_LABEL = 'שם המקור';
-var MSG_NEED_LABEL = '⚠️ נא למלא שם למקור';
+var MSG_WAY_INCOME = 'אופני הכנסה';
+var MSG_WAY_TZEDAKAH = 'אופני צדקה';
+var MSG_WAY_NEW = 'אופן חדש';
+var MSG_WAY_LABEL = 'שם האופן';
+var MSG_NEED_LABEL = '⚠️ נא למלא שם לאופן';
 var MSG_NO_ORDERS = 'עוד לא נרשמה הוראת קבע';
 var MSG_ARCH_EMPTY = 'אין כאן עדיין כלום';
-var MSG_SRC_DUP = '⚠️ מקור בשם הזה כבר קיים';
+var MSG_WAY_DUP = '⚠️ אופן בשם הזה כבר קיים';
 var MSG_PLEDGE_EDIT = 'יעד הפלעדזש · ';
 var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר בין 1 ל-30';
 
@@ -4271,12 +4277,12 @@ function lookupCardHTML(kind, title, dflt) {
                '<span class="nm">' + esc(x) + '</span></li>';
       }).join('')
       : rows.map(function (r) {
-        return '<li draggable="true" data-act="look-edit" data-id="' + esc(r.client_id) + '">' +
+        return '<li data-act="look-edit" data-id="' + esc(r.client_id) + '">' +
                '<span class="grip" aria-hidden="true">⠿</span>' +
                '<span class="nm">' + esc(r.label) + '</span></li>';
       }).join('')) + '</ul>' +
       '<button class="btn ghost u-mt-5" data-act="look-add" data-id="' + esc(kind) + '">' +
-      esc(MSG_SRC_NEW) + '</button>') +
+      esc(MSG_WAY_NEW) + '</button>') +
     '</div>';
 }
 
@@ -4319,19 +4325,22 @@ function lookupSeed(kind, dflt) {
   cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
 }
 /*  ⛔ הסדר נכתב מחדש לכל השורות ⛔ ולא לזו שזזה — ⚠️ שתי שורות באותו
- *  `sort` הן סדר שאיש לא הכריע בו, ⭐ ומיזוג בין מכשירים מקבע אותו. */
-function lookupReorder(kind, fromId, toId) {
-  var rows = lookupRows(kind), from = -1, to = -1, i;
-  for (i = 0; i < rows.length; i++) {
-    if (idEq(rows[i].client_id, fromId)) from = i;
-    if (idEq(rows[i].client_id, toId)) to = i;
-  }
-  if (from < 0 || to < 0 || from === to) return false;
-  rows.splice(to, 0, rows.splice(from, 1)[0]);
-  for (i = 0; i < rows.length; i++) {
-    rows[i].sort = i + 1;
-    rows[i].updated_at = Date.now();
-    localPut('k_lookups', rows[i]);
+ *  `sort` הן סדר שאיש לא הכריע בו, ⭐ ומיזוג בין מכשירים מקבע אותו.
+ *  ⚠️ **והקלט הוא הסדר הסופי שב-DOM** — ⛔ ולא צמד «מאיפה לאן»:
+ *  ⭐ גרירה אחת עוברת על פני כמה שורות, ⛔ וצמד מתאר את צעדה האחרון בלבד.
+ *  ⛔ **וסדר שאינו מכיל בדיוק את כל השורות נדחה** — ⚠️ מזהה שנשמט היה
+ *  מוחק את סדרה של שורה שלמה. */
+function lookupReorder(kind, ids) {
+  var rows = lookupRows(kind), by = {}, out = [], i, changed = false;
+  for (i = 0; i < rows.length; i++) by[String(rows[i].client_id)] = rows[i];
+  for (i = 0; i < ids.length; i++) if (by[String(ids[i])]) out.push(by[String(ids[i])]);
+  if (out.length !== rows.length) return false;
+  for (i = 0; i < out.length; i++) if (+out[i].sort !== i + 1) changed = true;
+  if (!changed) return false;
+  for (i = 0; i < out.length; i++) {
+    out[i].sort = i + 1;
+    out[i].updated_at = Date.now();
+    localPut('k_lookups', out[i]);
   }
   pushSoon();
   /*  ⛔ שינוי ברשימות מקדם את עידן הרשימות — ⚠️ הכתיבה עוברת בנקודת
@@ -4864,7 +4873,7 @@ function lookupById(id) {
  *  לתקן, ⭐ ואחד מהם יישכח. */
 function lookupFormHTML(r) {
   return '<div class="ksave"><div class="fld"><label for="l-label">' +
-    esc(MSG_SRC_LABEL) + '</label>' +
+    esc(MSG_WAY_LABEL) + '</label>' +
     '<input id="l-label" type="text" autocomplete="off" value="' +
     esc(r ? r.label : '') + '"></div></div>';
 }
@@ -4901,11 +4910,11 @@ function settingsScreenHTML() {
   return brandHTML() + tabHeadHTML(MSG_SETTINGS_TITLE) +
     pledgeCardHTML() +
     ordersCardHTML() +
-    /*  ⛔ המקור של ההכנסה הוא ה«אופן» שבזרימה, ⚠️ ושל הצדקה הוא
-     *  ה«מקור» — ⭐ שני אוצרות מילים נפרדים: ⛔ ואין לאחד אותם לרשימה
-     *  אחת — ⚠️ רשימה מעורבת מציעה בהכנסה את מה ששייך לצדקה. */
-    lookupCardHTML('method', MSG_SRC_INCOME, METHOD_DEFAULT) +
-    lookupCardHTML('source', MSG_SRC_TZEDAKAH, SRC_DEFAULT) +
+    /*  ⛔ שני אוצרות מילים נפרדים לאותו שלב — ⚠️ «אופן» בשני המסלולים,
+     *  ⭐ והמפתח שמאחוריו נבדל: ⛔ ואין לאחד אותם לרשימה אחת —
+     *  ⚠️ רשימה מעורבת מציעה בהכנסה את מה ששייך לצדקה. */
+    lookupCardHTML('method', MSG_WAY_INCOME, METHOD_DEFAULT) +
+    lookupCardHTML('source', MSG_WAY_TZEDAKAH, SRC_DEFAULT) +
     footHTML();
 }
 
@@ -5134,7 +5143,7 @@ var DOM_ACTIONS = {
   },
   'look-add': function (el) {
     var k = el.dataset.id;
-    openModal(MSG_SRC_NEW, lookupFormHTML(null), lookupFootHTML(null, k));
+    openModal(MSG_WAY_NEW, lookupFormHTML(null), lookupFootHTML(null, k));
   },
   'look-edit': function (el) {
     var r = lookupById(el.dataset.id);
@@ -5150,7 +5159,7 @@ var DOM_ACTIONS = {
      *  ⭐ והזהות היא התווית: ⛔ והשורה שנערכת אינה מתנגשת בעצמה. */
     var others = lookupRows(kind).filter(function (x) { return !idEq(x.client_id, id); })
       .map(function (x) { return x.label; });
-    if (uniqHas(others, txt)) { toast(MSG_SRC_DUP, 4000, 'bad'); return; }
+    if (uniqHas(others, txt)) { toast(MSG_WAY_DUP, 4000, 'bad'); return; }
     return runSave(function () {
       var r = id ? lookupById(id) : null;
       if (r) { r.label = txt; }
@@ -5177,6 +5186,9 @@ var DOM_ACTIONS = {
    ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener('click', function (e) {
   if (modalBackdrop(e)) return;
+  /*  ⛔ לחיצה על ידית הגרירה אינה פותחת את העורך — ⚠️ היא סופה של
+   *  גרירה, ⭐ ולא בחירה בשורה. */
+  if (e.target.closest('.grip')) return;
   var el = e.target.closest('[data-act]');
   if (!el) return;
   var fn = DOM_ACTIONS[el.dataset.act];
@@ -5191,36 +5203,48 @@ document.addEventListener('keydown', function (e) {
   modalEsc(e);
 });
 
-/*  ⛔ שלושת מאזיני הגרירה — ⚠️ **מה שמאזין ה-`click` אינו יכול**: גרירה
- *  אינה לחיצה, ⭐ והדפדפן משדר אותה בשלושה אירועים נפרדים שאין ביניהם
- *  קליק אחד: ⛔ `dragstart` לוכד את הנגרר, `dragover` מתיר את ההפלה,
- *  ו-`drop` מכריע את הסדר.
+/*  ⛔ הגרירה על אירועי מצביע ⛔ ולא על גרירת HTML5 — ⚠️ **במגע היא אינה
+ *  קיימת כלל**: ⭐ נמדד בדפדפן — `dragstart` · `dragover` ו-`drop` לא
+ *  נורו אף פעם באצבע, ⛔ ורק `pointer*` הגיעו; ⚠️ ואירועי מצביע חיים
+ *  בעכבר ובאצבע כאחד.
+ *  ⛔ **והגרירה מתחילה מהידית בלבד** — ⚠️ שורה שכולה נגררת חוטפת את
+ *  גלילת המסך, ⭐ ו-`touch-action` שמבטל אותה על כל השורה נועל את הדף.
  *  ⚠️ **והם באצלה מ-`document` כמו האחרים** — ⭐ הרשימה נבנית מחדש בכל
  *  רינדור, ⛔ ומאזין פר-שורה היה מת איתה. */
-var DRAG = { id: null, kind: null };
-document.addEventListener('dragstart', function (e) {
-  var li = e.target.closest && e.target.closest('.det.drag > li[data-id]');
-  if (!li) return;
-  DRAG.id = li.dataset.id;
-  DRAG.kind = li.parentNode.dataset.kind;
+var DRAG = { el: null, list: null, kind: null, moved: false };
+
+document.addEventListener('pointerdown', function (e) {
+  var g = e.target.closest && e.target.closest('.det.drag > li .grip');
+  if (!g) return;
+  var li = g.closest('li');
+  DRAG.el = li; DRAG.list = li.parentNode;
+  DRAG.kind = DRAG.list.dataset.kind; DRAG.moved = false;
   li.classList.add('dragging');
-  try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', DRAG.id); } catch (e1) {}
-});
-document.addEventListener('dragover', function (e) {
-  if (!DRAG.id) return;
-  var li = e.target.closest && e.target.closest('.det.drag > li[data-id]');
-  if (!li || li.parentNode.dataset.kind !== DRAG.kind) return;
+  /*  ⛔ המצביע נלכד על הידית — ⚠️ בלעדיו אצבע שיוצאת מגבול האלמנט
+   *  מפסיקה לשדר, ⭐ והגרירה נתקעת באמצע. */
+  try { g.setPointerCapture(e.pointerId); } catch (e1) {}
   e.preventDefault();
-  try { e.dataTransfer.dropEffect = 'move'; } catch (e1) {}
 });
-document.addEventListener('drop', function (e) {
-  if (!DRAG.id) return;
-  var li = e.target.closest && e.target.closest('.det.drag > li[data-id]');
-  var from = DRAG.id, kind = DRAG.kind;
-  DRAG.id = null; DRAG.kind = null;
-  if (!li || li.parentNode.dataset.kind !== kind) return;
+document.addEventListener('pointermove', function (e) {
+  if (!DRAG.el) return;
   e.preventDefault();
-  if (lookupReorder(kind, from, li.dataset.id)) kRender();
+  var over = document.elementFromPoint(e.clientX, e.clientY);
+  var li = over && over.closest ? over.closest('.det.drag > li') : null;
+  if (!li || li === DRAG.el || li.parentNode !== DRAG.list) return;
+  DRAG.moved = true;
+  /*  ⛔ ההזזה בעץ בזמן הגרירה — ⚠️ היא המשוב היחיד שהמשתמש מקבל:
+   *  ⭐ והחצי התחתון של שורת היעד מכניס אחריה. */
+  var r = li.getBoundingClientRect();
+  DRAG.list.insertBefore(DRAG.el, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
+});
+document.addEventListener('pointerup', function () {
+  if (!DRAG.el) return;
+  var el = DRAG.el, list = DRAG.list, kind = DRAG.kind, moved = DRAG.moved;
+  DRAG.el = null; DRAG.list = null; DRAG.kind = null; DRAG.moved = false;
+  el.classList.remove('dragging');
+  if (!moved) return;
+  var ids = [].slice.call(list.children).map(function (x) { return x.dataset.id; });
+  if (lookupReorder(kind, ids)) kRender();
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
