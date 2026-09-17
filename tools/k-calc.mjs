@@ -26,29 +26,54 @@ export function kSelfPct(rows) {
   return self / tz * 100;
 }
 
-/*  ⛔ השרשרת מצטברת לאורך כל חיי האפליקציה — ⚠️ גם בין שנים: ⭐ יתרת אלול
- *  היא יתרת הפתיחה של תשרי הבא, ⛔ ויתרת פתיחה מוצהרת רק לשנה הראשונה.
- *  ⚠️ **ורק עודף עובר** — ⛔ לעולם לא חוב: ⭐ הפלעדזש הוא מינימום חודשי,
- *  והחומש הוא המצטבר. */
+/*  ⛔ השרשרת מצטברת לאורך כל חיי האפליקציה — ⚠️ **שני חישובים נפרדים על
+ *  אותה צדקה**: ⭐ החומש הוא חלק מההכנסות בפועל, ⛔ והפלעדזש הוא סכום
+ *  שנקבע מראש לשנה וחוזר בכל אחד מחודשיה.
+ *  ⛔ **ושניהם מעבירים יתרה — זכות וחובה כאחת** — ⚠️ מה שנשאר בסוף חודש
+ *  הוא הפתיחה של הבא: ⭐ רצפה שמעבירה עודף בלבד מוחקת חוב שאיש לא מחל עליו.
+ *  ⛔ **וההבדל היחיד הוא ראש השנה העברית** — ⚠️ הפלעדזש מתאפס שם, ⭐ שהוא
+ *  החלטה שנתית חדשה; ⛔ והחומש אינו מתאפס, ⚠️ שבו אנו חייבים תמיד.
+ *  ⛔ **וחודש שטרם הגיע אינו נושא יתרת פלעדזש** — ⚠️ הוא מציג את הסכום
+ *  השנתי שחוזר: ⭐ היתרה נקבעת מסוף מצב החודש שנסגר, ⛔ וחודש שלא נסגר
+ *  אין לו מה להוריש. */
 export function kChain(months, opts) {
-  const pledgeOf = opts.pledgeOf;      /* שנה ⟵ מינימום חודשי */
-  let balance = opts.opening || 0;         /* יתרה מול חומש, מצטברת */
-  let carry = 0;                           /* עודף פלעדזש מחודש קודם */
+  const pledgeOf = opts.pledgeOf;      /* שנה ⟵ הסכום החודשי שחוזר */
+  /*  ⛔ המפתח של החודש הנוכחי — ⚠️ כל מפתח שגדול ממנו הוא חודש שטרם הגיע:
+   *  ⭐ והוא מוצהר ריק כשאין הכרעה כזו, ⛔ ואז כל החודשים משרשרים. */
+  const now = opts.now == null ? '' : String(opts.now);
+  let balance = opts.opening || 0;     /* יתרת החומש, מצטברת חוצה שנים */
+  let pBalance = 0;                    /* יתרת הפלעדזש, מתאפסת בראש השנה */
+  let prevYear = null;
   const out = [];
   for (const m of months) {
     const income = kIncome(m.rows);
     const tzedakah = kTzedakah(m.rows);
     const chumash = kChumash(income);
     const pledge = pledgeOf(m.year);
+    const future = now !== '' && String(m.key) > now;
+
+    /*  ⛔ החומש — ⚠️ החובה הכוללת היא חומש החודש פחות יתרת הזכות שנשארה:
+     *  ⭐ יתרה חיובית היא זכות ומקטינה, ⛔ ושלילית היא חוב ומגדילה. */
     const prevBalance = balance;
-    balance = prevBalance + tzedakah - chumash;
-    const carryIn = carry;
-    const fill = tzedakah + carryIn;
-    const short = Math.max(0, pledge - fill);
-    carry = Math.max(0, tzedakah + carryIn - pledge);
+    const chumashCarry = -prevBalance;
+    const chumashDue = chumash + chumashCarry;
+    const chumashLeft = chumashDue - tzedakah;
+    balance = -chumashLeft;
+
+    /*  ⛔ הפלעדזש — ⚠️ אותה צורה בדיוק, ⭐ ושני הבדלים: ⛔ היתרה מתאפסת
+     *  בראש השנה, ⚠️ וחודש שטרם הגיע אינו נושא יתרה כלל. */
+    const yearTurn = prevYear !== null && String(m.year) !== prevYear;
+    const pledgeOpen = (yearTurn || future) ? 0 : pBalance;
+    const pledgeCarry = -pledgeOpen;
+    const pledgeDue = pledge + pledgeCarry;
+    const pledgeLeft = pledgeDue - tzedakah;
+    pBalance = future ? 0 : -pledgeLeft;
+    prevYear = String(m.year);
+
     out.push({ key: m.key, year: m.year, income, tzedakah, chumash, pledge,
-               prevBalance, balance, carryIn, fill, short,
-               done: short === 0, carryOut: carry, selfPct: kSelfPct(m.rows) });
+               prevBalance, balance, chumashCarry, chumashDue, chumashLeft,
+               pledgeOpen, pledgeBalance: -pledgeLeft, pledgeCarry, pledgeDue, pledgeLeft,
+               selfPct: kSelfPct(m.rows) });
   }
   return out;
 }

@@ -139,8 +139,8 @@ function checks(src) {
     ['ו · המופעים מצורפים לרישומי החודש', n(B.monthRows, /\.concat\(instanceRows\(/g), 1],
     ['ז · המופע נוצר במצב ממתין', n(B.soEnsureInstances, /status:\s*'pending'/g), 1],
     ['ח · היצירה אידמפוטנטית — מופע אחד לצמד', n(B.soEnsureInstances, /if \(has\) continue;/g), 1],
-    ['ט · החסר נגזר מהמופעים מא׳ דחודש',
-     Math.round(withSo.short), APP.pledge - sum(SO), `חודש ריק — ${Math.round(empty.short)}`],
+    ['ט · «סכום שנשאר» נגזר מהמופעים מא׳ דחודש',
+     Math.round(withSo.pledgeLeft), APP.pledge - sum(SO), `חודש ריק — ${Math.round(empty.pledgeLeft)}`],
   ];
 }
 
