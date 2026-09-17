@@ -17,13 +17,16 @@ export function kTzedakah(rows) { return sum(live(rows).filter((r) => r.type ===
 export function kChumash(income) { return income * K_CHUMASH_RATE; }
 
 /*  ⛔ שתי הקטגוריות נספרות שווה — ⚠️ ההפרדה לתצוגה בלבד, ⭐ והאחוז
- *  הוא סימון ויזואלי: ⛔ אין חסימה, ואחוז מלא לאחרים תקין. */
+ *  הוא סימון ויזואלי: ⛔ אין חסימה, ואחוז מלא לאחרים תקין.
+ *  ⛔ **והסכום נגזר פעם אחת** — ⚠️ האחוז והפירוט שניהם נשענים עליו:
+ *  ⭐ שתי גזירות לאותו סכום הן שתי הזדמנויות להיבדל. */
+export function kSelfSum(rows) {
+  return sum(live(rows).filter((r) => r.type === 'tzedakah' && r.category === K_CAT_SELF)
+                       .map((r) => +r.amount || 0));
+}
 export function kSelfPct(rows) {
   const tz = kTzedakah(rows);
-  if (!tz) return 0;
-  const self = sum(live(rows).filter((r) => r.type === 'tzedakah' && r.category === K_CAT_SELF)
-                             .map((r) => +r.amount || 0));
-  return self / tz * 100;
+  return tz ? kSelfSum(rows) / tz * 100 : 0;
 }
 
 /*  ⛔ השרשרת מצטברת לאורך כל חיי האפליקציה — ⚠️ **שני חישובים נפרדים על
@@ -73,6 +76,7 @@ export function kChain(months, opts) {
     out.push({ key: m.key, year: m.year, income, tzedakah, chumash, pledge,
                prevBalance, balance, chumashCarry, chumashDue, chumashLeft,
                pledgeOpen, pledgeBalance: -pledgeLeft, pledgeCarry, pledgeDue, pledgeLeft,
+               self: kSelfSum(m.rows), others: tzedakah - kSelfSum(m.rows),
                selfPct: kSelfPct(m.rows) });
   }
   return out;

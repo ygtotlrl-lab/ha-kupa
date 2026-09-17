@@ -147,13 +147,17 @@ main > .foot{margin-top:auto}
   margin-bottom:var(--sp-5);font-weight:500}
 .card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-2);
   color:var(--text-2)}
-/*  ⛔ המסגרת היא מה שנשאר מבאנר הסיום — ⚠️ והיא עדינה ⛔ ואינה בולטת:
- *  ⭐ גוון הערכה עצמה, ⛔ ולא צבע מצב: ⚠️ באנר תפס שורה שלמה על כל
- *  רישום, ⭐ ומסגרת אומרת את אותו דבר בלי לגזול מקום. */
-.comp.plus{border-color:var(--purple-2);box-shadow:0 0 0 1px var(--purple-1),var(--shadow)}
+/*  ⛔ המסגרת היא מה שנשאר מבאנר הסיום — ⚠️ והיא בגוון הערכה ⛔ ולא
+ *  בצבע מצב: ⭐ באנר תפס שורה שלמה על כל רישום, ⛔ ומסגרת אומרת את אותו
+ *  דבר בלי לגזול מקום.
+ *  ⛔ **והיא בוהקת ⛔ ואינה רמז** — ⚠️ טבעת בעובי דרגה ובגוון מלא:
+ *  ⭐ מסגרת בגוון החיוור ביותר נבלעה ברקע, ⛔ והמשתמש לא ראה שהיעד הושלם. */
+.comp.plus{border-color:var(--purple-3);
+  box-shadow:0 0 0 var(--sp-1) var(--purple-2),var(--shadow-lg)}
 /*  ⛔ והמסגרת נושאת את גוון הרכיב — ⚠️ חומש סגול ופלעדזש אפרסק:
  *  ⭐ תפקידי הצבע קבועים, ⛔ ומסגרת בגוון אחד היא סימן שאינו אומר במה. */
-.comp.peach.plus{border-color:var(--peach-2);box-shadow:0 0 0 1px var(--peach-1),var(--shadow)}
+.comp.peach.plus{border-color:var(--peach-2);
+  box-shadow:0 0 0 var(--sp-1) var(--peach-2),var(--shadow-lg)}
 /*  ⛔ המספר הגדול ולידו שני חלקיו — ⚠️ החלק שמהחודש והחלק שמהיתרה:
  *  ⭐ הם מה שמסביר מאין החובה הכוללת באה. */
 .crow{display:flex;align-items:flex-end;gap:var(--sp-5);margin-top:var(--sp-5)}
@@ -185,11 +189,18 @@ main > .foot{margin-top:auto}
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
 .sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
 .sml.strong{font-weight:500;color:var(--text)}
-/*  ⛔ שתי שורות הסיכום — ⚠️ התווית בצד הפותח והמספר המודגש בצד המסיים:
- *  ⭐ המסמך ימין-לשמאל, ⛔ ולכן המספר בשמאל. */
+/*  ⛔ שורות הסיכום — ⚠️ התווית בצד הפותח והמספר בצד המסיים: ⭐ המסמך
+ *  ימין-לשמאל, ⛔ ולכן המספר בשמאל.
+ *  ⛔ **והן משתלבות ואינן בולטות** — ⚠️ הן אינן הרכיבים: ⭐ גוון הדיו
+ *  המשני ⛔ ולא הדיו הראשי, ⚠️ ומידה שאינה גדולה מכותרת כרטיס —
+ *  ⛔ מספר בגודל הרכיבים גוזל מהם את העין. */
 .inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
-  font-size:var(--fs-3);color:var(--text-2);padding:var(--sp-4) var(--sp-2)}
-.inc b{font-size:var(--fs-5);font-weight:500;color:var(--text)}
+  font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
+.inc b{font-size:var(--fs-3);font-weight:500;color:var(--text-2)}
+/*  ⛔ פיצול הצדקה קטן משתיהן — ⚠️ הוא אינו סכום נוסף אלא חלוקה של זה
+ *  שמעליו: ⭐ ושתי המנות שלו שוות במשקלן. */
+.inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-start;
+  gap:var(--sp-6);padding-top:0}
 
 /* ================================================================== הפירוט */
 .det{list-style:none;margin:0;padding:0}
@@ -227,12 +238,19 @@ main > .foot{margin-top:auto}
  *  להחליף. */
 .amon{padding:var(--sp-5) 0;border-bottom:.5px solid var(--line-soft)}
 .amon:last-child{border-bottom:0}
-.amn{font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-3)}
+/*  ⛔ כותרת החודש בולטת מתוויות הפסים שתחתיה — ⚠️ שתיהן היו באותה מידה
+ *  ובאותו גוון: ⭐ והעין לא ידעה מי מהן הכותרת. */
+.amn{font-size:var(--fs-4);font-weight:500;color:var(--text);margin-bottom:var(--sp-4)}
 /*  ⛔ שורת הפלעדזש בגוון שלה — ⚠️ הסדרה נבנית ברכיב המשותף, ⭐ והוא
  *  אינו מקבל גוון פר-שורה: ⛔ והתפקיד נגזר מהמיקום — ⚠️ החומש ראשון
  *  והפלעדזש שני, ⭐ בדיוק כמו במסך הבית. */
 .amon .bchart .brow:last-child .btrack{background:var(--peach-1)}
 .amon .bchart .brow:last-child .btrack i{background:var(--peach-2)}
+/*  ⛔ פס היעד אינו מוצג כאן — ⚠️ הוא מלא תמיד, ⭐ שהמכנה הוא מאה:
+ *  ⛔ פס שאינו משתנה אינו אומר דבר, ⚠️ והוא נקרא כפס מצב שני.
+ *  ⭐ **והערך עצמו נשאר** — ⛔ הוא המכנה שהרכיב המשותף מנרמל לפיו,
+ *  ⚠️ והסרתו מהנתון הייתה משנה את אורכי הפסים. */
+.amon .btrack.tgt{display:none}
 
 /* =========================================================== הכפתור הצף */
 /*  ⛔ הכפתור הצף הוא **סרגל** ⛔ ואינו מודאל — ⚠️ הוא פותח דיאלוג,
@@ -607,6 +625,8 @@ var MSG_DELETED = 'נמחק';
 var MSG_EMPTY_PRE = 'חודש טוב! עוד לא נרשם כלום ב-';
 var MSG_SUM_INCOME = 'הכנסות החודש';
 var MSG_SUM_TZEDAKAH = 'צדקה החודש';
+var MSG_SUM_SELF = 'אישית · ';
+var MSG_SUM_OTHERS = 'לאחרים · ';
 /*  ⛔ כותרת אחידה בשני הרכיבים — ⚠️ שני ניסוחים לאותו מספר הם שני
  *  מושגים בעיני הקורא. */
 var MSG_LEFT_SUM = 'סכום שנשאר: ';
@@ -689,13 +709,16 @@ function kTzedakah(rows) {
 }
 function kChumash(income) { return income * K_CHUMASH_RATE; }
 
-function kSelfPct(rows) {
-  var tz = kTzedakah(rows);
-  if (!tz) return 0;
-  var self = kSum(kLive(rows).filter(function (r) {
+/*  ⛔ הסכום האישי נגזר פעם אחת — ⚠️ האחוז והפירוט שניהם נשענים עליו:
+ *  ⭐ שתי גזירות לאותו סכום הן שתי הזדמנויות להיבדל. */
+function kSelfSum(rows) {
+  return kSum(kLive(rows).filter(function (r) {
     return r.type === 'tzedakah' && r.category === K_CAT_SELF;
   }).map(function (r) { return +r.amount || 0; }));
-  return self / tz * 100;
+}
+function kSelfPct(rows) {
+  var tz = kTzedakah(rows);
+  return tz ? kSelfSum(rows) / tz * 100 : 0;
 }
 
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
@@ -744,6 +767,7 @@ function kChain(months, opts) {
                chumashLeft: chumashLeft, pledgeOpen: pledgeOpen,
                pledgeBalance: -pledgeLeft, pledgeCarry: pledgeCarry,
                pledgeDue: pledgeDue, pledgeLeft: pledgeLeft,
+               self: kSelfSum(m.rows), others: tzedakah - kSelfSum(m.rows),
                selfPct: kSelfPct(m.rows) });
   }
   return out;
@@ -4016,14 +4040,17 @@ function detailRowHTML(r) {
          '<span class="amt">' + money(r.amount) + '</span></li>';
 }
 
-/*  ⛔ הסימן נגזר מהערך ⛔ ואינו נכתב באתר התצוגה — ⚠️ ומינוס טיפוגרפי
- *  ⭐ ולא מקף: ⛔ המקף נקרא בעברית כחלק מהמילה שלפניו.
- *  ⚠️ **והמספר עטוף בכיוון שמאל-ימין** — ⛔ הסימן שייך למספר, ⭐ ובלעדיו
- *  האלגוריתם הדו-כיווני מעיף אותו אל קצה השורה. */
+/*  ⛔ הסכום שעוד חייבים נכתב כמות שהוא ⛔ ובלי סימן — ⚠️ הוא המצב הרגיל,
+ *  ⭐ וסימן שמתלווה לכל מספר מפסיק לומר דבר: ⛔ **והמינוס שמור ליתרת
+ *  זכות בלבד** — ⚠️ והוא מה שמבדיל בין «נשאר לתת» ל«נתנו יותר».
+ *  ⚠️ **ומינוס טיפוגרפי ⛔ ולא מקף** — ⭐ המקף נקרא בעברית כחלק מהמילה
+ *  שלפניו · ⚠️ **והמספר עטוף בכיוון שמאל-ימין** — ⛔ הסימן שייך למספר,
+ *  ⭐ ובלעדיו האלגוריתם הדו-כיווני מעיף אותו אל קצה השורה. */
 function signed(n) {
-  var v = Math.round(n);
-  return '<span class="ltr">' + esc(v > 0 ? '+' + money(v) : (v < 0 ? '−' + money(-v) : money(0))) +
-         '</span>';
+  /*  ⛔ אפס שלילי מתאפס — ⚠️ `Math.round(-0.2)` הוא `-0`, ⭐ והוא אינו
+   *  קטן מאפס: ⛔ והמעצב מדפיס «‎-0 ₪», ⚠️ שנקרא כחוב של כלום. */
+  var v = Math.round(n) || 0;
+  return '<span class="ltr">' + esc(v < 0 ? '−' + money(-v) : money(v)) + '</span>';
 }
 
 /*  ⛔ הפס מודד מה שניתן החודש מול החובה הכוללת — ⚠️ וחובה שאינה חיובית
@@ -4076,12 +4103,17 @@ function monthScreenHTML() {
   h += compCardHTML('פלעדזש', 'peach', c.pledgeDue, c.pledge, c.pledgeCarry,
                     c.tzedakah, c.pledgeBalance);
 
-  /* 4 — שתי שורות הסיכום, מעל הפירוט ⛔ ולא מעל הרכיבים: ⚠️ הן נגזרות
-     מהחודש הנוכחי בלבד, ⭐ ואין בהן יתרה ואין בהן צבירה. */
+  /* 4 — שורות הסיכום, מעל הפירוט ⛔ ולא מעל הרכיבים: ⚠️ הן נגזרות
+     מהחודש הנוכחי בלבד, ⭐ ואין בהן יתרה ואין בהן צבירה.
+     ⚠️ **והפירוט שמתחתן הוא פיצול של הצדקה** — ⛔ ולא סכום נוסף:
+     ⭐ ולכן הוא קטן משתיהן, ⛔ ונקרא כשייך לשורה שמעליו. */
   h += '<div class="inc">' + esc(MSG_SUM_INCOME) +
        '<b>' + esc(money(c.income || 0)) + '</b></div>' +
        '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
-       '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>';
+       '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
+       '<div class="inc sub"><span>' + esc(MSG_SUM_SELF) +
+       esc(money(c.self || 0)) + '</span><span>' + esc(MSG_SUM_OTHERS) +
+       esc(money(c.others || 0)) + '</span></div>';
 
   /* 5 — הפירוט: התאריכים תחילה, והוראות הקבע תחתיהם. */
   var dated = rows.filter(function (r) { return r.source !== 'standing'; });
