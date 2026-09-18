@@ -1219,9 +1219,9 @@ function errMsg(e) {
    ⛔ ותקרת בטיחות ללולאה שתלויה בגודל התשובה — ⚠️ מסד שמחזיר עמוד מלא
       לנצח תולה את הדף.
    ═══════════════════════════════════════════════════════════════════════ */
-var YS_ROWS_PAGE = 1000;
-var YS_ROWS_CAP = 500000;
-async function _ysRowsPaged(mkQuery, order, win) {
+var ROWS_PAGE = 1000;
+var ROWS_CAP = 500000;
+async function _rowsPaged(mkQuery, order, win) {
   var out = [], from = 0;
   for (;;) {
     var q = mkQuery();
@@ -1230,12 +1230,12 @@ async function _ysRowsPaged(mkQuery, order, win) {
       if (win.to) q = q.lte(win.col, win.to);
     }
     if (order) q = q.order(order, { ascending: true });
-    var res = await withTimeout(q.range(from, from + YS_ROWS_PAGE - 1));
+    var res = await withTimeout(q.range(from, from + ROWS_PAGE - 1));
     if (!res || res.error || !Array.isArray(res.data)) return null;
     out = out.concat(res.data);
-    if (res.data.length < YS_ROWS_PAGE) return out;
-    from += YS_ROWS_PAGE;
-    if (from > YS_ROWS_CAP) return out;
+    if (res.data.length < ROWS_PAGE) return out;
+    from += ROWS_PAGE;
+    if (from > ROWS_CAP) return out;
   }
 }
 /* ═══════════════ סוף מודול משיכה מסוננת בשרת ═══════════════════════════ */
@@ -2255,7 +2255,7 @@ function _bkLayer(bkey, s) {
  *  יש: ⛔ אי-התאמה מחזירה `null` ⛔ ונכשלת בקול, ⚠️ ואינה שומרת חצי גיבוי. */
 async function _bkReadRows(c, s, win) {
   var sel = s.cols || '*';
-  var rows = await _ysRowsPaged(function () {
+  var rows = await _rowsPaged(function () {
     var q = c.from(s.name).select(sel);
     if (s.eq) q = q.eq(s.eq[0], s.eq[1]);
     return q;
@@ -3340,118 +3340,6 @@ function mergeRows(local, remote, keyName, isPending) {
   }));
 }
 
-window.DAYS_HEB=["","א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","ט׳","י׳","י״א","י״ב","י״ג","י״ד","ט״ו","ט״ז","י״ז","י״ח","י״ט","כ׳","כ״א","כ״ב","כ״ג","כ״ד","כ״ה","כ״ו","כ״ז","כ״ח","כ״ט","ל׳"];
-window.MONTHS_HEB     =["תשרי","חשון","כסלו","טבת","שבט","אדר","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.MONTHS_HEB_LEAP=["תשרי","חשון","כסלו","טבת","שבט","אדר א׳","אדר ב׳","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.YS_DOW_HEB=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
-
-// שנה מעוברת — מחזור 19 השנים (7 שנים מעוברות)
-window.ysHebIsLeap=function(hy){return ((7*(+hy)+1)%19)<7;};
-window.ysHebMonthNames=function(hy){return window.ysHebIsLeap(hy)?window.MONTHS_HEB_LEAP:window.MONTHS_HEB;};
-
-// גימטריה — מספר → אותיות (כולל ט״ו/ט״ז). sep = התו שלפני האות האחרונה
-window.ysGematria=function(n,sep){
-  n=Math.floor(Math.abs(+n))||0;
-  if(!n) return '';
-  if(n>=1000) n=n%1000;
-  var HUN=['','ק','ר','ש','ת'],TENS=['','י','כ','ל','מ','נ','ס','ע','פ','צ'],ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
-  var s='',h=Math.floor(n/100),r=n%100;
-  while(h>4){s+='ת';h-=4;}
-  s+=HUN[h]||'';
-  if(r===15) s+='טו';
-  else if(r===16) s+='טז';
-  else s+=TENS[Math.floor(r/10)]+ONES[r%10];
-  if(sep===undefined) sep='״';
-  if(!sep||!s) return s;
-  if(s.length===1) return s+'׳';
-  return s.slice(0,-1)+sep+s.slice(-1);
-};
-window.ysHebDayLabel=function(day){var T=window.DAYS_HEB;return (T&&T[day])||window.ysGematria(day)||String(day);};
-// תווית שנה מלאה — ה׳תשפ״ו
-window.ysHebYearLabelFull=function(hy){
-  var ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'],th=Math.floor((+hy)/1000);
-  return ((th>0&&th<10)?ONES[th]+'׳':'')+window.ysGematria((+hy)%1000,'״');
-};
-
-// ---- קריאת הלוח העברי של הדפדפן ----
-// שמות החודשים נקראים באנגלית ('en-u-ca-hebrew') כי הם יציבים בין גרסאות ICU,
-// וממופים לאינדקס בטבלאות התצוגה שלנו.
-window._ysMICodeLeap={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar1:5,adar2:6,nisan:7,iyar:8,sivan:9,tamuz:10,av:11,elul:12};
-window._ysMICodeStd ={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar:5,nisan:6,iyar:7,sivan:8,tamuz:9,av:10,elul:11};
-window._ysMonthCode=function(name){
-  var s=(name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  if(s.indexOf('adar')===0){
-    var t=s.slice(4);
-    if(t==='i'||t==='1'||t==='a') return 'adar1';
-    if(t==='ii'||t==='2'||t==='b') return 'adar2';
-    return 'adar';
-  }
-  if(s.indexOf('tishr')===0) return 'tishri';
-  if(s.indexOf('hesh')!==-1||s.indexOf('chesh')!==-1) return 'heshvan';
-  if(s.indexOf('kislev')===0||s.indexOf('chislev')===0) return 'kislev';
-  if(s.indexOf('tevet')===0||s.indexOf('teveth')===0) return 'tevet';
-  if(s.indexOf('shevat')===0||s.indexOf('shvat')===0||s.indexOf('shebat')===0) return 'shevat';
-  if(s.indexOf('nisan')===0||s.indexOf('nissan')===0) return 'nisan';
-  if(s.indexOf('iyar')===0||s.indexOf('iyyar')===0) return 'iyar';
-  if(s.indexOf('sivan')===0) return 'sivan';
-  if(s.indexOf('tamuz')===0||s.indexOf('tammuz')===0) return 'tamuz';
-  if(s==='av'||s==='ab') return 'av';
-  if(s.indexOf('elul')===0) return 'elul';
-  return null;
-};
-window._ysIntlFmt=null;window._ysIntlOK=null;
-// גרגוריאני → {hy,mi,day,leap} דרך Intl. מחזיר null אם לא זמין / תוצאה לא צפויה
-window.ysIntlHeb=function(d){
-  try{
-    if(window._ysIntlOK===false) return null;
-    if(!window._ysIntlFmt){
-      if(typeof Intl==='undefined'||!Intl.DateTimeFormat){window._ysIntlOK=false;return null;}
-      var f=new Intl.DateTimeFormat('en-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'});
-      var ro=f.resolvedOptions?f.resolvedOptions():null;
-      if(!ro||ro.calendar!=='hebrew'||!f.formatToParts){window._ysIntlOK=false;return null;}
-      window._ysIntlFmt=f;window._ysIntlOK=true;
-    }
-    var o={};
-    window._ysIntlFmt.formatToParts(d).forEach(function(p){o[p.type]=p.value;});
-    var hy=parseInt(String(o.year||'').replace(/[^0-9]/g,''),10);
-    var day=parseInt(String(o.day||'').replace(/[^0-9]/g,''),10);
-    var code=window._ysMonthCode(o.month);
-    if(!(hy>=4000&&hy<=7000)||!(day>=1&&day<=30)||!code) return null;
-    var leap=window.ysHebIsLeap(hy);
-    var mi=leap?window._ysMICodeLeap[code]:window._ysMICodeStd[code];
-    if(mi===undefined){
-      // אי-התאמה בין חישוב העיבור לשם החודש — סימן שמשהו לא צפוי; לא מנחשים
-      return null;
-    }
-    return {hy:hy,mi:mi,day:day,leap:leap};
-  }catch(e){ window._ysIntlOK=false; return null; }
-};
-
-/*  ⛔ אין לבדוק `d instanceof Date` ואין ליפול-חזרה ל«היום» (סבב 57) —
- *  `instanceof` תלוי-realm: אובייקט תאריך שנוצר ב-realm אחר (iframe,
- *  רתמת `vm`) מחזיר `false`, והשורה שהייתה כאן החליפה אותו **בשקט**
- *  בתאריך של היום. שני כשלים בשורה אחת — בדיקה שתלויה במי יצר את
- *  האובייקט, ⛔ ונפילה-חזרה שקטה שמציגה תאריך שגוי כאילו הוא נכון.
- *  ⭐ הבדיקה כאן היא על **החוזה** (`getTime` שמחזיר מספר) ואינה
- *  תלוית-realm; ⛔ וקלט שאינו עובר אותה מוחזר כ«לא תקף» ונרשם.
- *  ⚠️ קריאה **בלי ארגומנט** היא חוזה קיים ומשמעה «היום» — היא נשארת,
- *  ורק ארגומנט שנמסר ואינו תאריך תקף נחשב שגיאה.                       */
-window._ysIsDate=function(d){
-  return !!d&&typeof d.getTime==='function'&&!isNaN(d.getTime());
-};
-window._ysBadDates=[];
-window._ysBadDate=function(where,d){
-  var got;
-  try{ got=Object.prototype.toString.call(d); }catch(e){ got='?'; }
-  window._ysBadDates.push({at:Date.now(),where:where,got:got});
-  if(window._ysBadDates.length>12) window._ysBadDates.shift();
-  try{ console.warn('ysHebDate: קלט שאינו תאריך תקף ב-'+where+' — '+got); }catch(e){}
-};
-window._ysHebNone=function(src){
-  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',
-          yearLabelFull:'',ok:false,src:src};
-};
-
 /* ═══ שכבת המודאל — מודול משותף (סבב 86) ══════════════════════════════════
    ⛔ שכבת המודאל ושלושת העוזרים ישבו **מחוץ** לכל בלוק חתום ⛔ ונסחפו:
       ⚠️ `esc` לשלוש צורות — והיא הגנת ה-HTML היחידה שיש; `openModal` לשלוש,
@@ -3732,11 +3620,11 @@ function kSortEntries(list) {
 function kPad2(n) { return (n < 10 ? '0' : '') + n; }
 
 /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף,
- *  ⭐ והמנוע האחד הוא `ysHebDate`. */
+ *  ⭐ והמנוע האחד הוא `hebDate`. */
 function kHeb(iso) {
   var h;
   if (!iso) return null;
-  try { h = ysHebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
+  try { h = hebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
   return (h && h.ok) ? h : null;
 }
 function yearOf(iso) { var h = kHeb(iso); return h ? String(h.year) : ''; }
@@ -3751,7 +3639,7 @@ function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
 function monthLabel(k) {
   var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
   if (!y || i < 0) return '';
-  try { names = window.ysHebMonthNames(y); } catch (e) { return ''; }
+  try { names = window.hebMonthNames(y); } catch (e) { return ''; }
   return names[i] || '';
 }
 
@@ -4002,7 +3890,7 @@ function monthGreg(k) {
 /*  ⛔ שם החודש נושא את השנה — ⚠️ ותווית השנה באה מהמנוע המשותף:
  *  ⭐ צורה שנייה כאן הייתה מקור אמת שני לתצוגה. */
 function monthTitle(m) {
-  return m.name + ' ' + window.ysHebYearLabelFull(m.year);
+  return m.name + ' ' + window.hebYearLabelFull(m.year);
 }
 
 /*  ⛔ האייקון של ההכנסה ושל הצדקה הוא הציור שהאפליקציה כבר מציגה —
@@ -4118,7 +4006,7 @@ function monthScreenHTML() {
   h += '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
-       '<span class="myear">' + esc(window.ysHebYearLabelFull(m.year)) + '</span>' +
+       '<span class="myear">' + esc(window.hebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
@@ -4227,7 +4115,7 @@ function archiveScreenHTML() {
   for (i = 0; i < years.length; i++) {
     var y = years[i], open = view.archYear === y;
     h += '<div class="card"><h2 class="fold" data-act="arch-year" data-id="' + esc(y) + '">' +
-         esc(window.ysHebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
+         esc(window.hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
          '</span></h2>';
     if (open) {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();
@@ -4901,7 +4789,7 @@ function pledgeCardHTML() {
     ys.map(function (y) {
       return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
              '<span class="ico">' + iconFor('amount') + '</span>' +
-             '<span class="nm">' + esc(window.ysHebYearLabelFull(y)) + '</span>' +
+             '<span class="nm">' + esc(window.hebYearLabelFull(y)) + '</span>' +
              '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
     }).join('') + '</ul></div>';
 }
@@ -5102,7 +4990,7 @@ var DOM_ACTIONS = {
   'pledge-edit': function (el) {
     var y = String(el.dataset.id || '');
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
-    openModal(MSG_PLEDGE_EDIT + window.ysHebYearLabelFull(y),
+    openModal(MSG_PLEDGE_EDIT + window.hebYearLabelFull(y),
       '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
