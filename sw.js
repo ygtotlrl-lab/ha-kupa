@@ -5,12 +5,13 @@
  *  ⚠️ כל הלוגיקה יושבת במודול המשותף שלמטה — זהה בית-לבית בכל
  *  האפליקציות. ⛔ מה שנבדל יושב ב-SW_CFG בלבד.
  */
-const CACHE_NAME = 'ha-kupa-v26';
+const CACHE_NAME = 'ha-kupa-v27';
 
 // קבצים מקומיים.
 var CORE = [
   './',
   './index.html',
+  './app.css',
   './core/util.js',
   './core/sync.js',
   './core/hebrew.js',
