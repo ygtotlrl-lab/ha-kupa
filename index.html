@@ -90,6 +90,13 @@
 /* ==================================================================== בסיס */
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
+/*  ⛔ המשוב בלחיצה נקבע ⛔ ולא נירש — ⚠️ ברירת המחדל של הדפדפן היא ריבוע
+ *  כחול שאינו מערכת הצבעים שלנו, ⭐ והיא מופיעה במגע בלבד: ⛔ ומי שבודק
+ *  בעכבר אינו רואה אותה. */
+body{-webkit-tap-highlight-color:transparent}
+/*  ⛔ לחיצה ארוכה על משטח לחיץ אינה בחירת טקסט — ⚠️ והכלל חל על הלחיצים
+ *  בלבד, ⭐ ולא על טקסט שהמשתמש מעתיק. */
+button,[data-act]{-webkit-user-select:none;user-select:none}
 body{
   margin:0; background:var(--bg); color:var(--text);
   font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
@@ -266,7 +273,6 @@ main > .foot{margin-top:auto}
  *  ⛔ פס שאינו משתנה אינו אומר דבר, ⚠️ והוא נקרא כפס מצב שני.
  *  ⭐ **והערך עצמו נשאר** — ⛔ הוא המכנה שהרכיב המשותף מנרמל לפיו,
  *  ⚠️ והסרתו מהנתון הייתה משנה את אורכי הפסים. */
-.amon .btrack.tgt{display:none}
 
 /* =========================================================== הכפתור הצף */
 /*  ⛔ הכפתור הצף הוא **סרגל** ⛔ ואינו מודאל — ⚠️ הוא פותח דיאלוג,
@@ -3534,7 +3540,12 @@ function kvBadLabel(name) { return name + ' (' + MSG_KV_BAD + ')'; }
       באותה אפליקציה הם שני מקומות שבהם הרוחב נכתב ביד, ⚠️ ושניים כאלה
       נמדדו — הסדרה בבונה, והפס בטבלת הפילוח.
    ⛔ **מה נכנס**: `lab` תווית · `val` הערך · `tgt` היעד · `txt` הטקסט
-      החלופי · `end` מה שנכתב בסוף השורה. */
+      החלופי · `end` מה שנכתב בסוף השורה.
+   ⛔ **ו-`noTarget` הוא דגל בחתימה** — ⚠️ וכשהוא דולק הפס השני **אינו
+      נוצר**, ⭐ ואינו נוצר-ומוסתר: ⛔ הסתרה ב-CSS פר-אפליקציה משאירה
+      את הקוד רץ ואת האלמנט ב-DOM, ⚠️ ומי שקורא את המודול אינו יודע
+      שהוא מכובה. ⭐ **והמכנה נשמר** — ⛔ `max` עדיין נגזר מ-`val`
+      ומ-`tgt`, ⚠️ והסרת הציור אינה משנה את אורכי הפסים. */
 /*  ⛔ הרוחב נכתב למשתנה CSS ⛔ ולא לתגית — ⚠️ סגנון מוטבע גובר על כל
  *  מחלקה ואינו ניתן לשינוי ממקום אחד: ⭐ והצביעה נדחית לפריים שאחרי
  *  ה-`innerHTML`, ⛔ שהיא הרגע שבו הפסים כבר בעץ. */
@@ -3550,7 +3561,7 @@ function bar(pct, cls) {
   return '<span class="btrack' + (cls ? ' ' + cls : '') +
          '"><i data-pct="' + pct + '"></i></span>';
 }
-function barChart(rows, label) {
+function barChart(rows, label, noTarget) {
   if (!Array.isArray(rows) || rows.length < 2) return '';
   var max = 0, i;
   for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].val || 0, rows[i].tgt || 0);
@@ -3560,7 +3571,8 @@ function barChart(rows, label) {
   for (i = 0; i < rows.length; i++) {
     h += '<div class="brow" aria-label="' + esc(rows[i].txt) + '">' +
       '<span class="blab">' + esc(rows[i].lab) + '</span>' +
-      '<span class="bbars">' + bar(pct(rows[i].val)) + bar(pct(rows[i].tgt), 'tgt') +
+      '<span class="bbars">' + bar(pct(rows[i].val)) +
+      (noTarget ? '' : bar(pct(rows[i].tgt), 'tgt')) +
       '</span>' +
       '<span class="bval">' + esc(rows[i].end) + '</span></div>';
   }
@@ -4100,7 +4112,7 @@ function monthBarsHTML(c, name) {
   return barChart([
     { lab: 'חומש',   val: ch, tgt: 100, end: '', txt: name + ' · חומש ' + Math.round(ch) + '%' },
     { lab: 'פלעדזש', val: pl, tgt: 100, end: '', txt: name + ' · פלעדזש ' + Math.round(pl) + '%' }
-  ], name);
+  ], name, true);
 }
 /*  ⛔ המסך מציג שנים, ⛔ ורק לחיצה עליהן פותחת את פירוט החודשים —
  *  ⚠️ רשימה של כל החודשים מאז ההתחלה מתארכת בלי סוף, ⭐ והשנה היא

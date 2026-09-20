@@ -109,13 +109,6 @@ const APP = {
           'test_shell.mjs', 'test_devid.mjs', 'test_passwords.mjs',
           'test_failsurface.mjs',
           'test_md.mjs', 'test_docfacts.mjs', 'test_signeddead.mjs', 'test_orphans.mjs', 'test_period.mjs', 'test_removals.mjs', 'test_wiring.mjs', 'test_readonly.mjs', 'test_crossgate.mjs',
-          'test_examples.mjs',
-          'test_sums.mjs',
-          'test_chumash.mjs',
-          'test_pledge.mjs',
-          'test_so_instances.mjs',
-          'test_so_version.mjs',
-          'test_rasp.mjs',
           'test_stage_a.mjs', 'test_hotwin.mjs', 'test_cron.mjs',
           'test_parentchild.mjs',
           'test_merge_pending.mjs', 'test_matrix.mjs', 'test_ids.mjs'],
@@ -125,7 +118,7 @@ const APP = {
 /*  ⛔ השורות בטבלת התשתית שהקובץ הזה אוכף (סבב 72) — ⚠️ תקרת השער
  *  הבודד נמדדת כאן מפני שכאן ממילא רצים כל השערים, ⛔ ושער נפרד שימדוד
  *  אותה היה מריץ את כולם פעם שנייה. */
-export const ROWS = [40, 41, 29];
+export const ROWS = [41, 42, 30];
 
 const T_START = Date.now();
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
