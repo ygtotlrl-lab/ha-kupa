@@ -9,6 +9,10 @@
    *  ⭐ הוא נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו, ⛔ וטוסט
    *  שנמוך מהם מוסתר מאחוריהם. */
   --toast-bottom:150px;
+  /*  ⛔ רוחב עמודת התוכן — ⚠️ המסך, סרגל הלשוניות ומסילת הכפתור הצף
+   *  קוראים אותו: ⭐ ומעל כל נקודת שבירה הוא מתרחב, ⛔ ואינו נשאר
+   *  ברוחב הטלפון — ⚠️ וערך שכל צרכניו קוראים ממקום אחד מתרחב פעם אחת. */
+  --col:390px;
   /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
    *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
    *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
@@ -107,12 +111,13 @@ input,select,textarea{font:inherit; color:inherit}
   font-weight:500;padding:0}
 
 /* =================================================================== קליפה */
-/*  ⛔ העמודה ברוחב מכשיר ⛔ ואינה נמרחת עד לקצה — ⚠️ לא בדסקטופ ולא
- *  במובייל: ⭐ המסך כאן הוא ערימת כרטיסים קצרה, ⛔ ורוחב שנמתח מפריד
- *  את המספר מהתווית שלו בשורה אחת.
+/*  ⛔ העמודה אינה נמרחת עד לקצה — ⚠️ המסך כאן הוא ערימת כרטיסים קצרה,
+ *  ⭐ ורוחב שנמתח על חלון רחב מפריד את המספר מהתווית שלו בשורה אחת.
+ *  ⛔ **אך היא מתרחבת בכל נקודת שבירה** — ⚠️ עמודה שנשארת ברוחב הטלפון
+ *  נראית זהה בכל מסך שמעליו: ⭐ והרוחב נקרא מ-`--col` ⛔ ואינו מוקלד כאן.
  *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
 main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
-  max-width:390px;margin:0 auto;
+  max-width:var(--col);margin:0 auto;
   /*  ⛔ המסך הוא עמודה שגובהה מלוא החלון — ⚠️ והתחתית נדחפת אליה:
    *  ⭐ שתי השורות נצמדות לתחתית המסך ⛔ ולא לסוף התוכן, ⚠️ ומסך קצר
    *  היה משאיר אותן באמצע. */
@@ -264,15 +269,31 @@ main > .foot{margin-top:auto}
     ⛔ ומרכזו האופטי זז בין מנוע למנוע: ⚠️ בדסקטופ הוא נראה גבוה מדי.
     ⚠️ **והמיקום האופקי נגזר מרוחב העמודה** — ⛔ מעל רוחב העמודה הכפתור
     נצמד לקצה שלה ⛔ ולא לקצה החלון. */
-.fab{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
-  inset-inline-end:var(--sp-6);z-index:var(--z-2);
+/*  ⛔ המסילה היא מה שקבוע למסך ⛔ ולא הכפתור — ⚠️ והיא בדיוק ברוחב
+ *  העמודה: ⭐ כך הכפתור יושב על קצה העמודה בכל רוחב חלון, ⛔ ואינו
+ *  מחושב מחצי המסך — ⚠️ חישוב מ-`50%` נושא את רוחב העמודה בתוכו,
+ *  ⭐ ומקבע אותו: ⛔ והוא נשאר על רוחב אחד גם כשהעמודה התרחבה.
+ *  ⚠️ **והמסילה שקופה ללחיצה** — ⛔ היא נמתחת על כל הרוחב, ⭐ והכפתור
+ *  שבתוכה הוא היחיד שמקבל אותה. */
+.fabrail{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
+  inset-inline:0;z-index:var(--z-2);display:flex;justify-content:center;
+  pointer-events:none}
+.fabrail .in{width:100%;max-width:var(--col);display:flex;justify-content:flex-end;
+  padding-inline-end:var(--sp-6)}
+.fab{position:relative;pointer-events:auto;
   width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
   background:var(--rasp);color:var(--on-rasp);line-height:var(--lh-1);
   display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
   transition:transform var(--dur-3)}
 .fab svg{width:28px;height:28px;display:block}
 .fab:active{transform:scale(.93)}
-@media (min-width:480px){.fab{inset-inline-end:calc(50% - 195px + 16px)}}
+/*  ⛔ סולם העמודה — ⚠️ בכל נקודת שבירה העמודה מתרחבת, ⭐ ואיתה המסך,
+ *  סרגל הלשוניות ומסילת הכפתור: ⛔ ונקודה שאין לה מה להשתנות בה מוצהרת
+ *  בשמה ⛔ ואינה מושמטת. */
+@media (min-width:480px){:root{--col:440px}}
+@media (min-width:640px){:root{--col:520px}}
+@media (min-width:900px){:root{--col:600px}}
+@media (min-width:1200px){:root{--col:680px}}
 
 /* ======================================================= סרגל הלשוניות */
 /*  ⛔ ארבע לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
@@ -281,7 +302,7 @@ main > .foot{margin-top:auto}
   display:flex;justify-content:center;
   padding-bottom:env(safe-area-inset-bottom);
   background:var(--card);border-top:1px solid var(--border)}
-.tabbar .in{display:flex;width:100%;max-width:390px}
+.tabbar .in{display:flex;width:100%;max-width:var(--col)}
 .tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
   display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
   padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
