@@ -37,7 +37,7 @@ const APP = {
    *  כפולה: ⛔ מה שנשאר הוא כתיבת ההגדרה, שאינה עוברת בדחיפה. */
   touchFns: ['cfgWrite'],
   every: 3000,
-  stampKey: 'k_last_changed',
+  stampKey: 'last_changed',
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
 
