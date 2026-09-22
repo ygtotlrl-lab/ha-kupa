@@ -242,20 +242,13 @@ function kSelfPct(rows) {
 
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
  *  חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו.
- *  ⛔ **והחודש הבא בתור נושא את יתרת הפלעדזש ככל חודש אחר** — ⚠️ ומה
- *  שאחריו נושא את הסכום השנתי בלבד: ⭐ היתרה נקבעת מסוף מצב החודש
- *  שנסגר, ⛔ והבא בתור הוא היחיד שיש לו חודש כזה מאחוריו. */
+ *  ⛔ **והיתרה עוברת הלאה תמיד** — ⚠️ בשני החישובים: ⭐ ותנאי שעוצר
+ *  אותה בחודש כלשהו הוא שני חישובים שנראים זהים ⛔ ואחד מהם נעצר. */
 function kChain(months, opts) {
   var pledgeOf = opts.pledgeOf;
-  /*  ⛔ המפתח של החודש הנוכחי — ⚠️ כל מפתח שגדול ממנו הוא חודש שטרם הגיע:
-   *  ⭐ והוא מוצהר ריק כשאין הכרעה כזו, ⛔ ואז כל החודשים משרשרים. */
-  var now = opts.now == null ? '' : String(opts.now);
   var balance = opts.opening || 0;
   var pBalance = 0;
   var prevYear = null;
-  /*  ⛔ האם כבר עבר חודש שטרם הגיע — ⚠️ הראשון שכזה הוא הבא בתור,
-   *  ⭐ ורק מה שאחריו מאבד את היתרה. */
-  var nextSeen = false;
   var out = [], i, m;
   for (i = 0; i < months.length; i++) {
     m = months[i];
@@ -263,12 +256,6 @@ function kChain(months, opts) {
     var tzedakah = kTzedakah(m.rows);
     var chumash = kChumash(income);
     var pledge = pledgeOf(m.year);
-    /*  ⛔ הבא בתור נושא יתרה — ⚠️ ורק מה שאחריו אינו: ⭐ הוא נגזר
-     *  מסדר השרשרת ⛔ ואינו נספר מהמפתח. */
-    var after = now !== '' && String(m.key) > now;
-    var future = after && nextSeen;
-    if (after) nextSeen = true;
-
     /*  ⛔ החומש — ⚠️ החובה הכוללת היא חומש החודש פחות היתרה שנשארה:
      *  ⭐ יתרה חיובית היא זכות ומקטינה, ⛔ ושלילית היא חוב ומגדילה. */
     var prevBalance = balance;
@@ -278,13 +265,13 @@ function kChain(months, opts) {
     balance = -chumashLeft;
 
     /*  ⛔ הפלעדזש — ⚠️ אותה צורה בדיוק, ⭐ ושני הבדלים: ⛔ היתרה מתאפסת
-     *  בראש השנה, ⚠️ וחודש שאחרי הבא בתור אינו נושא יתרה כלל. */
+     *  בראש השנה, ⚠️ והסכום החודשי נקבע פעם בשנה. */
     var yearTurn = prevYear !== null && String(m.year) !== prevYear;
-    var pledgeOpen = (yearTurn || future) ? 0 : pBalance;
+    var pledgeOpen = yearTurn ? 0 : pBalance;
     var pledgeCarry = -pledgeOpen;
     var pledgeDue = pledge + pledgeCarry;
     var pledgeLeft = pledgeDue - tzedakah;
-    pBalance = future ? 0 : -pledgeLeft;
+    pBalance = -pledgeLeft;
     prevYear = String(m.year);
 
     out.push({ key: m.key, year: m.year, income: income, tzedakah: tzedakah,
@@ -3319,8 +3306,7 @@ function chainAll() {
   var ms = monthsSorted().map(function (m) {
     return { key: m.key, year: m.year, rows: monthRows(m.key) };
   });
-  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance(),
-                      now: nowMonthKey() });
+  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
 }
 function chainOf(k) {
   var c = chainAll(), i;
