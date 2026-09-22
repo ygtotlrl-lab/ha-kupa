@@ -402,16 +402,16 @@ main > .foot{margin-top:auto}
 .veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
   display:none;align-items:center;justify-content:center;padding:var(--sp-6)}
 .veil.open{display:flex}
-.veil .box{background:var(--card);border-radius:var(--radius);width:100%;
+.veil .sheet{background:var(--card);border-radius:var(--radius);width:100%;
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-.veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
-  border-bottom:1px solid var(--border)}
-.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
-.veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
+.veil .sheet-hd{padding:var(--sp-6);border-bottom:1px solid var(--border)}
+.veil .sheet-hd h3{margin:0;font-size:var(--fs-5);font-weight:500}
+.veil .sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
+.veil .sheet-ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
 /*  ⛔ כותרת או תחתית ריקה אינה תופסת מקום — ⚠️ הדיאלוג שנושא את הזרימה
  *  אינו נושא כותרת, ⭐ וכפתוריו יושבים בתוך היקף ה-`ksave` שבגוף. */
-.veil .hd:empty,.veil .ft:empty{display:none}
+.veil .sheet-hd:has(h3:empty),.veil .sheet-ft:empty{display:none}
 /*  ⛔ בורר סוג התנועה — ⚠️ שני כפתורים, וכל אחד נושא את הציור שהפירוט
  *  ומסך האישור מציגים: ⭐ אותו ציור בשלושת המקומות. */
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
