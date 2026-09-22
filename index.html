@@ -71,24 +71,21 @@
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
-<div id="modal" class="veil">
-  <div class="sheet ksave" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="sheet-hd">
-      <h3 id="modal-title"></h3>
-      <button class="x" data-act="modal-close" aria-label="סגירה">✕</button>
-    </div>
+<div class="veil" id="modal">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="sheet-hd"><h3 id="modal-title"></h3></div>
     <div class="sheet-bd" id="modal-body"></div>
     <div class="sheet-ft" id="modal-foot"></div>
   </div>
 </div>
 
-<div id="ask" class="veil">
+<div class="veil" id="ask">
   <div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="ask-title">
     <div class="sheet-hd"><h3 id="ask-title"></h3></div>
     <div class="sheet-bd" id="ask-body"></div>
     <div class="sheet-ft">
-      <button data-act="ask-no">ביטול</button>
-      <button class="danger" data-act="ask-yes" id="ask-yes">אישור</button>
+      <button class="btn ghost" data-act="ask-no">ביטול</button>
+      <button class="btn" data-act="ask-yes" id="ask-yes">אישור</button>
     </div>
   </div>
 </div>
@@ -245,20 +242,13 @@ function kSelfPct(rows) {
 
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
  *  חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו.
- *  ⛔ **והחודש הבא בתור נושא את יתרת הפלעדזש ככל חודש אחר** — ⚠️ ומה
- *  שאחריו נושא את הסכום השנתי בלבד: ⭐ היתרה נקבעת מסוף מצב החודש
- *  שנסגר, ⛔ והבא בתור הוא היחיד שיש לו חודש כזה מאחוריו. */
+ *  ⛔ **והיתרה עוברת הלאה תמיד** — ⚠️ בשני החישובים: ⭐ ותנאי שעוצר
+ *  אותה בחודש כלשהו הוא שני חישובים שנראים זהים ⛔ ואחד מהם נעצר. */
 function kChain(months, opts) {
   var pledgeOf = opts.pledgeOf;
-  /*  ⛔ המפתח של החודש הנוכחי — ⚠️ כל מפתח שגדול ממנו הוא חודש שטרם הגיע:
-   *  ⭐ והוא מוצהר ריק כשאין הכרעה כזו, ⛔ ואז כל החודשים משרשרים. */
-  var now = opts.now == null ? '' : String(opts.now);
   var balance = opts.opening || 0;
   var pBalance = 0;
   var prevYear = null;
-  /*  ⛔ האם כבר עבר חודש שטרם הגיע — ⚠️ הראשון שכזה הוא הבא בתור,
-   *  ⭐ ורק מה שאחריו מאבד את היתרה. */
-  var nextSeen = false;
   var out = [], i, m;
   for (i = 0; i < months.length; i++) {
     m = months[i];
@@ -266,12 +256,6 @@ function kChain(months, opts) {
     var tzedakah = kTzedakah(m.rows);
     var chumash = kChumash(income);
     var pledge = pledgeOf(m.year);
-    /*  ⛔ הבא בתור נושא יתרה — ⚠️ ורק מה שאחריו אינו: ⭐ הוא נגזר
-     *  מסדר השרשרת ⛔ ואינו נספר מהמפתח. */
-    var after = now !== '' && String(m.key) > now;
-    var future = after && nextSeen;
-    if (after) nextSeen = true;
-
     /*  ⛔ החומש — ⚠️ החובה הכוללת היא חומש החודש פחות היתרה שנשארה:
      *  ⭐ יתרה חיובית היא זכות ומקטינה, ⛔ ושלילית היא חוב ומגדילה. */
     var prevBalance = balance;
@@ -281,13 +265,13 @@ function kChain(months, opts) {
     balance = -chumashLeft;
 
     /*  ⛔ הפלעדזש — ⚠️ אותה צורה בדיוק, ⭐ ושני הבדלים: ⛔ היתרה מתאפסת
-     *  בראש השנה, ⚠️ וחודש שאחרי הבא בתור אינו נושא יתרה כלל. */
+     *  בראש השנה, ⚠️ והסכום החודשי נקבע פעם בשנה. */
     var yearTurn = prevYear !== null && String(m.year) !== prevYear;
-    var pledgeOpen = (yearTurn || future) ? 0 : pBalance;
+    var pledgeOpen = yearTurn ? 0 : pBalance;
     var pledgeCarry = -pledgeOpen;
     var pledgeDue = pledge + pledgeCarry;
     var pledgeLeft = pledgeDue - tzedakah;
-    pBalance = future ? 0 : -pledgeLeft;
+    pBalance = -pledgeLeft;
     prevYear = String(m.year);
 
     out.push({ key: m.key, year: m.year, income: income, tzedakah: tzedakah,
@@ -3322,8 +3306,7 @@ function chainAll() {
   var ms = monthsSorted().map(function (m) {
     return { key: m.key, year: m.year, rows: monthRows(m.key) };
   });
-  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance(),
-                      now: nowMonthKey() });
+  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
 }
 function chainOf(k) {
   var c = chainAll(), i;
@@ -4412,10 +4395,6 @@ var DOM_ACTIONS = {
    *  «לא», ⭐ והכפתורים הם המסלול שעונה «כן». */
   'ask-yes': function () { closeAsk(true); },
   'ask-no':  function () { closeAsk(false); },
-  /*  ⛔ כפתור הסגירה שבכותרת המודאל — ⚠️ הרקע ו-`Escape` סוגרים אותו
-   *  אף הם, ⭐ והכפתור הוא המסלול הנראה: ⛔ משטח שאין בו כפתור
-   *  סגירה מונע מהמשתמש לדחות. */
-  'modal-close': function () { closeModal(); },
   'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.style.display = 'none'; },
   'pend-alert-ok':       function () { _pendAlertDismissed = Date.now(); pendRenderAlert(); },
   /*  ⛔ לחיצה על תנועה פותחת עורך ⛔ ולא מחיקה — ⚠️ המחיקה היא כפתור

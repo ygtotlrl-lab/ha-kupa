@@ -404,25 +404,14 @@ main > .foot{margin-top:auto}
 .veil.open{display:flex}
 .veil .sheet{background:var(--card);border-radius:var(--radius);width:100%;
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-.sheet-hd{display:flex;align-items:center;gap:var(--sp-5);padding:var(--sp-6);
-  font-size:var(--fs-5);font-weight:500;border-bottom:1px solid var(--border)}
-.sheet-hd h3{flex:1;margin:0;font:inherit}
-.sheet-hd .x{background:none;border:0;font-size:var(--fs-5);line-height:var(--lh-1);
-  color:var(--text-2);cursor:pointer;padding:0 var(--sp-2);border-radius:var(--radius-sm)}
-.sheet-hd .x:hover{background:var(--card-2)}
-.sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
-.sheet-ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
+.veil .sheet-hd{padding:var(--sp-6);border-bottom:1px solid var(--border)}
+.veil .sheet-hd h3{margin:0;font-size:var(--fs-5);font-weight:500}
+.veil .sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
+.veil .sheet-ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
-#ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);
-  cursor:pointer;background:var(--card);color:var(--text-2);
-  padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
-#ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
-#ask .sheet-ft button:active{transform:translateY(1px)}
-#ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
-/*  ⛔ כותרת, גוף או תחתית ריקים אינם תופסים מקום — ⚠️ הדיאלוג
- *  שנושא את הזרימה אינו נושא כותרת, ⭐ וכפתוריו יושבים
- *  בתוך היקף ה-`ksave` שבגוף. */
-.sheet-bd:empty,.sheet-ft:empty{display:none}
+/*  ⛔ כותרת או תחתית ריקה אינה תופסת מקום — ⚠️ הדיאלוג שנושא את הזרימה
+ *  אינו נושא כותרת, ⭐ וכפתוריו יושבים בתוך היקף ה-`ksave` שבגוף. */
+.veil .sheet-hd:has(h3:empty),.veil .sheet-ft:empty{display:none}
 /*  ⛔ בורר סוג התנועה — ⚠️ שני כפתורים, וכל אחד נושא את הציור שהפירוט
  *  ומסך האישור מציגים: ⭐ אותו ציור בשלושת המקומות. */
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
@@ -526,11 +515,6 @@ main > .foot{margin-top:auto}
 --on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
 }
 .u-mt-2{margin-top:var(--sp-2)}
-/* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
-
-/* ══ מחלקות הסולם הפרטיות — אינן חיות בכולן ═════════════════════════════
-   ⚠️ כל מחלקה כאן משרתת אתר שקיים באפליקציה הזו בלבד, ⛔ ולכן אינה בבלוק
-   המשותף: ⭐ מחלקה משותפת שאין לה קורא כאן היא סלקטור בלי קורא. */
 .u-mt-5{margin-top:var(--sp-5)}
-/* ══ סוף המחלקות הפרטיות ═══════════════════════════════════════════════ */
+/* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
 /* ═══ סוף גיליון הסגנון — בלוק גיליון סגנון ══════════════════════════════ */
