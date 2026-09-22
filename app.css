@@ -402,16 +402,27 @@ main > .foot{margin-top:auto}
 .veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
   display:none;align-items:center;justify-content:center;padding:var(--sp-6)}
 .veil.open{display:flex}
-.veil .box{background:var(--card);border-radius:var(--radius);width:100%;
+.veil .sheet{background:var(--card);border-radius:var(--radius);width:100%;
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-.veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
-  border-bottom:1px solid var(--border)}
-.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
-.veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
+.sheet-hd{display:flex;align-items:center;gap:var(--sp-5);padding:var(--sp-6);
+  font-size:var(--fs-5);font-weight:500;border-bottom:1px solid var(--border)}
+.sheet-hd h3{flex:1;margin:0;font:inherit}
+.sheet-hd .x{background:none;border:0;font-size:var(--fs-5);line-height:var(--lh-1);
+  color:var(--text-2);cursor:pointer;padding:0 var(--sp-2);border-radius:var(--radius-sm)}
+.sheet-hd .x:hover{background:var(--card-2)}
+.sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
+.sheet-ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
-/*  ⛔ כותרת או תחתית ריקה אינה תופסת מקום — ⚠️ הדיאלוג שנושא את הזרימה
- *  אינו נושא כותרת, ⭐ וכפתוריו יושבים בתוך היקף ה-`ksave` שבגוף. */
-.veil .hd:empty,.veil .ft:empty{display:none}
+#ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;background:var(--card);color:var(--text-2);
+  padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
+#ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
+#ask .sheet-ft button:active{transform:translateY(1px)}
+#ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+/*  ⛔ כותרת, גוף או תחתית ריקים אינם תופסים מקום — ⚠️ הדיאלוג
+ *  שנושא את הזרימה אינו נושא כותרת, ⭐ וכפתוריו יושבים
+ *  בתוך היקף ה-`ksave` שבגוף. */
+.sheet-bd:empty,.sheet-ft:empty{display:none}
 /*  ⛔ בורר סוג התנועה — ⚠️ שני כפתורים, וכל אחד נושא את הציור שהפירוט
  *  ומסך האישור מציגים: ⭐ אותו ציור בשלושת המקומות. */
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
@@ -514,14 +525,12 @@ main > .foot{margin-top:auto}
 --sh-1:rgba(0,0,0,.10);--sh-2:rgba(0,0,0,.22);--sh-3:rgba(0,0,0,.35);
 --on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
 }
-.u-ai-c{align-items:center}
-.u-d-flex{display:flex}
-.u-fs-2{font-size:var(--fs-2)}
-.u-fs-3{font-size:var(--fs-3)}
-.u-fw-700{font-weight:700}
-.u-fx-1{flex:1}
-.u-g-5{gap:var(--sp-5)}
 .u-mt-2{margin-top:var(--sp-2)}
-.u-mt-5{margin-top:var(--sp-5)}
 /* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
+
+/* ══ מחלקות הסולם הפרטיות — אינן חיות בכולן ═════════════════════════════
+   ⚠️ כל מחלקה כאן משרתת אתר שקיים באפליקציה הזו בלבד, ⛔ ולכן אינה בבלוק
+   המשותף: ⭐ מחלקה משותפת שאין לה קורא כאן היא סלקטור בלי קורא. */
+.u-mt-5{margin-top:var(--sp-5)}
+/* ══ סוף המחלקות הפרטיות ═══════════════════════════════════════════════ */
 /* ═══ סוף גיליון הסגנון — בלוק גיליון סגנון ══════════════════════════════ */
