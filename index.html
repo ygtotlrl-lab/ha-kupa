@@ -22,404 +22,7 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="icon" href="icons/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<style>
-/* ========================================================= אסימוני העיצוב */
-:root{
-  /*  ⛔ מרחק הטוסט מתחתית המסך — ⚠️ הערך היחיד שנבדל בשכבת הטוסט:
-   *  ⭐ הוא נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו, ⛔ וטוסט
-   *  שנמוך מהם מוסתר מאחוריהם. */
-  --toast-bottom:150px;
-  /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
-   *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
-   *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
-  --brand:#7C5CB0; --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
-
-  --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
-  --text:#352B3F; --text-2:#7E6F90; --text-3:#9F94AC;
-  --border:#E6DEF0;
-  --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
-  --ok:#2E6F4A; --ok-soft:#E8F3EC;
-  --warn:#C46A4E; --warn-soft:#FDE6DC;
-  --bad:#B3261E; --bad-soft:#FBE9E7;
-  --radius:var(--r-6); --radius-sm:var(--r-4);
-  --shadow:0 1px 2px var(--sh-1);
-  --shadow-lg:0 8px 22px rgba(53,43,63,.16);
-
-  /*  ⛔ אסימוני המוצר — ⚠️ הם קיימים כאן בלבד: ⭐ שבע דרגות הסגול הן
-   *  **תפקיד** — חומש · צדקה · ניווט, ⛔ ושלוש דרגות האפרסק הן פלעדזש ·
-   *  הכנסה · מטבע. ⛔ **והפטל בשני מקומות בלבד** — ⚠️ הכפתור הצף
-   *  ו«אין עוד מלבדו!»: ⭐ צבע שמופיע בכל מקום מפסיק להיות סימן. */
-  --purple-1:#EFEAF6; --purple-2:#B49EE0; --purple-3:#9C7FD0; --purple-4:#8A6BC0;
-  --purple-5:#7C5CB0; --purple-6:#5E3F8F; --purple-7:#3A2540;
-  --peach-1:#FDE6DC; --peach-2:#F2A184; --peach-3:#A54D32;
-  --rasp:#B8446B; --rasp-ink:#B8446B;
-  --line-soft:#EFEAF6;
-  --ring-soft:rgba(255,255,255,.3);
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --on-brand:#FFFFFF; --on-rasp:#2A1B3D;
-
-    --bg:#1B1420; --card:#251C2C; --card-2:#2E2336;
-    --text:#EFE8F5; --text-2:#C4B6D2; --text-3:#9C8FAC;
-    --border:#3A2D45;
-    --brand:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
-    --ok:#6FD79B; --ok-soft:#16281E;
-    --warn:#F0A184; --warn-soft:#33211A;
-    --bad:#F1938C; --bad-soft:#331A18;
-    --shadow:0 1px 2px var(--sh-2);
-    --shadow-lg:0 8px 22px rgba(0,0,0,.5);
-
-    --purple-1:#332845; --purple-2:#8C74B8; --purple-3:#A98BDD; --purple-4:#B79BE6;
-    --purple-5:#C3AAE8; --purple-6:#D6C5F0; --purple-7:#EFE8F5;
-    --peach-1:#3A2620; --peach-2:#F2A184; --peach-3:#F0A184;
-    --rasp:#E896B0; --rasp-ink:#E896B0;
-    --line-soft:#3A2D45;
-    --ring-soft:rgba(255,255,255,.3);
-  }
-}
-
-/* ==================================================================== בסיס */
-*,*::before,*::after{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  font-size:var(--fs-4); line-height:var(--lh-4); -webkit-text-size-adjust:100%;
-  overflow-wrap:anywhere;
-}
-body.locked{overflow:hidden}
-h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
-button{font:inherit; color:inherit}
-input,select,textarea{font:inherit; color:inherit}
-.hidden{display:none !important}
-
-/* ================================================== הפתיח והחתימה של מסך */
-/*  ⛔ שתי השורות בראש ובתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה. */
-/*  ⛔ שתי השורות בתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה: ⛔ והפתיחה מתחת לחתימה, ⚠️ בגופן
- *  גדול מעט ממנה.
- *  ⚠️ **וכפתור החזרה נכנס לאותו בלוק** — ⛔ הוא אינו כפתור פעולה,
- *  ⭐ ואינו נפרש לרוחב המסך כמותם. */
-.foot{text-align:center;padding:var(--sp-7) var(--sp-6) var(--sp-6)}
-.closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
-  padding:0 0 var(--sp-3)}
-.opener{color:var(--rasp-ink);font-size:var(--fs-2);letter-spacing:var(--ls-1);text-align:center;
-  font-weight:500;padding:0}
-
-/* =================================================================== קליפה */
-/*  ⛔ העמודה ברוחב מכשיר ⛔ ואינה נמרחת עד לקצה — ⚠️ לא בדסקטופ ולא
- *  במובייל: ⭐ המסך כאן הוא ערימת כרטיסים קצרה, ⛔ ורוחב שנמתח מפריד
- *  את המספר מהתווית שלו בשורה אחת.
- *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
-main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
-  max-width:390px;margin:0 auto}
-
-/* ================================================================== הלוגו */
-/*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
- *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
-.brand{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);
-  padding:var(--sp-6) 0 var(--sp-2)}
-.brand img{width:40px;height:40px;border-radius:var(--r-4)}
-
-/* ================================================================= כרטיסים */
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
-.card > h2{font-size:var(--fs-5);color:var(--text);display:flex;align-items:center;gap:var(--sp-4);
-  margin-bottom:var(--sp-5);font-weight:500}
-.card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-3)}
-.card > h2 .st.ok{color:var(--ok)}
-.card > h2 .st.left{color:var(--purple-5)}
-.card > h2 .st.peach{color:var(--peach-3)}
-.empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
-
-/* ============================================ שורת החודש והמעבר בין חודשים */
-.mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
-  padding:var(--sp-5) 0}
-.mrow .mid{text-align:center;flex:1}
-.mrow .mname{font-size:var(--fs-5);font-weight:500;color:var(--text);display:block}
-/*  ⛔ טווח התאריכים הלועזי מתחת לשם — ⚠️ הוא נגזר מראש החודש ומראש
- *  הבא אחריו, ⭐ ואינו נשלף משורה שמישהו מילא. */
-.mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
-.mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
-  min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
-
-/*  ⛔ פס החוב מהחודש הקודם — ⚠️ הוא אומר מה נשאר, ⭐ ואינו מבהיל:
- *  ⛔ אין בו אדום ואין בו סימן שגיאה. */
-.carry{display:flex;align-items:center;gap:var(--sp-4);background:var(--peach-1);
-  color:var(--peach-3);font-size:var(--fs-3);font-weight:500;border-radius:var(--radius-sm);
-  padding:var(--sp-5) var(--sp-5);margin-bottom:var(--sp-5);width:100%;border:0;
-  cursor:pointer;text-align:start;min-height:44px}
-.carry .arw{margin-inline-start:auto;font-size:var(--fs-3)}
-
-/* ================================================================== מספרים */
-.big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
-.sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
-.sml.strong{font-weight:500;color:var(--text)}
-.inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
-  font-size:var(--fs-3);color:var(--text-2);padding:var(--sp-5) var(--sp-2)}
-.inc b{font-size:var(--fs-5);font-weight:500;color:var(--text)}
-
-/*  ⛔ היעד שהושלם הוא המחשה ⛔ ולא טקסט בפינה — ⚠️ פינה היא מקום שאיש
- *  אינו מסתכל בו, ⭐ והסכום שהושלם נכתב בתוכה. */
-.goal{display:flex;align-items:center;gap:var(--sp-4);margin-top:var(--sp-5);
-  background:var(--ok-soft);color:var(--ok);border-radius:var(--radius-sm);
-  padding:var(--sp-5) var(--sp-5);font-size:var(--fs-3);font-weight:500}
-.goal .gi{width:22px;height:22px;border-radius:var(--r-7);flex:none;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--ok);color:var(--ok-soft);font-size:var(--fs-2)}
-
-/* ================================================================== הפירוט */
-.det{list-style:none;margin:0;padding:0}
-.det li{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-5) 0;
-  border-bottom:.5px solid var(--line-soft);min-height:44px}
-.det li:last-child{border-bottom:0}
-.det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
-  justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
-.det .ico svg{width:14px;height:14px}
-/*  ⛔ אייקון שהוא הציור עצמו אינו יושב בשבשבת — ⚠️ הצבע בא מן
- *  הציור, ⭐ ורקע שמתחתיו הופך אותו לכתם. */
-.det .ico.art{background:none;color:inherit}
-.det .ico.art svg{width:24px;height:24px}
-.det .nm{flex:1;font-size:var(--fs-3);min-width:0}
-.det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
-.det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
-.det li.pend .amt{color:var(--text-3)}
-.det li.pend .nm{color:var(--text-2)}
-
-/* =========================================================== הכפתור הצף */
-/*  ⛔ הכפתור הצף הוא **סרגל** ⛔ ואינו מודאל — ⚠️ הוא פותח דיאלוג,
-    ⭐ ודרגה שווה לזו של המיכל משאירה את הסדר בעץ להכריע: ⛔ והוא אינו
-    מוצהר בשום מקום.
-    ⚠️ **והוא בקצה המסיים** — ⛔ המסמך ימין-לשמאל, ⭐ ולכן הקצה המסיים
-    הוא שמאל: ⛔ והוא יושב מעל סרגל הלשוניות ⛔ ולא עליו.
-    ⚠️ **והפלוס הוא ציור** ⛔ ולא תו — ⭐ תו נשען על קו הבסיס של הגופן,
-    ⛔ ומרכזו האופטי זז בין מנוע למנוע: ⚠️ בדסקטופ הוא נראה גבוה מדי.
-    ⚠️ **והמיקום האופקי נגזר מרוחב העמודה** — ⛔ מעל רוחב העמודה הכפתור
-    נצמד לקצה שלה ⛔ ולא לקצה החלון. */
-.fab{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
-  inset-inline-end:var(--sp-6);z-index:var(--z-2);
-  width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
-  background:var(--rasp);color:var(--on-rasp);line-height:var(--lh-1);
-  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
-  transition:transform var(--dur-3)}
-.fab svg{width:28px;height:28px;display:block}
-.fab:active{transform:scale(.93)}
-@media (min-width:480px){.fab{inset-inline-end:calc(50% - 195px + 16px)}}
-
-/* ======================================================= סרגל הלשוניות */
-/*  ⛔ ארבע לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
- *  כל החלון מנתק את הניווט מהתוכן שמעליו. */
-.tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
-  display:flex;justify-content:center;
-  padding-bottom:env(safe-area-inset-bottom);
-  background:var(--card);border-top:1px solid var(--border)}
-.tabbar .in{display:flex;width:100%;max-width:390px}
-.tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
-  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
-  padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
-  transition:color var(--dur-3)}
-.tab-btn .ti{display:flex;align-items:center;justify-content:center}
-.tab-btn svg{width:20px;height:20px;display:block}
-.tab-btn.on{color:var(--purple-5);font-weight:500}
-.tab-btn:hover{color:var(--purple-5)}
-
-/* ============================================================ מסך הזרימה */
-.flow{padding:var(--sp-6) 0}
-.flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
-/*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
- *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
- *  המסך עוסק. */
-.fhd{text-align:center;margin-bottom:var(--sp-6)}
-.fhd h2{margin-bottom:0}
-.fic{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;
-  border-radius:var(--r-7);background:var(--brand-soft);color:var(--brand-ink);
-  margin-bottom:var(--sp-5)}
-.fic svg{width:26px;height:26px;display:block}
-.fld{margin-bottom:var(--sp-6)}
-.fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
-.fld input,.fld select{width:100%;background:var(--card);color:var(--text);
-  border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
-.opts{display:grid;gap:var(--sp-4)}
-.opt{display:flex;align-items:center;gap:var(--sp-4);background:var(--card);
-  border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-5);
-  font-size:var(--fs-4);cursor:pointer;min-height:44px;text-align:start;width:100%}
-.opt.on{border-color:var(--purple-3);background:var(--brand-soft);color:var(--brand-ink)}
-.btn{display:block;width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
-  background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
-  padding:var(--sp-5);min-height:44px}
-.btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
-.btn:hover{box-shadow:var(--shadow-lg)}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{opacity:var(--op-3);cursor:default}
-.back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-2);
-  min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
-.back:hover{text-decoration:underline}
-.acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-.acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
-  text-align:start;min-height:44px}
-
-/* ======================================================= מסך אישור המטבע */
-.slide{position:fixed;inset:0;z-index:var(--z-6);background:var(--bg);
-  display:flex;flex-direction:column;align-items:center}
-.slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
-.slide .sub{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4)}
-.slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
-/*  ⛔ היעד יושב **מתחת** למטבע — ⚠️ המטבע נגרר כלפי מטה אל תוכו,
- *  ⭐ וזו התנועה שהאגודל עושה מעצמו: ⛔ יעד שמעליו דורש גרירה כלפי מעלה,
- *  ⚠️ והיד מכסה את מה שהיא גוררת אליו. */
-.target{margin-top:auto;margin-bottom:var(--sp-7)}
-/*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
- *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
-.target.wide{width:270px}
-.target.narrow{width:230px}
-.coin{position:absolute;width:150px;height:150px;border-radius:var(--r-7);
-  background:var(--peach-2);display:flex;align-items:center;justify-content:center;
-  color:var(--on-dark);font-size:var(--fs-6);font-weight:500;touch-action:none;cursor:grab;
-  box-shadow:var(--shadow-lg)}
-.coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
-  border:1px solid var(--ring-soft)}
-.coin.over{transform:scale(1.05)}
-/*  ⛔ הכיתוב יושב **מתחת** לפס הקונפטי — ⚠️ הפתיתים נדגמים בשליש העליון,
- *  ⭐ והכיתוב מתחיל אחריו: ⛔ שניהם באותו אזור נקראים כרעש, ⚠️ ואיש אינו
- *  קורא את המספר. */
-.donewrap{display:flex;align-items:flex-end;justify-content:center;min-height:58vh}
-.done{text-align:center;padding:var(--sp-7) var(--sp-6)}
-.done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
-.done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
-.conf{position:fixed;inset-block-start:0;inset-inline:0;height:50vh;
-  z-index:var(--z-7);pointer-events:none}
-.conf i{--cf-x:50%;--cf-y:20%;--cf-c:var(--purple-3);position:absolute;left:var(--cf-x);top:var(--cf-y);background:var(--cf-c);width:8px;height:8px;border-radius:var(--r-1)}
-
-/* ================================================================== שלד */
-.skel{background:var(--purple-1);border-radius:var(--radius-sm);height:14px;
-  margin-bottom:var(--sp-4)}
-
-/* ================================================== באנר העדכון והמודאל */
-#updater{position:fixed;inset-inline:0;inset-block-end:0;z-index:var(--z-6);
-  display:none;justify-content:center;padding:var(--sp-5) var(--sp-6)}
-#updater.show{display:flex}
-#updater .in{
-  background:var(--brand);color:var(--on-brand);border-radius:var(--r-5);
-  padding:var(--sp-5) var(--sp-6);display:flex;align-items:center;gap:var(--sp-5);
-  box-shadow:var(--shadow-lg);font-size:var(--fs-3);font-weight:500;
-  max-width:520px;width:100%}
-#updater button{background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-6);font-weight:500;
-  min-height:44px}
-/*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
- *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
-.veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
-  display:none;align-items:center;justify-content:center;padding:var(--sp-6)}
-.veil.open{display:flex}
-.veil .box{background:var(--card);border-radius:var(--radius);width:100%;
-  max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-.veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
-  border-bottom:1px solid var(--border)}
-.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
-.veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
-  border-top:1px solid var(--border)}
-
-
-/* ═══ שכבת הטוסט — מודול משותף (סבב 87ב) ════════════════════════════════════
-   זהה בית-לבית בכל האפליקציות. ⛔ שני סיווגי המצב נשענים על אסימוני
-   המצב — ⚠️ צמד הפוך שמתחלף יחד, ⭐ והנייטרלי כתוב במפורש: אין לו מצב.
-   ⛔ מיכל אחד ובתוכו `div` לכל הודעה — ⚠️ הנימוק המדוד: בשלוש מהן היה
-      אלמנט **קבוע** אחד, ⛔ והודעה שנייה דרסה את הראשונה: ⭐ «נשמר»
-      ו«שגיאת רשת» ברצף השאירו על המסך אחת בלבד.
-   ⛔ ו-`--toast-bottom` הוא הערך היחיד שנבדל — ⚠️ לשתיים מהן יש סרגל
-      תחתון קבוע, ⭐ ולטוסט שיושב מתחתיו אין מי שיראה אותו. */
-#toasts{position:fixed;inset-inline:0;bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom));z-index:var(--z-5);display:grid;gap:var(--sp-4);justify-items:center;pointer-events:none;padding:0 var(--sp-6)}
-.toast{background:var(--chip);color:var(--on-chip);border-radius:var(--r-6);padding:var(--sp-5) var(--sp-7);font-size:var(--fs-3);font-weight:600;line-height:var(--lh-3);box-shadow:0 6px 20px var(--sh-2);max-width:92vw;text-align:center;animation:toastUp var(--dur-3) ease-out}
-.toast.bad{background:var(--bad);color:var(--bad-soft)}
-.toast.good{background:var(--ok);color:var(--ok-soft)}
-@keyframes toastUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-/* ═══ סוף CSS שכבת הטוסט ════════════════════════════════════════════════ */
-
-/* ═══ CSS גרף העמודות — מודול משותף (סבב 137) ═══════════════════════════════
-   ⛔ הצגה חזותית של סדרה נבנית מרוחב יחסי ⛔ ולא מספריית גרפים — ⚠️ ספרייה
-      כזו היא מאות קילובייטים בכל עלייה, ⭐ והנתון עצמו הוא שתי מנות לשורה.
-   ⛔ הצבעים מהאסימונים ⛔ ואין כאן ליטרל — ⚠️ `--brand` למה שנגבה,
-      ⭐ ו-`--card-2` למסלול שמאחוריו: ⛔ ליטרל מוטבע כאן היה נשאר בהיר
-      במצב כהה, ⚠️ ומבטל את הזהות הפר-אפליקציה.
-   ⛔ ופס היעד הוא **אותו** אסימון בשקיפות — ⚠️ אסימון שני היה תפקיד שני
-      לצבע קיים, ⭐ והשורה על תפקיד אחד לאסימון אוסרת אותו. */
-.bchart{display:grid;gap:var(--sp-4);padding:var(--sp-2) 0}
-.brow{display:grid;grid-template-columns:4.6rem 1fr 4.4rem;align-items:center;gap:var(--sp-4);font-size:var(--fs-3)}
-.blab{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bbars{display:grid;gap:var(--sp-2)}
-.btrack{display:block;height:8px;border-radius:var(--r-6);background:var(--card-2);overflow:hidden}
-.btrack i{--bar-w:0%;display:block;height:100%;width:var(--bar-w);border-radius:var(--r-6);background:var(--brand)}
-.btrack.tgt{height:4px}
-.btrack.tgt i{opacity:var(--op-2)}
-.bval{color:var(--text-2);text-align:end;white-space:nowrap}
-/* ═══ סוף CSS גרף העמודות ════════════════════════════════════════════════ */
-
-/* ===================================================================== פסים */
-/*  ⛔ הגוון פר-אפליקציה נכתב **אחרי** הבלוק החתום — ⚠️ שני הכללים באותה
- *  סגוליות, ⭐ והמאוחר גובר: ⛔ גוון שנכתב לפניו אינו חל כלל. */
-.btrack{background:var(--purple-1)}
-.btrack i{transition:width var(--dur-4) var(--ease)}
-.btrack.peach{background:var(--peach-1)}
-.btrack.peach i{background:var(--peach-2)}
-
-@media (prefers-reduced-motion:reduce){
-  .btrack i{transition:none}
-  .conf{display:none}
-}
-
-/* ═══ סולמות הערך החזותי — מודול משותף (סבב 141) ═════════════════════════
-   ⛔ שמונה סולמות, ⛔ ואותן דרגות בכל האפליקציות — ⚠️ כל ערך חזותי
-      נגזר מהם ⛔ ואינו נבחר לכל אתר בנפרד: ⭐ ערך שנבחר באתר הוא סולם שלא
-      הוגדר, ⛔ ושני אתרים שנבדלים בפיקסל אחד הם שני ערכים שאיש לא הכריע
-      ביניהם.
-   ⛔ **ומספר הדרגות נגזר מהערכים שהיו בפועל** ⛔ ואינו נבחר — ⚠️ אשכול
-      משוקלל בסולם לוגריתמי על כל הערכים שבכל הריפו, ⭐ ותקרה של שבע.
-   ⛔ **ודרגה שאין לה קורא באפליקציה אחת נשארת** — ⚠️ הסולם הוא תשתית,
-      ⭐ ולא מפקד של מה שמשמש היום: ⛔ דרגה יורדת רק כשאין לה קורא בכולן.
-   ⛔ **והמחלקות שכאן הן אלה שחיות בכולן** — ⚠️ מחלקה שחיה בחלקן יושבת
-      בבלוק הפרטי שמתחת: ⭐ מחלקה בבלוק משותף שאין לה קורא באחת מהן היא
-      סלקטור בלי קורא, ⛔ והשער מפיל עליה.
-   ⛔ **ואין כאן `!important`** — ⚠️ `display` ו-`color` נכתבים מ-JS בזמן
-      ריצה, ⭐ וסגנון מוטבע שנכתב אחר כך חייב לגבור עליהן: ⛔ הקדימות באה
-      מהמיקום — ⚠️ הבלוק יושב בסוף הגיליון, אחרי כל כלל אחר.
-   ⛔ **ו-`--z-*` הוא סדר ולא גודל** — ⚠️ הדרגה נבחרת לפי **תפקיד**
-      השכבה — תוכן · סרגל · תפריט · מודאל · טוסט · באנר · נעילה — ⭐ ולא
-      לפי המספר שהיה שם: ⛔ מספר שנבחר לכל אתר הוא מרוץ שאיש אינו מכריע בו.
-   ⛔ **והמשך נמדד בשניות ולא באלפיות** — ⚠️ והכתיב אחיד, בלי
-      אפס מוביל: ⭐ `.15s` ו-`0.15s` הם אותו ערך בשני כתיבים, ⛔ ושני כתיבים
-      הם שני חיפושים.
-   ⛔ שינוי כאן — כל האפליקציות **וכל עותקי השער**, באותו סבב.
-   ═══════════════════════════════════════════════════════════════════════ */
-:root{
---fs-1:.65rem;--fs-2:.75rem;--fs-3:.85rem;--fs-4:.95rem;--fs-5:1.2rem;--fs-6:1.7rem;--fs-7:2.8rem;
---sp-1:2px;--sp-2:4px;--sp-3:6px;--sp-4:8px;--sp-5:12px;--sp-6:16px;--sp-7:24px;
---r-1:4px;--r-2:6px;--r-3:8px;--r-4:10px;--r-5:14px;--r-6:20px;--r-7:999px;
---z-1:1;--z-2:10;--z-3:20;--z-4:30;--z-5:40;--z-6:50;--z-7:60;
---dur-1:.12s;--dur-2:.15s;--dur-3:.2s;--dur-4:.3s;--dur-5:.6s;--dur-6:.7s;--ease:cubic-bezier(.2,.8,.3,1);
---op-1:.3;--op-2:.4;--op-3:.5;--op-4:.6;--op-5:.7;--op-6:.8;--op-7:.85;
---lh-1:1;--lh-2:1.3;--lh-3:1.45;--lh-4:1.6;--lh-5:1.75;--lh-6:2;
---ls-1:.3px;--ls-2:1px;--ls-3:4px;--ls-n1:-.4px;--ls-n2:-1px;
---chip:#1A1A1A;--on-chip:#FFFFFF;--veil:rgba(10,20,30,.5);--veil-deep:rgba(0,0,0,.75);
---alert:#B3261E;--on-alert:#FFFFFF;
---sh-1:rgba(0,0,0,.10);--sh-2:rgba(0,0,0,.22);--sh-3:rgba(0,0,0,.35);
---on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
-}
-.u-ai-c{align-items:center}
-.u-d-flex{display:flex}
-.u-fs-2{font-size:var(--fs-2)}
-.u-fs-3{font-size:var(--fs-3)}
-.u-fw-700{font-weight:700}
-.u-fx-1{flex:1}
-.u-g-5{gap:var(--sp-5)}
-.u-mt-2{margin-top:var(--sp-2)}
-.u-mt-5{margin-top:var(--sp-5)}
-/* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
-</style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 
@@ -460,7 +63,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bott
 
 <!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
       הגופן, ⭐ ומרכזו האופטי זז בין מנוע למנוע. -->
-<button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button>
+<div class="fabrail"><div class="in"><button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button></div></div>
 
 <!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
       ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
@@ -501,7 +104,7 @@ main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bott
 /*  ⛔ הליבה המשותפת נטענת כמודול ⛔ ואינה מוכפלת כאן — ⚠️ והמסמך עצמו הוא
  *  מודול: ⭐ סקריפט קלאסי רץ **לפני** כל מודול, ⛔ וקריאה אליו בעלייה
  *  הייתה מוצאת `undefined`. */
-import { readNum } from './core/util.js';
+import { readNum, uniqHas } from './core/util.js';
 import { newClientId, idEq, mergeCore, tombPruneMerged, tombBoot,
          ctxEpoch, ctxStale } from './core/sync.js';
 import './core/hebrew.js';
@@ -530,7 +133,6 @@ var EPS = 0.005;
    ══════════════════════════════════════════════════════════════════════════ */
 var MSG_OPENER = 'אין עוד מלבדו!';
 var MSG_CLOSER = 'יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד';
-var MSG_MONTH_DONE = 'החודש הושלם ✓';
 var MSG_TZ_BLESS = 'גדולה צדקה שמקרבת את הגאולה';
 var MSG_NEED_AMOUNT = '⚠️ הסכום חסר — נא להזין סכום לרישום';
 var MSG_NEED_DESC = '⚠️ נא למלא פירוט';
@@ -542,25 +144,34 @@ var MSG_DEL_POST = '»?';
 var MSG_UNDO = 'בטל';
 var MSG_DELETED = 'נמחק';
 var MSG_EMPTY_PRE = 'חודש טוב! עוד לא נרשם כלום ב-';
-var MSG_NO_INCOME = 'עוד לא נרשמו';
-var MSG_GOAL_FROM_INCOME = 'היעד ייקבע לפי ההכנסות';
-var MSG_WHAT_TO_ADD = 'מה נרשם?';
+var MSG_SUM_INCOME = 'הכנסות החודש';
+var MSG_SUM_TZEDAKAH = 'צדקה החודש';
+var MSG_SUM_SELF = 'אישית · ';
+var MSG_SUM_OTHERS = 'לאחרים · ';
+/*  ⛔ כותרת אחידה בשני הרכיבים — ⚠️ שני ניסוחים לאותו מספר הם שני
+ *  מושגים בעיני הקורא. */
+var MSG_LEFT_SUM = 'סכום שנשאר: ';
+var MSG_PART_MONTH = 'החודש ';
+var MSG_PART_CARRY = 'יתרה ';
 var MSG_ADD_INCOME = 'הכנסה';
 var MSG_ADD_TZEDAKAH = 'צדקה';
 var MSG_ORDERS_TITLE = 'הוראות קבע';
 var MSG_SETTINGS_TITLE = 'הגדרות';
 var MSG_BACK = 'חזרה';
 var MSG_SENSORY = 'צליל ורטט באישור';
-var MSG_MONTHS_CHART = 'חודשים — נגבה מול יעד';
-var MSG_CARRY_PRE = 'בחודש ';
-var MSG_CARRY_MID = ' נשאר לתת ';
-var MSG_CARRY_SUR = ' נותר עודף ';
 var MSG_EDIT = 'עריכה';
 var MSG_ORDER_NEW = 'הוראת קבע חדשה';
+var MSG_ORDER_FROM = 'חודש תחילת פעילות';
+var MSG_WAY_INCOME = 'אופני הכנסה';
+var MSG_WAY_TZEDAKAH = 'אופני צדקה';
+var MSG_WAY_NEW = 'אופן חדש';
+var MSG_WAY_LABEL = 'שם האופן';
+var MSG_NEED_LABEL = '⚠️ נא למלא שם לאופן';
+var MSG_NO_ORDERS = 'עוד לא נרשמה הוראת קבע';
+var MSG_ARCH_EMPTY = 'אין כאן עדיין כלום';
+var MSG_WAY_DUP = '⚠️ אופן בשם הזה כבר קיים';
 var MSG_PLEDGE_EDIT = 'יעד הפלעדזש · ';
 var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר בין 1 ל-30';
-var MSG_GOAL_DONE = 'הפלעדזש הושלם · ';
-var MSG_GOAL_CARRY = ' · לחודש הבא ';
 
 /* ══════════════════════════════════════════════════════════════════════════
    תצורת האפליקציה
@@ -579,24 +190,29 @@ var KV_TABLE = 'k_settings';
  *  התווית שלצידו; ⛔ **ומה מפיל**: מפתח שהקוד קורא ואינו במסד.
  *  ⭐ **ולמה מרשם**: `cfgBoot` ו-`cfgRefresh` עוברים עליו, ⛔ ושתי
  *  רשימות לאותם מפתחות הן שני מקומות לתקן. */
+/*  ⛔ שם המפתח בקבוע אחד — ⚠️ הוא נקרא במרשם ונכתב בכל שינוי ברשימות:
+ *  ⭐ שם פזור אינו ניתן לשינוי ממקום אחד. */
+var CFG_LOOKUPS_EPOCH = 'lookups_epoch';
 var CFG_KEYS = [
   { key: 'sensory', label: MSG_SENSORY },
-  { key: 'lookups_epoch', label: 'עידן הרשימות' }
+  { key: CFG_LOOKUPS_EPOCH, label: 'עידן הרשימות' }
 ];
 
 /*  ⛔ הרגישות — ⚠️ צליל ורטט עוברים כאן בלבד: ⭐ מתג אחד בהגדרות,
  *  ⛔ ואין אתר שני שמשמיע. */
 var APP_SENSORY = { on: true };
 
-/* ═══ ליבת החישוב של «הקופה» — בלוק פר-אפליקציה (סבב 147) ═════════════════
+/* ═══ ליבת החישוב של «הקופה» — בלוק פר-אפליקציה (סבב 155) ═════════════════
    ⛔ אף סיכום אינו נשמר — ⚠️ כל מספר כאן נגזר מהרישומים בזמן קריאה,
    ⭐ וזו הסיבה שהאפליקציה קיימת: בגיליון, טעות בטבת נגררה חצי שנה.
    ⛔ **ואין כאן קריאה למסד ואין `.rpc`** — ⚠️ חישוב בשרת שובר אופליין
       ⛔ ואינו נסרק.
-   ⛔ **והיתרה מצטברת חוצה שנים** — ⚠️ חומש שלא ניתן בתשרי נשאר חוב
-      בתשרי הבא: ⭐ איפוס בראש השנה היה מוחק אותו בלי שאיש החליט.
-   ⛔ **והעודף עובר, והחוב לא** — ⚠️ פלעדזש שהושלם ועבר מוסיף לחודש הבא,
-      ⭐ ופלעדזש שלא הושלם אינו נגרר: ⛔ הוא חודשי, והחומש הוא המצטבר.
+   ⛔ **שני חישובים נפרדים על אותה צדקה** — ⚠️ החומש חלק מההכנסות בפועל,
+      ⭐ והפלעדזש סכום שנקבע לשנה וחוזר בכל אחד מחודשיה.
+   ⛔ **ושניהם מעבירים יתרה — זכות וחובה כאחת** — ⚠️ מה שנשאר בסוף חודש
+      הוא הפתיחה של הבא: ⭐ רצפה שמעבירה עודף בלבד מוחקת חוב שאיש לא מחל.
+   ⛔ **וההבדל היחיד הוא ראש השנה העברית** — ⚠️ הפלעדזש מתאפס שם, ⭐ שהוא
+      החלטה שנתית חדשה; ⛔ והחומש אינו מתאפס, ⚠️ שבו אנו חייבים תמיד.
    ═══════════════════════════════════════════════════════════════════════ */
 var K_CHUMASH_RATE = 0.2;
 var K_CAT_SELF = 'אישי';
@@ -623,10 +239,19 @@ function kSelfPct(rows) {
   return self / tz * 100;
 }
 
+/*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
+ *  חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו.
+ *  ⛔ **וחודש שטרם הגיע אינו נושא יתרת פלעדזש** — ⚠️ הוא מציג את הסכום
+ *  השנתי שחוזר: ⭐ היתרה נקבעת מסוף מצב החודש שנסגר, ⛔ וחודש שלא נסגר
+ *  אין לו מה להוריש. */
 function kChain(months, opts) {
   var pledgeOf = opts.pledgeOf;
+  /*  ⛔ המפתח של החודש הנוכחי — ⚠️ כל מפתח שגדול ממנו הוא חודש שטרם הגיע:
+   *  ⭐ והוא מוצהר ריק כשאין הכרעה כזו, ⛔ ואז כל החודשים משרשרים. */
+  var now = opts.now == null ? '' : String(opts.now);
   var balance = opts.opening || 0;
-  var carry = 0;
+  var pBalance = 0;
+  var prevYear = null;
   var out = [], i, m;
   for (i = 0; i < months.length; i++) {
     m = months[i];
@@ -634,20 +259,33 @@ function kChain(months, opts) {
     var tzedakah = kTzedakah(m.rows);
     var chumash = kChumash(income);
     var pledge = pledgeOf(m.year);
+    var future = now !== '' && String(m.key) > now;
+
+    /*  ⛔ החומש — ⚠️ החובה הכוללת היא חומש החודש פחות היתרה שנשארה:
+     *  ⭐ יתרה חיובית היא זכות ומקטינה, ⛔ ושלילית היא חוב ומגדילה. */
     var prevBalance = balance;
-    balance = prevBalance + tzedakah - chumash;
-    var carryIn = carry;
-    var fill = tzedakah + carryIn;
-    var short = Math.max(0, pledge - fill);
-    carry = Math.max(0, tzedakah + carryIn - pledge);
+    var chumashCarry = -prevBalance;
+    var chumashDue = chumash + chumashCarry;
+    var chumashLeft = chumashDue - tzedakah;
+    balance = -chumashLeft;
+
+    /*  ⛔ הפלעדזש — ⚠️ אותה צורה בדיוק, ⭐ ושני הבדלים: ⛔ היתרה מתאפסת
+     *  בראש השנה, ⚠️ וחודש שטרם הגיע אינו נושא יתרה כלל. */
+    var yearTurn = prevYear !== null && String(m.year) !== prevYear;
+    var pledgeOpen = (yearTurn || future) ? 0 : pBalance;
+    var pledgeCarry = -pledgeOpen;
+    var pledgeDue = pledge + pledgeCarry;
+    var pledgeLeft = pledgeDue - tzedakah;
+    pBalance = future ? 0 : -pledgeLeft;
+    prevYear = String(m.year);
+
     out.push({ key: m.key, year: m.year, income: income, tzedakah: tzedakah,
                chumash: chumash, pledge: pledge, prevBalance: prevBalance,
-               balance: balance, carryIn: carryIn, fill: fill, short: short,
-               /*  ⛔ השלמה דורשת שהיעד קיים — ⚠️ אפס מתוך אפס אינו השלמה:
-                *  ⭐ שנה בלי פלעדזש נתנה `short` אפס, ⛔ והמסך הכריז «הושלם ✓»
-                *  והטוסט בירך על כל רישום. */
-               done: pledge > EPS && short === 0,
-               carryOut: carry, selfPct: kSelfPct(m.rows) });
+               balance: balance, chumashCarry: chumashCarry, chumashDue: chumashDue,
+               chumashLeft: chumashLeft, pledgeOpen: pledgeOpen,
+               pledgeBalance: -pledgeLeft, pledgeCarry: pledgeCarry,
+               pledgeDue: pledgeDue, pledgeLeft: pledgeLeft,
+               selfPct: kSelfPct(m.rows) });
   }
   return out;
 }
@@ -761,7 +399,7 @@ var RTY_CFG = {
   pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
 };
 
-var K_STAMP_KEY = 'k_last_changed';
+var K_STAMP_KEY = 'last_changed';
 var _kSeenTs = null, _lastSeenOk = 0;
 var PL_CFG = {
   every:  3000,
@@ -1086,9 +724,9 @@ function errMsg(e) {
    ⛔ ותקרת בטיחות ללולאה שתלויה בגודל התשובה — ⚠️ מסד שמחזיר עמוד מלא
       לנצח תולה את הדף.
    ═══════════════════════════════════════════════════════════════════════ */
-var YS_ROWS_PAGE = 1000;
-var YS_ROWS_CAP = 500000;
-async function _ysRowsPaged(mkQuery, order, win) {
+var ROWS_PAGE = 1000;
+var ROWS_CAP = 500000;
+async function _rowsPaged(mkQuery, order, win) {
   var out = [], from = 0;
   for (;;) {
     var q = mkQuery();
@@ -1097,12 +735,12 @@ async function _ysRowsPaged(mkQuery, order, win) {
       if (win.to) q = q.lte(win.col, win.to);
     }
     if (order) q = q.order(order, { ascending: true });
-    var res = await withTimeout(q.range(from, from + YS_ROWS_PAGE - 1));
+    var res = await withTimeout(q.range(from, from + ROWS_PAGE - 1));
     if (!res || res.error || !Array.isArray(res.data)) return null;
     out = out.concat(res.data);
-    if (res.data.length < YS_ROWS_PAGE) return out;
-    from += YS_ROWS_PAGE;
-    if (from > YS_ROWS_CAP) return out;
+    if (res.data.length < ROWS_PAGE) return out;
+    from += ROWS_PAGE;
+    if (from > ROWS_CAP) return out;
   }
 }
 /* ═══════════════ סוף מודול משיכה מסוננת בשרת ═══════════════════════════ */
@@ -2122,7 +1760,7 @@ function _bkLayer(bkey, s) {
  *  יש: ⛔ אי-התאמה מחזירה `null` ⛔ ונכשלת בקול, ⚠️ ואינה שומרת חצי גיבוי. */
 async function _bkReadRows(c, s, win) {
   var sel = s.cols || '*';
-  var rows = await _ysRowsPaged(function () {
+  var rows = await _rowsPaged(function () {
     var q = c.from(s.name).select(sel);
     if (s.eq) q = q.eq(s.eq[0], s.eq[1]);
     return q;
@@ -3207,118 +2845,6 @@ function mergeRows(local, remote, keyName, isPending) {
   }));
 }
 
-window.DAYS_HEB=["","א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","ט׳","י׳","י״א","י״ב","י״ג","י״ד","ט״ו","ט״ז","י״ז","י״ח","י״ט","כ׳","כ״א","כ״ב","כ״ג","כ״ד","כ״ה","כ״ו","כ״ז","כ״ח","כ״ט","ל׳"];
-window.MONTHS_HEB     =["תשרי","חשון","כסלו","טבת","שבט","אדר","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.MONTHS_HEB_LEAP=["תשרי","חשון","כסלו","טבת","שבט","אדר א׳","אדר ב׳","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.YS_DOW_HEB=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
-
-// שנה מעוברת — מחזור 19 השנים (7 שנים מעוברות)
-window.ysHebIsLeap=function(hy){return ((7*(+hy)+1)%19)<7;};
-window.ysHebMonthNames=function(hy){return window.ysHebIsLeap(hy)?window.MONTHS_HEB_LEAP:window.MONTHS_HEB;};
-
-// גימטריה — מספר → אותיות (כולל ט״ו/ט״ז). sep = התו שלפני האות האחרונה
-window.ysGematria=function(n,sep){
-  n=Math.floor(Math.abs(+n))||0;
-  if(!n) return '';
-  if(n>=1000) n=n%1000;
-  var HUN=['','ק','ר','ש','ת'],TENS=['','י','כ','ל','מ','נ','ס','ע','פ','צ'],ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
-  var s='',h=Math.floor(n/100),r=n%100;
-  while(h>4){s+='ת';h-=4;}
-  s+=HUN[h]||'';
-  if(r===15) s+='טו';
-  else if(r===16) s+='טז';
-  else s+=TENS[Math.floor(r/10)]+ONES[r%10];
-  if(sep===undefined) sep='״';
-  if(!sep||!s) return s;
-  if(s.length===1) return s+'׳';
-  return s.slice(0,-1)+sep+s.slice(-1);
-};
-window.ysHebDayLabel=function(day){var T=window.DAYS_HEB;return (T&&T[day])||window.ysGematria(day)||String(day);};
-// תווית שנה מלאה — ה׳תשפ״ו
-window.ysHebYearLabelFull=function(hy){
-  var ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'],th=Math.floor((+hy)/1000);
-  return ((th>0&&th<10)?ONES[th]+'׳':'')+window.ysGematria((+hy)%1000,'״');
-};
-
-// ---- קריאת הלוח העברי של הדפדפן ----
-// שמות החודשים נקראים באנגלית ('en-u-ca-hebrew') כי הם יציבים בין גרסאות ICU,
-// וממופים לאינדקס בטבלאות התצוגה שלנו.
-window._ysMICodeLeap={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar1:5,adar2:6,nisan:7,iyar:8,sivan:9,tamuz:10,av:11,elul:12};
-window._ysMICodeStd ={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar:5,nisan:6,iyar:7,sivan:8,tamuz:9,av:10,elul:11};
-window._ysMonthCode=function(name){
-  var s=(name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  if(s.indexOf('adar')===0){
-    var t=s.slice(4);
-    if(t==='i'||t==='1'||t==='a') return 'adar1';
-    if(t==='ii'||t==='2'||t==='b') return 'adar2';
-    return 'adar';
-  }
-  if(s.indexOf('tishr')===0) return 'tishri';
-  if(s.indexOf('hesh')!==-1||s.indexOf('chesh')!==-1) return 'heshvan';
-  if(s.indexOf('kislev')===0||s.indexOf('chislev')===0) return 'kislev';
-  if(s.indexOf('tevet')===0||s.indexOf('teveth')===0) return 'tevet';
-  if(s.indexOf('shevat')===0||s.indexOf('shvat')===0||s.indexOf('shebat')===0) return 'shevat';
-  if(s.indexOf('nisan')===0||s.indexOf('nissan')===0) return 'nisan';
-  if(s.indexOf('iyar')===0||s.indexOf('iyyar')===0) return 'iyar';
-  if(s.indexOf('sivan')===0) return 'sivan';
-  if(s.indexOf('tamuz')===0||s.indexOf('tammuz')===0) return 'tamuz';
-  if(s==='av'||s==='ab') return 'av';
-  if(s.indexOf('elul')===0) return 'elul';
-  return null;
-};
-window._ysIntlFmt=null;window._ysIntlOK=null;
-// גרגוריאני → {hy,mi,day,leap} דרך Intl. מחזיר null אם לא זמין / תוצאה לא צפויה
-window.ysIntlHeb=function(d){
-  try{
-    if(window._ysIntlOK===false) return null;
-    if(!window._ysIntlFmt){
-      if(typeof Intl==='undefined'||!Intl.DateTimeFormat){window._ysIntlOK=false;return null;}
-      var f=new Intl.DateTimeFormat('en-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'});
-      var ro=f.resolvedOptions?f.resolvedOptions():null;
-      if(!ro||ro.calendar!=='hebrew'||!f.formatToParts){window._ysIntlOK=false;return null;}
-      window._ysIntlFmt=f;window._ysIntlOK=true;
-    }
-    var o={};
-    window._ysIntlFmt.formatToParts(d).forEach(function(p){o[p.type]=p.value;});
-    var hy=parseInt(String(o.year||'').replace(/[^0-9]/g,''),10);
-    var day=parseInt(String(o.day||'').replace(/[^0-9]/g,''),10);
-    var code=window._ysMonthCode(o.month);
-    if(!(hy>=4000&&hy<=7000)||!(day>=1&&day<=30)||!code) return null;
-    var leap=window.ysHebIsLeap(hy);
-    var mi=leap?window._ysMICodeLeap[code]:window._ysMICodeStd[code];
-    if(mi===undefined){
-      // אי-התאמה בין חישוב העיבור לשם החודש — סימן שמשהו לא צפוי; לא מנחשים
-      return null;
-    }
-    return {hy:hy,mi:mi,day:day,leap:leap};
-  }catch(e){ window._ysIntlOK=false; return null; }
-};
-
-/*  ⛔ אין לבדוק `d instanceof Date` ואין ליפול-חזרה ל«היום» (סבב 57) —
- *  `instanceof` תלוי-realm: אובייקט תאריך שנוצר ב-realm אחר (iframe,
- *  רתמת `vm`) מחזיר `false`, והשורה שהייתה כאן החליפה אותו **בשקט**
- *  בתאריך של היום. שני כשלים בשורה אחת — בדיקה שתלויה במי יצר את
- *  האובייקט, ⛔ ונפילה-חזרה שקטה שמציגה תאריך שגוי כאילו הוא נכון.
- *  ⭐ הבדיקה כאן היא על **החוזה** (`getTime` שמחזיר מספר) ואינה
- *  תלוית-realm; ⛔ וקלט שאינו עובר אותה מוחזר כ«לא תקף» ונרשם.
- *  ⚠️ קריאה **בלי ארגומנט** היא חוזה קיים ומשמעה «היום» — היא נשארת,
- *  ורק ארגומנט שנמסר ואינו תאריך תקף נחשב שגיאה.                       */
-window._ysIsDate=function(d){
-  return !!d&&typeof d.getTime==='function'&&!isNaN(d.getTime());
-};
-window._ysBadDates=[];
-window._ysBadDate=function(where,d){
-  var got;
-  try{ got=Object.prototype.toString.call(d); }catch(e){ got='?'; }
-  window._ysBadDates.push({at:Date.now(),where:where,got:got});
-  if(window._ysBadDates.length>12) window._ysBadDates.shift();
-  try{ console.warn('ysHebDate: קלט שאינו תאריך תקף ב-'+where+' — '+got); }catch(e){}
-};
-window._ysHebNone=function(src){
-  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',
-          yearLabelFull:'',ok:false,src:src};
-};
-
 /* ═══ שכבת המודאל — מודול משותף (סבב 86) ══════════════════════════════════
    ⛔ שכבת המודאל ושלושת העוזרים ישבו **מחוץ** לכל בלוק חתום ⛔ ונסחפו:
       ⚠️ `esc` לשלוש צורות — והיא הגנת ה-HTML היחידה שיש; `openModal` לשלוש,
@@ -3513,7 +3039,12 @@ function kvBadLabel(name) { return name + ' (' + MSG_KV_BAD + ')'; }
       באותה אפליקציה הם שני מקומות שבהם הרוחב נכתב ביד, ⚠️ ושניים כאלה
       נמדדו — הסדרה בבונה, והפס בטבלת הפילוח.
    ⛔ **מה נכנס**: `lab` תווית · `val` הערך · `tgt` היעד · `txt` הטקסט
-      החלופי · `end` מה שנכתב בסוף השורה. */
+      החלופי · `end` מה שנכתב בסוף השורה.
+   ⛔ **ו-`noTarget` הוא דגל בחתימה** — ⚠️ וכשהוא דולק הפס השני **אינו
+      נוצר**, ⭐ ואינו נוצר-ומוסתר: ⛔ הסתרה ב-CSS פר-אפליקציה משאירה
+      את הקוד רץ ואת האלמנט ב-DOM, ⚠️ ומי שקורא את המודול אינו יודע
+      שהוא מכובה. ⭐ **והמכנה נשמר** — ⛔ `max` עדיין נגזר מ-`val`
+      ומ-`tgt`, ⚠️ והסרת הציור אינה משנה את אורכי הפסים. */
 /*  ⛔ הרוחב נכתב למשתנה CSS ⛔ ולא לתגית — ⚠️ סגנון מוטבע גובר על כל
  *  מחלקה ואינו ניתן לשינוי ממקום אחד: ⭐ והצביעה נדחית לפריים שאחרי
  *  ה-`innerHTML`, ⛔ שהיא הרגע שבו הפסים כבר בעץ. */
@@ -3529,7 +3060,7 @@ function bar(pct, cls) {
   return '<span class="btrack' + (cls ? ' ' + cls : '') +
          '"><i data-pct="' + pct + '"></i></span>';
 }
-function barChart(rows, label) {
+function barChart(rows, label, noTarget) {
   if (!Array.isArray(rows) || rows.length < 2) return '';
   var max = 0, i;
   for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].val || 0, rows[i].tgt || 0);
@@ -3539,7 +3070,8 @@ function barChart(rows, label) {
   for (i = 0; i < rows.length; i++) {
     h += '<div class="brow" aria-label="' + esc(rows[i].txt) + '">' +
       '<span class="blab">' + esc(rows[i].lab) + '</span>' +
-      '<span class="bbars">' + bar(pct(rows[i].val)) + bar(pct(rows[i].tgt), 'tgt') +
+      '<span class="bbars">' + bar(pct(rows[i].val)) +
+      (noTarget ? '' : bar(pct(rows[i].tgt), 'tgt')) +
       '</span>' +
       '<span class="bval">' + esc(rows[i].end) + '</span></div>';
   }
@@ -3557,7 +3089,8 @@ function barChart(rows, label) {
    הנתון עצמו: ⛔ שם שני לאותו מבנה הוא עותק שני שאיש אינו מסנכרן.
    ══════════════════════════════════════════════════════════════════════════ */
 var CFG = {};
-var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null };
+var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null,
+             lookOpen: null, archYear: null };
 
 var kQ = function (s) { return document.querySelector(s); };
 
@@ -3566,11 +3099,20 @@ var kQ = function (s) { return document.querySelector(s); };
 var NUM_FMT = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 });
 function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
 
-/*  ⛔ המיון האחד — ⚠️ הפירוט כרונולוגי, ⭐ ואין מיון מקומי בשום מסך. */
+/*  ⛔ המיון האחד — ⚠️ הוראות הקבע בתחתית, ⭐ ומעליהן התאריכים מהחדש
+ *  לישן: ⛔ ובתוך כל תאריך — סדר הא״ב.
+ *  ⛔ **ואין קיבוץ לפי סוג** — ⚠️ הכנסה וצדקה מעורבות בסדר הזה:
+ *  ⭐ וההבדל החזותי הוא באייקונים.
+ *  ⚠️ **ואין מיון מקומי בשום מסך** — ⛔ כל תצוגה עוברת כאן. */
+var HE_COLL = new Intl.Collator('he');
 function kSortEntries(list) {
   return list.slice().sort(function (a, b) {
-    var d = String(a.entry_date || '').localeCompare(String(b.entry_date || ''));
-    return d !== 0 ? d : String(a.client_id).localeCompare(String(b.client_id));
+    var sa = a.source === 'standing' ? 1 : 0, sb = b.source === 'standing' ? 1 : 0;
+    if (sa !== sb) return sa - sb;
+    var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
+    if (!sa && d !== 0) return d;
+    var n = HE_COLL.compare(String(a.description || ''), String(b.description || ''));
+    return n !== 0 ? n : String(a.client_id).localeCompare(String(b.client_id));
   });
 }
 
@@ -3589,11 +3131,11 @@ function kSortEntries(list) {
 function kPad2(n) { return (n < 10 ? '0' : '') + n; }
 
 /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף,
- *  ⭐ והמנוע האחד הוא `ysHebDate`. */
+ *  ⭐ והמנוע האחד הוא `hebDate`. */
 function kHeb(iso) {
   var h;
   if (!iso) return null;
-  try { h = ysHebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
+  try { h = hebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
   return (h && h.ok) ? h : null;
 }
 function yearOf(iso) { var h = kHeb(iso); return h ? String(h.year) : ''; }
@@ -3608,7 +3150,7 @@ function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
 function monthLabel(k) {
   var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
   if (!y || i < 0) return '';
-  try { names = window.ysHebMonthNames(y); } catch (e) { return ''; }
+  try { names = window.hebMonthNames(y); } catch (e) { return ''; }
   return names[i] || '';
 }
 
@@ -3757,13 +3299,19 @@ function openingBalance() {
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
 }
 
-/*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ היתרה מצטברת חוצה שנים,
+/*  ⛔ החודש הנוכחי נגזר מהיום ⛔ ואינו נשמר — ⚠️ והוא הגבול שמעבר לו
+ *  הפלעדזש אינו נושא יתרה: ⭐ חודש שלא נסגר אין לו מה להוריש. */
+function nowMonthKey() {
+  return monthKeyOf(kIsoOfDay(Math.floor(Date.now() / 86400000)));
+}
+/*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות,
  *  ⭐ ולכן חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו. */
 function chainAll() {
   var ms = monthsSorted().map(function (m) {
     return { key: m.key, year: m.year, rows: monthRows(m.key) };
   });
-  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance() });
+  return kChain(ms, { pledgeOf: pledgeOfYear, opening: openingBalance(),
+                      now: nowMonthKey() });
 }
 function chainOf(k) {
   var c = chainAll(), i;
@@ -3822,15 +3370,12 @@ function soEnsureInstances(monthKey) {
 /* ══════════════════════════════════════════════════════════════════════════
    הרינדור
    ══════════════════════════════════════════════════════════════════════════ */
-/*  ⛔ שלוש השורות בתחתית כל מסך — ⚠️ כפתור החזרה, «יחי אדוננו»,
- *  ומתחתיו «אין עוד מלבדו»: ⭐ וכפתור החזרה אינו כפתור פעולה,
- *  ⛔ ואינו נפרש לרוחב המסך כמותם.
- *  ⚠️ **ו-`data-kesc` נכנס בהיקף `ksave` בלבד** — ⛔ מחוצה לו המקש
- *  אינו מנותב, ⭐ והכפתור נראה זהה ואינו עונה. */
-var BACK_HOME = '<button class="back" data-act="back-home">' + MSG_BACK + '</button>';
-var BACK_FLOW = '<button class="back" data-act="flow-back" data-kesc>' + MSG_BACK + '</button>';
-function footHTML(back) {
-  return '<div class="foot">' + (back || '') +
+/*  ⛔ שתי השורות בתחתית כל מסך — ⚠️ «יחי אדוננו», ומתחתיו «אין עוד
+ *  מלבדו»: ⭐ והן נצמדות לתחתית המסך ⛔ ולא לסוף התוכן. */
+/*  ⛔ ואין כאן כפתור חזרה — ⚠️ הגישה לשלושת המסכים היא משורת הניווט:
+ *  ⭐ שני מסלולים לאותו מעבר הם שתי דרכים שאיש אינו מצליב. */
+function footHTML() {
+  return '<div class="foot">' +
     '<div class="closer">' + esc(MSG_CLOSER) + '</div>' +
     '<div class="opener">' + esc(MSG_OPENER) + '</div></div>';
 }
@@ -3856,7 +3401,7 @@ function monthGreg(k) {
 /*  ⛔ שם החודש נושא את השנה — ⚠️ ותווית השנה באה מהמנוע המשותף:
  *  ⭐ צורה שנייה כאן הייתה מקור אמת שני לתצוגה. */
 function monthTitle(m) {
-  return m.name + ' ' + window.ysHebYearLabelFull(m.year);
+  return m.name + ' ' + window.hebYearLabelFull(m.year);
 }
 
 /*  ⛔ האייקון של ההכנסה ושל הצדקה הוא הציור שהאפליקציה כבר מציגה —
@@ -3874,7 +3419,6 @@ function iconFor(kind) {
     other:    'M12 4v16 M4 12h16',
     standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     home:     'M4 11l8-7 8 7 M7 10v10h10V10',
-    upload:   'M12 16V4 M8 8l4-4 4 4 M4 20h16',
     archive:  'M4 8h16v12H4z M3 4h18v4H3z M10 12h4',
     gear:     'M4 7h10 M18 7h2 M4 12h4 M12 12h8 M4 17h10 M18 17h2',
     amount:   'M12 3v18 M7 8h7a3 3 0 010 6H7',
@@ -3906,37 +3450,64 @@ function detailRowHTML(r) {
          '<span class="amt">' + money(r.amount) + '</span></li>';
 }
 
-/*  ⛔ המצטבר הוא שארית החודש הקודם בלבד — ⚠️ יתרה או חסר, ⭐ ובתוך
- *  הניווט: ⛔ סכום שמצטבר על פני חודשים אינו אומר מה נשאר מאחד. */
-function carryHTML(prev, pc) {
-  var txt = '';
-  if (!prev || !pc) return '';
-  if (pc.short > EPS) txt = MSG_CARRY_PRE + prev.name + MSG_CARRY_MID + money(pc.short);
-  else if (pc.carryOut > EPS) txt = MSG_CARRY_PRE + prev.name + MSG_CARRY_SUR + money(pc.carryOut);
-  if (!txt) return '';
-  return '<button class="carry" data-act="month-goto" data-id="' + esc(prev.key) + '">' +
-         esc(txt) + '<span class="arw">‹</span></button>';
+/*  ⛔ הסכום שעוד חייבים נכתב כמות שהוא ⛔ ובלי סימן — ⚠️ הוא המצב הרגיל,
+ *  ⭐ וסימן שמתלווה לכל מספר מפסיק לומר דבר: ⛔ **והמינוס שמור ליתרת
+ *  זכות בלבד** — ⚠️ והוא מה שמבדיל בין «נשאר לתת» ל«נתנו יותר».
+ *  ⚠️ **ומינוס טיפוגרפי ⛔ ולא מקף** — ⭐ המקף נקרא בעברית כחלק מהמילה
+ *  שלפניו · ⚠️ **והמספר עטוף בכיוון שמאל-ימין** — ⛔ הסימן שייך למספר,
+ *  ⭐ ובלעדיו האלגוריתם הדו-כיווני מעיף אותו אל קצה השורה. */
+function signed(n) {
+  /*  ⛔ אפס שלילי מתאפס — ⚠️ `Math.round(-0.2)` הוא `-0`, ⭐ והוא אינו
+   *  קטן מאפס: ⛔ והמעצב מדפיס «‎-0 ₪», ⚠️ שנקרא כחוב של כלום. */
+  var v = Math.round(n) || 0;
+  return '<span class="ltr">' + esc(v < 0 ? '−' + money(-v) : money(v)) + '</span>';
 }
 
-/*  ⛔ היעד שהושלם הוא המחשה ⛔ ולא טקסט בפינה — ⚠️ והסכום שהושלם נכתב
- *  בתוכה: ⭐ «הושלם» לבדו אינו אומר כמה. */
-/*  ⛔ יעד שלא נקבע אינו יעד שהושלם — ⚠️ `short` הוא אפס גם כשהפלעדזש
- *  אפס: ⭐ והמחשה שעולה שם מבשרת על כלום, ⛔ והסכום שבה הוא 0 ₪. */
-function goalShown(c) { return !!c.done && +c.pledge > EPS; }
-function goalHTML(c) {
-  return '<div class="goal"><span class="gi">✓</span>' +
-         esc(MSG_GOAL_DONE) + money(c.fill) +
-         (c.carryOut > EPS ? esc(MSG_GOAL_CARRY) + money(c.carryOut) : '') + '</div>';
+/*  ⛔ פיצול הצדקה באחוזים ⛔ ולא בסכומים — ⚠️ הסכומים כבר בשורה שמעליו,
+ *  ⭐ והחלוקה היא מה שהשורה הזו אומרת: ⛔ **וחודש בלי צדקה מציג אפס בשניהם**
+ *  ⛔ ולא אפס ומלוא המניין — ⚠️ אחוז מתוך אפס אינו חלוקה, ⭐ והמשלים שם
+ *  מדווח על חלוקה שלא נעשתה.
+ *  ⚠️ **והמשלים נגזר מהמעוגל** ⛔ ולא מעוגל בנפרד — ⭐ שני עיגולים
+ *  נפרדים נותנים 99 או 101. */
+function splitHTML(c) {
+  var tz = c.tzedakah || 0;
+  var self = tz > EPS ? Math.round(c.selfPct || 0) : 0;
+  return '<span>' + esc(MSG_SUM_SELF + (tz > EPS ? self : 0) + '%') + '</span>' +
+         '<span>' + esc(MSG_SUM_OTHERS + (tz > EPS ? 100 - self : 0) + '%') + '</span>';
+}
+
+/*  ⛔ הפס מודד מה שניתן החודש מול החובה הכוללת — ⚠️ וחובה שאינה חיובית
+ *  היא פס מלא: ⭐ אין מה להשלים, ⛔ וחלוקה בה הייתה אינסוף. */
+function compPct(given, due) {
+  if (due <= EPS) return 100;
+  return Math.min(100, Math.max(0, given / due * 100));
+}
+
+/*  ⛔ שני הרכיבים בצורה אחת בדיוק — ⚠️ **מה נכנס**: הכותרת · גוון הפס ·
+ *  החובה הכוללת · החלק שמהחודש · החלק שמהיתרה · מה שניתן · והיתרה שנותרה;
+ *  ⛔ **ומה מפיל**: רכיב שנבנה באתר הקריאה — ⭐ שתי צורות לאותו מושג הן
+ *  שני מסכים בעיני הקורא.
+ *  ⚠️ **והמסגרת עולה כשהיתרה בזכות** ⛔ ולא כשהחובה אפס: ⭐ אפס מתוך אפס
+ *  אינו עודף, ⛔ והמסגרת שם הייתה מברכת על מה שלא נעשה. */
+function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
+  return '<div class="card comp' + (tone ? ' ' + tone : '') +
+    (after > EPS ? ' plus' : '') + '">' +
+    '<h2>' + esc(title) +
+    '<span class="st">' + esc(MSG_LEFT_SUM) + signed(due - given) + '</span></h2>' +
+    '<div class="u-mt-2">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
+    '<div class="crow"><div class="big">' + signed(due) + '</div>' +
+    '<div class="parts">' +
+    '<span>' + esc(MSG_PART_MONTH) + signed(ofMonth) + '</span>' +
+    '<span>' + esc(MSG_PART_CARRY) + signed(ofCarry) + '</span>' +
+    '</div></div></div>';
 }
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
   if (!m) return brandHTML() + '<div class="card"><div class="empty">' +
-             '<div class="skel"></div><div class="skel"></div></div></div>' + footHTML('');
+             '<div class="skel"></div><div class="skel"></div></div></div>' + footHTML();
   var c = chainOf(view.monthKey) || {};
   var rows = kSortEntries(monthRows(view.monthKey));
-  var prev = prevMonthOf(view.monthKey);
-  var pc = prev ? chainOf(prev.key) : null;
 
   /* 1 — הלוגו. */
   var h = brandHTML();
@@ -3944,64 +3515,54 @@ function monthScreenHTML() {
   /* 2 — שם החודש, טווח התאריכים הלועזי והחצים. */
   h += '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
-       '<span class="mid"><span class="mname">' + esc(monthTitle(m)) + '</span>' +
+       '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
+       '<span class="myear">' + esc(window.hebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
 
-  /* 3 — המצטבר מהחודש הקודם, בתוך הניווט. */
-  h += carryHTML(prev, pc);
+  /* 3 — שני הרכיבים, בצורה אחת. */
+  h += compCardHTML('חומש', '', c.chumashDue, c.chumash, c.chumashCarry,
+                    c.tzedakah, c.balance);
+  h += compCardHTML('פלעדזש', 'peach', c.pledgeDue, c.pledge, c.pledgeCarry,
+                    c.tzedakah, c.pledgeBalance);
 
-  /* 4 — הכנסות החודש. */
-  h += '<div class="inc">' + esc('הכנסות החודש · ') +
-       (c.income > EPS ? money(c.income) : esc(MSG_NO_INCOME)) + '</div>';
+  /* 4 — שורות הסיכום, מעל הפירוט ⛔ ולא מעל הרכיבים: ⚠️ הן נגזרות
+     מהחודש הנוכחי בלבד, ⭐ ואין בהן יתרה ואין בהן צבירה.
+     ⚠️ **והפירוט שמתחתן הוא פיצול של הצדקה** — ⛔ ולא סכום נוסף:
+     ⭐ ולכן הוא קטן משתיהן, ⛔ ונקרא כשייך לשורה שמעליו. */
+  h += '<div class="inc">' + esc(MSG_SUM_INCOME) +
+       '<b>' + esc(money(c.income || 0)) + '</b></div>' +
+       '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
+       '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
+       '<div class="inc sub">' + splitHTML(c) + '</div>';
 
-  /* 5 — כרטיס החומש. */
-  var fill = Math.max(0, c.tzedakah + Math.max(0, c.prevBalance));
-  var goal = c.chumash;
-  var noGoal = goal <= EPS;
-  var pct = noGoal ? 100 : Math.min(100, fill / goal * 100);
-  h += '<div class="card"><h2>חומש' +
-       '<span class="st ' + (fill + EPS >= goal ? 'ok' : 'left') + '">' +
-       (noGoal ? '' : (fill + EPS >= goal ? 'עקפנו ב־' + money(fill - goal) + ' ✓'
-                                          : 'עוד ' + money(goal - fill) + ' ליעד')) +
-       '</span></h2>' +
-       '<div class="big">' + money(fill) + '</div>' +
-       '<div class="sml">' + (noGoal ? esc(MSG_GOAL_FROM_INCOME) : 'יעד ' + money(goal)) + '</div>' +
-       '<div class="u-mt-5">' + bar(pct.toFixed(1)) + '</div></div>';
-
-  /* 6 — כרטיס הפלעדזש, ומתחתיו ההמחשה כשהיעד הושלם. */
-  var pp = c.pledge > EPS ? Math.min(100, c.fill / c.pledge * 100) : 0;
-  h += '<div class="card"><h2>פלעדזש' +
-       (c.done ? '' : '<span class="st peach">נשאר ' + money(c.short) + '</span>') +
-       '</h2>' +
-       '<div class="big">' + money(c.fill) + ' מתוך ' + money(c.pledge) + '</div>' +
-       '<div class="sml' + (c.selfPct > 50 ? ' strong' : '') + '">אישי ' +
-       Math.round(c.selfPct) + '%</div>' +
-       '<div class="u-mt-5">' + bar(pp.toFixed(1), 'peach') + '</div>' +
-       (goalShown(c) ? goalHTML(c) : '') + '</div>';
-
-  /* 7 — הפירוט. */
+  /* 5 — הפירוט: התאריכים תחילה, והוראות הקבע תחתיהם. */
+  var dated = rows.filter(function (r) { return r.source !== 'standing'; });
+  var std = rows.filter(function (r) { return r.source === 'standing'; });
   if (!rows.length) {
     h += '<div class="card"><div class="empty">' + esc(MSG_EMPTY_PRE + m.name) + '</div></div>';
-    h += ordersCardHTML();
   } else {
-    h += '<div class="card"><h2>פירוט</h2><ul class="det">' +
-         rows.map(detailRowHTML).join('') + '</ul></div>';
+    h += '<div class="card"><h2>פירוט</h2>' +
+         (dated.length ? '<ul class="det">' + dated.map(detailRowHTML).join('') + '</ul>' : '') +
+         /*  ⛔ כותרת המשנה מסמנת את מקומן ⛔ ואינה כותרת כרטיס — ⚠️ הוראות
+          *  הקבע הן המשך אותה רשימה, ⭐ ולא רשימה שנייה. */
+         (std.length ? '<div class="subhd">' + esc(MSG_ORDERS_TITLE) + '</div>' +
+                       '<ul class="det">' + std.map(detailRowHTML).join('') + '</ul>' : '') +
+         '</div>';
   }
   /*  ⛔ הביטול הוא כפתור על המסך ⛔ ולא טקסט בטוסט — ⚠️ טוסט הוא הודעה
    *  ואינו אתר לחיצה: ⭐ «בטל» שאין לו כפתור הוא הבטחה שאין לה מסלול. */
   if (UNDO.row)
     h += '<button class="btn ghost" data-act="entry-undo">' + esc(MSG_UNDO) + '</button>';
-  return h + footHTML('');
+  return h + footHTML();
 }
 
-/*  ⛔ ארבע הלשוניות, ומרשם אחד — ⚠️ **מה נכנס**: מפתח המסך, התווית
+/*  ⛔ שלוש הלשוניות, ומרשם אחד — ⚠️ **מה נכנס**: מפתח המסך, התווית
  *  והאייקון; ⛔ **ומה מפיל**: מפתח שאין לו מסך — ⭐ הלחיצה עוברת
  *  והמסך אינו מתחלף. */
 var TABS = [
   { k: 'month',    lab: 'בית',    ic: 'home' },
-  { k: 'import',   lab: 'יבוא',   ic: 'upload' },
   { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
   { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
 ];
@@ -4013,56 +3574,105 @@ function tabbarHTML() {
   }).join('') + '</div>';
 }
 
-/*  ⛔ כותרת המסך זהה בשלוש הלשוניות שאינן «בית» — ⚠️ והיא אינה ניווט:
+/*  ⛔ כותרת המסך זהה בשתי הלשוניות שאינן «בית» — ⚠️ והיא אינה ניווט:
  *  ⭐ אין בה חצים, ⛔ והחצים שייכים לחודש בלבד. */
 function tabHeadHTML(lab) {
   return '<div class="mrow"><span class="mid"><span class="mname">' +
          esc(lab) + '</span></span></div>';
 }
 
-/*  ⛔ לשונית היבוא ריקה — ⚠️ והיא מציגה את מה שיש בה, ⭐ ולא תהליך
- *  שעוד ייבנה: ⛔ תיאור של מה שאינו קיים מתיישן בלי שאיש יראה. */
-function importScreenHTML() {
-  return brandHTML() + tabHeadHTML(TABS[1].lab) +
-    '<div class="card"><div class="empty">אין כאן עדיין כלום</div></div>' +
-    footHTML(BACK_HOME);
+/*  ⛔ הארכיון מציג חודשים שהגיעו בלבד ⛔ ולא עתידיים — ⚠️ חודש שטרם הגיע
+ *  אין בו מה לראות: ⭐ שני פסיו היו ריקים, ⛔ והם נקראים כחודש שלא עמדנו בו.
+ *  ⛔ **והחודש הראשון הוא תשרי תשפ״ז** — ⚠️ הוא החודש שממנו האפליקציה
+ *  מנהלת: ⭐ ומה שקדם לו נוהל בגיליון, ⛔ ואין לו כאן רשומות. */
+var ARCH_FIRST = '5787-01';
+function archMonths() {
+  var now = nowMonthKey();
+  return monthsSorted().filter(function (m) {
+    return m.key >= ARCH_FIRST && (!now || m.key <= now);
+  });
 }
-
-/*  ⛔ הארכיון מקבץ את החודשים לפי השנה העברית — ⚠️ והקיבוץ נגזר מהמפתח,
- *  ⭐ ואין טבלת שנים: ⛔ טבלה כזו נשברת בכל שנה שלא הוזנה. */
+/*  ⛔ שני פסי המצב של חודש — ⚠️ בלי שום מספרים: ⭐ הפס מודד מה שניתן מול
+ *  החובה הכוללת, ⛔ וכך רואים אם עמדנו ביעד באותו חודש.
+ *  ⚠️ **והם עוברים ברכיב הסדרה המשותף** — ⛔ ולא נבנים כאן: ⭐ פס יחיד
+ *  ופס בסדרה הם רכיב אחד. */
+function monthBarsHTML(c, name) {
+  var ch = compPct(c.tzedakah, c.chumashDue), pl = compPct(c.tzedakah, c.pledgeDue);
+  return barChart([
+    { lab: 'חומש',   val: ch, tgt: 100, end: '', txt: name + ' · חומש ' + Math.round(ch) + '%' },
+    { lab: 'פלעדזש', val: pl, tgt: 100, end: '', txt: name + ' · פלעדזש ' + Math.round(pl) + '%' }
+  ], name, true);
+}
+/*  ⛔ המסך מציג שנים, ⛔ ורק לחיצה עליהן פותחת את פירוט החודשים —
+ *  ⚠️ רשימה של כל החודשים מאז ההתחלה מתארכת בלי סוף, ⭐ והשנה היא
+ *  היחידה שהמשתמש חושב בה. */
 function archiveScreenHTML() {
-  var ms = monthsSorted().slice().reverse(), h = brandHTML() + tabHeadHTML(TABS[2].lab);
-  var y = '', i, m, c;
-  if (!ms.length) return h + '<div class="card"><div class="empty">אין כאן עדיין כלום' +
-                             '</div></div>' + footHTML(BACK_HOME);
-  for (i = 0; i < ms.length; i++) {
-    m = ms[i];
-    if (m.year !== y) {
-      if (y) h += '</ul></div>';
-      y = m.year;
-      h += '<div class="card"><h2>' + esc(window.ysHebYearLabelFull(y)) + '</h2><ul class="det">';
+  var ms = archMonths(), h = brandHTML() + tabHeadHTML(TABS[1].lab);
+  if (!ms.length) return h + '<div class="card"><div class="empty">' + esc(MSG_ARCH_EMPTY) +
+                             '</div></div>' + footHTML();
+  var years = [], seen = {}, i;
+  for (i = 0; i < ms.length; i++) if (!seen[ms[i].year]) { seen[ms[i].year] = true; years.push(ms[i].year); }
+  years.reverse();
+  for (i = 0; i < years.length; i++) {
+    var y = years[i], open = view.archYear === y;
+    h += '<div class="card"><h2 class="fold" data-act="arch-year" data-id="' + esc(y) + '">' +
+         esc(window.hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
+         '</span></h2>';
+    if (open) {
+      var mine = ms.filter(function (m) { return m.year === y; }).reverse();
+      h += mine.map(function (m) {
+        var c = chainOf(m.key) || {};
+        return '<div class="amon"><div class="amn">' + esc(m.name) + '</div>' +
+               monthBarsHTML(c, m.name) + '</div>';
+      }).join('');
     }
-    c = chainOf(m.key) || {};
-    h += '<li data-act="month-goto" data-id="' + esc(m.key) + '">' +
-         '<span class="ico">' + iconFor('archive') + '</span>' +
-         '<span class="nm">' + esc(m.name) + '</span>' +
-         '<span class="tag">' + esc(monthGreg(m.key)) + '</span>' +
-         '<span class="amt">' + money(c.tzedakah || 0) + '</span></li>';
+    h += '</div>';
   }
-  return h + '</ul></div>' + footHTML(BACK_HOME);
+  return h + footHTML();
 }
 
+/*  ⛔ כפתור ההוספה יושב בתוך הכרטיס ⛔ ולא מתחתיו — ⚠️ כפתור שנצמד
+ *  לכרטיס הבא אחריו נקרא כשייך לו, ⭐ ומי שמחפש «הוספת הוראה» מחפש
+ *  בתוך הוראות הקבע. */
 function ordersCardHTML() {
   var os = ordersLive();
-  if (!os.length) return '';
-  return '<div class="card"><h2>' + esc(MSG_ORDERS_TITLE) + '</h2><ul class="det">' +
-    os.map(function (o) {
+  return '<div class="card"><h2>' + esc(MSG_ORDERS_TITLE) + '</h2>' +
+    (os.length ? '<ul class="det">' + os.map(function (o) {
       return '<li data-act="order-edit" data-id="' + esc(o.client_id) + '">' +
              '<span class="ico">' + iconFor('standing') + '</span>' +
              '<span class="nm">' + esc(o.name) + '</span>' +
              '<span class="tag">' + esc('יום ' + o.day_of_month) + '</span>' +
              '<span class="amt">' + money(o.amount) + '</span></li>';
-    }).join('') + '</ul></div>';
+    }).join('') + '</ul>'
+     : '<div class="empty">' + esc(MSG_NO_ORDERS) + '</div>') +
+    '<button class="btn ghost u-mt-5" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
+    '</div>';
+}
+
+/*  ⛔ שני כרטיסי המקורות — ⚠️ אחד להכנסות ואחד לצדקה: ⭐ והם אינם
+ *  בפריסה מלאה, ⛔ לחיצה על הכותרת פותחת את רשימתו של אחד מהם.
+ *  ⚠️ **והשורות נגררות לשינוי סדר** — ⭐ הסדר הוא מה שהזרימה מציעה בו,
+ *  ⛔ ומי שנותן תמיד באותו אופן רוצה אותו ראשון. */
+function lookupCardHTML(kind, title, dflt) {
+  var open = view.lookOpen === kind;
+  var rows = open ? lookupRows(kind) : [];
+  var labels = open && !rows.length ? dflt : null;
+  return '<div class="card"><h2 class="fold" data-act="look-toggle" data-id="' + esc(kind) + '">' +
+    esc(title) + '<span class="st">' + esc(open ? '⌃' : '⌄') + '</span></h2>' +
+    (!open ? '' :
+      '<ul class="det drag" data-kind="' + esc(kind) + '">' +
+      (labels ? labels.map(function (x) {
+        return '<li><span class="ico">' + iconFor('other') + '</span>' +
+               '<span class="nm">' + esc(x) + '</span></li>';
+      }).join('')
+      : rows.map(function (r) {
+        return '<li data-act="look-edit" data-id="' + esc(r.client_id) + '">' +
+               '<span class="grip" aria-hidden="true">⠿</span>' +
+               '<span class="nm">' + esc(r.label) + '</span></li>';
+      }).join('')) + '</ul>' +
+      '<button class="btn ghost u-mt-5" data-act="look-add" data-id="' + esc(kind) + '">' +
+      esc(MSG_WAY_NEW) + '</button>') +
+    '</div>';
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -4077,12 +3687,56 @@ var FLOW_INC = ['amount', 'desc', 'method', 'date'];
 var SRC_DEFAULT = ['מזומן', 'ביט', 'אשראי מענדי', 'אשראי חני', 'העברה', 'אחר'];
 var METHOD_DEFAULT = ['העברה ישירה', 'ביט ופייבוקס', 'מזומן', 'צ׳קים'];
 var CAT_LIST = ['לאחרים', K_CAT_SELF];
+/*  ⛔ אופן החיוב של הוראת קבע הוא אחד משניים ⛔ ואינו רשימת המקורות —
+ *  ⚠️ הוראה מחויבת בכרטיס או בהעברה, ⭐ ואין דרך שלישית: ⛔ רשימת
+ *  המקורות נערכת בהגדרות, והיא של התנועות ⛔ ולא של ההוראות. */
+var ORDER_METHODS = ['אשראי', 'העברה'];
 
+/*  ⛔ שורות המקור של סוג אחד, בסדר שנקבע — ⚠️ והמיון הוא `sort`:
+ *  ⭐ הוא מה שהגרירה כותבת, ⛔ ואין סדר שני. */
+function lookupRows(kind) {
+  return kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
+    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+}
 function lookupList(kind, dflt) {
-  var l = kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
-    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); })
-    .map(function (r) { return r.label; });
+  var l = lookupRows(kind).map(function (r) { return r.label; });
   return l.length ? l : dflt;
+}
+/*  ⛔ ברירות המחדל מתממשות לשורות בפעולת המשתמש הראשונה ⛔ ולא בעלייה —
+ *  ⚠️ עריכה וגרירה דורשות שורה עם מזהה, ⭐ ורשימת נפילה-חזרה אין לה אחד:
+ *  ⛔ וכתיבה בזמן רינדור הייתה כותבת במכשיר שרק קורא. */
+function lookupSeed(kind, dflt) {
+  if (lookupRows(kind).length) return;
+  for (var i = 0; i < dflt.length; i++)
+    localPut('k_lookups', { client_id: newClientId(), kind: kind, label: dflt[i],
+                            sort: i + 1, updated_at: Date.now(), deleted: false });
+  pushSoon();
+  cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
+}
+/*  ⛔ הסדר נכתב מחדש לכל השורות ⛔ ולא לזו שזזה — ⚠️ שתי שורות באותו
+ *  `sort` הן סדר שאיש לא הכריע בו, ⭐ ומיזוג בין מכשירים מקבע אותו.
+ *  ⚠️ **והקלט הוא הסדר הסופי שב-DOM** — ⛔ ולא צמד «מאיפה לאן»:
+ *  ⭐ גרירה אחת עוברת על פני כמה שורות, ⛔ וצמד מתאר את צעדה האחרון בלבד.
+ *  ⛔ **וסדר שאינו מכיל בדיוק את כל השורות נדחה** — ⚠️ מזהה שנשמט היה
+ *  מוחק את סדרה של שורה שלמה. */
+function lookupReorder(kind, ids) {
+  var rows = lookupRows(kind), by = {}, out = [], i, changed = false;
+  for (i = 0; i < rows.length; i++) by[String(rows[i].client_id)] = rows[i];
+  for (i = 0; i < ids.length; i++) if (by[String(ids[i])]) out.push(by[String(ids[i])]);
+  if (out.length !== rows.length) return false;
+  for (i = 0; i < out.length; i++) if (+out[i].sort !== i + 1) changed = true;
+  if (!changed) return false;
+  for (i = 0; i < out.length; i++) {
+    out[i].sort = i + 1;
+    out[i].updated_at = Date.now();
+    localPut('k_lookups', out[i]);
+  }
+  pushSoon();
+  /*  ⛔ שינוי ברשימות מקדם את עידן הרשימות — ⚠️ הכתיבה עוברת בנקודת
+   *  המעבר האחת לענן, ⭐ והיא מקדמת את אות הפולינג: ⛔ בלעדיה מכשיר אחר
+   *  אינו לומד שהסדר השתנה עד המשיכה הבאה במקרה. */
+  cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
+  return true;
 }
 
 /*  ⛔ ההשלמה נגזרת מהפירוטים שכבר נרשמו — ⚠️ distinct לפי תדירות:
@@ -4117,10 +3771,13 @@ var STEP_META = {
   date:     { lab: 'תאריך',   ic: 'date' }
 };
 
-function flowScreenHTML() {
+/*  ⛔ הזרימה חיה בדיאלוג ⛔ ואינה מסך — ⚠️ הדיאלוג מתחלף במקומו בכל שלב,
+ *  ⭐ ומסך הבית נשאר ברקע: ⛔ מסך מלא לכל שלב מוחק את ההקשר שממנו הגיעו.
+ *  ⚠️ **ומסך גרירת המטבע נשאר מסך מלא** — ⭐ הוא האישור עצמו ⛔ ולא שדה. */
+function flowBodyHTML() {
   var steps = flowSteps(), key = steps[view.step], d = view.draft;
   var meta = STEP_META[key] || STEP_META.amount;
-  var h = '<div class="flow ksave">' + brandHTML() +
+  var h = '<div class="ksave">' +
     '<div class="fhd"><span class="fic">' + iconFor(meta.ic) + '</span>' +
     '<h2>' + esc(meta.lab) + '</h2></div>';
 
@@ -4140,27 +3797,38 @@ function flowScreenHTML() {
     var list = key === 'source' ? lookupList('source', SRC_DEFAULT)
                                 : lookupList('method', METHOD_DEFAULT);
     h += '<div class="opts">' +
-      list.map(function (s) {
-        var on = (key === 'source' ? d.method : d.method) === s;
-        return '<button type="button" class="opt' + (on ? ' on' : '') +
-               '" data-act="flow-pick" data-k="method" data-v="' + esc(s) + '">' +
-               esc(s) + '</button>';
+      list.map(function (x) {
+        return '<button type="button" class="opt' + (d.method === x ? ' on' : '') +
+               '" data-act="flow-pick" data-k="method" data-v="' + esc(x) + '">' +
+               esc(x) + '</button>';
       }).join('') + '</div>';
   } else if (key === 'category') {
-    h += '<div class="opts">' + CAT_LIST.map(function (s) {
-      return '<button type="button" class="opt' + (d.category === s ? ' on' : '') +
-             '" data-act="flow-pick" data-k="category" data-v="' + esc(s) + '">' +
-             esc(s) + '</button>';
+    h += '<div class="opts">' + CAT_LIST.map(function (x) {
+      return '<button type="button" class="opt' + (d.category === x ? ' on' : '') +
+             '" data-act="flow-pick" data-k="category" data-v="' + esc(x) + '">' +
+             esc(x) + '</button>';
     }).join('') + '</div>';
   } else if (key === 'date') {
     h += '<div class="fld"><label for="f-date">תאריך</label>' +
       '<input id="f-date" type="date" value="' + esc(d.entry_date) + '">' +
       '<div class="sml" id="f-hdate">' + esc(hebLabel(d.entry_date)) + '</div></div>';
   }
+  /*  ⛔ שני הכפתורים יושבים **בתוך** היקף ה-`ksave` ⛔ ולא בתחתית המיכל —
+   *  ⚠️ `ksKey` מטפס מהשדה אל ההיקף ומחפש בתוכו: ⭐ כפתור שמחוצה לו
+   *  נראה זהה ⛔ ואינו עונה למקש. */
+  return h + '<div class="frow">' +
+    '<button class="btn ghost" data-act="flow-back" data-kesc>' + esc(MSG_BACK) + '</button>' +
+    '<button class="btn" data-act="flow-next" data-ksave>' +
+    esc(view.step === flowSteps().length - 1 ? 'אישור' : 'המשך') + '</button></div></div>';
+}
 
-  h += '<button class="btn" data-act="flow-next" data-ksave>' +
-       (view.step === steps.length - 1 ? 'אישור' : 'המשך') + '</button>';
-  return h + footHTML(BACK_FLOW) + '</div>';
+/*  ⛔ הדיאלוג נפתח באותו מיכל בכל שלב — ⚠️ `openModal` מחליף את תוכנו
+ *  ⛔ ואינו סוגר אותו: ⭐ וזו ההתחלפות במקום שהמשתמש רואה.
+ *  ⚠️ **והמיקוד נכנס לשדה הראשון** — ⭐ שדה שנבנה מחדש מאבד אותו. */
+function flowOpen() {
+  openModal('', flowBodyHTML(), '');
+  var el = kQ('#modal-body input');
+  if (el) el.focus();
 }
 
 /*  ⛔ הרשומה נושאת תאריך כמחרוזת ISO — ⚠️ וצרכן התצוגה מקבל `Date`:
@@ -4173,10 +3841,9 @@ function hebLabel(iso) {
 function flowStart(kind) {
   view.flow = kind;
   view.step = 0;
-  view.screen = 'flow';
   view.draft = { amount: null, description: '', method: '', category: '',
                  entry_date: new Date().toISOString().slice(0, 10) };
-  kRender();
+  flowOpen();
 }
 
 function flowCollect() {
@@ -4279,20 +3946,33 @@ function coinReturn() {
 }
 
 /*  ⛔ הרגישות עוברת כאן בלבד — ⚠️ הצליל נוצר ב-`AudioContext`:
- *  ⭐ אין קובץ שמע, ⛔ ואין טעינה מהרשת. */
+ *  ⭐ אין קובץ שמע, ⛔ ואין טעינה מהרשת.
+ *  ⛔ **והצליל הוא שקשוק מטבעות** — ⚠️ שלושה נקישים קצרים בגבהים
+ *  נבדלים, ⭐ כל אחד שני חלקיים לא-הרמוניים: ⛔ סינוס יחיד ארוך נשמע
+ *  כצפצוף מכשיר ⛔ ולא כמתכת שנופלת. */
+var COIN_TAPS = [[1850, 0], [2480, 0.07], [2130, 0.15]];
 function sensoryFire() {
   if (!APP_SENSORY.on) return;
-  try { if (navigator.vibrate) navigator.vibrate(30); } catch (e) {}
+  try { if (navigator.vibrate) navigator.vibrate([18, 26, 14, 30, 22]); } catch (e) {}
   try {
     var A = window.AudioContext || window.webkitAudioContext;
     if (!A) return;
-    var ctx = new A(), o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = 'sine'; o.frequency.value = 880;
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(); o.stop(ctx.currentTime + 0.38);
+    var ctx = new A(), i, j;
+    for (i = 0; i < COIN_TAPS.length; i++) {
+      /*  ⛔ שני חלקיים ביחס שאינו שלם — ⚠️ זה מה שנותן למתכת את צלילה:
+       *  ⭐ יחס שלם נשמע כתו מוזיקלי, ⛔ ולא כנקישה. */
+      for (j = 0; j < 2; j++) {
+        var t0 = ctx.currentTime + COIN_TAPS[i][1];
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.value = COIN_TAPS[i][0] * (j ? 2.41 : 1);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(j ? 0.06 : 0.14, t0 + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.19);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); o.stop(t0 + 0.2);
+      }
+    }
   } catch (e) { console.warn('[snd] הצליל לא נוצר', e); }
 }
 
@@ -4308,15 +3988,17 @@ function confetti() {
    *  כאלמנט, ⭐ ושלושת הערכים נקבעים עליו: ⛔ סגנון מוטבע כאן היה
    *  תשעים אתרים שאין להם שני מופעים זהים. */
   var i, e;
-  for (i = 0; i < 90; i++) {
+  for (i = 0; i < 120; i++) {
     e = document.createElement('i');
-    e.style.setProperty('--cf-x', Math.round(Math.random() * 100) + '%');
-    e.style.setProperty('--cf-y', Math.round(Math.random() * 40) + '%');
+    /*  ⛔ הפתיתים נדגמים על כל המסך — ⚠️ ומרכזם מסביב לאמצעו: ⭐ שורש
+     *  של אקראי מרכך את הקצוות, ⛔ ופיזור אחיד נראה כרעש. */
+    e.style.setProperty('--cf-x', Math.round(50 + (Math.random() - 0.5) * 96) + '%');
+    e.style.setProperty('--cf-y', Math.round(50 + (Math.random() - 0.5) * 92) + '%');
     e.style.setProperty('--cf-c', 'var(' + CONF_COLORS[i % CONF_COLORS.length] + ')');
     box.appendChild(e);
   }
   document.body.appendChild(box);
-  setTimeout(function () { box.remove(); }, 1300);
+  setTimeout(function () { box.remove(); }, 1600);
 }
 
 function coinSwallow() {
@@ -4363,14 +4045,10 @@ function flowCommit() {
   };
   localPut('k_entries', row);
   view.monthKey = monthKeyOf(row.entry_date);
-  var before = chainOf(view.monthKey);
   pushSoon();
   view.screen = 'done';
   view.doneInc = isInc;
   kRender();
-  if (goalShown(before || {})) {
-    toast(MSG_MONTH_DONE, 4000, 'good');
-  }
 }
 
 /*  ⛔ הכיתוב יושב בתחתית המסך והקונפטי בחציו העליון — ⚠️ הם אינם
@@ -4381,8 +4059,8 @@ function doneScreenHTML() {
   var isInc = view.doneInc;
   return '<div class="donewrap"><div class="done">' +
     '<div class="line1">' + esc(isInc ? MSG_OPENER : MSG_TZ_BLESS) + '</div>' +
-    '<div class="line2">' + esc('נרשם · ' + (isInc ? 'הכנסות החודש ' : 'נשאר לפלעדזש החודש ')) +
-    money(isInc ? (c.income || 0) : (c.short || 0)) + '</div>' +
+    '<div class="line2">' + esc('נרשם · ' + (isInc ? MSG_SUM_INCOME + ' ' : MSG_LEFT_SUM)) +
+    (isInc ? esc(money(c.income || 0)) : signed(c.pledgeLeft || 0)) + '</div>' +
     '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div></div>' +
     footHTML('');
 }
@@ -4509,8 +4187,22 @@ function orderNewVersion(o, patch, fromMonth) {
 /*  ⛔ ארבעת השדות של הוראת קבע — ⚠️ סכום · פירוט · אופן · תאריך:
  *  ⭐ אותם ארבעה בהוספה ובעריכה, ⛔ ושני טפסים לאותה ישות הם שני
  *  מקומות לתקן, ⚠️ ואחד מהם יישכח. */
+/*  ⛔ חודשי הבחירה נגזרים מהשרשרת ומהחודש הנוכחי קדימה — ⚠️ ואין רשימת
+ *  חודשים מוקלדת: ⭐ היא הייתה נגמרת, ⛔ ומאותו יום לא היה מה לבחור.
+ *  ⚠️ **והטווח קדימה הוא שנה** — ⭐ הוראה נכנסת מהחודש שנבחר ואילך,
+ *  ⛔ ומי שמתכנן רחוק מזה יזין אותה כשתגיע. */
+var ORDER_AHEAD = 13;
+function monthOptions(extra) {
+  var seen = {}, out = [], ms = monthsSorted(), i, k = nowMonthKey();
+  for (i = 0; i < ms.length; i++) seen[ms[i].key] = true;
+  for (i = 0; i < ORDER_AHEAD && k; i++) { seen[k] = true; var n = nextMonthOf(k); k = n ? n.key : ''; }
+  if (extra) seen[extra] = true;
+  for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
+  return out.sort();
+}
 function orderFormHTML(o) {
-  var list = lookupList('method', METHOD_DEFAULT);
+  var list = ORDER_METHODS;
+  var from = (o && o.valid_from_month) || nowMonthKey();
   return '<div class="ksave">' +
     '<div class="fld"><label for="o-amt">סכום</label>' +
     '<input id="o-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
@@ -4525,7 +4217,15 @@ function orderFormHTML(o) {
     }).join('') + '</select></div>' +
     '<div class="fld"><label for="o-day">תאריך</label>' +
     '<input id="o-day" type="text" inputmode="numeric" autocomplete="off" value="' +
-    esc(o ? o.day_of_month : '') + '"></div></div>';
+    esc(o ? o.day_of_month : '') + '"></div>' +
+    /*  ⛔ ההוראה נכנסת מהחודש שנבחר ואילך ⛔ ולא רטרואקטיבית — ⚠️ מופעים
+     *  של חודשים שקדמו לו כבר נספרו, ⭐ ושינוי בדיעבד היה מזיז «סכום
+     *  שנשאר» של חודש סגור. */
+    '<div class="fld"><label for="o-from">' + esc(MSG_ORDER_FROM) + '</label>' +
+    '<select id="o-from">' + monthOptions(o && o.valid_from_month).map(function (k) {
+      return '<option value="' + esc(k) + '"' + (k === from ? ' selected' : '') + '>' +
+             esc(monthTitle(monthByKey(k))) + '</option>';
+    }).join('') + '</select></div></div>';
 }
 
 /*  ⛔ הקריאה עוברת כאן פעם אחת — ⚠️ והיא מחזירה `null` כששדה אינו
@@ -4533,15 +4233,18 @@ function orderFormHTML(o) {
  *  בלי שהמשתמש יודע למה. */
 function orderRead() {
   var a = kQ('#o-amt'), nm = kQ('#o-name'), me = kQ('#o-method'), dy = kQ('#o-day');
-  if (!a || !nm || !me || !dy) { uiNoDialog('orderRead', 'o-amt'); return null; }
+  var fr = kQ('#o-from');
+  if (!a || !nm || !me || !dy || !fr) { uiNoDialog('orderRead', 'o-amt'); return null; }
   return { amount: readNum(a, null), name: nm.value.trim(),
-           method: me.value, day_of_month: readNum(dy, null) };
+           method: me.value, day_of_month: readNum(dy, null),
+           valid_from_month: fr.value };
 }
 function orderValid(p) {
   if (!p) return MSG_FILL_ALL;
   if (p.amount === null || p.amount <= EPS) return MSG_NEED_AMOUNT;
   if (!p.name) return MSG_NEED_DESC;
   if (p.day_of_month === null || p.day_of_month < 1 || p.day_of_month > 30) return MSG_NEED_DAY;
+  if (!p.valid_from_month) return MSG_FILL_ALL;
   return '';
 }
 
@@ -4550,6 +4253,27 @@ function orderValid(p) {
    ══════════════════════════════════════════════════════════════════════════ */
 /*  ⛔ השנים נגזרות מהחודשים שבשרשרת ומהשורות שכבר יש — ⚠️ ואין רשימת
  *  שנים מוקלדת: ⭐ הקודמת הייתה נגמרת, ⛔ ומאותו יום לא היה מה לבחור. */
+function lookupById(id) {
+  var l = kLive(MIRROR.k_lookups), i;
+  for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, id)) return l[i];
+  return null;
+}
+/*  ⛔ שדה אחד בהוספה ובעריכה — ⚠️ שני טפסים לאותה ישות הם שני מקומות
+ *  לתקן, ⭐ ואחד מהם יישכח. */
+function lookupFormHTML(r) {
+  return '<div class="ksave"><div class="fld"><label for="l-label">' +
+    esc(MSG_WAY_LABEL) + '</label>' +
+    '<input id="l-label" type="text" autocomplete="off" value="' +
+    esc(r ? r.label : '') + '"></div></div>';
+}
+/*  ⛔ כפתור השמירה נבנה כאן פעם אחת — ⚠️ ההוספה והעריכה חולקות אותו:
+ *  ⭐ שני ליטרלים לאותה פעולה הם שני מקומות שבהם `data-ksave` יכול
+ *  להישמט, ⛔ ואז המקש אינו שומר במסך אחד מהשניים. */
+function lookupFootHTML(r, kind) {
+  return '<button class="btn" data-act="look-save" data-id="' + esc(r ? r.client_id : '') +
+    '" data-k="' + esc(kind) + '" data-ksave>שמור</button>';
+}
+
 function pledgeYears() {
   var seen = {}, out = [], ms = monthsSorted(), l = kLive(MIRROR.k_pledges), i;
   for (i = 0; i < ms.length; i++) seen[ms[i].year] = true;
@@ -4566,7 +4290,7 @@ function pledgeCardHTML() {
     ys.map(function (y) {
       return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
              '<span class="ico">' + iconFor('amount') + '</span>' +
-             '<span class="nm">' + esc(window.ysHebYearLabelFull(y)) + '</span>' +
+             '<span class="nm">' + esc(window.hebYearLabelFull(y)) + '</span>' +
              '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
     }).join('') + '</ul></div>';
 }
@@ -4575,32 +4299,12 @@ function settingsScreenHTML() {
   return brandHTML() + tabHeadHTML(MSG_SETTINGS_TITLE) +
     pledgeCardHTML() +
     ordersCardHTML() +
-    '<button class="btn ghost" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
-    '<div class="card"><h2>' + esc(MSG_SENSORY) + '</h2>' +
-    '<button class="opt' + (APP_SENSORY.on ? ' on' : '') + '" data-act="sensory-toggle">' +
-    esc(APP_SENSORY.on ? 'פועל' : 'כבוי') + '</button></div>' +
-    '<div class="card"><h2>מקורות</h2><ul class="det">' +
-    lookupList('source', SRC_DEFAULT).map(function (s) {
-      return '<li><span class="ico">' + iconFor('other') + '</span>' +
-             '<span class="nm">' + esc(s) + '</span></li>';
-    }).join('') + '</ul></div>' +
-    monthsChartHTML() +
-    footHTML(BACK_HOME);
-}
-
-/*  ⛔ הסדרה נבנית מהרכיב המשותף ⛔ ולא מספרייה — ⚠️ פס יחיד ופס בסדרה
- *  הם רכיב אחד, ⭐ ו-`barChart` מחזיר מחרוזת ריקה בפחות משתי נקודות:
- *  ⛔ חודש אחד אינו סדרה. */
-function monthsChartHTML() {
-  var rows = monthsSorted().map(function (m) {
-    var c = chainOf(m.key) || {};
-    var got = Math.max(0, (c.tzedakah || 0) + Math.max(0, c.prevBalance || 0));
-    var tgt = Math.max(0, c.chumash || 0);
-    return { lab: m.name, val: got, tgt: tgt, end: money(got),
-             txt: m.name + ' · ' + money(got) + ' מתוך ' + money(tgt) };
-  });
-  var h = barChart(rows, MSG_MONTHS_CHART);
-  return h ? '<div class="card"><h2>' + esc(MSG_MONTHS_CHART) + '</h2>' + h + '</div>' : '';
+    /*  ⛔ שני אוצרות מילים נפרדים לאותו שלב — ⚠️ «אופן» בשני המסלולים,
+     *  ⭐ והמפתח שמאחוריו נבדל: ⛔ ואין לאחד אותם לרשימה אחת —
+     *  ⚠️ רשימה מעורבת מציעה בהכנסה את מה ששייך לצדקה. */
+    lookupCardHTML('method', MSG_WAY_INCOME, METHOD_DEFAULT) +
+    lookupCardHTML('source', MSG_WAY_TZEDAKAH, SRC_DEFAULT) +
+    footHTML();
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -4611,14 +4315,12 @@ function kRender() {
   if (!root) { uiNoDialog('kRender', 'app'); return; }
   var fab = kQ('#fab'), tb = kQ('#tabbar');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
-  else if (view.screen === 'flow') root.innerHTML = flowScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
-  else if (view.screen === 'import') root.innerHTML = importScreenHTML();
   else if (view.screen === 'archive') root.innerHTML = archiveScreenHTML();
   else if (view.screen === 'settings') root.innerHTML = settingsScreenHTML();
   var onMonth = view.screen === 'month';
-  /*  ⛔ הסרגל עולה בארבע הלשוניות ⛔ ואינו עולה בזרימה — ⚠️ מסך שהוא
+  /*  ⛔ הסרגל עולה בשלוש הלשוניות ⛔ ואינו עולה בזרימה — ⚠️ מסך שהוא
    *  שדה אחד אינו מקום לנווט ממנו, ⭐ והניווט באמצעו מאבד את הטיוטה. */
   var onTab = TABS.some(function (t) { return t.k === view.screen; });
   if (fab) fab.classList.toggle('hidden', !onMonth);
@@ -4639,16 +4341,22 @@ var DOM_ACTIONS = {
   /*  ⛔ הבחירה בין שני הרישומים היא דיאלוג עם שני כפתורים מתויגים —
    *  ⚠️ ולא «כן/לא»: ⭐ `ask` נותן «ביטול» לצד השני, ⛔ ומי שלוחץ אינו
    *  יודע שהוא בחר הכנסה. */
+  /*  ⛔ הבחירה בין שני הרישומים היא שני כפתורים מתויגים ⛔ ובלי כותרת —
+   *  ⚠️ האייקון אומר מה נבחר: ⭐ ארנק להכנסה וקופה לצדקה, ⛔ בדיוק אותם
+   *  ציורים שהפירוט ומסך האישור מציגים. */
   'add-open': function () {
-    openModal(MSG_WHAT_TO_ADD, '',
-      '<button class="btn ghost" data-act="add-income">' + esc(MSG_ADD_INCOME) + '</button>' +
-      '<button class="btn" data-act="add-tzedakah">' + esc(MSG_ADD_TZEDAKAH) + '</button>');
+    openModal('', '<div class="pick">' +
+      '<button class="pk" data-act="add-income">' +
+      '<span class="pi">' + assetIcon('asset-wallet') + '</span>' +
+      esc(MSG_ADD_INCOME) + '</button>' +
+      '<button class="pk" data-act="add-tzedakah">' +
+      '<span class="pi">' + assetIcon('asset-kupa') + '</span>' +
+      esc(MSG_ADD_TZEDAKAH) + '</button></div>', '');
   },
-  'add-income':   function () { closeModal(); flowStart('income'); },
-  'add-tzedakah': function () { closeModal(); flowStart('tzedakah'); },
-  /*  ⛔ הניווט בין החודשים בלי הגבלה — ⚠️ קדימה ואחורה, ⭐ והמפתח הוא
-   *  `key` ⛔ ולא `client_id`: ⚠️ לחודש אין שורה, ⭐ ולכן אין לו מזהה
-   *  רשומה — ⛔ והשדה שנקרא היה `undefined`, והניווט לא זז. */
+  /*  ⛔ הדיאלוג אינו נסגר בין הבחירה לשלב הראשון — ⚠️ הוא מתחלף במקומו:
+   *  ⭐ ומסך הבית נשאר ברקע, ⛔ כמו בדיאלוג הראשון. */
+  'add-income':   function () { flowStart('income'); },
+  'add-tzedakah': function () { flowStart('tzedakah'); },
   'month-prev': function () {
     var p = prevMonthOf(view.monthKey);
     if (p) { view.monthKey = p.key; view.screen = 'month'; kRender(); }
@@ -4657,26 +4365,29 @@ var DOM_ACTIONS = {
     var nx = nextMonthOf(view.monthKey);
     if (nx) { view.monthKey = nx.key; view.screen = 'month'; kRender(); }
   },
-  'month-goto': function (el) {
-    view.monthKey = el.dataset.id; view.screen = 'month'; kRender();
-  },
   'tab-go': function (el) { view.screen = el.dataset.id; kRender(); },
-  'back-home': function () { view.screen = 'month'; kRender(); },
   'flow-next': function () {
     flowCollect();
     var bad = flowValid();
     if (bad) { toast(bad, 4000, 'bad'); return; }
-    if (view.step === flowSteps().length - 1) { view.screen = 'slide'; kRender(); return; }
+    if (view.step === flowSteps().length - 1) {
+      closeModal();
+      view.screen = 'slide';
+      kRender();
+      return;
+    }
     view.step++;
-    kRender();
+    flowOpen();
   },
+  /*  ⛔ החזרה מהשלב הראשון פותחת את בורר הסוג — ⚠️ ולא סוגרת הכול:
+   *  ⭐ הדיאלוג מתחלף בשני הכיוונים. */
   'flow-back': function () {
-    if (view.screen === 'slide') { view.screen = 'flow'; kRender(); return; }
-    if (view.step === 0) { view.screen = 'month'; view.flow = null; kRender(); return; }
+    if (view.screen === 'slide') { view.screen = 'month'; kRender(); flowOpen(); return; }
+    if (view.step === 0) { view.flow = null; DOM_ACTIONS['add-open'](); return; }
     view.step--;
-    kRender();
+    flowOpen();
   },
-  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; kRender(); },
+  'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
   'flow-ac': function (el) {
     var f = kQ('#f-desc');
     if (!f) { uiNoDialog('flow-ac', 'f-desc'); return; }
@@ -4779,7 +4490,7 @@ var DOM_ACTIONS = {
   'pledge-edit': function (el) {
     var y = String(el.dataset.id || '');
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
-    openModal(MSG_PLEDGE_EDIT + window.ysHebYearLabelFull(y),
+    openModal(MSG_PLEDGE_EDIT + window.hebYearLabelFull(y),
       '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
@@ -4804,10 +4515,52 @@ var DOM_ACTIONS = {
       return Promise.resolve();
     }, MSG_SAVED_LOCAL);
   },
-  'sensory-toggle': function () {
-    APP_SENSORY.on = !APP_SENSORY.on;
-    cfgWrite('sensory', APP_SENSORY.on);
+  /*  ⛔ הפתיחה זורעת את ברירות המחדל — ⚠️ הרשימה שנראתה עד כה היא
+   *  נפילה-חזרה בלי מזהים, ⭐ ועריכה וגרירה דורשות שורה. */
+  /*  ⛔ השנה נפתחת ונסגרת ⛔ ואחת בכל פעם — ⚠️ שתי שנים פתוחות הן
+   *  רשימה ארוכה בדיוק כמו זו שהקיבוץ בא למנוע. */
+  'arch-year': function (el) {
+    view.archYear = view.archYear === el.dataset.id ? null : el.dataset.id;
     kRender();
+  },
+  'look-toggle': function (el) {
+    var k = el.dataset.id;
+    view.lookOpen = view.lookOpen === k ? null : k;
+    if (view.lookOpen) lookupSeed(k, k === 'source' ? SRC_DEFAULT : METHOD_DEFAULT);
+    kRender();
+  },
+  'look-add': function (el) {
+    var k = el.dataset.id;
+    openModal(MSG_WAY_NEW, lookupFormHTML(null), lookupFootHTML(null, k));
+  },
+  'look-edit': function (el) {
+    var r = lookupById(el.dataset.id);
+    if (!r) { uiNoDialog('look-edit', el.dataset.id); return; }
+    openModal(MSG_EDIT + ' · ' + r.label, lookupFormHTML(r), lookupFootHTML(r, r.kind));
+  },
+  'look-save': function (el) {
+    var inp = kQ('#l-label');
+    if (!inp) { uiNoDialog('look-save', 'l-label'); return; }
+    var txt = inp.value.trim(), id = el.dataset.id, kind = el.dataset.k;
+    if (!txt) { toast(MSG_NEED_LABEL, 4000, 'bad'); return; }
+    /*  ⛔ שני מקורות באותו שם הם מקור אחד — ⚠️ הכיווץ במודול המשותף,
+     *  ⭐ והזהות היא התווית: ⛔ והשורה שנערכת אינה מתנגשת בעצמה. */
+    var others = lookupRows(kind).filter(function (x) { return !idEq(x.client_id, id); })
+      .map(function (x) { return x.label; });
+    if (uniqHas(others, txt)) { toast(MSG_WAY_DUP, 4000, 'bad'); return; }
+    return runSave(function () {
+      var r = id ? lookupById(id) : null;
+      if (r) { r.label = txt; }
+      else r = { client_id: newClientId(), kind: kind, label: txt,
+                 sort: lookupRows(kind).length + 1, deleted: false };
+      r.updated_at = Date.now();
+      localPut('k_lookups', r);
+      pushSoon();
+      cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
+      closeModal();
+      kRender();
+      return Promise.resolve();
+    }, MSG_SAVED_LOCAL);
   },
   'done-close': function () { view.screen = 'month'; view.flow = null; kRender(); },
   'sw-reload': function () { swApply(); }
@@ -4821,6 +4574,9 @@ var DOM_ACTIONS = {
    ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener('click', function (e) {
   if (modalBackdrop(e)) return;
+  /*  ⛔ לחיצה על ידית הגרירה אינה פותחת את העורך — ⚠️ היא סופה של
+   *  גרירה, ⭐ ולא בחירה בשורה. */
+  if (e.target.closest('.grip')) return;
   var el = e.target.closest('[data-act]');
   if (!el) return;
   var fn = DOM_ACTIONS[el.dataset.act];
@@ -4833,6 +4589,50 @@ document.addEventListener('click', function (e) {
 document.addEventListener('keydown', function (e) {
   if (ksKey(e)) return;
   modalEsc(e);
+});
+
+/*  ⛔ הגרירה על אירועי מצביע ⛔ ולא על גרירת HTML5 — ⚠️ **במגע היא אינה
+ *  קיימת כלל**: ⭐ נמדד בדפדפן — `dragstart` · `dragover` ו-`drop` לא
+ *  נורו אף פעם באצבע, ⛔ ורק `pointer*` הגיעו; ⚠️ ואירועי מצביע חיים
+ *  בעכבר ובאצבע כאחד.
+ *  ⛔ **והגרירה מתחילה מהידית בלבד** — ⚠️ שורה שכולה נגררת חוטפת את
+ *  גלילת המסך, ⭐ ו-`touch-action` שמבטל אותה על כל השורה נועל את הדף.
+ *  ⚠️ **והם באצלה מ-`document` כמו האחרים** — ⭐ הרשימה נבנית מחדש בכל
+ *  רינדור, ⛔ ומאזין פר-שורה היה מת איתה. */
+var DRAG = { el: null, list: null, kind: null, moved: false };
+
+document.addEventListener('pointerdown', function (e) {
+  var g = e.target.closest && e.target.closest('.det.drag > li .grip');
+  if (!g) return;
+  var li = g.closest('li');
+  DRAG.el = li; DRAG.list = li.parentNode;
+  DRAG.kind = DRAG.list.dataset.kind; DRAG.moved = false;
+  li.classList.add('dragging');
+  /*  ⛔ המצביע נלכד על הידית — ⚠️ בלעדיו אצבע שיוצאת מגבול האלמנט
+   *  מפסיקה לשדר, ⭐ והגרירה נתקעת באמצע. */
+  try { g.setPointerCapture(e.pointerId); } catch (e1) {}
+  e.preventDefault();
+});
+document.addEventListener('pointermove', function (e) {
+  if (!DRAG.el) return;
+  e.preventDefault();
+  var over = document.elementFromPoint(e.clientX, e.clientY);
+  var li = over && over.closest ? over.closest('.det.drag > li') : null;
+  if (!li || li === DRAG.el || li.parentNode !== DRAG.list) return;
+  DRAG.moved = true;
+  /*  ⛔ ההזזה בעץ בזמן הגרירה — ⚠️ היא המשוב היחיד שהמשתמש מקבל:
+   *  ⭐ והחצי התחתון של שורת היעד מכניס אחריה. */
+  var r = li.getBoundingClientRect();
+  DRAG.list.insertBefore(DRAG.el, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
+});
+document.addEventListener('pointerup', function () {
+  if (!DRAG.el) return;
+  var el = DRAG.el, list = DRAG.list, kind = DRAG.kind, moved = DRAG.moved;
+  DRAG.el = null; DRAG.list = null; DRAG.kind = null; DRAG.moved = false;
+  el.classList.remove('dragging');
+  if (!moved) return;
+  var ids = [].slice.call(list.children).map(function (x) { return x.dataset.id; });
+  if (lookupReorder(kind, ids)) kRender();
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
