@@ -94,8 +94,9 @@
 
 <div id="updater">
   <div class="in">
-    <span class="u-fx-1">🔄 גרסה חדשה זמינה</span>
-    <button data-act="sw-reload">רענן</button>
+    <span>🔄 גרסה חדשה זמינה</span>
+    <button data-act="sw-apply">עדכן עכשיו</button>
+    <button class="x" data-act="sw-dismiss" aria-label="סגור">✕</button>
   </div>
 </div>
 
@@ -4563,7 +4564,8 @@ var DOM_ACTIONS = {
     }, MSG_SAVED_LOCAL);
   },
   'done-close': function () { view.screen = 'month'; view.flow = null; kRender(); },
-  'sw-reload': function () { swApply(); }
+  'sw-apply': function (el) { swApply(el); },
+  'sw-dismiss': function () { swHideUpdate(); }
 };
 
 /* ══════════════════════════════════════════════════════════════════════════

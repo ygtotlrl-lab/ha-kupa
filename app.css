@@ -394,9 +394,11 @@ main > .foot{margin-top:auto}
   padding:var(--sp-5) var(--sp-6);display:flex;align-items:center;gap:var(--sp-5);
   box-shadow:var(--shadow-lg);font-size:var(--fs-3);font-weight:500;
   max-width:520px;width:100%}
-#updater button{background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
+#updater button{margin-inline-start:auto;background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
   border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-6);font-weight:500;
   min-height:44px}
+#updater button.x{margin-inline-start:0;background:none;color:var(--on-brand);
+  opacity:var(--op-5);padding:0 var(--sp-2);font-size:var(--fs-4);min-height:auto}
 /*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
  *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
 .veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
