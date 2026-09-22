@@ -71,21 +71,24 @@
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
-<div class="veil" id="modal" role="dialog" aria-modal="true">
-  <div class="box">
-    <div class="hd" id="modal-title"></div>
-    <div class="bd" id="modal-body"></div>
-    <div class="ft" id="modal-foot"></div>
+<div id="modal" class="veil">
+  <div class="sheet ksave" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="sheet-hd">
+      <h3 id="modal-title"></h3>
+      <button class="x" data-act="modal-close" aria-label="סגירה">✕</button>
+    </div>
+    <div class="sheet-bd" id="modal-body"></div>
+    <div class="sheet-ft" id="modal-foot"></div>
   </div>
 </div>
 
-<div class="veil" id="ask" role="alertdialog" aria-modal="true">
-  <div class="box">
-    <div class="hd" id="ask-title"></div>
-    <div class="bd" id="ask-body"></div>
-    <div class="ft">
-      <button class="btn ghost" data-act="ask-no">ביטול</button>
-      <button class="btn" data-act="ask-yes" id="ask-yes">אישור</button>
+<div id="ask" class="veil">
+  <div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="ask-title">
+    <div class="sheet-hd"><h3 id="ask-title"></h3></div>
+    <div class="sheet-bd" id="ask-body"></div>
+    <div class="sheet-ft">
+      <button data-act="ask-no">ביטול</button>
+      <button class="danger" data-act="ask-yes" id="ask-yes">אישור</button>
     </div>
   </div>
 </div>
@@ -4409,6 +4412,10 @@ var DOM_ACTIONS = {
    *  «לא», ⭐ והכפתורים הם המסלול שעונה «כן». */
   'ask-yes': function () { closeAsk(true); },
   'ask-no':  function () { closeAsk(false); },
+  /*  ⛔ כפתור הסגירה שבכותרת המודאל — ⚠️ הרקע ו-`Escape` סוגרים אותו
+   *  אף הם, ⭐ והכפתור הוא המסלול הנראה: ⛔ משטח שאין בו כפתור
+   *  סגירה מונע מהמשתמש לדחות. */
+  'modal-close': function () { closeModal(); },
   'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.style.display = 'none'; },
   'pend-alert-ok':       function () { _pendAlertDismissed = Date.now(); pendRenderAlert(); },
   /*  ⛔ לחיצה על תנועה פותחת עורך ⛔ ולא מחיקה — ⚠️ המחיקה היא כפתור
