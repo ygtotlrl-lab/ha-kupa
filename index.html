@@ -242,9 +242,9 @@ function kSelfPct(rows) {
 
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות, ⭐ ולכן
  *  חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו.
- *  ⛔ **וחודש שטרם הגיע אינו נושא יתרת פלעדזש** — ⚠️ הוא מציג את הסכום
- *  השנתי שחוזר: ⭐ היתרה נקבעת מסוף מצב החודש שנסגר, ⛔ וחודש שלא נסגר
- *  אין לו מה להוריש. */
+ *  ⛔ **והחודש הבא בתור נושא את יתרת הפלעדזש ככל חודש אחר** — ⚠️ ומה
+ *  שאחריו נושא את הסכום השנתי בלבד: ⭐ היתרה נקבעת מסוף מצב החודש
+ *  שנסגר, ⛔ והבא בתור הוא היחיד שיש לו חודש כזה מאחוריו. */
 function kChain(months, opts) {
   var pledgeOf = opts.pledgeOf;
   /*  ⛔ המפתח של החודש הנוכחי — ⚠️ כל מפתח שגדול ממנו הוא חודש שטרם הגיע:
@@ -253,6 +253,9 @@ function kChain(months, opts) {
   var balance = opts.opening || 0;
   var pBalance = 0;
   var prevYear = null;
+  /*  ⛔ האם כבר עבר חודש שטרם הגיע — ⚠️ הראשון שכזה הוא הבא בתור,
+   *  ⭐ ורק מה שאחריו מאבד את היתרה. */
+  var nextSeen = false;
   var out = [], i, m;
   for (i = 0; i < months.length; i++) {
     m = months[i];
@@ -260,7 +263,11 @@ function kChain(months, opts) {
     var tzedakah = kTzedakah(m.rows);
     var chumash = kChumash(income);
     var pledge = pledgeOf(m.year);
-    var future = now !== '' && String(m.key) > now;
+    /*  ⛔ הבא בתור נושא יתרה — ⚠️ ורק מה שאחריו אינו: ⭐ הוא נגזר
+     *  מסדר השרשרת ⛔ ואינו נספר מהמפתח. */
+    var after = now !== '' && String(m.key) > now;
+    var future = after && nextSeen;
+    if (after) nextSeen = true;
 
     /*  ⛔ החומש — ⚠️ החובה הכוללת היא חומש החודש פחות היתרה שנשארה:
      *  ⭐ יתרה חיובית היא זכות ומקטינה, ⛔ ושלילית היא חוב ומגדילה. */
@@ -271,7 +278,7 @@ function kChain(months, opts) {
     balance = -chumashLeft;
 
     /*  ⛔ הפלעדזש — ⚠️ אותה צורה בדיוק, ⭐ ושני הבדלים: ⛔ היתרה מתאפסת
-     *  בראש השנה, ⚠️ וחודש שטרם הגיע אינו נושא יתרה כלל. */
+     *  בראש השנה, ⚠️ וחודש שאחרי הבא בתור אינו נושא יתרה כלל. */
     var yearTurn = prevYear !== null && String(m.year) !== prevYear;
     var pledgeOpen = (yearTurn || future) ? 0 : pBalance;
     var pledgeCarry = -pledgeOpen;
@@ -2669,9 +2676,10 @@ function mirrorBoot() { mirrorLoad(); }
 
 /* ── ERA_CFG — הדבר היחיד שנבדל בין האפליקציות ──────────────────────────── */
 /*  ⛔ העידן שהקוד הזה כותב בו — ⚠️ הוא עולה **רק בשינוי צורת שורה**:
- *  ⭐ וצורת השורה כאן לא השתנתה, ⛔ ולכן הוא בערך ההתחלתי — ⚠️ והמנגנון קיים
- *  כדי שהשינוי הבא יוכל לזרוק. */
-var DATA_ERA = 2;
+ *  ⭐ והעמודה `status` ירדה מ-`k_so_instances` (סבב 163), ⛔ ומכשיר שמחזיק
+ *  שורה מקומית שלא נדחפה היה שולח מפתח שאין לו עמודה — ⚠️ והדחיפה נופלת
+ *  ב-`42703` וחוסמת את התור. */
+var DATA_ERA = 3;
 var ERA_CFG = {
   prefix: 'k_',
   client: function () { return sb; },
@@ -3269,7 +3277,7 @@ function orderRowsPending(k, m) {
     out.push({ client_id: o.client_id, order_id: o.client_id, type: 'tzedakah',
                amount: +o.amount || 0, description: o.name, entry_date: soDate(k, o),
                category: o.category, method: o.method,
-               source: 'standing', pending: true, deleted: false });
+               source: 'standing', deleted: false });
   }
   return out;
 }
@@ -3281,7 +3289,7 @@ function instanceRows(k) {
              amount: +r.amount || 0,
              description: o2 ? o2.name : '', entry_date: soDate(k, o2),
              category: o2 ? o2.category : '', method: o2 ? o2.method : '',
-             source: 'standing', pending: r.status === 'pending', deleted: false };
+             source: 'standing', deleted: false };
   }).concat(m ? orderRowsPending(k, m) : []);
 }
 function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
@@ -3363,7 +3371,7 @@ function soEnsureInstances(monthKey) {
     if (has) continue;
     made.push({ client_id: newClientId(), standing_order_client_id: o.client_id,
                 month_key: monthKey, amount: +o.amount || 0,
-                status: 'pending', updated_at: Date.now(), deleted: false });
+                updated_at: Date.now(), deleted: false });
   }
   return made;
 }
@@ -3414,8 +3422,7 @@ function assetIcon(id) {
 }
 
 function iconFor(kind) {
-  /*  ⛔ סט קווי-מעוגל אחד, עובי 1.75 — ⚠️ ואייקון קבוע לכל מקור:
-   *  ⭐ צבע נגזר מהתפקיד ⛔ ולא מהמקור. */
+  /*  ⛔ סט קווי-מעוגל אחד, עובי 1.75 — ⚠️ ואייקון קבוע לכל מקור. */
   var p = {
     other:    'M12 4v16 M4 12h16',
     standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -3443,8 +3450,7 @@ function detailRowHTML(r) {
   var so = r.source === 'standing';
   var tag = so ? 'הו״ק' : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : ''));
   return (so ? '<li data-act="order-edit" data-id="' + esc(r.order_id || '')
-             : '<li data-act="entry-menu" data-id="' + esc(r.client_id)) + '"' +
-         (r.pending ? ' class="pend"' : '') + '>' +
+             : '<li data-act="entry-menu" data-id="' + esc(r.client_id)) + '">' +
          '<span class="ico art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
          '<span class="tag">' + esc(tag) + '</span>' +
@@ -4185,9 +4191,11 @@ function orderNewVersion(o, patch, fromMonth) {
   return next;
 }
 
-/*  ⛔ ארבעת השדות של הוראת קבע — ⚠️ סכום · פירוט · אופן · תאריך:
+/*  ⛔ ארבעת השדות של הוראת קבע — ⚠️ סכום · פירוט · אופן · יום בחודש:
  *  ⭐ אותם ארבעה בהוספה ובעריכה, ⛔ ושני טפסים לאותה ישות הם שני
- *  מקומות לתקן, ⚠️ ואחד מהם יישכח. */
+ *  מקומות לתקן, ⚠️ ואחד מהם יישכח.
+ *  ⛔ **והתווית אומרת מה השדה מקבל** — ⚠️ הערך הוא `day_of_month`, מספר
+ *  בין 1 ל-30: ⭐ «תאריך» תיאר תאריך מלא, ⛔ והכרטיס כבר אמר «יום N». */
 /*  ⛔ חודשי הבחירה נגזרים מהשרשרת ומהחודש הנוכחי קדימה — ⚠️ ואין רשימת
  *  חודשים מוקלדת: ⭐ היא הייתה נגמרת, ⛔ ומאותו יום לא היה מה לבחור.
  *  ⚠️ **והטווח קדימה הוא שנה** — ⭐ הוראה נכנסת מהחודש שנבחר ואילך,
@@ -4216,7 +4224,7 @@ function orderFormHTML(o) {
       return '<option value="' + esc(x) + '"' +
              (o && o.method === x ? ' selected' : '') + '>' + esc(x) + '</option>';
     }).join('') + '</select></div>' +
-    '<div class="fld"><label for="o-day">תאריך</label>' +
+    '<div class="fld"><label for="o-day">יום בחודש</label>' +
     '<input id="o-day" type="text" inputmode="numeric" autocomplete="off" value="' +
     esc(o ? o.day_of_month : '') + '"></div>' +
     /*  ⛔ ההוראה נכנסת מהחודש שנבחר ואילך ⛔ ולא רטרואקטיבית — ⚠️ מופעים

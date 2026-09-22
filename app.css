@@ -219,8 +219,6 @@ main > .foot{margin-top:auto}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
 .det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
 .det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
-.det li.pend .amt{color:var(--text-3)}
-.det li.pend .nm{color:var(--text-2)}
 /*  ⛔ כותרת שנפתחת היא כפתור לכל דבר — ⚠️ שטח הלחיצה הוא כל הכותרת,
  *  ⭐ ולא החץ לבדו. */
 /*  ⛔ הבורר נכתב בלי ספרה לפני הנקודה — ⚠️ `h2.fold` נראה לסורק
