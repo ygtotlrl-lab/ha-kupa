@@ -65,6 +65,21 @@ const APP = {
       "   { key: 'חשון', year: 5787, rows: SO.map(function (a) { return tz(a); }) }], O);" +
       " var one = window.__acc.kChain([" +
       "   { key: 'מנחם אב', year: 5786, rows: [inc(16900), tz(1179)] }], AO);" +
+      /*  ⛔ והבא בתור נושא את היתרה — ⚠️ שלוש שרשראות עם `now`: ⭐ חוב,
+       *  זכות, וראש שנה, ⛔ וכל אחת מודדת את הבא בתור ואת מה שאחריו. */
+      " var PLF = { 5787: 4200, 5788: 3600 };" +
+      " var OF = function (y) { return PLF[y]; };" +
+      " var dbt = window.__acc.kChain([" +
+      "   { key: '5787-01', year: 5787, rows: [tz(1000)] }," +
+      "   { key: '5787-02', year: 5787, rows: [] }," +
+      "   { key: '5787-03', year: 5787, rows: [] }], { opening: 0, pledgeOf: OF, now: '5787-01' });" +
+      " var crd = window.__acc.kChain([" +
+      "   { key: '5787-01', year: 5787, rows: [tz(5000)] }," +
+      "   { key: '5787-02', year: 5787, rows: [] }], { opening: 0, pledgeOf: OF, now: '5787-01' });" +
+      " var trn = window.__acc.kChain([" +
+      "   { key: '5787-12', year: 5787, rows: [tz(1000)] }," +
+      "   { key: '5788-01', year: 5788, rows: [] }], { opening: 0, pledgeOf: OF, now: '5787-12' });" +
+      " window.__n = { dbt: dbt, crd: crd, trn: trn };" +
       " window.__c = [two[0], two[1], one[0]]; return window.__c.length === 3; })()",
     cases: [
       ['תשרי · חומש',                  'window.__c[0].chumash',        3080],
@@ -84,6 +99,15 @@ const APP = {
       ['חשון · סכום שנשאר לפלעדזש',    'window.__c[1].pledgeLeft',     2367],
       ['אב · יתרת החומש',              'window.__c[2].balance',        -506],
       ['אב · סכום שנשאר לפלעדזש',      'window.__c[2].pledgeLeft',     1591],
+      ['חוב · הבא בתור נושא את היתרה',      'window.__n.dbt[1].pledgeOpen',  -3200],
+      ['חוב · והחובה היא השנתי ועוד החוב', 'window.__n.dbt[1].pledgeDue',    7400],
+      ['חוב · ושאחריו אינו נושא יתרה',  'window.__n.dbt[2].pledgeOpen',      0],
+      ['חוב · והחובה שם היא השנתי בדיוק', 'window.__n.dbt[2].pledgeDue',  4200],
+      ['חוב · והחומש ממשיך להצטבר',   'window.__n.dbt[2].chumashDue', -1000],
+      ['זכות · הבא בתור נושא את הזכות', 'window.__n.crd[1].pledgeOpen',   800],
+      ['זכות · והחובה היא השנתי פחותה', 'window.__n.crd[1].pledgeDue',  3400],
+      ['תשרי · ראש השנה גובר על הבא בתור', 'window.__n.trn[1].pledgeOpen', 0],
+      ['תשרי · והחובה היא השנתי החדש',  'window.__n.trn[1].pledgeDue',  3600],
     ],
     why: '',
   },
