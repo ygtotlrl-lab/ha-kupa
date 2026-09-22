@@ -296,7 +296,7 @@ main > .foot{margin-top:auto}
 @media (min-width:1200px){:root{--col:680px}}
 
 /* ======================================================= סרגל הלשוניות */
-/*  ⛔ ארבע לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
+/*  ⛔ שלוש לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
  *  כל החלון מנתק את הניווט מהתוכן שמעליו. */
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
