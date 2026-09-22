@@ -37,7 +37,6 @@ const APP = {
        קורא אותם — הטבלה עצמה נשארה ב-CLAUDE.md. */
     '_capability-notes.md': 'נימוקי המטריצה שנמחקה בסבב 69 — טקסט היסטורי בלבד; ⛔ אינו נקרא בשום שער והנימוקים החיים עברו לעמודת ההערות שבטבלה',
     '_prune-lessons.md': 'חילוץ הלקחים מ-14 פרקי הסבבים שנגזמו בסבב 48ג — טקסט בלבד, אינו נאכף בשום שער ואינו מקור אמת',
-    'k-calc.mjs': 'ליבת חישוב החומש, היתרה והמילוי — ⛔ אף סיכום אינו נשמר, ⚠️ והכל נגזר מהרישומים בזמן קריאה: ⭐ ולשאר אין שרשרת חודשים שנגזרת',
   },
   keystore: 'kupa.keystore',
   /*  ⛔ חריגות ב-`android/` ובתת-תיקיות `tools/` — ⚠️ **מה נכנס**: שם ⟵
@@ -45,6 +44,12 @@ const APP = {
    *  שאין לו קובץ. ⭐ **ולמה הן קיימות**: ⚠️ מבנה שנבדל בלי נימוק נקרא
    *  כטעות — ⛔ **וכאן שתיהן ריקות**: ⭐ אין חריגה, וההצהרה אינה נשמטת. */
   androidExtra: {},
+  /*  ⛔ תיקיית נכסים שקיימת כאן בלבד — ⚠️ **מה נכנס**: השם ⟵ תפקיד
+   *  הנכסים שבתוכה; ⛔ **ומה מפיל**: תיקייה שאינה מוכרזת, ⛔ והכרזה
+   *  שאין לה תיקייה. */
+  /*  ⚠️ **וההיעדר מוצהר ריק** ⛔ ואינו נשמט — ⭐ אין כאן מוסדות מרובים,
+   *  ⛔ ואין גוף חיצוני שמוצג בכותרת. */
+  dirExtra: {},
   toolsDirs: {},
 };
 /* ── סוף APP ───────────────────────────────────────────────────────────── */
@@ -60,8 +65,11 @@ const DIRS = ['.github', 'android', 'core', 'design', 'icons', 'migrations', 'si
 /*  ⛔ `.gitignore` בשורש (סבב 148) — ⚠️ הוא מה שמונע מהמפתח לחזור
  *  למעקב ב-`git add` הבא: ⭐ המפתח חי ב-GitHub Secrets, ⛔ ועותק מקומי
  *  לחתימה ביד הוא בדיוק מה שהקובץ הזה מתיר בלי לדחוף. */
+/*  ⛔ `app.css` — ⚠️ גיליון הסגנון של האפליקציה: ⭐ CSS יושב בקובץ
+ *  ⛔ ולא ב-`<style>` שבתוך `index.html`, ⚠️ שבלוק שאינו נושא את סוגו
+ *  נקרא כסוג אחר. */
 const ROOT_FILES = ['.gitignore', '.nojekyll', 'CLAUDE.md', 'CONTEXT.md',
-                    'README.md', 'index.html', 'manifest.json', 'sw.js'];
+                    'README.md', 'app.css', 'index.html', 'manifest.json', 'sw.js'];
 const CHECKERS = ['check-js.mjs', 'check-structure.mjs',
                   'check-docs.mjs', 'check-comments.mjs', 'check-capabilities.mjs'];
 /*  ⛔ מחולל אינו בודק ואינו שער (סבב 71) — ⚠️ הוא **כותב** נכסים, בעוד
@@ -97,7 +105,7 @@ const GATE_ID = new URL(import.meta.url).pathname.split('/').pop();
  *  הריפו, פרטית בלי נימוק, וסכום אפס. ⭐ **ולמה לא מספר אחד**: הוא מסתיר
  *  טענה משותפת שאבדה. */
 /* ⚠️ פר-אפליקציה — הריצפה הפרטית של השער נבדלת ביניהן לפי היכולת שכל אחת נושאת, והנימוק בשדה עצמו */
-const FLOOR = { shared: 14, app: 1, appWhy: 'ליבת חישוב החומש כחריגת tools — קיימת בקופה בלבד' };
+const FLOOR = { shared: 14, app: 0, appWhy: '' };
 /* ⚠️ סוף פר-אפליקציה */
 const EXPECTED = FLOOR.shared + FLOOR.app;
 let RAN = 0;
@@ -107,8 +115,12 @@ let RAN = 0;
 let PRE_MUT = null;
 const mutStage = () => { if (PRE_MUT === null) PRE_MUT = RAN; };
 /*  ⛔ הדגל נלכד ברישום ⛔ ולא בסגירה — ⚠️ שער שמריץ שער אחר מציב אותו
- *  **אחרי** הרישום, ⭐ ולכן הוא חל על הילד ⛔ ולא על עצמו. */
-const SUBRUN = !!process.env.GATE_SUBRUN;
+ *  **אחרי** הרישום, ⭐ ולכן הוא חל על הילד ⛔ ולא על עצמו.
+ *  ⛔ **ושומר הרקורסיה הוא ריצת-משנה אף הוא** — ⚠️ הסט רץ שם על **עותק
+ *  סינתטי** שאין לצידו אחיות ואין בו `.git`, ⭐ ולכן שער שמשווה מול אחות
+ *  או קורא את סט המעקב מגיע לחלק מטענותיו **בכוונה**: ⛔ והריצפה נמדדת
+ *  על עץ אמיתי ⛔ ולא שם. */
+const SUBRUN = !!process.env.GATE_SUBRUN || !!process.env.R33_INNER;
 /*  ⛔ הריצפה נמדדת בשני הכיוונים (סבב 118) — ⚠️ **מה נכנס**: מספר הטענות
  *  שרצו עד שלב המוטציות; ⛔ **ומה מפיל**: פחות מהמוצהר — ריצה חלקית —
  *  ⛔ ויותר ממנו — ריצפה מיושנת. ⭐ **ולמה שני הכיוונים**: ריצפה שאינה
@@ -155,8 +167,16 @@ const dirs  = entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
 const files = entries.filter((e) => !e.isDirectory()).map((e) => e.name).sort();
 
 /* ── א. סט התיקיות ─────────────────────────────────────────────────────── */
+/*  ⛔ תיקיית נכסים פר-אפליקציה — ⚠️ היא נגזרת מתפקיד הנכס, ⭐ ולא כל
+ *  אפליקציה מציגה גוף חיצוני: ⛔ וההצהרה נמדדת משני צדדיה — ⚠️ תיקייה
+ *  שאינה מוכרזת, ⛔ והכרזה שאין לה תיקייה. */
+const dirExtra = APP.dirExtra || {};
 const missingD = DIRS.filter((d) => !dirs.includes(d));
-const extraD   = dirs.filter((d) => !DIRS.includes(d));
+const extraD   = dirs.filter((d) => !DIRS.includes(d) && !(d in dirExtra));
+const ghostD   = Object.keys(dirExtra).filter((d) => !dirs.includes(d));
+if (ghostD.length) fail(`תיקיות מוכרזות שאינן קיימות: ${ghostD.join(', ')} — נמדדו ` +
+                        `${ghostD.length} מתוך ${Object.keys(dirExtra).length} הכרזות והצפוי אפס. ` +
+                        `מסירים אותן מ-APP.dirExtra`);
 if (missingD.length) fail(`תיקיות חסרות בשורש: ${missingD.join(', ')} — נמדדו ${DIRS.length - missingD.length} ` +
                           `מתוך ${DIRS.length} התיקיות הקנוניות. מוסיפים את החסרות`);
 if (extraD.length)   fail(`תיקיות עודפות בשורש: ${extraD.join(', ')} — נמדדו ${extraD.length} ` +

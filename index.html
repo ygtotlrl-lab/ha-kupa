@@ -22,502 +22,7 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="icon" href="icons/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<style>
-/* ========================================================= אסימוני העיצוב */
-:root{
-  /*  ⛔ מרחק הטוסט מתחתית המסך — ⚠️ הערך היחיד שנבדל בשכבת הטוסט:
-   *  ⭐ הוא נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו, ⛔ וטוסט
-   *  שנמוך מהם מוסתר מאחוריהם. */
-  --toast-bottom:150px;
-  /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
-   *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
-   *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
-  --brand:#7C5CB0; --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
-
-  --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
-  --text:#352B3F; --text-2:#7E6F90; --text-3:#9F94AC;
-  --border:#E6DEF0;
-  --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
-  /*  ⛔ שלושת המצבים בגווני האפליקציה — ⚠️ הטורקיז לצד הסגול, והפטל
-   *  והאפרסק לצד האפרסק שבערכה: ⭐ אדום · ירוק · צהוב הם ערכת אזעקה,
-   *  ⛔ והם נקראים כתקלה גם כשהם מבשרים הצלחה.
-   *  ⚠️ **וכל אחד נשאר בתחום הגוון של שמו** — ⛔ אסימון שנושא שם של
-   *  תפקיד ממופה לאותו תפקיד: ⭐ `--bad` שאינו אדום צובע את הכשל בצבע
-   *  ההצלחה, ⛔ וכל צמד עומד ביחס בשני המצבים. */
-  --ok:#1E715D; --ok-soft:#EAF6F3;
-  --warn:#93492B; --warn-soft:#FAE8E1;
-  --bad:#9D2541; --bad-soft:#F9EBEF;
-  --radius:var(--r-6); --radius-sm:var(--r-4);
-  --shadow:0 1px 2px var(--sh-1);
-  --shadow-lg:0 8px 22px rgba(53,43,63,.16);
-
-  /*  ⛔ אסימוני המוצר — ⚠️ הם קיימים כאן בלבד: ⭐ שבע דרגות הסגול הן
-   *  **תפקיד** — חומש · צדקה · ניווט, ⛔ ודרגות האפרסק הן פלעדזש ·
-   *  הכנסה · מטבע. ⛔ **והפטל בשני מקומות בלבד** — ⚠️ הכפתור הצף
-   *  ו«אין עוד מלבדו!»: ⭐ צבע שמופיע בכל מקום מפסיק להיות סימן.
-   *  ⚠️ **ודיו האפרסק ירד** — ⛔ באנר הסיום היה קוראו היחיד: ⭐ ואסימון
-   *  שאין לו קורא יורד משתי הערכות. */
-  --purple-1:#EFEAF6; --purple-2:#B49EE0; --purple-3:#9C7FD0; --purple-4:#8A6BC0;
-  --purple-5:#7C5CB0; --purple-6:#5E3F8F; --purple-7:#3A2540;
-  --peach-1:#FDE6DC; --peach-2:#F2A184;
-  --rasp:#B8446B; --rasp-ink:#B8446B;
-  --line-soft:#EFEAF6;
-  --ring-soft:rgba(255,255,255,.3);
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --on-brand:#FFFFFF; --on-rasp:#2A1B3D;
-
-    --bg:#1B1420; --card:#251C2C; --card-2:#2E2336;
-    --text:#EFE8F5; --text-2:#C4B6D2; --text-3:#9C8FAC;
-    --border:#3A2D45;
-    --brand:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
-    --ok:#79D8C2; --ok-soft:#112722;
-    --warn:#F1A483; --warn-soft:#2D1D16;
-    --bad:#EB8EA4; --bad-soft:#2C1117;
-    --shadow:0 1px 2px var(--sh-2);
-    --shadow-lg:0 8px 22px rgba(0,0,0,.5);
-
-    --purple-1:#332845; --purple-2:#8C74B8; --purple-3:#A98BDD; --purple-4:#B79BE6;
-    --purple-5:#C3AAE8; --purple-6:#D6C5F0; --purple-7:#EFE8F5;
-    --peach-1:#3A2620; --peach-2:#F2A184;
-    --rasp:#E896B0; --rasp-ink:#E896B0;
-    --line-soft:#3A2D45;
-    --ring-soft:rgba(255,255,255,.3);
-  }
-}
-
-/* ==================================================================== בסיס */
-*,*::before,*::after{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  font-size:var(--fs-4); line-height:var(--lh-4); -webkit-text-size-adjust:100%;
-  overflow-wrap:anywhere;
-}
-body.locked{overflow:hidden}
-h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
-button{font:inherit; color:inherit}
-input,select,textarea{font:inherit; color:inherit}
-.hidden{display:none !important}
-/*  ⛔ טבעת המיקוד בגוון הערכה — ⚠️ ברירת המחדל של הדפדפן צהובה-כתומה:
- *  ⭐ היא אינה באוצר הצבעים של האפליקציה, ⛔ ונקראת כאזהרה על שדה תקין. */
-:focus-visible{outline:var(--sp-1) solid var(--purple-3);outline-offset:var(--sp-1)}
-
-/* ================================================== הפתיח והחתימה של מסך */
-/*  ⛔ שתי השורות בראש ובתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה. */
-/*  ⛔ שתי השורות בתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה: ⛔ והפתיחה מתחת לחתימה, ⚠️ בגופן
- *  גדול מעט ממנה.
- *  ⚠️ **וכפתור החזרה נכנס לאותו בלוק** — ⛔ הוא אינו כפתור פעולה,
- *  ⭐ ואינו נפרש לרוחב המסך כמותם. */
-.foot{text-align:center;padding:var(--sp-7) var(--sp-6) var(--sp-6)}
-.closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
-  padding:0 0 var(--sp-3)}
-.opener{color:var(--rasp-ink);font-size:var(--fs-2);letter-spacing:var(--ls-1);text-align:center;
-  font-weight:500;padding:0}
-
-/* =================================================================== קליפה */
-/*  ⛔ העמודה ברוחב מכשיר ⛔ ואינה נמרחת עד לקצה — ⚠️ לא בדסקטופ ולא
- *  במובייל: ⭐ המסך כאן הוא ערימת כרטיסים קצרה, ⛔ ורוחב שנמתח מפריד
- *  את המספר מהתווית שלו בשורה אחת.
- *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
-main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
-  max-width:390px;margin:0 auto;
-  /*  ⛔ המסך הוא עמודה שגובהה מלוא החלון — ⚠️ והתחתית נדחפת אליה:
-   *  ⭐ שתי השורות נצמדות לתחתית המסך ⛔ ולא לסוף התוכן, ⚠️ ומסך קצר
-   *  היה משאיר אותן באמצע. */
-  min-height:100vh;display:flex;flex-direction:column}
-main > .foot{margin-top:auto}
-
-/* ================================================================== הלוגו */
-/*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
- *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
-.brand{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);
-  padding:var(--sp-6) 0 var(--sp-2)}
-.brand img{width:40px;height:40px;border-radius:var(--r-4)}
-
-/* ================================================================= כרטיסים */
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
-.card > h2{font-size:var(--fs-5);color:var(--text);display:flex;align-items:center;gap:var(--sp-4);
-  margin-bottom:var(--sp-5);font-weight:500}
-.card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-2);
-  color:var(--text-2)}
-/*  ⛔ המסגרת היא מה שנשאר מבאנר הסיום — ⚠️ והיא בגוון הערכה ⛔ ולא
- *  בצבע מצב: ⭐ באנר תפס שורה שלמה על כל רישום, ⛔ ומסגרת אומרת את אותו
- *  דבר בלי לגזול מקום.
- *  ⛔ **והיא בוהקת ⛔ ואינה רמז** — ⚠️ טבעת בעובי דרגה ובגוון מלא:
- *  ⭐ מסגרת בגוון החיוור ביותר נבלעה ברקע, ⛔ והמשתמש לא ראה שהיעד הושלם. */
-.comp.plus{border-color:var(--purple-3);
-  box-shadow:0 0 0 var(--sp-1) var(--purple-2),var(--shadow-lg)}
-/*  ⛔ והמסגרת נושאת את גוון הרכיב — ⚠️ חומש סגול ופלעדזש אפרסק:
- *  ⭐ תפקידי הצבע קבועים, ⛔ ומסגרת בגוון אחד היא סימן שאינו אומר במה. */
-.comp.peach.plus{border-color:var(--peach-2);
-  box-shadow:0 0 0 var(--sp-1) var(--peach-2),var(--shadow-lg)}
-/*  ⛔ המספר הגדול ולידו שני חלקיו — ⚠️ החלק שמהחודש והחלק שמהיתרה:
- *  ⭐ הם מה שמסביר מאין החובה הכוללת באה. */
-.crow{display:flex;align-items:flex-end;gap:var(--sp-5);margin-top:var(--sp-5)}
-.crow .big{flex:1;min-width:0}
-.crow .parts{display:grid;gap:var(--sp-1);font-size:var(--fs-2);color:var(--text-2);
-  text-align:end;flex:none}
-/*  ⛔ הסימן שייך למספר — ⚠️ והאלגוריתם הדו-כיווני מעיף אותו אל קצה
- *  השורה: ⭐ עטיפה בכיוון שמאל-ימין מצמידה אותו למקומו. */
-.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
-/*  ⛔ כותרת המשנה שבתוך הפירוט — ⚠️ היא מסמנת את מקום הוראות הקבע,
- *  ⭐ ואינה כותרת כרטיס: ⛔ הן המשך אותה רשימה. */
-.subhd{font-size:var(--fs-1);color:var(--text-3);letter-spacing:var(--ls-1);
-  padding:var(--sp-5) 0 var(--sp-2);border-top:.5px solid var(--line-soft);
-  margin-top:var(--sp-4)}
-.empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
-
-/* ============================================ שורת החודש והמעבר בין חודשים */
-/*  ⛔ ומתחתיה אוויר — ⚠️ הרכיבים נצמדו אל הכותרת ונקראו כחלק ממנה:
- *  ⭐ והמרווח הוא מה שמפריד בין ההקשר לבין מה שנמדד בו. */
-.mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
-  padding:var(--sp-5) 0 var(--sp-7)}
-.mrow .mid{text-align:center;flex:1}
-/*  ⛔ שם החודש בשורה משלו ומעל השנה — ⚠️ הוא מה שהמסך עוסק בו, ⭐ והשנה
- *  היא ההקשר: ⛔ שורה אחת נתנה לשניהם אותו משקל, ⚠️ והעין קראה אותם
- *  כשם אחד ארוך. */
-.mrow .mname{font-size:var(--fs-6);font-weight:500;color:var(--text);display:block;
-  line-height:var(--lh-2)}
-.mrow .myear{display:block;font-size:var(--fs-3);color:var(--text-2);font-weight:400}
-/*  ⛔ טווח התאריכים הלועזי מתחת לשם — ⚠️ הוא נגזר מראש החודש ומראש
- *  הבא אחריו, ⭐ ואינו נשלף משורה שמישהו מילא. */
-.mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
-.mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
-  min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
-
-/* ================================================================== מספרים */
-.big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
-.sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
-.sml.strong{font-weight:500;color:var(--text)}
-/*  ⛔ שורות הסיכום — ⚠️ התווית בצד הפותח והמספר בצד המסיים: ⭐ המסמך
- *  ימין-לשמאל, ⛔ ולכן המספר בשמאל.
- *  ⛔ **והן משתלבות ואינן בולטות** — ⚠️ הן אינן הרכיבים: ⭐ גוון הדיו
- *  המשני ⛔ ולא הדיו הראשי, ⚠️ ומידה שאינה גדולה מכותרת כרטיס —
- *  ⛔ מספר בגודל הרכיבים גוזל מהם את העין. */
-.inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
-  font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
-.inc b{font-size:var(--fs-3);font-weight:500;color:var(--text-2)}
-/*  ⛔ פיצול הצדקה קטן משתיהן — ⚠️ הוא אינו סכום נוסף אלא חלוקה של זה
- *  שמעליו: ⭐ ושתי המנות שלו שוות במשקלן.
- *  ⛔ **והוא נצמד לצד המספרים** ⛔ ולא לצד התוויות — ⚠️ המסמך ימין-לשמאל,
- *  ⭐ ולכן הקצה המסיים: ⛔ הוא מתאר את המספרים שמעליו, ⚠️ ושורה שנצמדת
- *  לצד השני נקראת כתווית שאיבדה את ערכה. */
-.inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-end;
-  gap:var(--sp-5);padding-top:0}
-
-/* ================================================================== הפירוט */
-.det{list-style:none;margin:0;padding:0}
-.det li{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-5) 0;
-  border-bottom:.5px solid var(--line-soft);min-height:44px}
-.det li:last-child{border-bottom:0}
-.det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
-  justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
-.det .ico svg{width:14px;height:14px}
-/*  ⛔ אייקון שהוא הציור עצמו אינו יושב בשבשבת — ⚠️ הצבע בא מן
- *  הציור, ⭐ ורקע שמתחתיו הופך אותו לכתם. */
-.det .ico.art{background:none;color:inherit}
-.det .ico.art svg{width:24px;height:24px}
-.det .nm{flex:1;font-size:var(--fs-3);min-width:0}
-.det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
-.det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
-.det li.pend .amt{color:var(--text-3)}
-.det li.pend .nm{color:var(--text-2)}
-/*  ⛔ כותרת שנפתחת היא כפתור לכל דבר — ⚠️ שטח הלחיצה הוא כל הכותרת,
- *  ⭐ ולא החץ לבדו. */
-/*  ⛔ הבורר נכתב בלי ספרה לפני הנקודה — ⚠️ `h2.fold` נראה לסורק
- *  המחלקות כמספר עשרוני, ⭐ והוא מדלג עליו: ⛔ ואז המחלקה נספרת כמי
- *  שאין לה כלל. */
-.card > .fold{cursor:pointer;margin-bottom:0;min-height:44px}
-.card > .fold + .det,.card > .fold + .drag{margin-top:var(--sp-5)}
-.card > .fold .st{color:var(--purple-5)}
-/*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
- *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה. */
-.det.drag li.dragging{opacity:var(--op-3)}
-/*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
- *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה.
- *  ⛔ **ו-`touch-action` עליה בלבד** — ⚠️ באצבע, אלמנט שאינו מבטל את
- *  פעולת המגע גולל את הדף במקום לגרור; ⭐ וביטולו על כל השורה היה נועל
- *  את גלילת המסך בכל הרשימה. */
-.grip{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex:none;
-  color:var(--text-3);font-size:var(--fs-4);letter-spacing:var(--ls-n1);
-  touch-action:none;cursor:grab}
-.grip:active{cursor:grabbing;color:var(--purple-5)}
-/*  ⛔ חודש בארכיון הוא שמו ומתחתיו שני פסיו — ⚠️ ואין בו מספרים:
- *  ⭐ הפס הוא כל מה שנשאל, ⛔ ומספר לצידו מחזיר את המסך שהארכיון בא
- *  להחליף. */
-.amon{padding:var(--sp-5) 0;border-bottom:.5px solid var(--line-soft)}
-.amon:last-child{border-bottom:0}
-/*  ⛔ כותרת החודש בולטת מתוויות הפסים שתחתיה — ⚠️ שתיהן היו באותה מידה
- *  ובאותו גוון: ⭐ והעין לא ידעה מי מהן הכותרת. */
-.amn{font-size:var(--fs-4);font-weight:500;color:var(--text);margin-bottom:var(--sp-4)}
-/*  ⛔ שורת הפלעדזש בגוון שלה — ⚠️ הסדרה נבנית ברכיב המשותף, ⭐ והוא
- *  אינו מקבל גוון פר-שורה: ⛔ והתפקיד נגזר מהמיקום — ⚠️ החומש ראשון
- *  והפלעדזש שני, ⭐ בדיוק כמו במסך הבית. */
-.amon .bchart .brow:last-child .btrack{background:var(--peach-1)}
-.amon .bchart .brow:last-child .btrack i{background:var(--peach-2)}
-/*  ⛔ פס היעד אינו מוצג כאן — ⚠️ הוא מלא תמיד, ⭐ שהמכנה הוא מאה:
- *  ⛔ פס שאינו משתנה אינו אומר דבר, ⚠️ והוא נקרא כפס מצב שני.
- *  ⭐ **והערך עצמו נשאר** — ⛔ הוא המכנה שהרכיב המשותף מנרמל לפיו,
- *  ⚠️ והסרתו מהנתון הייתה משנה את אורכי הפסים. */
-.amon .btrack.tgt{display:none}
-
-/* =========================================================== הכפתור הצף */
-/*  ⛔ הכפתור הצף הוא **סרגל** ⛔ ואינו מודאל — ⚠️ הוא פותח דיאלוג,
-    ⭐ ודרגה שווה לזו של המיכל משאירה את הסדר בעץ להכריע: ⛔ והוא אינו
-    מוצהר בשום מקום.
-    ⚠️ **והוא בקצה המסיים** — ⛔ המסמך ימין-לשמאל, ⭐ ולכן הקצה המסיים
-    הוא שמאל: ⛔ והוא יושב מעל סרגל הלשוניות ⛔ ולא עליו.
-    ⚠️ **והפלוס הוא ציור** ⛔ ולא תו — ⭐ תו נשען על קו הבסיס של הגופן,
-    ⛔ ומרכזו האופטי זז בין מנוע למנוע: ⚠️ בדסקטופ הוא נראה גבוה מדי.
-    ⚠️ **והמיקום האופקי נגזר מרוחב העמודה** — ⛔ מעל רוחב העמודה הכפתור
-    נצמד לקצה שלה ⛔ ולא לקצה החלון. */
-.fab{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
-  inset-inline-end:var(--sp-6);z-index:var(--z-2);
-  width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
-  background:var(--rasp);color:var(--on-rasp);line-height:var(--lh-1);
-  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
-  transition:transform var(--dur-3)}
-.fab svg{width:28px;height:28px;display:block}
-.fab:active{transform:scale(.93)}
-@media (min-width:480px){.fab{inset-inline-end:calc(50% - 195px + 16px)}}
-
-/* ======================================================= סרגל הלשוניות */
-/*  ⛔ ארבע לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
- *  כל החלון מנתק את הניווט מהתוכן שמעליו. */
-.tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
-  display:flex;justify-content:center;
-  padding-bottom:env(safe-area-inset-bottom);
-  background:var(--card);border-top:1px solid var(--border)}
-.tabbar .in{display:flex;width:100%;max-width:390px}
-.tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
-  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
-  padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
-  transition:color var(--dur-3)}
-.tab-btn .ti{display:flex;align-items:center;justify-content:center}
-.tab-btn svg{width:20px;height:20px;display:block}
-.tab-btn.on{color:var(--purple-5);font-weight:500}
-.tab-btn:hover{color:var(--purple-5)}
-
-/* ============================================================ מסך הזרימה */
-.flow{padding:var(--sp-6) 0}
-.flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
-/*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
- *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
- *  המסך עוסק. */
-.fhd{text-align:center;margin-bottom:var(--sp-6)}
-.fhd h2{margin-bottom:0}
-.fic{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;
-  border-radius:var(--r-7);background:var(--brand-soft);color:var(--brand-ink);
-  margin-bottom:var(--sp-5)}
-.fic svg{width:26px;height:26px;display:block}
-.fld{margin-bottom:var(--sp-6)}
-.fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
-.fld input,.fld select{width:100%;background:var(--card);color:var(--text);
-  border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
-.opts{display:grid;gap:var(--sp-4)}
-.opt{display:flex;align-items:center;gap:var(--sp-4);background:var(--card);
-  border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-5);
-  font-size:var(--fs-4);cursor:pointer;min-height:44px;text-align:start;width:100%}
-.opt.on{border-color:var(--purple-3);background:var(--brand-soft);color:var(--brand-ink)}
-.btn{display:block;width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
-  background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
-  padding:var(--sp-5);min-height:44px}
-.btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
-.btn:hover{box-shadow:var(--shadow-lg)}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{opacity:var(--op-3);cursor:default}
-.back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-2);
-  min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
-.back:hover{text-decoration:underline}
-.acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-.acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
-  text-align:start;min-height:44px}
-
-/* ======================================================= מסך אישור המטבע */
-.slide{position:fixed;inset:0;z-index:var(--z-6);background:var(--bg);
-  display:flex;flex-direction:column;align-items:center}
-.slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
-.slide .sub{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4)}
-.slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
-/*  ⛔ היעד יושב **מתחת** למטבע — ⚠️ המטבע נגרר כלפי מטה אל תוכו,
- *  ⭐ וזו התנועה שהאגודל עושה מעצמו: ⛔ יעד שמעליו דורש גרירה כלפי מעלה,
- *  ⚠️ והיד מכסה את מה שהיא גוררת אליו. */
-.target{margin-top:auto;margin-bottom:var(--sp-7)}
-/*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
- *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
-.target.wide{width:270px}
-.target.narrow{width:230px}
-.coin{position:absolute;width:150px;height:150px;border-radius:var(--r-7);
-  background:var(--peach-2);display:flex;align-items:center;justify-content:center;
-  color:var(--on-dark);font-size:var(--fs-6);font-weight:500;touch-action:none;cursor:grab;
-  box-shadow:var(--shadow-lg)}
-.coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
-  border:1px solid var(--ring-soft)}
-.coin.over{transform:scale(1.05)}
-/*  ⛔ הכיתוב יושב בתחתית המסך — ⚠️ הפתיתים דהויים וחולפים, ⭐ והכיתוב
- *  נשאר: ⛔ פתית שנופל על אות מסתיר אותה בדיוק ברגע שבו היא נקראת. */
-.donewrap{display:flex;align-items:flex-end;justify-content:center;min-height:58vh}
-.done{text-align:center;padding:var(--sp-7) var(--sp-6)}
-.done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
-.done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
-/*  ⛔ הקונפטי על כל המסך ⛔ ולא בחציו העליון — ⚠️ הוא ממורכז סביב אמצעו:
- *  ⭐ פס עליון נראה כמו משהו שנשפך מהקצה. */
-.conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
-.conf i{--cf-x:50%;--cf-y:50%;--cf-c:var(--purple-3);position:absolute;left:var(--cf-x);top:var(--cf-y);background:var(--cf-c);width:8px;height:8px;border-radius:var(--r-1)}
-
-/* ================================================================== שלד */
-.skel{background:var(--purple-1);border-radius:var(--radius-sm);height:14px;
-  margin-bottom:var(--sp-4)}
-
-/* ================================================== באנר העדכון והמודאל */
-#updater{position:fixed;inset-inline:0;inset-block-end:0;z-index:var(--z-6);
-  display:none;justify-content:center;padding:var(--sp-5) var(--sp-6)}
-#updater.show{display:flex}
-#updater .in{
-  background:var(--brand);color:var(--on-brand);border-radius:var(--r-5);
-  padding:var(--sp-5) var(--sp-6);display:flex;align-items:center;gap:var(--sp-5);
-  box-shadow:var(--shadow-lg);font-size:var(--fs-3);font-weight:500;
-  max-width:520px;width:100%}
-#updater button{background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-6);font-weight:500;
-  min-height:44px}
-/*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
- *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
-.veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
-  display:none;align-items:center;justify-content:center;padding:var(--sp-6)}
-.veil.open{display:flex}
-.veil .box{background:var(--card);border-radius:var(--radius);width:100%;
-  max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
-.veil .hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;
-  border-bottom:1px solid var(--border)}
-.veil .bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
-.veil .ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
-  border-top:1px solid var(--border)}
-/*  ⛔ כותרת או תחתית ריקה אינה תופסת מקום — ⚠️ הדיאלוג שנושא את הזרימה
- *  אינו נושא כותרת, ⭐ וכפתוריו יושבים בתוך היקף ה-`ksave` שבגוף. */
-.veil .hd:empty,.veil .ft:empty{display:none}
-/*  ⛔ בורר סוג התנועה — ⚠️ שני כפתורים, וכל אחד נושא את הציור שהפירוט
- *  ומסך האישור מציגים: ⭐ אותו ציור בשלושת המקומות. */
-.pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
-.pk{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);cursor:pointer;
-  background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);
-  padding:var(--sp-6) var(--sp-5);font-size:var(--fs-4);font-weight:500;color:var(--text);
-  min-height:44px;transition:border-color var(--dur-3),background var(--dur-3)}
-.pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
-.pk:active{transform:translateY(1px)}
-.pk .pi{display:flex;align-items:center;justify-content:center;width:84px;height:66px}
-.pk .pi svg{width:100%;height:100%;display:block}
-/*  ⛔ שורת הכפתורים של הזרימה — ⚠️ היא בתוך היקף ה-`ksave`, ⭐ והאישור
- *  רחב מהחזרה: ⛔ שני כפתורים שווים אינם אומרים מה הפעולה הראשית. */
-.frow{display:flex;gap:var(--sp-4);margin-top:var(--sp-6)}
-.frow .btn{flex:2}
-.frow .btn.ghost{flex:1}
-
-
-/* ═══ שכבת הטוסט — מודול משותף (סבב 87ב) ════════════════════════════════════
-   זהה בית-לבית בכל האפליקציות. ⛔ שני סיווגי המצב נשענים על אסימוני
-   המצב — ⚠️ צמד הפוך שמתחלף יחד, ⭐ והנייטרלי כתוב במפורש: אין לו מצב.
-   ⛔ מיכל אחד ובתוכו `div` לכל הודעה — ⚠️ הנימוק המדוד: בשלוש מהן היה
-      אלמנט **קבוע** אחד, ⛔ והודעה שנייה דרסה את הראשונה: ⭐ «נשמר»
-      ו«שגיאת רשת» ברצף השאירו על המסך אחת בלבד.
-   ⛔ ו-`--toast-bottom` הוא הערך היחיד שנבדל — ⚠️ לשתיים מהן יש סרגל
-      תחתון קבוע, ⭐ ולטוסט שיושב מתחתיו אין מי שיראה אותו. */
-#toasts{position:fixed;inset-inline:0;bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom));z-index:var(--z-5);display:grid;gap:var(--sp-4);justify-items:center;pointer-events:none;padding:0 var(--sp-6)}
-.toast{background:var(--chip);color:var(--on-chip);border-radius:var(--r-6);padding:var(--sp-5) var(--sp-7);font-size:var(--fs-3);font-weight:600;line-height:var(--lh-3);box-shadow:0 6px 20px var(--sh-2);max-width:92vw;text-align:center;animation:toastUp var(--dur-3) ease-out}
-.toast.bad{background:var(--bad);color:var(--bad-soft)}
-.toast.good{background:var(--ok);color:var(--ok-soft)}
-@keyframes toastUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-/* ═══ סוף CSS שכבת הטוסט ════════════════════════════════════════════════ */
-
-/* ═══ CSS גרף העמודות — מודול משותף (סבב 137) ═══════════════════════════════
-   ⛔ הצגה חזותית של סדרה נבנית מרוחב יחסי ⛔ ולא מספריית גרפים — ⚠️ ספרייה
-      כזו היא מאות קילובייטים בכל עלייה, ⭐ והנתון עצמו הוא שתי מנות לשורה.
-   ⛔ הצבעים מהאסימונים ⛔ ואין כאן ליטרל — ⚠️ `--brand` למה שנגבה,
-      ⭐ ו-`--card-2` למסלול שמאחוריו: ⛔ ליטרל מוטבע כאן היה נשאר בהיר
-      במצב כהה, ⚠️ ומבטל את הזהות הפר-אפליקציה.
-   ⛔ ופס היעד הוא **אותו** אסימון בשקיפות — ⚠️ אסימון שני היה תפקיד שני
-      לצבע קיים, ⭐ והשורה על תפקיד אחד לאסימון אוסרת אותו. */
-.bchart{display:grid;gap:var(--sp-4);padding:var(--sp-2) 0}
-.brow{display:grid;grid-template-columns:4.6rem 1fr 4.4rem;align-items:center;gap:var(--sp-4);font-size:var(--fs-3)}
-.blab{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bbars{display:grid;gap:var(--sp-2)}
-.btrack{display:block;height:8px;border-radius:var(--r-6);background:var(--card-2);overflow:hidden}
-.btrack i{--bar-w:0%;display:block;height:100%;width:var(--bar-w);border-radius:var(--r-6);background:var(--brand)}
-.btrack.tgt{height:4px}
-.btrack.tgt i{opacity:var(--op-2)}
-.bval{color:var(--text-2);text-align:end;white-space:nowrap}
-/* ═══ סוף CSS גרף העמודות ════════════════════════════════════════════════ */
-
-/* ===================================================================== פסים */
-/*  ⛔ הגוון פר-אפליקציה נכתב **אחרי** הבלוק החתום — ⚠️ שני הכללים באותה
- *  סגוליות, ⭐ והמאוחר גובר: ⛔ גוון שנכתב לפניו אינו חל כלל. */
-.btrack{background:var(--purple-1)}
-.btrack i{transition:width var(--dur-4) var(--ease)}
-.btrack.peach{background:var(--peach-1)}
-.btrack.peach i{background:var(--peach-2)}
-
-@media (prefers-reduced-motion:reduce){
-  .btrack i{transition:none}
-  .conf{display:none}
-}
-
-/* ═══ סולמות הערך החזותי — מודול משותף (סבב 141) ═════════════════════════
-   ⛔ שמונה סולמות, ⛔ ואותן דרגות בכל האפליקציות — ⚠️ כל ערך חזותי
-      נגזר מהם ⛔ ואינו נבחר לכל אתר בנפרד: ⭐ ערך שנבחר באתר הוא סולם שלא
-      הוגדר, ⛔ ושני אתרים שנבדלים בפיקסל אחד הם שני ערכים שאיש לא הכריע
-      ביניהם.
-   ⛔ **ומספר הדרגות נגזר מהערכים שהיו בפועל** ⛔ ואינו נבחר — ⚠️ אשכול
-      משוקלל בסולם לוגריתמי על כל הערכים שבכל הריפו, ⭐ ותקרה של שבע.
-   ⛔ **ודרגה שאין לה קורא באפליקציה אחת נשארת** — ⚠️ הסולם הוא תשתית,
-      ⭐ ולא מפקד של מה שמשמש היום: ⛔ דרגה יורדת רק כשאין לה קורא בכולן.
-   ⛔ **והמחלקות שכאן הן אלה שחיות בכולן** — ⚠️ מחלקה שחיה בחלקן יושבת
-      בבלוק הפרטי שמתחת: ⭐ מחלקה בבלוק משותף שאין לה קורא באחת מהן היא
-      סלקטור בלי קורא, ⛔ והשער מפיל עליה.
-   ⛔ **ואין כאן `!important`** — ⚠️ `display` ו-`color` נכתבים מ-JS בזמן
-      ריצה, ⭐ וסגנון מוטבע שנכתב אחר כך חייב לגבור עליהן: ⛔ הקדימות באה
-      מהמיקום — ⚠️ הבלוק יושב בסוף הגיליון, אחרי כל כלל אחר.
-   ⛔ **ו-`--z-*` הוא סדר ולא גודל** — ⚠️ הדרגה נבחרת לפי **תפקיד**
-      השכבה — תוכן · סרגל · תפריט · מודאל · טוסט · באנר · נעילה — ⭐ ולא
-      לפי המספר שהיה שם: ⛔ מספר שנבחר לכל אתר הוא מרוץ שאיש אינו מכריע בו.
-   ⛔ **והמשך נמדד בשניות ולא באלפיות** — ⚠️ והכתיב אחיד, בלי
-      אפס מוביל: ⭐ `.15s` ו-`0.15s` הם אותו ערך בשני כתיבים, ⛔ ושני כתיבים
-      הם שני חיפושים.
-   ⛔ שינוי כאן — כל האפליקציות **וכל עותקי השער**, באותו סבב.
-   ═══════════════════════════════════════════════════════════════════════ */
-:root{
---fs-1:.65rem;--fs-2:.75rem;--fs-3:.85rem;--fs-4:.95rem;--fs-5:1.2rem;--fs-6:1.7rem;--fs-7:2.8rem;
---sp-1:2px;--sp-2:4px;--sp-3:6px;--sp-4:8px;--sp-5:12px;--sp-6:16px;--sp-7:24px;
---r-1:4px;--r-2:6px;--r-3:8px;--r-4:10px;--r-5:14px;--r-6:20px;--r-7:999px;
---z-1:1;--z-2:10;--z-3:20;--z-4:30;--z-5:40;--z-6:50;--z-7:60;
---dur-1:.12s;--dur-2:.15s;--dur-3:.2s;--dur-4:.3s;--dur-5:.6s;--dur-6:.7s;--ease:cubic-bezier(.2,.8,.3,1);
---op-1:.3;--op-2:.4;--op-3:.5;--op-4:.6;--op-5:.7;--op-6:.8;--op-7:.85;
---lh-1:1;--lh-2:1.3;--lh-3:1.45;--lh-4:1.6;--lh-5:1.75;--lh-6:2;
---ls-1:.3px;--ls-2:1px;--ls-3:4px;--ls-n1:-.4px;--ls-n2:-1px;
---chip:#1A1A1A;--on-chip:#FFFFFF;--veil:rgba(10,20,30,.5);--veil-deep:rgba(0,0,0,.75);
---alert:#B3261E;--on-alert:#FFFFFF;
---sh-1:rgba(0,0,0,.10);--sh-2:rgba(0,0,0,.22);--sh-3:rgba(0,0,0,.35);
---on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
-}
-.u-ai-c{align-items:center}
-.u-d-flex{display:flex}
-.u-fs-2{font-size:var(--fs-2)}
-.u-fs-3{font-size:var(--fs-3)}
-.u-fw-700{font-weight:700}
-.u-fx-1{flex:1}
-.u-g-5{gap:var(--sp-5)}
-.u-mt-2{margin-top:var(--sp-2)}
-.u-mt-5{margin-top:var(--sp-5)}
-/* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
-</style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 
@@ -558,7 +63,7 @@ main > .foot{margin-top:auto}
 
 <!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
       הגופן, ⭐ ומרכזו האופטי זז בין מנוע למנוע. -->
-<button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button>
+<div class="fabrail"><div class="in"><button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button></div></div>
 
 <!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
       ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
@@ -589,8 +94,9 @@ main > .foot{margin-top:auto}
 
 <div id="updater">
   <div class="in">
-    <span class="u-fx-1">🔄 גרסה חדשה זמינה</span>
-    <button data-act="sw-reload">רענן</button>
+    <span>🔄 גרסה חדשה זמינה</span>
+    <button data-act="sw-apply">עדכן עכשיו</button>
+    <button class="x" data-act="sw-dismiss" aria-label="סגור">✕</button>
   </div>
 </div>
 
@@ -894,7 +400,7 @@ var RTY_CFG = {
   pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
 };
 
-var K_STAMP_KEY = 'k_last_changed';
+var K_STAMP_KEY = 'last_changed';
 var _kSeenTs = null, _lastSeenOk = 0;
 var PL_CFG = {
   every:  3000,
@@ -1219,9 +725,9 @@ function errMsg(e) {
    ⛔ ותקרת בטיחות ללולאה שתלויה בגודל התשובה — ⚠️ מסד שמחזיר עמוד מלא
       לנצח תולה את הדף.
    ═══════════════════════════════════════════════════════════════════════ */
-var YS_ROWS_PAGE = 1000;
-var YS_ROWS_CAP = 500000;
-async function _ysRowsPaged(mkQuery, order, win) {
+var ROWS_PAGE = 1000;
+var ROWS_CAP = 500000;
+async function _rowsPaged(mkQuery, order, win) {
   var out = [], from = 0;
   for (;;) {
     var q = mkQuery();
@@ -1230,12 +736,12 @@ async function _ysRowsPaged(mkQuery, order, win) {
       if (win.to) q = q.lte(win.col, win.to);
     }
     if (order) q = q.order(order, { ascending: true });
-    var res = await withTimeout(q.range(from, from + YS_ROWS_PAGE - 1));
+    var res = await withTimeout(q.range(from, from + ROWS_PAGE - 1));
     if (!res || res.error || !Array.isArray(res.data)) return null;
     out = out.concat(res.data);
-    if (res.data.length < YS_ROWS_PAGE) return out;
-    from += YS_ROWS_PAGE;
-    if (from > YS_ROWS_CAP) return out;
+    if (res.data.length < ROWS_PAGE) return out;
+    from += ROWS_PAGE;
+    if (from > ROWS_CAP) return out;
   }
 }
 /* ═══════════════ סוף מודול משיכה מסוננת בשרת ═══════════════════════════ */
@@ -2255,7 +1761,7 @@ function _bkLayer(bkey, s) {
  *  יש: ⛔ אי-התאמה מחזירה `null` ⛔ ונכשלת בקול, ⚠️ ואינה שומרת חצי גיבוי. */
 async function _bkReadRows(c, s, win) {
   var sel = s.cols || '*';
-  var rows = await _ysRowsPaged(function () {
+  var rows = await _rowsPaged(function () {
     var q = c.from(s.name).select(sel);
     if (s.eq) q = q.eq(s.eq[0], s.eq[1]);
     return q;
@@ -3340,118 +2846,6 @@ function mergeRows(local, remote, keyName, isPending) {
   }));
 }
 
-window.DAYS_HEB=["","א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","ט׳","י׳","י״א","י״ב","י״ג","י״ד","ט״ו","ט״ז","י״ז","י״ח","י״ט","כ׳","כ״א","כ״ב","כ״ג","כ״ד","כ״ה","כ״ו","כ״ז","כ״ח","כ״ט","ל׳"];
-window.MONTHS_HEB     =["תשרי","חשון","כסלו","טבת","שבט","אדר","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.MONTHS_HEB_LEAP=["תשרי","חשון","כסלו","טבת","שבט","אדר א׳","אדר ב׳","ניסן","אייר","סיון","תמוז","מנחם אב","אלול"];
-window.YS_DOW_HEB=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
-
-// שנה מעוברת — מחזור 19 השנים (7 שנים מעוברות)
-window.ysHebIsLeap=function(hy){return ((7*(+hy)+1)%19)<7;};
-window.ysHebMonthNames=function(hy){return window.ysHebIsLeap(hy)?window.MONTHS_HEB_LEAP:window.MONTHS_HEB;};
-
-// גימטריה — מספר → אותיות (כולל ט״ו/ט״ז). sep = התו שלפני האות האחרונה
-window.ysGematria=function(n,sep){
-  n=Math.floor(Math.abs(+n))||0;
-  if(!n) return '';
-  if(n>=1000) n=n%1000;
-  var HUN=['','ק','ר','ש','ת'],TENS=['','י','כ','ל','מ','נ','ס','ע','פ','צ'],ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
-  var s='',h=Math.floor(n/100),r=n%100;
-  while(h>4){s+='ת';h-=4;}
-  s+=HUN[h]||'';
-  if(r===15) s+='טו';
-  else if(r===16) s+='טז';
-  else s+=TENS[Math.floor(r/10)]+ONES[r%10];
-  if(sep===undefined) sep='״';
-  if(!sep||!s) return s;
-  if(s.length===1) return s+'׳';
-  return s.slice(0,-1)+sep+s.slice(-1);
-};
-window.ysHebDayLabel=function(day){var T=window.DAYS_HEB;return (T&&T[day])||window.ysGematria(day)||String(day);};
-// תווית שנה מלאה — ה׳תשפ״ו
-window.ysHebYearLabelFull=function(hy){
-  var ONES=['','א','ב','ג','ד','ה','ו','ז','ח','ט'],th=Math.floor((+hy)/1000);
-  return ((th>0&&th<10)?ONES[th]+'׳':'')+window.ysGematria((+hy)%1000,'״');
-};
-
-// ---- קריאת הלוח העברי של הדפדפן ----
-// שמות החודשים נקראים באנגלית ('en-u-ca-hebrew') כי הם יציבים בין גרסאות ICU,
-// וממופים לאינדקס בטבלאות התצוגה שלנו.
-window._ysMICodeLeap={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar1:5,adar2:6,nisan:7,iyar:8,sivan:9,tamuz:10,av:11,elul:12};
-window._ysMICodeStd ={tishri:0,heshvan:1,kislev:2,tevet:3,shevat:4,adar:5,nisan:6,iyar:7,sivan:8,tamuz:9,av:10,elul:11};
-window._ysMonthCode=function(name){
-  var s=(name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  if(s.indexOf('adar')===0){
-    var t=s.slice(4);
-    if(t==='i'||t==='1'||t==='a') return 'adar1';
-    if(t==='ii'||t==='2'||t==='b') return 'adar2';
-    return 'adar';
-  }
-  if(s.indexOf('tishr')===0) return 'tishri';
-  if(s.indexOf('hesh')!==-1||s.indexOf('chesh')!==-1) return 'heshvan';
-  if(s.indexOf('kislev')===0||s.indexOf('chislev')===0) return 'kislev';
-  if(s.indexOf('tevet')===0||s.indexOf('teveth')===0) return 'tevet';
-  if(s.indexOf('shevat')===0||s.indexOf('shvat')===0||s.indexOf('shebat')===0) return 'shevat';
-  if(s.indexOf('nisan')===0||s.indexOf('nissan')===0) return 'nisan';
-  if(s.indexOf('iyar')===0||s.indexOf('iyyar')===0) return 'iyar';
-  if(s.indexOf('sivan')===0) return 'sivan';
-  if(s.indexOf('tamuz')===0||s.indexOf('tammuz')===0) return 'tamuz';
-  if(s==='av'||s==='ab') return 'av';
-  if(s.indexOf('elul')===0) return 'elul';
-  return null;
-};
-window._ysIntlFmt=null;window._ysIntlOK=null;
-// גרגוריאני → {hy,mi,day,leap} דרך Intl. מחזיר null אם לא זמין / תוצאה לא צפויה
-window.ysIntlHeb=function(d){
-  try{
-    if(window._ysIntlOK===false) return null;
-    if(!window._ysIntlFmt){
-      if(typeof Intl==='undefined'||!Intl.DateTimeFormat){window._ysIntlOK=false;return null;}
-      var f=new Intl.DateTimeFormat('en-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'});
-      var ro=f.resolvedOptions?f.resolvedOptions():null;
-      if(!ro||ro.calendar!=='hebrew'||!f.formatToParts){window._ysIntlOK=false;return null;}
-      window._ysIntlFmt=f;window._ysIntlOK=true;
-    }
-    var o={};
-    window._ysIntlFmt.formatToParts(d).forEach(function(p){o[p.type]=p.value;});
-    var hy=parseInt(String(o.year||'').replace(/[^0-9]/g,''),10);
-    var day=parseInt(String(o.day||'').replace(/[^0-9]/g,''),10);
-    var code=window._ysMonthCode(o.month);
-    if(!(hy>=4000&&hy<=7000)||!(day>=1&&day<=30)||!code) return null;
-    var leap=window.ysHebIsLeap(hy);
-    var mi=leap?window._ysMICodeLeap[code]:window._ysMICodeStd[code];
-    if(mi===undefined){
-      // אי-התאמה בין חישוב העיבור לשם החודש — סימן שמשהו לא צפוי; לא מנחשים
-      return null;
-    }
-    return {hy:hy,mi:mi,day:day,leap:leap};
-  }catch(e){ window._ysIntlOK=false; return null; }
-};
-
-/*  ⛔ אין לבדוק `d instanceof Date` ואין ליפול-חזרה ל«היום» (סבב 57) —
- *  `instanceof` תלוי-realm: אובייקט תאריך שנוצר ב-realm אחר (iframe,
- *  רתמת `vm`) מחזיר `false`, והשורה שהייתה כאן החליפה אותו **בשקט**
- *  בתאריך של היום. שני כשלים בשורה אחת — בדיקה שתלויה במי יצר את
- *  האובייקט, ⛔ ונפילה-חזרה שקטה שמציגה תאריך שגוי כאילו הוא נכון.
- *  ⭐ הבדיקה כאן היא על **החוזה** (`getTime` שמחזיר מספר) ואינה
- *  תלוית-realm; ⛔ וקלט שאינו עובר אותה מוחזר כ«לא תקף» ונרשם.
- *  ⚠️ קריאה **בלי ארגומנט** היא חוזה קיים ומשמעה «היום» — היא נשארת,
- *  ורק ארגומנט שנמסר ואינו תאריך תקף נחשב שגיאה.                       */
-window._ysIsDate=function(d){
-  return !!d&&typeof d.getTime==='function'&&!isNaN(d.getTime());
-};
-window._ysBadDates=[];
-window._ysBadDate=function(where,d){
-  var got;
-  try{ got=Object.prototype.toString.call(d); }catch(e){ got='?'; }
-  window._ysBadDates.push({at:Date.now(),where:where,got:got});
-  if(window._ysBadDates.length>12) window._ysBadDates.shift();
-  try{ console.warn('ysHebDate: קלט שאינו תאריך תקף ב-'+where+' — '+got); }catch(e){}
-};
-window._ysHebNone=function(src){
-  return {year:0,monthIndex:0,monthName:'',day:0,dayLabel:'',
-          yearLabelFull:'',ok:false,src:src};
-};
-
 /* ═══ שכבת המודאל — מודול משותף (סבב 86) ══════════════════════════════════
    ⛔ שכבת המודאל ושלושת העוזרים ישבו **מחוץ** לכל בלוק חתום ⛔ ונסחפו:
       ⚠️ `esc` לשלוש צורות — והיא הגנת ה-HTML היחידה שיש; `openModal` לשלוש,
@@ -3646,7 +3040,12 @@ function kvBadLabel(name) { return name + ' (' + MSG_KV_BAD + ')'; }
       באותה אפליקציה הם שני מקומות שבהם הרוחב נכתב ביד, ⚠️ ושניים כאלה
       נמדדו — הסדרה בבונה, והפס בטבלת הפילוח.
    ⛔ **מה נכנס**: `lab` תווית · `val` הערך · `tgt` היעד · `txt` הטקסט
-      החלופי · `end` מה שנכתב בסוף השורה. */
+      החלופי · `end` מה שנכתב בסוף השורה.
+   ⛔ **ו-`noTarget` הוא דגל בחתימה** — ⚠️ וכשהוא דולק הפס השני **אינו
+      נוצר**, ⭐ ואינו נוצר-ומוסתר: ⛔ הסתרה ב-CSS פר-אפליקציה משאירה
+      את הקוד רץ ואת האלמנט ב-DOM, ⚠️ ומי שקורא את המודול אינו יודע
+      שהוא מכובה. ⭐ **והמכנה נשמר** — ⛔ `max` עדיין נגזר מ-`val`
+      ומ-`tgt`, ⚠️ והסרת הציור אינה משנה את אורכי הפסים. */
 /*  ⛔ הרוחב נכתב למשתנה CSS ⛔ ולא לתגית — ⚠️ סגנון מוטבע גובר על כל
  *  מחלקה ואינו ניתן לשינוי ממקום אחד: ⭐ והצביעה נדחית לפריים שאחרי
  *  ה-`innerHTML`, ⛔ שהיא הרגע שבו הפסים כבר בעץ. */
@@ -3662,7 +3061,7 @@ function bar(pct, cls) {
   return '<span class="btrack' + (cls ? ' ' + cls : '') +
          '"><i data-pct="' + pct + '"></i></span>';
 }
-function barChart(rows, label) {
+function barChart(rows, label, noTarget) {
   if (!Array.isArray(rows) || rows.length < 2) return '';
   var max = 0, i;
   for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].val || 0, rows[i].tgt || 0);
@@ -3672,7 +3071,8 @@ function barChart(rows, label) {
   for (i = 0; i < rows.length; i++) {
     h += '<div class="brow" aria-label="' + esc(rows[i].txt) + '">' +
       '<span class="blab">' + esc(rows[i].lab) + '</span>' +
-      '<span class="bbars">' + bar(pct(rows[i].val)) + bar(pct(rows[i].tgt), 'tgt') +
+      '<span class="bbars">' + bar(pct(rows[i].val)) +
+      (noTarget ? '' : bar(pct(rows[i].tgt), 'tgt')) +
       '</span>' +
       '<span class="bval">' + esc(rows[i].end) + '</span></div>';
   }
@@ -3732,11 +3132,11 @@ function kSortEntries(list) {
 function kPad2(n) { return (n < 10 ? '0' : '') + n; }
 
 /*  ⛔ העוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף,
- *  ⭐ והמנוע האחד הוא `ysHebDate`. */
+ *  ⭐ והמנוע האחד הוא `hebDate`. */
 function kHeb(iso) {
   var h;
   if (!iso) return null;
-  try { h = ysHebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
+  try { h = hebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
   return (h && h.ok) ? h : null;
 }
 function yearOf(iso) { var h = kHeb(iso); return h ? String(h.year) : ''; }
@@ -3751,7 +3151,7 @@ function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
 function monthLabel(k) {
   var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
   if (!y || i < 0) return '';
-  try { names = window.ysHebMonthNames(y); } catch (e) { return ''; }
+  try { names = window.hebMonthNames(y); } catch (e) { return ''; }
   return names[i] || '';
 }
 
@@ -3973,7 +3373,7 @@ function soEnsureInstances(monthKey) {
    ══════════════════════════════════════════════════════════════════════════ */
 /*  ⛔ שתי השורות בתחתית כל מסך — ⚠️ «יחי אדוננו», ומתחתיו «אין עוד
  *  מלבדו»: ⭐ והן נצמדות לתחתית המסך ⛔ ולא לסוף התוכן. */
-/*  ⛔ ואין כאן כפתור חזרה — ⚠️ הגישה לארבעת המסכים היא משורת הניווט:
+/*  ⛔ ואין כאן כפתור חזרה — ⚠️ הגישה לשלושת המסכים היא משורת הניווט:
  *  ⭐ שני מסלולים לאותו מעבר הם שתי דרכים שאיש אינו מצליב. */
 function footHTML() {
   return '<div class="foot">' +
@@ -4002,7 +3402,7 @@ function monthGreg(k) {
 /*  ⛔ שם החודש נושא את השנה — ⚠️ ותווית השנה באה מהמנוע המשותף:
  *  ⭐ צורה שנייה כאן הייתה מקור אמת שני לתצוגה. */
 function monthTitle(m) {
-  return m.name + ' ' + window.ysHebYearLabelFull(m.year);
+  return m.name + ' ' + window.hebYearLabelFull(m.year);
 }
 
 /*  ⛔ האייקון של ההכנסה ושל הצדקה הוא הציור שהאפליקציה כבר מציגה —
@@ -4020,7 +3420,6 @@ function iconFor(kind) {
     other:    'M12 4v16 M4 12h16',
     standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     home:     'M4 11l8-7 8 7 M7 10v10h10V10',
-    upload:   'M12 16V4 M8 8l4-4 4 4 M4 20h16',
     archive:  'M4 8h16v12H4z M3 4h18v4H3z M10 12h4',
     gear:     'M4 7h10 M18 7h2 M4 12h4 M12 12h8 M4 17h10 M18 17h2',
     amount:   'M12 3v18 M7 8h7a3 3 0 010 6H7',
@@ -4118,7 +3517,7 @@ function monthScreenHTML() {
   h += '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
-       '<span class="myear">' + esc(window.ysHebYearLabelFull(m.year)) + '</span>' +
+       '<span class="myear">' + esc(window.hebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
@@ -4160,12 +3559,11 @@ function monthScreenHTML() {
   return h + footHTML();
 }
 
-/*  ⛔ ארבע הלשוניות, ומרשם אחד — ⚠️ **מה נכנס**: מפתח המסך, התווית
+/*  ⛔ שלוש הלשוניות, ומרשם אחד — ⚠️ **מה נכנס**: מפתח המסך, התווית
  *  והאייקון; ⛔ **ומה מפיל**: מפתח שאין לו מסך — ⭐ הלחיצה עוברת
  *  והמסך אינו מתחלף. */
 var TABS = [
   { k: 'month',    lab: 'בית',    ic: 'home' },
-  { k: 'import',   lab: 'יבוא',   ic: 'upload' },
   { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
   { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
 ];
@@ -4177,19 +3575,11 @@ function tabbarHTML() {
   }).join('') + '</div>';
 }
 
-/*  ⛔ כותרת המסך זהה בשלוש הלשוניות שאינן «בית» — ⚠️ והיא אינה ניווט:
+/*  ⛔ כותרת המסך זהה בשתי הלשוניות שאינן «בית» — ⚠️ והיא אינה ניווט:
  *  ⭐ אין בה חצים, ⛔ והחצים שייכים לחודש בלבד. */
 function tabHeadHTML(lab) {
   return '<div class="mrow"><span class="mid"><span class="mname">' +
          esc(lab) + '</span></span></div>';
-}
-
-/*  ⛔ לשונית היבוא ריקה — ⚠️ והיא מציגה את מה שיש בה, ⭐ ולא תהליך
- *  שעוד ייבנה: ⛔ תיאור של מה שאינו קיים מתיישן בלי שאיש יראה. */
-function importScreenHTML() {
-  return brandHTML() + tabHeadHTML(TABS[1].lab) +
-    '<div class="card"><div class="empty">אין כאן עדיין כלום</div></div>' +
-    footHTML();
 }
 
 /*  ⛔ הארכיון מציג חודשים שהגיעו בלבד ⛔ ולא עתידיים — ⚠️ חודש שטרם הגיע
@@ -4212,13 +3602,13 @@ function monthBarsHTML(c, name) {
   return barChart([
     { lab: 'חומש',   val: ch, tgt: 100, end: '', txt: name + ' · חומש ' + Math.round(ch) + '%' },
     { lab: 'פלעדזש', val: pl, tgt: 100, end: '', txt: name + ' · פלעדזש ' + Math.round(pl) + '%' }
-  ], name);
+  ], name, true);
 }
 /*  ⛔ המסך מציג שנים, ⛔ ורק לחיצה עליהן פותחת את פירוט החודשים —
  *  ⚠️ רשימה של כל החודשים מאז ההתחלה מתארכת בלי סוף, ⭐ והשנה היא
  *  היחידה שהמשתמש חושב בה. */
 function archiveScreenHTML() {
-  var ms = archMonths(), h = brandHTML() + tabHeadHTML(TABS[2].lab);
+  var ms = archMonths(), h = brandHTML() + tabHeadHTML(TABS[1].lab);
   if (!ms.length) return h + '<div class="card"><div class="empty">' + esc(MSG_ARCH_EMPTY) +
                              '</div></div>' + footHTML();
   var years = [], seen = {}, i;
@@ -4227,7 +3617,7 @@ function archiveScreenHTML() {
   for (i = 0; i < years.length; i++) {
     var y = years[i], open = view.archYear === y;
     h += '<div class="card"><h2 class="fold" data-act="arch-year" data-id="' + esc(y) + '">' +
-         esc(window.ysHebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
+         esc(window.hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
          '</span></h2>';
     if (open) {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();
@@ -4901,7 +4291,7 @@ function pledgeCardHTML() {
     ys.map(function (y) {
       return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
              '<span class="ico">' + iconFor('amount') + '</span>' +
-             '<span class="nm">' + esc(window.ysHebYearLabelFull(y)) + '</span>' +
+             '<span class="nm">' + esc(window.hebYearLabelFull(y)) + '</span>' +
              '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
     }).join('') + '</ul></div>';
 }
@@ -4928,11 +4318,10 @@ function kRender() {
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
-  else if (view.screen === 'import') root.innerHTML = importScreenHTML();
   else if (view.screen === 'archive') root.innerHTML = archiveScreenHTML();
   else if (view.screen === 'settings') root.innerHTML = settingsScreenHTML();
   var onMonth = view.screen === 'month';
-  /*  ⛔ הסרגל עולה בארבע הלשוניות ⛔ ואינו עולה בזרימה — ⚠️ מסך שהוא
+  /*  ⛔ הסרגל עולה בשלוש הלשוניות ⛔ ואינו עולה בזרימה — ⚠️ מסך שהוא
    *  שדה אחד אינו מקום לנווט ממנו, ⭐ והניווט באמצעו מאבד את הטיוטה. */
   var onTab = TABS.some(function (t) { return t.k === view.screen; });
   if (fab) fab.classList.toggle('hidden', !onMonth);
@@ -5102,7 +4491,7 @@ var DOM_ACTIONS = {
   'pledge-edit': function (el) {
     var y = String(el.dataset.id || '');
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
-    openModal(MSG_PLEDGE_EDIT + window.ysHebYearLabelFull(y),
+    openModal(MSG_PLEDGE_EDIT + window.hebYearLabelFull(y),
       '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
@@ -5175,7 +4564,8 @@ var DOM_ACTIONS = {
     }, MSG_SAVED_LOCAL);
   },
   'done-close': function () { view.screen = 'month'; view.flow = null; kRender(); },
-  'sw-reload': function () { swApply(); }
+  'sw-apply': function (el) { swApply(el); },
+  'sw-dismiss': function () { swHideUpdate(); }
 };
 
 /* ══════════════════════════════════════════════════════════════════════════
