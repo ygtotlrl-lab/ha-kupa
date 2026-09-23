@@ -4383,7 +4383,14 @@ var DOM_ACTIONS = {
     var nx = nextMonthOf(view.monthKey);
     if (nx) { view.monthKey = nx.key; view.screen = 'month'; kRender(); }
   },
-  'tab-go': function (el) { view.screen = el.dataset.id; kRender(); },
+  /*  ⛔ «בית» חוזר לחודש של היום — ⚠️ חודש שנפתח מהארכיון אינו הבית,
+   *  ⭐ ומי שחוזר אליו נשאר בחודש ישן: ⛔ ושאר הלשוניות אינן נוגעות בו,
+   *  ⚠️ שאין להן חודש. */
+  'tab-go': function (el) {
+    view.screen = el.dataset.id;
+    if (view.screen === 'month') view.monthKey = nowMonthKey() || null;
+    kRender();
+  },
   'arch-month': function (el) {
     var m = monthByKey(el.dataset.id);
     if (m) { view.monthKey = m.key; view.screen = 'month'; kRender(); }

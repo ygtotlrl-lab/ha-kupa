@@ -26,11 +26,10 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
+import { FACTS } from './app-facts.mjs';
 
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  app: 'ha-kupa',
-  file: 'index.html',
   /*  ⛔ `present:false` הוא הצהרה מנומקת ולא היעדר שקט — ⚠️ שני משתמשים
    *  ונתונים משותפים, ⛔ ואין כאן מסך כניסה, אין משתמש מחובר, ואין מה
    *  לנעול: ⭐ נעילה בלי מי לנעול היא מסך שחוסם את כולם באותה מידה. */
@@ -147,8 +146,8 @@ process.on('exit', () => {
 const fail = (m) => { RAN++; failures++; console.error('❌ ' + m); };
 const pass = (m) => (RAN++, console.log('✅ ' + m));
 
-const src = fs.readFileSync(APP.file, 'utf8');
-console.log('\n🔎 נעילת חוסר-פעילות (סבב 52) — ' + APP.app + '\n');
+const src = fs.readFileSync(FACTS.entry, 'utf8');
+console.log('\n🔎 נעילת חוסר-פעילות (סבב 52) — ' + FACTS.slug + '\n');
 
 function codeOnly(text) {
   return text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
@@ -196,7 +195,7 @@ if (!APP.present) {
 }
 
 if (!block) {
-  fail('1. הבלוק המשותף לא נמצא ב-' + APP.file);
+  fail('1. הבלוק המשותף לא נמצא ב-' + FACTS.entry);
   console.log('\n❌ בדיקת נעילת חוסר-הפעילות נכשלה (' + failures + ')');
   process.exit(1);
 }

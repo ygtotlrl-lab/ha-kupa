@@ -24,6 +24,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+import { FACTS } from './app-facts.mjs';
 
 /*  ⛔ השורות בטבלת התשתית שהקובץ הזה אוכף (סבב 72) — ⚠️ המיפוי היה
  *  חד-כיווני ב-`check-capabilities` בלבד, ⛔ ומי שערך שער כאן לא ראה
@@ -36,7 +37,6 @@ export const ROWS = [160];
 const RUN_MUT = process.env.GATE_MUT === '1';
 /* ── APP — הדבר היחיד שנבדל בין הריפו ──────────────────────────────────── */
 const APP = {
-  name: 'ha-kupa',
   /* ⛔ שבע הטבלאות של האפליקציה הזו. ⚠️ נגזרו מקובץ הסכימה שרץ במסד,
      ⛔ ולא מרשימת הדחיפה — ⭐ רשימה שנגזרת מהקוד מאשרת את עצמה. */
   tables: ['k_pledges', 'k_standing_orders',
@@ -197,7 +197,7 @@ function tableSources(src) {
   return out;
 }
 
-console.log('\n— סבב 62: מקורות הגיבוי (' + APP.name + ') —');
+console.log('\n— סבב 62: מקורות הגיבוי (' + FACTS.slug + ') —');
 
 const found = tableSources(SRC);
 ok(found !== null, '1 · `BK_CFG.sources()` נקראת מ-index.html');
