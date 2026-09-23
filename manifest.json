@@ -12,11 +12,11 @@
   "background_color": "#F6F2FA",
   "theme_color": "#9C7FD0",
   "icons": [
-    { "src": "icons/favicon-16.png",      "sizes": "16x16",   "type": "image/png" },
-    { "src": "icons/favicon-32.png",      "sizes": "32x32",   "type": "image/png" },
-    { "src": "icons/icon-192.png",        "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png",        "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png","sizes": "512x512","type": "image/png", "purpose": "maskable" },
-    { "src": "icons/apple-touch-icon.png","sizes": "180x180", "type": "image/png" }
+    { "src": "icons/favicon-16.ce583c8e.png",      "sizes": "16x16",   "type": "image/png" },
+    { "src": "icons/favicon-32.660c86d2.png",      "sizes": "32x32",   "type": "image/png" },
+    { "src": "icons/icon-192.b77bc564.png",        "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.0340804e.png",        "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.cc06987e.png","sizes": "512x512","type": "image/png", "purpose": "maskable" },
+    { "src": "icons/apple-touch-icon.ba19ef31.png","sizes": "180x180", "type": "image/png" }
   ]
 }
