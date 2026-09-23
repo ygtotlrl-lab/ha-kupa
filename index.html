@@ -4672,67 +4672,8 @@ document.addEventListener('pointerup', function () {
 /* ══════════════════════════════════════════════════════════════════════════
    העלייה
    ══════════════════════════════════════════════════════════════════════════ */
-/*  ⛔ ההגירה המקומית של התחילית — ⚠️ **מה נכנס**: כל מפתח שבאחסון המקומי
- *  שנושא את התחילית הישנה, מלא או בנוי מקידומת; ⛔ **ומה מפיל**: מפתח
- *  שנשאר תחתיה אחרי שהיא רצה. ⭐ **ולמה היא קיימת**: התחילית הוסבה במסד
- *  ובקוד באותו סבב, ⛔ ומפתח שאינו מוסב הוא תור שלא נדחף ומראה שאיש אינו
- *  קורא — ⚠️ והנתון שבו אבוד בלי שאיש יראה.
- *  ⚠️ **והיא סורקת את האחסון עצמו** ⛔ ולא רשימת שמות — ⭐ שלוש קידומות
- *  בונות כאן מפתחות ששמם המלא אינו ידוע מראש.
- *  ⛔ **והיא יורדת בסבב שאחרי זה שהריץ אותה** — ⚠️ רצה כאן (סבב 148). */
-function kMigrateLegacyPrefix() {
-  var OLD = 'kp_', NEW = 'k_';
-  /*  ⛔ התור, המזהה ותור היומן ראשונים — ⚠️ מכשיר שנסגר באמצע ההגירה
-   *  מאבד אותם אחרונים: ⭐ הם מה שאין לו מקור שני בענן. */
-  var head = ['pending', 'device_id', 'log_queue'];
-  var all = [], i, k, to, v, moved = 0;
-  try {
-    for (i = 0; i < localStorage.length; i++) {
-      k = localStorage.key(i);
-      if (k && k.indexOf(OLD) === 0) all.push(k);
-    }
-  } catch (e) { console.warn('[ls] סריקת האחסון נכשלה בהגירת התחילית', e); return 0; }
-  all.sort(function (a, b) {
-    var ra = head.indexOf(a.slice(OLD.length)), rb = head.indexOf(b.slice(OLD.length));
-    if (ra < 0) ra = head.length;
-    if (rb < 0) rb = head.length;
-    return ra - rb || (a < b ? -1 : a > b ? 1 : 0);
-  });
-  for (i = 0; i < all.length; i++) {
-    k = all[i];
-    /*  ⛔ כל מופע מוחלף ⛔ ולא הפותח בלבד — ⚠️ מפתח האופק נבנה מקידומת
-     *  ועל מפתח המראה, ⭐ ונושא את התחילית פעמיים: ⛔ החלפת הפותח לבדו
-     *  הייתה משאירה אופק יתום שחוסם את המשיכה לנצח. */
-    to = k.split(OLD).join(NEW);
-    v = lsGet(k);
-    if (v === null) { lsRemove(k); continue; }
-    /*  ⛔ ומפה שמפתחותיה שמות טבלה מוסבת בתוכה — ⚠️ מפת ה-⏳ ועֵד הדחיפה
-     *  ממופתחות בשם הטבלה: ⭐ שינוי שם המפתח באחסון לבדו היה משאיר בתוכן
-     *  את השם הישן, ⛔ והסימון היה יורד בשקט — ⚠️ והשורה שלא נדחפה אבודה.
-     *  ⛔ **והמפתחות בלבד מוסבים** ⛔ ולא הערכים — ⚠️ ערך הוא טקסט שהמשתמש
-     *  הקליד, ⭐ והמפתח נבנה בקוד. */
-    v = (function (txt) {
-      var o, out, ks, j;
-      try { o = JSON.parse(txt); } catch (e2) { return txt; }
-      if (!o || typeof o !== 'object' || Array.isArray(o)) return txt;
-      ks = Object.keys(o);
-      if (!ks.some(function (x) { return x.indexOf(OLD) >= 0; })) return txt;
-      out = {};
-      for (j = 0; j < ks.length; j++) out[ks[j].split(OLD).join(NEW)] = o[ks[j]];
-      return JSON.stringify(out);
-    })(v);
-    /*  ⛔ קוראת · כותבת · ורק אז מוחקת — ⚠️ ריצה שנייה על מפתח שכבר עבר
-     *  אינה משנה דבר, ⭐ ומחיקה שקודמת לכתיבה מאבדת אותו במכשיר שנסגר. */
-    if (lsGet(to) === null && !lsSet(to, v)) continue;
-    lsRemove(k);
-    moved++;
-  }
-  if (moved) console.log('[ls] תחילית האחסון הוסבה — ' + moved + ' מפתחות');
-  return moved;
-}
 function kBoot() {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  kMigrateLegacyPrefix();
   lsBoot();
   _kLoadPushed();
   cfgBoot();
