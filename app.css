@@ -218,6 +218,9 @@ main > .foot{margin-top:auto}
 .det .ico.art svg{width:24px;height:24px}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
 .det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
+/*  ⛔ מופע שיום חיובו טרם הגיע הוא צפי — ⚠️ נספר בחישוב, ⭐ ומעומעם
+ *  כדי שלא ייקרא כתשלום שיצא. */
+.det li.pend{opacity:var(--op-5)}
 .det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
 /*  ⛔ כותרת שנפתחת היא כפתור לכל דבר — ⚠️ שטח הלחיצה הוא כל הכותרת,
  *  ⭐ ולא החץ לבדו. */
@@ -246,7 +249,7 @@ main > .foot{margin-top:auto}
 .amon:last-child{border-bottom:0}
 /*  ⛔ כותרת החודש בולטת מתוויות הפסים שתחתיה — ⚠️ שתיהן היו באותה מידה
  *  ובאותו גוון: ⭐ והעין לא ידעה מי מהן הכותרת. */
-.amn{font-size:var(--fs-4);font-weight:500;color:var(--text);margin-bottom:var(--sp-4)}
+.amn{font-size:var(--fs-4);font-weight:500;color:var(--text);margin-bottom:var(--sp-4);cursor:pointer}
 /*  ⛔ שורת הפלעדזש בגוון שלה — ⚠️ הסדרה נבנית ברכיב המשותף, ⭐ והוא
  *  אינו מקבל גוון פר-שורה: ⛔ והתפקיד נגזר מהמיקום — ⚠️ החומש ראשון
  *  והפלעדזש שני, ⭐ בדיוק כמו במסך הבית. */

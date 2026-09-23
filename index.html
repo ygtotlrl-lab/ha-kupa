@@ -3217,7 +3217,7 @@ function monthsWithData() {
   for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
   l = kLive(MIRROR.k_so_instances);
   for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
-  k = monthKeyOf(kIsoOfDay(Math.floor(Date.now() / 86400000)));
+  k = nowMonthKey();
   if (k) seen[k] = true;
   /*  ⛔ והחודש שמוצג נכנס אף הוא — ⚠️ הניווט אינו מוגבל, ⭐ והשרשרת
    *  היא מה שגוזר את היעד ואת המצטבר: ⛔ חודש שמחוץ לטווח היה נפתח
@@ -3300,9 +3300,7 @@ function openingBalance() {
 
 /*  ⛔ החודש הנוכחי נגזר מהיום ⛔ ואינו נשמר — ⚠️ והוא הגבול שמעבר לו
  *  הפלעדזש אינו נושא יתרה: ⭐ חודש שלא נסגר אין לו מה להוריש. */
-function nowMonthKey() {
-  return monthKeyOf(kIsoOfDay(Math.floor(Date.now() / 86400000)));
-}
+function nowMonthKey() { return monthKeyOf(nowIso()); }
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות,
  *  ⭐ ולכן חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו. */
 function chainAll() {
@@ -3364,6 +3362,26 @@ function soEnsureInstances(monthKey) {
   }
   return made;
 }
+/*  ⛔ הכתיבה למסד נגזרת מהשעון ⛔ ולא מהחודש שמוצג — ⚠️ מסך שנפתח אינו
+ *  אירוע: ⭐ ניווט שכתב מופעים יצר שנה קדימה שורות שאיש לא ביקש.
+ *  ⚠️ **והטווח מתחילת הניהול ועד החודש הנוכחי** — ⭐ חודש עבר שהמכשיר
+ *  לא עלה בו מקבל את מופעיו למפרע, ⛔ והוראה אינה חלה על מה שקדם לה:
+ *  ⚠️ **והעתיד נגזר בתצוגה ואינו נכתב** — ⛔ מה שנכתב קרה. */
+function soEnsureThroughNow() {
+  var now = nowMonthKey(), k = ARCH_FIRST, made = [], n, guard = 0;
+  while (now && k && k <= now && guard++ < 650) {
+    made = made.concat(soEnsureInstances(k));
+    n = nextMonthOf(k);
+    k = n ? n.key : '';
+  }
+  return made;
+}
+/*  ⛔ מופע נחשב כפעולה שקרתה ביום החיוב — ⚠️ לפניו הוא צפי: ⭐ מוצג
+ *  ונספר בחישוב, ⛔ ומסומן ככזה — גם בחודש הנוכחי. */
+function soIsForecast(r) {
+  return r.source === 'standing' && String(r.entry_date || '') > nowIso();
+}
+function nowIso() { return kIsoOfDay(Math.floor(Date.now() / 86400000)); }
 
 /* ══════════════════════════════════════════════════════════════════════════
    הרינדור
@@ -3438,7 +3456,8 @@ function detailRowHTML(r) {
   var isInc = r.type === 'income';
   var so = r.source === 'standing';
   var tag = so ? 'הו״ק' : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : ''));
-  return (so ? '<li data-act="order-edit" data-id="' + esc(r.order_id || '')
+  return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '') +
+               ' data-act="order-edit" data-id="' + esc(r.order_id || '')
              : '<li data-act="entry-menu" data-id="' + esc(r.client_id)) + '">' +
          '<span class="ico art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
@@ -3618,7 +3637,8 @@ function archiveScreenHTML() {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();
       h += mine.map(function (m) {
         var c = chainOf(m.key) || {};
-        return '<div class="amon"><div class="amn">' + esc(m.name) + '</div>' +
+        return '<div class="amon"><div class="amn" data-act="arch-month" data-id="' +
+               esc(m.key) + '">' + esc(m.name) + '</div>' +
                monthBarsHTML(c, m.name) + '</div>';
       }).join('');
     }
@@ -4364,6 +4384,10 @@ var DOM_ACTIONS = {
     if (nx) { view.monthKey = nx.key; view.screen = 'month'; kRender(); }
   },
   'tab-go': function (el) { view.screen = el.dataset.id; kRender(); },
+  'arch-month': function (el) {
+    var m = monthByKey(el.dataset.id);
+    if (m) { view.monthKey = m.key; view.screen = 'month'; kRender(); }
+  },
   'flow-next': function () {
     flowCollect();
     var bad = flowValid();
@@ -4706,8 +4730,9 @@ function kBoot() {
   _kLoadPushed();
   cfgBoot();
   mirrorBoot();
-  var ms = monthsSorted();
-  view.monthKey = ms.length ? ms[ms.length - 1].key : null;
+  /*  ⛔ הפתיחה בחודש של היום — ⚠️ ולא בחודש האחרון שיש לו נתונים:
+   *  ⭐ חודש ריק נפתח ריק, ⛔ ואינו נופל לחודש אחר. */
+  view.monthKey = nowMonthKey() || null;
   kRender();
   pendBoot();
   tombBoot();
@@ -4721,7 +4746,7 @@ function kBoot() {
   swRegister();
   sbWatch();
   kSyncPull().then(function () {
-    var made = soEnsureInstances(view.monthKey), i;
+    var made = soEnsureThroughNow(), i;
     for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
     if (made.length) pushSoon();
     kRender();

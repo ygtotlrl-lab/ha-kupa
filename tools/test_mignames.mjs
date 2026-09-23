@@ -41,6 +41,7 @@ const APP = {
     '004_prefix_kp_to_k.sql': 'round148_kupa_prefix_to_k',
     '005_settings_key_no_prefix.sql': 'kupa_settings_key_no_prefix',
     '006_so_instances_drop_status.sql': 'kupa_so_instances_drop_status',
+    '007_so_instances_future_soft_delete.sql': 'kupa_so_instances_future_soft_delete',
   },
   /*  ⛔ קובץ שאין לו רשומה במעקב — ⚠️ **מה נכנס**: שם הקובץ ⟵ למה אין
    *  לו רשומה; ⛔ **ומה מפיל**: הצהרה שאין לה `null` במרשם, ו-`null`
