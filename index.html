@@ -1118,7 +1118,7 @@ function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
     (after > EPS ? ' plus' : '') + '">' +
     '<h2>' + esc(title) +
     '<span class="st">' + esc(MSG_LEFT_SUM) + signed(due - given) + '</span></h2>' +
-    '<div class="u-mt-2">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
+    '<div class="comp-meter">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
     '<div class="crow"><div class="big">' + signed(due) + '</div>' +
     '<div class="parts">' +
     '<span>' + esc(MSG_PART_MONTH) + signed(ofMonth) + '</span>' +
@@ -1270,7 +1270,7 @@ function ordersCardHTML() {
              '<span class="amt">' + money(o.amount) + '</span></li>';
     }).join('') + '</ul>'
      : '<div class="empty">' + esc(MSG_NO_ORDERS) + '</div>') +
-    '<button class="btn ghost u-mt-5" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
+    '<button class="btn ghost card-add" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
     '</div>';
 }
 
@@ -1295,7 +1295,7 @@ function lookupCardHTML(kind, title, dflt) {
                '<span class="grip" aria-hidden="true">⠿</span>' +
                '<span class="nm">' + esc(r.label) + '</span></li>';
       }).join('')) + '</ul>' +
-      '<button class="btn ghost u-mt-5" data-act="look-add" data-id="' + esc(kind) + '">' +
+      '<button class="btn ghost card-add" data-act="look-add" data-id="' + esc(kind) + '">' +
       esc(MSG_WAY_NEW) + '</button>') +
     '</div>';
 }
@@ -1686,7 +1686,7 @@ function doneScreenHTML() {
     '<div class="line1">' + esc(isInc ? MSG_OPENER : MSG_TZ_BLESS) + '</div>' +
     '<div class="line2">' + esc('נרשם · ' + (isInc ? MSG_SUM_INCOME + ' ' : MSG_LEFT_SUM)) +
     (isInc ? esc(money(c.income || 0)) : signed(c.pledgeLeft || 0)) + '</div>' +
-    '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div></div>' +
+    '<button class="btn done-back" data-act="done-close">חזרה</button></div></div>' +
     footHTML('');
 }
 

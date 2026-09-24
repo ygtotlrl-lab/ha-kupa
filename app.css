@@ -143,6 +143,7 @@ main > .foot{margin-top:auto}
  *  דבר בלי לגזול מקום.
  *  ⛔ **והיא בוהקת ⛔ ואינה רמז** — ⚠️ טבעת בעובי דרגה ובגוון מלא:
  *  ⭐ מסגרת בגוון החיוור ביותר נבלעה ברקע, ⛔ והמשתמש לא ראה שהיעד הושלם. */
+.comp-meter{margin-top:var(--sp-2)}
 .comp.plus{border-color:var(--purple-3);
   box-shadow:0 0 0 var(--sp-1) var(--purple-2),var(--shadow-lg)}
 /*  ⛔ והמסגרת נושאת את גוון הרכיב — ⚠️ חומש סגול ופלעדזש אפרסק:
@@ -366,6 +367,7 @@ main > .foot{margin-top:auto}
 .btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
 .btn:active{transform:translateY(1px)}
 .btn:disabled{opacity:var(--op-3);cursor:default}
+.card-add{margin-top:var(--sp-5)}
 .back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-2);
   min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
 .acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
@@ -407,6 +409,7 @@ main > .foot{margin-top:auto}
 .done{text-align:center;padding:var(--sp-7) var(--sp-6)}
 .done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
 .done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
+.done-back{margin-top:var(--sp-5)}
 /*  ⛔ הקונפטי על כל המסך ⛔ ולא בחציו העליון — ⚠️ הוא ממורכז סביב אמצעו:
  *  ⭐ פס עליון נראה כמו משהו שנשפך מהקצה. */
 .conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
@@ -586,7 +589,5 @@ main > .foot{margin-top:auto}
 @media (prefers-reduced-motion:reduce){
   :root{--dur-1:0s;--dur-2:0s;--dur-3:0s;--dur-4:0s;--dur-5:0s;--dur-6:0s}
 }
-.u-mt-2{margin-top:var(--sp-2)}
-.u-mt-5{margin-top:var(--sp-5)}
 /* ═══ סוף CSS הסולמות ═══════════════════════════════════════════════════ */
 /* ═══ סוף גיליון הסגנון — בלוק גיליון סגנון ══════════════════════════════ */
