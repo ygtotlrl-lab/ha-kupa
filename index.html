@@ -1244,8 +1244,8 @@ function archiveScreenHTML() {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();
       h += mine.map(function (m) {
         var c = chainOf(m.key) || {};
-        return '<div class="amon"><div class="amn" data-act="arch-month" data-id="' +
-               esc(m.key) + '">' + esc(m.name) + '</div>' +
+        return '<div class="amon"><button class="amn" data-act="arch-month" data-id="' +
+               esc(m.key) + '">' + esc(m.name) + '</button>' +
                monthBarsHTML(c, m.name) + '</div>';
       }).join('');
     }

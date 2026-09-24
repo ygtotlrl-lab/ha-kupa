@@ -249,7 +249,20 @@ main > .foot{margin-top:auto}
 .amon:last-child{border-bottom:0}
 /*  ⛔ כותרת החודש בולטת מתוויות הפסים שתחתיה — ⚠️ שתיהן היו באותה מידה
  *  ובאותו גוון: ⭐ והעין לא ידעה מי מהן הכותרת. */
-.amn{font-size:var(--fs-4);font-weight:500;color:var(--text);margin-bottom:var(--sp-4);cursor:pointer}
+/*  ⛔ והוא כפתור ⛔ ולא `div` — ⚠️ `div` לחיץ אינו נגיש למקלדת: ⭐ ולכן
+ *  עיצוב הדפדפן מאופס, ⛔ והרמז ללחיצה הוא צבע, משקל וחץ — ⚠️ לא מסגרת.
+ *  ⭐ הריפוד מקוזז בשוליים — ⛔ השם נשאר מיושר עם הפסים שתחתיו, ⚠️ והרקע
+ *  בלחיצה אינו נצמד לאותיות. */
+.amn{display:inline-flex;align-items:baseline;gap:var(--sp-3);background:none;border:0;
+  padding:var(--sp-2) var(--sp-4);margin:0 calc(var(--sp-4) * -1) var(--sp-2);
+  border-radius:var(--r-3);font-size:var(--fs-4);font-weight:600;color:var(--brand-ink);
+  text-align:start;cursor:pointer;transition:background var(--dur-2) var(--ease)}
+/*  ⛔ `‹` ⛔ ולא `›` — ⚠️ בעברית החץ שמאלה הוא «קדימה». */
+.amn::after{content:"‹";display:inline-block;font-size:var(--fs-3);opacity:var(--op-5);
+  transition:transform var(--dur-3) var(--ease)}
+.amn:active{background:var(--brand-soft)}
+.amn:active::after{transform:translateX(calc(var(--sp-2) * -1))}
+.amn:focus-visible{outline-color:var(--brand)}
 /*  ⛔ שורת הפלעדזש בגוון שלה — ⚠️ הסדרה נבנית ברכיב המשותף, ⭐ והוא
  *  אינו מקבל גוון פר-שורה: ⛔ והתפקיד נגזר מהמיקום — ⚠️ החומש ראשון
  *  והפלעדזש שני, ⭐ בדיוק כמו במסך הבית. */
@@ -323,6 +336,7 @@ main > .foot{margin-top:auto}
   .sheet-hd .x:hover{background:var(--card-2)}
   #ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
   .pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
+  .amn:hover{background:var(--brand-soft)}
 }
 
 /* ============================================================ מסך הזרימה */
