@@ -417,19 +417,22 @@ main > .foot{margin-top:auto}
   margin-bottom:var(--sp-4)}
 
 /* ================================================== באנר העדכון והמודאל */
-#updater{position:fixed;inset-inline:0;inset-block-end:0;z-index:var(--z-6);
+#updater{
+  position:fixed;inset-inline:0;z-index:var(--z-6);
+  bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom) + 46px);
   display:none;justify-content:center;padding:var(--sp-5) var(--sp-6)}
 #updater.show{display:flex}
 #updater .in{
-  background:var(--brand);color:var(--on-brand);border-radius:var(--r-5);
-  padding:var(--sp-5) var(--sp-6);display:flex;align-items:center;gap:var(--sp-5);
-  box-shadow:var(--shadow-lg);font-size:var(--fs-3);font-weight:500;
-  max-width:520px;width:100%}
-#updater button{margin-inline-start:auto;background:var(--on-brand);color:var(--brand);border:0;cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-6);font-weight:500;
-  min-height:44px}
-#updater button.x{margin-inline-start:0;background:none;color:var(--on-brand);
-  opacity:var(--op-5);padding:0 var(--sp-2);font-size:var(--fs-4);min-height:auto}
+  background:var(--brand);color:var(--on-brand);border-radius:var(--r-5);padding:var(--sp-5) var(--sp-5) var(--sp-5) var(--sp-6);
+  display:flex;align-items:center;gap:var(--sp-5);box-shadow:0 6px 24px var(--sh-3);
+  font-size:var(--fs-3);font-weight:700;max-width:520px;width:100%
+}
+#updater button{
+  margin-inline-start:auto;background:var(--on-brand);color:var(--brand);border:0;border-radius:var(--r-4);
+  padding:var(--sp-4) var(--sp-6);font-family:inherit;font-weight:700;cursor:pointer;font-size:var(--fs-3);flex:none
+}
+#updater button.x{
+  margin-inline-start:0;background:none;color:var(--on-brand);opacity:var(--op-5);padding:0 var(--sp-2);font-size:var(--fs-4)}
 /*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
  *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
 .veil{position:fixed;inset:0;z-index:var(--z-4);background:var(--veil);
