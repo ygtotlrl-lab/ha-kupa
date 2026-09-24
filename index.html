@@ -2282,7 +2282,7 @@ document.addEventListener('pointerup', function () {
    העלייה
    ══════════════════════════════════════════════════════════════════════════ */
 function kBoot() {
-  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   lsBoot();
   _kLoadPushed();
   cfgBoot();
@@ -2301,7 +2301,6 @@ function kBoot() {
   rtyBoot();
   plBoot();
   swRegister();
-  sbWatch();
   kSyncPull().then(function () {
     var made = soEnsureThroughNow(), i;
     for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
