@@ -1527,17 +1527,21 @@ function coinHome() {
   var b = COIN.tgt.getBoundingClientRect();
   return { x: window.innerWidth / 2 - 75, y: Math.max(0, b.top - 190) };
 }
+/*  ⛔ נקודת הכתיבה האחת של המיקום — ⚠️ משתני CSS, ⭐ והכלל של `.coin` קורא אותם. */
+function coinAt(p) {
+  COIN.el.style.setProperty('--x', p.x + 'px');
+  COIN.el.style.setProperty('--y', p.y + 'px');
+}
 function coinWire() {
   var c = document.getElementById('coin'), t = document.getElementById('slide-target');
   if (!c || !t) { uiNoDialog('coinWire', 'coin'); return; }
   COIN.el = c; COIN.tgt = t;
-  var p = coinHome();
-  c.style.left = p.x + 'px';
-  c.style.top = p.y + 'px';
+  coinAt(coinHome());
   c.addEventListener('pointerdown', coinDown);
 }
 function coinDown(e) {
   var c = COIN.el, r = c.getBoundingClientRect();
+  c.classList.remove('settle');
   COIN.dx = e.clientX - r.left; COIN.dy = e.clientY - r.top;
   c.setPointerCapture(e.pointerId);
   c.addEventListener('pointermove', coinMove);
@@ -1545,8 +1549,7 @@ function coinDown(e) {
 }
 function coinMove(e) {
   var c = COIN.el;
-  c.style.left = (e.clientX - COIN.dx) + 'px';
-  c.style.top = (e.clientY - COIN.dy) + 'px';
+  coinAt({ x: e.clientX - COIN.dx, y: e.clientY - COIN.dy });
   var over = coinOverTarget();
   if (over !== COIN.over) { COIN.over = over; c.classList.toggle('over', over); }
 }
@@ -1565,9 +1568,8 @@ function coinUp(e) {
 function coinReturn() {
   var c = COIN.el, p = coinHome();
   c.classList.remove('over');
-  c.style.transition = 'left var(--dur-4) ease, top var(--dur-4) ease';
-  c.style.left = p.x + 'px';
-  c.style.top = p.y + 'px';
+  c.classList.add('settle');
+  coinAt(p);
 }
 
 /*  ⛔ הרגישות עוברת כאן בלבד — ⚠️ הצליל נוצר ב-`AudioContext`:
@@ -1628,13 +1630,11 @@ function confetti() {
 
 function coinSwallow() {
   var c = COIN.el, b = COIN.tgt.getBoundingClientRect();
-  c.style.transition = 'left var(--dur-4) ease, top var(--dur-4) ease';
-  c.style.left = (b.left + b.width / 2 - 75) + 'px';
-  c.style.top = (b.top) + 'px';
+  c.classList.add('settle');
+  coinAt({ x: b.left + b.width / 2 - 75, y: b.top });
   setTimeout(function () {
-    c.style.transition = 'transform var(--dur-4) ease, opacity var(--dur-4) ease';
-    c.style.transform = 'scale(.9,.06)';
-    c.style.opacity = '0';
+    c.classList.remove('settle', 'over');
+    c.classList.add('swallow');
   }, 280);
   setTimeout(function () { sensoryFire(); confetti(); flowCommit(); }, 600);
 }
@@ -2042,7 +2042,7 @@ var DOM_ACTIONS = {
    *  אף הם, ⭐ והכפתור הוא המסלול הנראה: ⛔ משטח שאין בו כפתור
    *  סגירה מונע מהמשתמש לדחות. */
   'modal-close': function () { closeModal(); },
-  'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.style.display = 'none'; },
+  'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.remove(); },
   'pend-alert-ok':       function () { pendAlertDismiss(); },
   /*  ⛔ לחיצה על תנועה פותחת עורך ⛔ ולא מחיקה — ⚠️ המחיקה היא כפתור
    *  בתוכו: ⭐ מסלול שמחיקתו היא הלחיצה היחידה מוחק על טעות. */
