@@ -16,12 +16,12 @@
   /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד בכולן, ⭐ והגוון בלבד נבדל:
    *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
    *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
-  --brand:#7C5CB0; --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
+  --brand:var(--brand-fill); --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
 
   --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
   --text:#352B3F; --text-2:#7E6F90; --text-3:#9F94AC;
   --border:#E6DEF0;
-  --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
+  --brand-fill:#7C5CB0; --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
   /*  ⛔ שלושת המצבים בגווני האפליקציה — ⚠️ הטורקיז לצד הסגול, והפטל
    *  והאפרסק לצד האפרסק שבערכה: ⭐ אדום · ירוק · צהוב הם ערכת אזעקה,
    *  ⛔ והם נקראים כתקלה גם כשהם מבשרים הצלחה.
@@ -55,7 +55,7 @@
     --bg:#1B1420; --card:#251C2C; --card-2:#2E2336;
     --text:#EFE8F5; --text-2:#C4B6D2; --text-3:#9C8FAC;
     --border:#3A2D45;
-    --brand:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
+    --brand-fill:#7C5CB0; --brand-ink:#C3AAE8; --brand-soft:#332845;
     --ok:#79D8C2; --ok-soft:#112722;
     --warn:#F1A483; --warn-soft:#2D1D16;
     --bad:#EB8EA4; --bad-soft:#2C1117;
@@ -91,7 +91,6 @@ body.locked{overflow:hidden}
 h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
 button{font:inherit; color:inherit}
 input,select,textarea{font:inherit; color:inherit}
-.hidden{display:none !important}
 /*  ⛔ טבעת המיקוד בגוון הערכה — ⚠️ ברירת המחדל של הדפדפן צהובה-כתומה:
  *  ⭐ היא אינה באוצר הצבעים של האפליקציה, ⛔ ונקראת כאזהרה על שדה תקין. */
 :focus-visible{outline:var(--sp-1) solid var(--purple-3);outline-offset:var(--sp-1)}
@@ -388,13 +387,20 @@ main > .foot{margin-top:auto}
  *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
 .target.wide{width:270px}
 .target.narrow{width:230px}
-.coin{position:absolute;width:150px;height:150px;border-radius:var(--r-7);
+/*  ⛔ המיקום ב-`--x`/`--y` ⛔ ולא בתגית — ⚠️ הגרירה כותבת אותם
+ *  ב-`setProperty`, ⭐ והכלל הזה הוא היחיד שקורא אותם. */
+.coin{--x:0;--y:0;left:var(--x);top:var(--y);
+  position:absolute;width:150px;height:150px;border-radius:var(--r-7);
   background:var(--peach-2);display:flex;align-items:center;justify-content:center;
   color:var(--on-dark);font-size:var(--fs-6);font-weight:500;touch-action:none;cursor:grab;
   box-shadow:var(--shadow-lg)}
 .coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
   border:1px solid var(--ring-soft)}
 .coin.over{transform:scale(1.05)}
+/*  ⛔ שני שלבי התנועה הם מחלקות — ⚠️ חזרה והחלקה ליעד (`settle`), ⭐ ואחריה
+ *  הבליעה (`swallow`): ⛔ המעבר מתחלף בין השלבים, ⚠️ ולכן אינו על `.coin`. */
+.coin.settle{transition:left var(--dur-4) ease,top var(--dur-4) ease}
+.coin.swallow{transition:transform var(--dur-4) ease,opacity var(--dur-4) ease;transform:scale(.9,.06);opacity:0}
 /*  ⛔ הכיתוב יושב בתחתית המסך — ⚠️ הפתיתים דהויים וחולפים, ⭐ והכיתוב
  *  נשאר: ⛔ פתית שנופל על אות מסתיר אותה בדיוק ברגע שבו היא נקראת. */
 .donewrap{display:flex;align-items:flex-end;justify-content:center;min-height:58vh}
@@ -466,19 +472,40 @@ main > .foot{margin-top:auto}
 
 
 /* ═══ שכבת הטוסט — מודול משותף ══════════════════════════════════════════════
-   זהה בית-לבית בכל האפליקציות. ⛔ שני סיווגי המצב נשענים על אסימוני
-   המצב — ⚠️ צמד הפוך שמתחלף יחד, ⭐ והנייטרלי כתוב במפורש: אין לו מצב.
+   זהה בית-לבית בכל האפליקציות. ⛔ שלושה סוגים בלבד, ⚠️ וכולם בגוון
+   האפליקציה: ⭐ הצלחה על `--brand-fill` · מידע על `--brand-soft` · ⛔ ושגיאה
+   נשארת בצבע שגיאה — ⚠️ שגיאה צריכה להיראות כשגיאה.
    ⛔ מיכל אחד ובתוכו `div` לכל הודעה — ⚠️ הנימוק המדוד: בשלוש מהן היה
       אלמנט **קבוע** אחד, ⛔ והודעה שנייה דרסה את הראשונה: ⭐ «נשמר»
       ו«שגיאת רשת» ברצף השאירו על המסך אחת בלבד.
    ⛔ ו-`--toast-bottom` הוא הערך היחיד שנבדל — ⚠️ לשתיים מהן יש סרגל
       תחתון קבוע, ⭐ ולטוסט שיושב מתחתיו אין מי שיראה אותו. */
 #toasts{position:fixed;inset-inline:0;bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom));z-index:var(--z-5);display:grid;gap:var(--sp-4);justify-items:center;pointer-events:none;padding:0 var(--sp-6)}
-.toast{background:var(--chip);color:var(--on-chip);border-radius:var(--r-6);padding:var(--sp-5) var(--sp-7);font-size:var(--fs-3);font-weight:600;line-height:var(--lh-3);box-shadow:0 6px 20px var(--sh-2);max-width:92vw;text-align:center;animation:toastUp var(--dur-3) ease-out}
+.toast{background:var(--brand-soft);color:var(--brand-ink);border-radius:var(--r-6);padding:var(--sp-5) var(--sp-7);font-size:var(--fs-3);font-weight:600;line-height:var(--lh-3);box-shadow:0 6px 20px var(--sh-2);max-width:92vw;text-align:center;animation:toastUp var(--dur-3) ease-out}
 .toast.bad{background:var(--bad);color:var(--bad-soft)}
-.toast.good{background:var(--ok);color:var(--ok-soft)}
+.toast.good{background:var(--brand-fill);color:var(--on-brand)}
+.toast.out{opacity:0;transition:opacity var(--dur-4)}
 @keyframes toastUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 /* ═══ סוף CSS שכבת הטוסט ════════════════════════════════════════════════ */
+/* ═══ מצבי רכיב — מודול משותף ══════════════════════════════════════════════
+   זהה בית-לבית בכל האפליקציות. ⛔ מצב קבוע של רכיב — מוסתר · עסוק — הוא
+   מחלקה ⛔ ולא `.style` בתגית: ⚠️ סגנון מוטבע גובר על כל כלל, ⭐ ומי שמשנה
+   את הגיליון אינו רואה אותו.
+   ⛔ `!important` ב-`.hidden` בכוונה — ⚠️ המחלקה מסתירה רכיב שכלל אחר
+      נותן לו `display`, ⭐ והיא חייבת לגבור עליו. */
+.hidden{display:none !important}
+.is-busy{opacity:var(--op-4);cursor:wait}
+/* ═══ סוף CSS מצבי רכיב ═════════════════════════════════════════════════ */
+/* ═══ באנר כשל האחסון — מודול משותף ═══════════════════════════════════════
+   זהה בית-לבית בכל האפליקציות. ⛔ הבאנר נבנה במודול האחסון ⚠️ והסגנון
+   כאן — ⭐ מחלקה אחת במקום אחד, ⛔ ולא מחרוזת בתגית שנבנתה.
+   ⛔ ודרגת השכבה «נעילה» — ⚠️ כשל כתיבה נשאר גלוי מעל כל מסך. */
+#ls-alert{position:fixed;z-index:var(--z-7);left:0;right:0;top:0;background:var(--alert);color:var(--on-alert);
+  direction:rtl;text-align:center;font-weight:700;font-size:var(--fs-3);line-height:var(--lh-4);
+  padding:var(--sp-5) calc(var(--sp-7) * 2);box-shadow:0 2px 14px var(--sh-3)}
+#ls-alert button{position:absolute;right:var(--sp-4);top:var(--sp-4);background:transparent;border:0;color:var(--on-alert);
+  font-weight:700;font-size:var(--fs-5);line-height:var(--lh-1);cursor:pointer;padding:var(--sp-2) var(--sp-4)}
+/* ═══ סוף CSS באנר כשל האחסון ═══════════════════════════════════════════ */
 
 /* ═══ CSS גרף העמודות — מודול משותף ═════════════════════════════════════════
    ⛔ הצגה חזותית של סדרה נבנית מרוחב יחסי ⛔ ולא מספריית גרפים — ⚠️ ספרייה
@@ -548,7 +575,7 @@ main > .foot{margin-top:auto}
 --op-1:.3;--op-2:.4;--op-3:.5;--op-4:.6;--op-5:.7;--op-6:.8;--op-7:.85;
 --lh-1:1;--lh-2:1.3;--lh-3:1.45;--lh-4:1.6;--lh-5:1.75;--lh-6:2;
 --ls-1:.3px;--ls-2:1px;--ls-3:4px;--ls-n1:-.4px;--ls-n2:-1px;
---chip:#1A1A1A;--on-chip:#FFFFFF;--veil:rgba(10,20,30,.5);--veil-deep:rgba(0,0,0,.75);
+--veil:rgba(10,20,30,.5);--veil-deep:rgba(0,0,0,.75);
 --alert:#B3261E;--on-alert:#FFFFFF;
 --sh-1:rgba(0,0,0,.10);--sh-2:rgba(0,0,0,.22);--sh-3:rgba(0,0,0,.35);
 --on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
