@@ -311,7 +311,19 @@ main > .foot{margin-top:auto}
 .tab-btn .ti{display:flex;align-items:center;justify-content:center}
 .tab-btn svg{width:20px;height:20px;display:block}
 .tab-btn.on{color:var(--purple-5);font-weight:500}
-.tab-btn:hover{color:var(--purple-5)}
+/*  ⛔ `:hover` חל רק במכשיר שיש לו ריחוף — ⚠️ במגע הוא נשאר על הרכיב
+ *  אחרי הלחיצה, ⭐ והלחצן נראה לחוץ עד שנוגעים במקום אחר: ⛔ המשוב במגע
+ *  הוא `:active` בלבד, ⚠️ ולכן הוא נשאר מחוץ לבלוק.
+ *  ⚠️ **והבלוק יושב כאן ולא בסוף הגיליון** — ⛔ כלל ריחוף שיורד אל אחרי
+ *  `.active` או `:active` באותה סגוליות גובר עליהם. */
+@media (hover:hover){
+  .tab-btn:hover{color:var(--purple-5)}
+  .btn:hover{box-shadow:var(--shadow-lg)}
+  .back:hover{text-decoration:underline}
+  .sheet-hd .x:hover{background:var(--card-2)}
+  #ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
+  .pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
+}
 
 /* ============================================================ מסך הזרימה */
 .flow{padding:var(--sp-6) 0}
@@ -339,12 +351,10 @@ main > .foot{margin-top:auto}
   background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
   padding:var(--sp-5);min-height:44px}
 .btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
-.btn:hover{box-shadow:var(--shadow-lg)}
 .btn:active{transform:translateY(1px)}
 .btn:disabled{opacity:var(--op-3);cursor:default}
 .back{background:none;border:0;cursor:pointer;color:var(--purple-5);font-size:var(--fs-2);
   min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
-.back:hover{text-decoration:underline}
 .acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
 .acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
   border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
@@ -412,14 +422,12 @@ main > .foot{margin-top:auto}
 .sheet-hd h3{flex:1;margin:0;font:inherit}
 .sheet-hd .x{background:none;border:0;font-size:var(--fs-5);line-height:var(--lh-1);
   color:var(--text-2);cursor:pointer;padding:0 var(--sp-2);border-radius:var(--radius-sm)}
-.sheet-hd .x:hover{background:var(--card-2)}
 .sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
 .sheet-ft{padding:var(--sp-6);display:flex;gap:var(--sp-4);justify-content:flex-end;
   border-top:1px solid var(--border)}
 #ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);
   cursor:pointer;background:var(--card);color:var(--text-2);
   padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
-#ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
 #ask .sheet-ft button:active{transform:translateY(1px)}
 #ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
 /*  ⛔ כותרת, גוף או תחתית ריקים אינם תופסים מקום — ⚠️ הדיאלוג
@@ -433,7 +441,6 @@ main > .foot{margin-top:auto}
   background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);
   padding:var(--sp-6) var(--sp-5);font-size:var(--fs-4);font-weight:500;color:var(--text);
   min-height:44px;transition:border-color var(--dur-3),background var(--dur-3)}
-.pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
 .pk:active{transform:translateY(1px)}
 .pk .pi{display:flex;align-items:center;justify-content:center;width:84px;height:66px}
 .pk .pi svg{width:100%;height:100%;display:block}
@@ -486,8 +493,9 @@ main > .foot{margin-top:auto}
 .btrack.peach{background:var(--peach-1)}
 .btrack.peach i{background:var(--peach-2)}
 
+/*  ⚠️ הקונפטי יורד כולו תחת הפחתת תנועה — ⭐ תנועתו נכתבת מ-JS לכל חלקיק,
+ *  ⛔ ואפס בסולם המשך מקצר אותה ואינו מבטל אותה. */
 @media (prefers-reduced-motion:reduce){
-  .btrack i{transition:none}
   .conf{display:none}
 }
 
@@ -512,6 +520,9 @@ main > .foot{margin-top:auto}
    ⛔ **והמשך נמדד בשניות ולא באלפיות** — ⚠️ והכתיב אחיד, בלי
       אפס מוביל: ⭐ `.15s` ו-`0.15s` הם אותו ערך בשני כתיבים, ⛔ ושני כתיבים
       הם שני חיפושים.
+   ⛔ **ותחת הפחתת תנועה כל `--dur-N` הוא אפס** — ⚠️ כל מעבר ואנימציה
+      נגזרים מהסולם, ⭐ ואפס בו מכבה את כולם: ⛔ ו-`0s` ולא `0` — משך בלי
+      יחידה אינו ערך תקף, ⚠️ והמאפיין נזרק בשקט.
    ⛔ שינוי כאן — כל האפליקציות **וכל עותקי השער**, באותו סבב.
    ═══════════════════════════════════════════════════════════════════════ */
 :root{
@@ -527,6 +538,9 @@ main > .foot{margin-top:auto}
 --alert:#B3261E;--on-alert:#FFFFFF;
 --sh-1:rgba(0,0,0,.10);--sh-2:rgba(0,0,0,.22);--sh-3:rgba(0,0,0,.35);
 --on-dark:#FFFFFF;--on-dark-2:rgba(255,255,255,.9);--on-dark-3:rgba(255,255,255,.65);--fill-dark:rgba(255,255,255,.15)
+}
+@media (prefers-reduced-motion:reduce){
+  :root{--dur-1:0s;--dur-2:0s;--dur-3:0s;--dur-4:0s;--dur-5:0s;--dur-6:0s}
 }
 .u-mt-2{margin-top:var(--sp-2)}
 .u-mt-5{margin-top:var(--sp-5)}
