@@ -1760,7 +1760,7 @@ function entryDelete(id) {
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
     kRender();
-    toast(MSG_DELETED + ' · ' + MSG_UNDO, 5000);
+    toast(MSG_DELETED + ' · ' + MSG_UNDO, 5000, 'good');
   });
 }
 
