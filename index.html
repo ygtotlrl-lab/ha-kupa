@@ -108,8 +108,8 @@
 /*  ⛔ הליבה המשותפת נטענת כמודול ⛔ ואינה מוכפלת כאן — ⚠️ והמסמך עצמו הוא
  *  מודול: ⭐ סקריפט קלאסי רץ **לפני** כל מודול, ⛔ וקריאה אליו בעלייה
  *  הייתה מוצאת `undefined`. */
-import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure,
-         getDeviceId, kvParse, readNum, uniqHas, withTimeout } from './core/util.js';
+import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure, dayNoon,
+         dayToday, getDeviceId, kvParse, readNum, uniqHas, withTimeout } from './core/util.js';
 import { ctxEpoch, ctxStale, eraKick, idEq, mergeCore, newClientId,
          pendAlertDismiss, pendBoot, pendCount, pendHas, pendMark, plBoot,
          plNum, plTouch, pushDirty, rtyBoot, runSave, sbWatch, schedulePush,
@@ -512,9 +512,8 @@ var HW_CFG = {
 /*  ⛔ האופק הוא שנה אחורה — ⚠️ והוא אינו ראיה עננית: ⭐ שער הדיסק מפנה
  *  מול העֵד, ⛔ והחלון אומר רק מה מוצג. */
 function hwHorizonDate() {
-  var d = new Date();
-  d.setFullYear(d.getFullYear() - 1);
-  return d.toISOString().slice(0, 10);
+  var t = dayToday();
+  return (+t.slice(0, 4) - 1) + t.slice(4);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -743,7 +742,7 @@ function kPad2(n) { return (n < 10 ? '0' : '') + n; }
 function kHeb(iso) {
   var h;
   if (!iso) return null;
-  try { h = hebDate(new Date(String(iso).slice(0, 10) + 'T12:00:00')); } catch (e) { return null; }
+  try { h = hebDate(dayNoon(String(iso))); } catch (e) { return null; }
   return (h && h.ok) ? h : null;
 }
 function yearOf(iso) { var h = kHeb(iso); return h ? String(h.year) : ''; }
@@ -909,7 +908,7 @@ function openingBalance() {
 
 /*  ⛔ החודש הנוכחי נגזר מהיום ⛔ ואינו נשמר — ⚠️ והוא הגבול שמעבר לו
  *  הפלעדזש אינו נושא יתרה: ⭐ חודש שלא נסגר אין לו מה להוריש. */
-function nowMonthKey() { return monthKeyOf(nowIso()); }
+function nowMonthKey() { return monthKeyOf(dayToday()); }
 /*  ⛔ השרשרת נגזרת מכל החודשים בסדר — ⚠️ שתי היתרות מצטברות,
  *  ⭐ ולכן חודש בודד אינו מספיק: ⛔ הוא אינו יודע מה קדם לו. */
 function chainAll() {
@@ -988,9 +987,8 @@ function soEnsureThroughNow() {
 /*  ⛔ מופע נחשב כפעולה שקרתה ביום החיוב — ⚠️ לפניו הוא צפי: ⭐ מוצג
  *  ונספר בחישוב, ⛔ ומסומן ככזה — גם בחודש הנוכחי. */
 function soIsForecast(r) {
-  return r.source === 'standing' && String(r.entry_date || '') > nowIso();
+  return r.source === 'standing' && String(r.entry_date || '') > dayToday();
 }
-function nowIso() { return kIsoOfDay(Math.floor(Date.now() / 86400000)); }
 
 /* ══════════════════════════════════════════════════════════════════════════
    הרינדור
@@ -1461,13 +1459,13 @@ function flowOpen() {
  *  ⛔ והעוגן בצהריים מקומיים — ⚠️ חצות נופל ליום הקודם במעבר לשעון חורף. */
 function hebLabel(iso) {
   if (!iso) return '';
-  return hebrewDate(new Date(iso + 'T12:00:00'));
+  return hebrewDate(dayNoon(iso));
 }
 function flowStart(kind) {
   view.flow = kind;
   view.step = 0;
   view.draft = { amount: null, description: '', method: '', category: '',
-                 entry_date: new Date().toISOString().slice(0, 10) };
+                 entry_date: dayToday() };
   flowOpen();
 }
 
