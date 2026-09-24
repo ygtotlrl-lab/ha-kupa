@@ -20,57 +20,26 @@
 </script>
 <link rel="manifest" href="manifest.json">
 <script src="app.config.js"></script>
+<script src="core/boot.js"></script>
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.ba19ef31.png">
 <link rel="icon" href="icons/favicon-32.660c86d2.png" sizes="32x32">
 <link rel="icon" href="icons/favicon-16.ce583c8e.png" sizes="16x16">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.ba19ef31.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="core/ui.css">
 <link rel="stylesheet" href="core/chart.css">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
-<!--  ⛔ שני הנכסים מוטמעים במסמך ⛔ ואינם קבצים חיצוניים — ⚠️ הם נצבעים
-      מאסימוני הערכה, ⭐ וקובץ חיצוני אינו יורש משתני CSS. -->
-<div id="asset-kupa" class="hidden">
-<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<g stroke="var(--purple-6)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-<rect x="34" y="204" width="172" height="18" rx="5" fill="var(--purple-4)"/>
-<rect x="44" y="40" width="152" height="166" rx="10" fill="var(--purple-3)"/>
-<rect x="86" y="30" width="68" height="14" rx="7" fill="var(--purple-7)"/>
-<rect x="70" y="96" width="100" height="70" rx="10" fill="var(--peach-1)"/>
-</g>
-<text x="120" y="144" text-anchor="middle" font-size="36" font-weight="500"
-      fill="var(--purple-7)">צדקה</text>
-</svg>
-</div>
+<!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
+      ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
+<nav id="tabbar" class="tabbar" aria-label="ניווט"></nav>
 
-<div id="asset-wallet" class="hidden">
-<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<g stroke="var(--purple-6)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-<rect x="34" y="56" width="232" height="150" rx="18" fill="var(--purple-5)"/>
-<rect x="46" y="66" width="208" height="26" rx="8" fill="var(--purple-7)"/>
-<path d="M92 70 h116 v22 h-116 z" fill="var(--peach-1)"/>
-<path d="M104 81 h92" fill="none" stroke="var(--peach-2)" stroke-width="4"/>
-<rect x="34" y="84" width="232" height="122" rx="18" fill="var(--purple-3)"/>
-<rect x="44" y="94" width="212" height="102" rx="12" fill="none"
-      stroke="var(--purple-2)" stroke-width="3" stroke-dasharray="7 6"/>
-<rect x="58" y="118" width="88" height="56" rx="8" fill="var(--purple-2)"/>
-<rect x="58" y="118" width="88" height="14" rx="6" fill="var(--peach-2)"/>
-<circle cx="222" cy="146" r="13" fill="var(--peach-2)"/>
-<circle cx="217" cy="141" r="3.5" fill="var(--peach-1)" stroke="none"/>
-</g>
-</svg>
-</div>
-
-<main id="app"></main>
+<main id="view"><div class="view-loading" role="status" aria-label="טוען"><span class="view-spin"></span></div></main>
 
 <!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
       הגופן, ⭐ ומרכזו האופטי זז בין מנוע למנוע. -->
 <div class="fabrail"><div class="in"><button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button></div></div>
-
-<!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
-      ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
-<nav id="tabbar" class="tabbar" aria-label="ניווט"></nav>
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
@@ -106,7 +75,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script type="module">
 /*  ⛔ הליבה המשותפת נטענת כמודול ⛔ ואינה מוכפלת כאן — ⚠️ והמסמך עצמו הוא
  *  מודול: ⭐ סקריפט קלאסי רץ **לפני** כל מודול, ⛔ וקריאה אליו בעלייה
@@ -1035,10 +1003,39 @@ function monthTitle(m) {
 
 /*  ⛔ האייקון של ההכנסה ושל הצדקה הוא הציור שהאפליקציה כבר מציגה —
  *  ⚠️ ואינו ציור שני: ⭐ שני ציורים לאותו מושג הם שני מקורות אמת. */
+/*  ⛔ שני הציורים מוטמעים בקוד ⛔ ואינם קבצים חיצוניים — ⚠️ הם נצבעים
+ *  מאסימוני הערכה, ⭐ וקובץ חיצוני אינו יורש משתני CSS. ⛔ והם כאן ⛔ ולא
+ *  ב-DOM: ⚠️ הקליפה נושאת מבנה בלבד, ⭐ ונכס שנקרא מה-DOM אינו נראה לסורק. */
+var K_ASSETS = {
+  'asset-kupa': `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<g stroke="var(--purple-6)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="34" y="204" width="172" height="18" rx="5" fill="var(--purple-4)"/>
+<rect x="44" y="40" width="152" height="166" rx="10" fill="var(--purple-3)"/>
+<rect x="86" y="30" width="68" height="14" rx="7" fill="var(--purple-7)"/>
+<rect x="70" y="96" width="100" height="70" rx="10" fill="var(--peach-1)"/>
+</g>
+<text x="120" y="144" text-anchor="middle" font-size="36" font-weight="500"
+      fill="var(--purple-7)">צדקה</text>
+</svg>`,
+  'asset-wallet': `<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<g stroke="var(--purple-6)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<rect x="34" y="56" width="232" height="150" rx="18" fill="var(--purple-5)"/>
+<rect x="46" y="66" width="208" height="26" rx="8" fill="var(--purple-7)"/>
+<path d="M92 70 h116 v22 h-116 z" fill="var(--peach-1)"/>
+<path d="M104 81 h92" fill="none" stroke="var(--peach-2)" stroke-width="4"/>
+<rect x="34" y="84" width="232" height="122" rx="18" fill="var(--purple-3)"/>
+<rect x="44" y="94" width="212" height="102" rx="12" fill="none"
+      stroke="var(--purple-2)" stroke-width="3" stroke-dasharray="7 6"/>
+<rect x="58" y="118" width="88" height="56" rx="8" fill="var(--purple-2)"/>
+<rect x="58" y="118" width="88" height="14" rx="6" fill="var(--peach-2)"/>
+<circle cx="222" cy="146" r="13" fill="var(--peach-2)"/>
+<circle cx="217" cy="141" r="3.5" fill="var(--peach-1)" stroke="none"/>
+</g>
+</svg>`
+};
 function assetIcon(id) {
-  var el = document.getElementById(id);
-  if (!el) { uiNoDialog('assetIcon', id); return ''; }
-  return el.innerHTML;
+  if (!K_ASSETS[id]) { console.error('[ui] אין ציור בשם', id); return ''; }
+  return K_ASSETS[id];
 }
 
 function iconFor(kind) {
@@ -1942,8 +1939,8 @@ function settingsScreenHTML() {
    הרינדור האחד
    ══════════════════════════════════════════════════════════════════════════ */
 function kRender() {
-  var root = kQ('#app');
-  if (!root) { uiNoDialog('kRender', 'app'); return; }
+  var root = kQ('#view');
+  if (!root) { uiNoDialog('kRender', 'view'); return; }
   var fab = kQ('#fab'), tb = kQ('#tabbar');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
@@ -2313,6 +2310,7 @@ function kBoot() {
   });
 }
 kBoot();
+bootOk();
 
 })();
 </script>
