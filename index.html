@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#9C7FD0">
-<title>הקופה</title>
+<title></title>
 <script>
 /*  ⛔ תג `base` דינמי, לפני כל תג עם כתובת יחסית — ⚠️ כשה-service worker
  *  מגיש את הקליפה בנתיב עמוק, כתובת יחסית נפתרת רמה אחת עמוק מדי:
@@ -19,9 +19,12 @@
 })();
 </script>
 <link rel="manifest" href="manifest.json">
+<script src="app.config.js"></script>
 <link rel="icon" href="icons/favicon-32.660c86d2.png" sizes="32x32">
 <link rel="icon" href="icons/favicon-16.ce583c8e.png" sizes="16x16">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.ba19ef31.png">
+<link rel="stylesheet" href="core/ui.css">
+<link rel="stylesheet" href="core/chart.css">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
@@ -127,6 +130,7 @@ import './core/hebrew.js';
 'use strict';
 /*  ⛔ התצורה נמסרת למודולים בשומרי קריאה — ⚠️ חלקה מוגדר בהמשך הדף,
  *  ⭐ והשומר קורא אותה בזמן הקריאה ⛔ ולא בזמן המסירה. */
+document.title = self.APP.name;
 appConfigure({
   get BK_CFG() { return BK_CFG; },
   get DATA_ERA() { return DATA_ERA; },
@@ -149,8 +153,8 @@ appConfigure({
  * ⭐ הכול יושב כאן בכוונה: קובץ אחד לפריסה, קובץ אחד למטמון.
  * ======================================================================== */
 
-var SUPABASE_URL = 'https://zrftjkghhjhqzopvdzou.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZnRqa2doaGpocXpvcHZkem91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMDc4MzQsImV4cCI6MjEwMDg4MzgzNH0.DWcW3o4Y9Is3jGx1frHkrUz7cc045aH1m1uKsrwRhIA';
+var SUPABASE_URL = self.APP.supabase.url;
+var SUPABASE_ANON_KEY = self.APP.supabase.key;
 
 var sb = null;
 var EPS = 0.005;
@@ -364,8 +368,8 @@ function kDirtyRows(t) {
 }
 
 var MIRROR_CFG = {
-  prefix: 'k_mirror_',
-  app:    'k_',
+  prefix: self.APP.prefix + 'mirror_',
+  app:    self.APP.prefix,
   tables: function () { return TABLES.map(function (m) { return m.t; }); },
   /*  ⛔ ריק ומוצהר — ⚠️ אין בקופה טבלה שנכתבת מחוץ לדחיפה:
    *  ⭐ שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין». */
@@ -378,7 +382,7 @@ var MIRROR_CFG = {
 
 /*  ⚠️ `ts` נדרש לכל פריט בפינוי — ⛔ פריט בלי `ts` זורק בפינוי. */
 var LS_CFG = {
-  cachePrefix: 'ha-kupa-',
+  cachePrefix: self.APP.id + '-',
   logKey: 'k_ls_log',
   hzPrefix: 'k_ls_hz_',
   dismissKey: 'k_sw_dismissed',
@@ -660,7 +664,7 @@ function cfgRefresh() {
  *  ב-`42703` וחוסמת את התור. */
 var DATA_ERA = 3;
 var ERA_CFG = {
-  prefix: 'k_',
+  prefix: self.APP.prefix,
   client: function () { return sb; },
   table:  function () { return KV_TABLE; },
   /*  ⛔ המוחק — ⚠️ מפתחות המראה **ואופק הפינוי שלהם**: ⭐ אופק ששרד מסנן
@@ -1118,7 +1122,7 @@ function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
     (after > EPS ? ' plus' : '') + '">' +
     '<h2>' + esc(title) +
     '<span class="st">' + esc(MSG_LEFT_SUM) + signed(due - given) + '</span></h2>' +
-    '<div class="u-mt-2">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
+    '<div class="comp-meter">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
     '<div class="crow"><div class="big">' + signed(due) + '</div>' +
     '<div class="parts">' +
     '<span>' + esc(MSG_PART_MONTH) + signed(ofMonth) + '</span>' +
@@ -1270,7 +1274,7 @@ function ordersCardHTML() {
              '<span class="amt">' + money(o.amount) + '</span></li>';
     }).join('') + '</ul>'
      : '<div class="empty">' + esc(MSG_NO_ORDERS) + '</div>') +
-    '<button class="btn ghost u-mt-5" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
+    '<button class="btn ghost card-add" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
     '</div>';
 }
 
@@ -1295,7 +1299,7 @@ function lookupCardHTML(kind, title, dflt) {
                '<span class="grip" aria-hidden="true">⠿</span>' +
                '<span class="nm">' + esc(r.label) + '</span></li>';
       }).join('')) + '</ul>' +
-      '<button class="btn ghost u-mt-5" data-act="look-add" data-id="' + esc(kind) + '">' +
+      '<button class="btn ghost card-add" data-act="look-add" data-id="' + esc(kind) + '">' +
       esc(MSG_WAY_NEW) + '</button>') +
     '</div>';
 }
@@ -1686,7 +1690,7 @@ function doneScreenHTML() {
     '<div class="line1">' + esc(isInc ? MSG_OPENER : MSG_TZ_BLESS) + '</div>' +
     '<div class="line2">' + esc('נרשם · ' + (isInc ? MSG_SUM_INCOME + ' ' : MSG_LEFT_SUM)) +
     (isInc ? esc(money(c.income || 0)) : signed(c.pledgeLeft || 0)) + '</div>' +
-    '<button class="btn u-mt-5" data-act="done-close">חזרה</button></div></div>' +
+    '<button class="btn done-back" data-act="done-close">חזרה</button></div></div>' +
     footHTML('');
 }
 
