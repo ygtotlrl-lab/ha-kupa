@@ -1,19 +1,20 @@
 {
+  "//": "נוצר מהתצורה — app.config.js, ב-node tools/gen-app.mjs: אין לערוך ביד",
   "name": "הקופה",
   "short_name": "הקופה",
   "description": "מעקב חומש ופלעדזש — צדקה, הכנסות והוראות קבע.",
-  "lang": "he",
-  "dir": "rtl",
   "id": "/ha-kupa/",
   "start_url": "./index.html",
   "scope": "/ha-kupa/",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#F6F2FA",
   "theme_color": "#9C7FD0",
+  "lang": "he",
+  "dir": "rtl",
+  "orientation": "portrait",
   "icons": [
-    { "src": "icons/icon-192.b77bc564.png",        "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.0340804e.png",        "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.cc06987e.png","sizes": "512x512","type": "image/png", "purpose": "maskable" }
+    { "src": "icons/icon-192.b77bc564.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.0340804e.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.cc06987e.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
