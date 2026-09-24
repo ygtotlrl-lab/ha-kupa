@@ -1,4 +1,4 @@
-package com.ha.kupa;
+package @@PACKAGE@@;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

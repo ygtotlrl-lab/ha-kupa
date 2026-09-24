@@ -23,9 +23,15 @@ self.APP = Object.freeze({
   },
   android: {
     package: 'com.ha.kupa',
+    /*  ⛔ הכתובת שהמעטפת טוענת — ⚠️ וממנה נגזר המקור היחיד שגשר השיתוף מקבל. */
+    url: 'https://ygtotlrl-lab.github.io/ha-kupa/',
+    /*  ⚠️ המשפט שלם ⛔ ולא שם בלבד — ⭐ הפועל מתאים למין השם. */
+    offlineLine: 'הקופה לא הצליחה להתחבר.',
+    /*  ⚠️ צבע כפתור הניסיון החוזר בדף האופליין של המעטפת. */
+    accent: '#9c7fd0',
     /*  ⛔ `versionCode` לעולם אינו יורד, ⚠️ ומקודם בכל שינוי תחת `android/` —
         ⭐ בלי קידום המכשיר המותקן אינו מקבל את ה-APK החדש. */
-    versionCode: 7,
+    versionCode: 8,
     versionName: '2.0',
     launcherBg: { kind: 'solid', color: '#9C7FD0' },
     /*  ⚠️ גשר השיתוף — ⭐ `FileProvider` ו-`androidx`, רק באפליקציה שמייצאת קובץ. */
