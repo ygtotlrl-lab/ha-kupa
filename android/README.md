@@ -1,20 +1,16 @@
 # הקופה — Native WebView APK
 
-מעטפת אנדרואיד מקורית מבוססת **WebView** — **לא TWA**. היא טוענת את האתר החי:
-
-```
-https://ygtotlrl-lab.github.io/ha-kupa/
-```
+מעטפת אנדרואיד מקורית מבוססת **WebView** — **לא TWA**. היא טוענת את האתר החי — כתובת האפליקציה, `android.url` שבתצורה.
 
 ## מה בפנים
 
 | | |
 |---|---|
-| **Package ID** | `com.ha.kupa` — זהה ל-TWA שהוא מחליף (חובה, אחרת זו אפליקציה נפרדת) |
-| **שם** | הקופה |
-| **טוען** | `https://ygtotlrl-lab.github.io/ha-kupa/` — מהרשת, לא מנכסים מוטבעים |
-| **versionCode** | 6 — ⛔ עולה בכל שינוי תחת `android/`: ⚠️ מכשיר אינו מתקין מעל גרסה שאינה גבוהה ממנה |
-| **minSdk / targetSdk** | 21 / 34 |
+| **Package ID** | שם החבילה — `android.package` שבתצורה — זהה ל-TWA שהוא מחליף (חובה, אחרת זו אפליקציה נפרדת) |
+| **שם** | `shortName` שבתצורה |
+| **טוען** | כתובת האפליקציה — `android.url` שבתצורה — מהרשת, לא מנכסים מוטבעים |
+| **versionCode** | ⛔ עולה בכל שינוי ב-APK: ⚠️ מכשיר אינו מתקין מעל גרסה שאינה גבוהה ממנה |
+| **minSdk / targetSdk** | נוצרים ב-`tools/gen-app.mjs` — ⛔ זהים בכולן |
 | **WebView** | JavaScript, DOM storage (localStorage — שם יושב ה-session), DB |
 | **סכמות שאינן http** | נמסרות למערכת ב-`ACTION_VIEW`. כל `http`/`https` נשאר בתוך המעטפת |
 | **בורר קבצים** | `WebChromeClient.onShowFileChooser` מחובר ל-`<input type=file>` |
@@ -100,7 +96,7 @@ mipmap-*/` — `ic_launcher.png` ו-`ic_launcher_foreground.png` (הסימן ב�
 
 החתימה נעשית ב-`signing/sign-apk.sh` מול המפתח שמגיע מ-GitHub Secrets —
 **ואין קלט ידני**, ולכן אין דרך לבנות בטעות APK במפתח אחר. הסקריפט
-מסרב לחתום אם טביעת האצבע של ה-keystore אינה `3C:25:41:21:...:0C:9D`, ואחרי
+מסרב לחתום אם טביעת האצבע של ה-keystore אינה טביעת המפתח שבתצורה, ואחרי
 החתימה מוודא שה-APK אכן נושא את התעודה הזו — ה-workflow נכשל בכל אחד מהמקרים.
 
 > ⚠️ **המפתח הוחלף ב-2026-09-15.** APK חדש ⛔ אינו מתקין על גבי התקנה
@@ -128,17 +124,16 @@ cd android && gradle wrapper --gradle-version 8.7 && ./gradlew :app:assembleRele
 |---|---|
 | **קובץ** | ⛔ אינו בריפו — GitHub Secret `KEYSTORE_B64`, מפוענח לקובץ זמני בזמן בנייה ונמחק אחריה (PKCS12, RSA 4096) |
 | **נוצר** | 2026-09-15, `keytool -genkeypair` |
-| **Package ID** | `com.ha.kupa` |
+| **Package ID** | שם החבילה — `android.package` שבתצורה |
 | **alias** | ⛔ אינו מוקלד — `sign-apk.sh` גוזר אותו מהמפתח עצמו |
 | **storepass / keypass** | ⛔ אינה בריפו — GitHub Secret `KEYSTORE_PASS` |
 | **תוקף** | 10,000 יום — 2026-09-15 עד 2054-01-31 |
-| **SHA256** | `3C:25:41:21:83:93:BB:37:ED:7D:89:2E:8F:1F:02:18:EF:BE:B2:CA:EA:0D:06:D4:91:2B:C8:19:94:22:0C:9D` |
-| **SHA1** | `D9:EC:74:83:F5:A8:B3:1D:41:EB:1E:C1:73:96:DE:C4:AD:87:3B:3A` |
+| **SHA256** | טביעת המפתח — `signSha256` שבתצורה |
 | **DN** | `CN=ha-kupa, OU=Yeshiva, O=Yeshiva, L=Rishon LeZion, ST=Israel, C=IL` |
 
 ### פרטי המעטפת
-`applicationId` חייב להישאר `com.ha.kupa`, ו-`versionCode` גבוה מזה של
-ה-TWA שהוחלף (ה-TWA היה 1; המעטפת היא 2).
+`applicationId` חייב להישאר שם החבילה שבתצורה, ו-`versionCode` גבוה מזה של
+ה-TWA שהוחלף.
 
 ⚠️ **בסביבת הענן אין Android SDK ו-`dl.google.com` חסום** — הדרך המעשית
 היא ה-workflow. ⛔ ולא PWABuilder: הוא יודע לייצר TWA בלבד.
