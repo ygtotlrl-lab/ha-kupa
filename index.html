@@ -92,7 +92,7 @@ import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure, dayNoon,
 import { ctxEpoch, ctxStale, eraKick, idEq, mergeCore, newClientId,
          pendAlertDismiss, pendBoot, pendCount, pendHas, pendMark, plBoot,
          plNum, plTouch, pushDirty, rtyBoot, runSave, sbWatch, schedulePush,
-         tombBoot, tombPruneMerged } from './core/sync.js';
+         tombAt, tombBoot, tombPruneMerged } from './core/sync.js';
 import { hwBoot, hwNoteCloud, lsBoot, lsClearHorizons, lsGet, lsRemove,
          lsSet } from './core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorSave, mirrorTables } from './core/mirror.js';
@@ -1734,9 +1734,9 @@ function kChildKill(parent, kid) {
  *  ⚠️ והוא נספר בסיכום של חודש שכבר אינו קיים. */
 function kKill(table, row) {
   row.deleted = true;
-  row.deleted_at = new Date().toISOString();
-  row.deleted_by = devId();
   row.updated_at = Date.now();
+  row.deleted_at = tombAt(row.updated_at);
+  row.deleted_by = devId();
   localPut(table, row);
   var kids = K_CHILDREN[table] || [], i, j, list, kid;
   for (i = 0; i < kids.length; i++) {
