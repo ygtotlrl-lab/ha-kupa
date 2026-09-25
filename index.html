@@ -35,6 +35,10 @@
       ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
 <nav id="tabbar" class="tabbar" aria-label="ניווט"></nav>
 
+<!--  ⛔ מקום הכותרת קבוע בקליפה — ⚠️ והלוגו מוצג בו בשלוש הלשוניות בלבד:
+      ⭐ מסכי המשנה הם זרימה, ⛔ והכותרת אינה חלק מהם. -->
+<header id="masthead" class="brand hidden"></header>
+
 <main id="view"><div class="view-loading" role="status" aria-label="טוען"><span class="view-spin"></span></div></main>
 
 <!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
@@ -980,8 +984,7 @@ function footHTML() {
 /*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
  *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
 function brandHTML() {
-  return '<div class="brand"><img src="icons/icon-192.b77bc564.png" alt="" ' +
-         'width="40" height="40"></div>';
+  return '<img src="icons/icon-192.b77bc564.png" alt="" width="40" height="40">';
 }
 
 /*  ⛔ טווח התאריכים הלועזי נגזר מראש החודש ומראש הבא — ⚠️ ואינו נשמר
@@ -1129,16 +1132,13 @@ function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
-  if (!m) return brandHTML() + '<div class="card"><div class="empty">' +
+  if (!m) return '<div class="card"><div class="empty">' +
              '<div class="skel"></div><div class="skel"></div></div></div>' + footHTML();
   var c = chainOf(view.monthKey, true) || {};
   var rows = kSortEntries(monthRows(view.monthKey));
 
-  /* 1 — הלוגו. */
-  var h = brandHTML();
-
-  /* 2 — שם החודש, טווח התאריכים הלועזי והחצים. */
-  h += '<div class="mrow">' +
+  /* 1 — שם החודש, טווח התאריכים הלועזי והחצים. */
+  var h = '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
        '<span class="myear">' + esc(window.hebYearLabelFull(m.year)) + '</span>' +
@@ -1146,13 +1146,13 @@ function monthScreenHTML() {
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
 
-  /* 3 — שני הרכיבים, בצורה אחת. */
+  /* 2 — שני הרכיבים, בצורה אחת. */
   h += compCardHTML('חומש', '', c.chumashDue, c.chumash, c.chumashCarry,
                     c.tzedakah, c.balance);
   h += compCardHTML('פלעדזש', 'peach', c.pledgeDue, c.pledge, c.pledgeCarry,
                     c.tzedakah, c.pledgeBalance);
 
-  /* 4 — שורות הסיכום, מעל הפירוט ⛔ ולא מעל הרכיבים: ⚠️ הן נגזרות
+  /* 3 — שורות הסיכום, מעל הפירוט ⛔ ולא מעל הרכיבים: ⚠️ הן נגזרות
      מהחודש הנוכחי בלבד, ⭐ ואין בהן יתרה ואין בהן צבירה.
      ⚠️ **והפירוט שמתחתן הוא פיצול של הצדקה** — ⛔ ולא סכום נוסף:
      ⭐ ולכן הוא קטן משתיהן, ⛔ ונקרא כשייך לשורה שמעליו. */
@@ -1162,7 +1162,7 @@ function monthScreenHTML() {
        '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
        '<div class="inc sub">' + splitHTML(c) + '</div>';
 
-  /* 5 — הפירוט: התאריכים תחילה, והוראות הקבע תחתיהם. */
+  /* 4 — הפירוט: התאריכים תחילה, והוראות הקבע תחתיהם. */
   var dated = rows.filter(function (r) { return r.source !== 'standing'; });
   var std = rows.filter(function (r) { return r.source === 'standing'; });
   if (!rows.length) {
@@ -1232,7 +1232,7 @@ function monthBarsHTML(c, name) {
  *  ⚠️ רשימה של כל החודשים מאז ההתחלה מתארכת בלי סוף, ⭐ והשנה היא
  *  היחידה שהמשתמש חושב בה. */
 function archiveScreenHTML() {
-  var ms = archMonths(), h = brandHTML() + tabHeadHTML(TABS[1].lab);
+  var ms = archMonths(), h = tabHeadHTML(TABS[1].lab);
   if (!ms.length) return h + '<div class="card"><div class="empty">' + esc(MSG_ARCH_EMPTY) +
                              '</div></div>' + footHTML();
   var years = [], seen = {}, i;
@@ -1924,7 +1924,7 @@ function pledgeCardHTML() {
 }
 
 function settingsScreenHTML() {
-  return brandHTML() + tabHeadHTML(MSG_SETTINGS_TITLE) +
+  return tabHeadHTML(MSG_SETTINGS_TITLE) +
     pledgeCardHTML() +
     ordersCardHTML() +
     /*  ⛔ שני אוצרות מילים נפרדים לאותו שלב — ⚠️ «אופן» בשני המסלולים,
@@ -1941,7 +1941,7 @@ function settingsScreenHTML() {
 function kRender() {
   var root = kQ('#view');
   if (!root) { uiNoDialog('kRender', 'view'); return; }
-  var fab = kQ('#fab'), tb = kQ('#tabbar');
+  var fab = kQ('#fab'), tb = kQ('#tabbar'), hd = kQ('#masthead');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
@@ -1952,6 +1952,10 @@ function kRender() {
    *  שדה אחד אינו מקום לנווט ממנו, ⭐ והניווט באמצעו מאבד את הטיוטה. */
   var onTab = TABS.some(function (t) { return t.k === view.screen; });
   if (fab) fab.classList.toggle('hidden', !onMonth);
+  if (hd) {
+    hd.classList.toggle('hidden', !onTab);
+    hd.innerHTML = onTab ? brandHTML() : '';
+  }
   if (tb) {
     tb.classList.toggle('hidden', !onTab);
     tb.innerHTML = tabbarHTML();

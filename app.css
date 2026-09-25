@@ -112,12 +112,13 @@ input,select,textarea{font:inherit; color:inherit}
  *  ⛔ **אך היא מתרחבת בכל נקודת שבירה** — ⚠️ עמודה שנשארת ברוחב הטלפון
  *  נראית זהה בכל מסך שמעליו: ⭐ והרוחב נקרא מ-`--col` ⛔ ואינו מוקלד כאן.
  *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
+/*  ⛔ הדף הוא עמודה שגובהה מלוא החלון — ⚠️ הכותרת ומיכל התוכן יחד:
+ *  ⭐ המיכל ממלא את מה שהכותרת משאירה, ⛔ והתחתית נדחפת לתחתית המסך
+ *  ⚠️ ולא לסוף התוכן — מסך קצר היה משאיר את שתי השורות באמצע. */
+body{display:flex;flex-direction:column;min-height:100vh}
 main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
-  max-width:var(--col);margin:0 auto;
-  /*  ⛔ המסך הוא עמודה שגובהה מלוא החלון — ⚠️ והתחתית נדחפת אליה:
-   *  ⭐ שתי השורות נצמדות לתחתית המסך ⛔ ולא לסוף התוכן, ⚠️ ומסך קצר
-   *  היה משאיר אותן באמצע. */
-  min-height:100vh;display:flex;flex-direction:column}
+  width:100%;max-width:var(--col);margin:0 auto;
+  flex:1 0 auto;display:flex;flex-direction:column}
 main > .foot{margin-top:auto}
 /*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
  *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
@@ -193,7 +194,6 @@ main > .foot{margin-top:auto}
 .empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
 .sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
-.sml.strong{font-weight:500;color:var(--text)}
 @media (hover:hover){
   .btn:hover{box-shadow:var(--shadow-lg)}
 }
@@ -374,8 +374,6 @@ main > .foot{margin-top:auto}
 @media (hover:hover){
   .pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
 }
-.flow{padding:var(--sp-6) 0}
-.flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
 /*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
  *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
  *  המסך עוסק. */
