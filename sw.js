@@ -2,7 +2,7 @@
  *  ב-`core/sw.js`, ⭐ וערכי האפליקציה ב-`app.config.js`, שנטען ראשון. */
 importScripts('./app.config.js');
 /*  ⛔ מכאן נגזרת גרסת האפליקציה — ⚠️ ואין לה ליטרל שני ב-`index.html`. */
-var CACHE_NAME = self.APP.id + '-v75';
+var CACHE_NAME = self.APP.id + '-v76';
 
 // קליפת האפליקציה — חייבת להיות במטמון כדי שהאפליקציה תעבוד אופליין.
 var CORE = [
