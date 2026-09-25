@@ -323,8 +323,6 @@ function kRowTs(r) { return (r && +r.updated_at) || 0; }
  *  ⚠️ ומפתח מוקלד היה מסמן שורה שמנוע המיזוג אינו מוצא. */
 function kPendKey(t, r) { return t + ':' + (r && r[kTableMeta(t).key]); }
 function kStripRows(t, rows) { return rows; }
-/*  ⛔ נקודת ההסבה האחת — ⚠️ מזהה שנשמר בגרסה ישנה כמספר: ⭐ `legacyIdStamp`
- *  מחזירה 0 ⛔ ולא `NaN`, ⚠️ והשוואה נכשלת בשקט בלעדיה. */
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
 var _kPushedAt = {};
