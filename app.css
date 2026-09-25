@@ -194,7 +194,6 @@ main > .foot{margin-top:auto}
 .empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
 .sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
-.sml.strong{font-weight:500;color:var(--text)}
 @media (hover:hover){
   .btn:hover{box-shadow:var(--shadow-lg)}
 }
@@ -375,8 +374,6 @@ main > .foot{margin-top:auto}
 @media (hover:hover){
   .pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
 }
-.flow{padding:var(--sp-6) 0}
-.flow h2{font-size:var(--fs-5);font-weight:500;margin-bottom:var(--sp-5)}
 /*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
  *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
  *  המסך עוסק. */
