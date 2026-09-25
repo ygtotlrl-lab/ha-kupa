@@ -31,7 +31,10 @@
 </head>
 <body>
 
-<!--  ⛔ סרגל הלשוניות ילד ישיר של `body` — ⚠️ הוא קבוע למסך,
+<!--  ⛔ שורש הקליפה — סרגל · כותרת · מיכל תוכן · כפתור צף: ⚠️ והיא מתחילה חשופה,
+      ⭐ והמסגרת נחשפת עם הרינדור הראשון. -->
+<div id="shell" class="is-bare">
+<!--  ⛔ סרגל הלשוניות מחוץ למיכל התוכן — ⚠️ הוא קבוע למסך,
       ⭐ וסרגל שנבנה בתוך המסך נמחק איתו בכל רינדור. -->
 <nav id="tabbar" class="tabbar" aria-label="ניווט"></nav>
 
@@ -44,6 +47,7 @@
 <!--  ⛔ הפלוס הוא ציור ⛔ ולא תו — ⚠️ תו נשען על קו הבסיס של
       הגופן, ⭐ ומרכזו האופטי זז בין מנוע למנוע. -->
 <div class="fabrail"><div class="in"><button id="fab" class="fab" data-act="add-open" aria-label="רישום חדש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button></div></div>
+</div>
 
 <!--  ⛔ מיכל המודאל ילד ישיר של `body` — ⚠️ מיכל שיושב בתוך מסך נמחק
       איתו במעבר, ⛔ והדיאלוג מפסיק להיפתח בלי שדבר מודיע על כך. -->
@@ -94,8 +98,8 @@ import { hwBoot, hwNoteCloud, lsBoot, lsClearHorizons, lsGet, lsRemove,
 import { MIRROR, mirrorBoot, mirrorKey, mirrorSave, mirrorTables } from './core/mirror.js';
 import { bkBoot, logAction } from './core/backup.js';
 import { actRun, ask, closeAsk, closeModal, esc, ksKey, modalBackdrop,
-         modalEsc, openModal, swApply, swHideUpdate, swRegister, toast,
-         uiNoDialog } from './core/ui.js';
+         modalEsc, openModal, shellBare, swApply, swHideUpdate, swRegister,
+         toast, uiNoDialog } from './core/ui.js';
 import { bar, barChart } from './core/chart.js';
 import './core/hebrew.js';
 (function () {
@@ -1961,6 +1965,7 @@ function kRender() {
     tb.innerHTML = tabbarHTML();
   }
   if (view.screen === 'slide') coinWire();
+  shellBare(false);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
