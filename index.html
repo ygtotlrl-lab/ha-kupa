@@ -98,7 +98,7 @@ import { hwBoot, hwNoteCloud, lsBoot, lsClearHorizons, lsGet, lsRemove,
 import { MIRROR, mirrorBoot, mirrorKey, mirrorSave, mirrorTables } from './core/mirror.js';
 import { bkBoot, logAction } from './core/backup.js';
 import { actRun, ask, closeAsk, closeModal, esc, ksKey, modalBackdrop,
-         modalEsc, openModal, shellBare, swApply, swHideUpdate, swRegister,
+         modalEsc, openModal, shellBare, swApply, swHideUpdate,
          toast, uiNoDialog } from './core/ui.js';
 import { bar, barChart } from './core/chart.js';
 import './core/hebrew.js';
@@ -2308,7 +2308,6 @@ function kBoot() {
   hwBoot();
   rtyBoot();
   plBoot();
-  swRegister();
   kSyncPull().then(function () {
     var made = soEnsureThroughNow(), i;
     for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
