@@ -95,7 +95,6 @@ create table if not exists public.k_standing_orders (
 create index if not exists k_entries_date_idx ON public.k_entries USING btree (entry_date);
 create index if not exists k_entries_type_idx ON public.k_entries USING btree (type, deleted);
 create index if not exists k_lookups_kind_idx ON public.k_lookups USING btree (kind, sort);
-create index if not exists k_so_instances_mkey_idx ON public.k_so_instances USING btree (month_key);
 create index if not exists k_so_instances_month_idx ON public.k_so_instances USING btree (month_key);
 create index if not exists k_so_instances_order_idx ON public.k_so_instances USING btree (standing_order_client_id);
 
