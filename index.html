@@ -193,15 +193,15 @@ var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר
    טבלה שנכתבת מקומית ואינה כאן — שורותיה אינן עולות לעולם.
    ⭐ **ולמה הסדר**: האב נדחף לפני הבן, ⛔ אחרת הבן נקרא כיתום.
    ══════════════════════════════════════════════════════════════════════════ */
-var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
-                   'k_so_instances', 'k_entries', 'k_lookups'];
 var KV_TABLE = 'k_settings';
+var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
+                   'k_so_instances', 'k_entries', 'k_lookups', KV_TABLE];
 
 /*  ⛔ העידן — ⚠️ מספר בענן שמכשיר מיושן זורק מולו את העותק המקומי:
  *  ⭐ תיקון בקוד אינו מנקה מכשיר שכבר מזוהם. */
 /*  ⛔ מרשם מפתחות ההגדרה — ⚠️ **מה נכנס**: המפתח שבטבלת ההגדרות ⟵
  *  התווית שלצידו; ⛔ **ומה מפיל**: מפתח שהקוד קורא ואינו במסד.
- *  ⭐ **ולמה מרשם**: `cfgBoot` ו-`cfgRefresh` עוברים עליו, ⛔ ושתי
+ *  ⭐ **ולמה מרשם**: `cfgApply` עובר עליו, ⛔ ושתי
  *  רשימות לאותם מפתחות הן שני מקומות לתקן. */
 /*  ⛔ שם המפתח בקבוע אחד — ⚠️ הוא נקרא במרשם ונכתב בכל שינוי ברשימות:
  *  ⭐ שם פזור אינו ניתן לשינוי ממקום אחד. */
@@ -310,7 +310,8 @@ var TABLES = [
   { t: 'k_standing_orders', key: 'client_id' },
   { t: 'k_so_instances',   key: 'client_id' },
   { t: 'k_entries',        key: 'client_id' },
-  { t: 'k_lookups',        key: 'client_id' }
+  { t: 'k_lookups',        key: 'client_id' },
+  { t: KV_TABLE,           key: 'key' }
 ];
 function kTableMeta(t) {
   var i;
@@ -321,7 +322,10 @@ function kRowTs(r) { return (r && +r.updated_at) || 0; }
 /*  ⛔ מפתח הסימון הוא מפתח המיזוג — ⚠️ הוא נגזר מהמטא של הטבלה
  *  ⛔ ואינו `client_id` מוקלד: ⭐ `k_pledges` ממופתחת בשנה העברית,
  *  ⚠️ ומפתח מוקלד היה מסמן שורה שמנוע המיזוג אינו מוצא. */
-function kPendKey(t, r) { return t + ':' + (r && r[kTableMeta(t).key]); }
+function kPendKey(t, r) { return kPendKeyOf(t, r && r[kTableMeta(t).key]); }
+/*  ⚠️ ההגדרות מסומנות `setting:<מפתח>` — ⭐ אותו סימון בכל האפליקציות,
+ *  ⛔ ושם הטבלה אינו חלק ממנו: ⚠️ הוא מה שמשותף ולא מה שנבדל. */
+function kPendKeyOf(t, k) { return (t === KV_TABLE ? 'setting' : t) + ':' + k; }
 function kStripRows(t, rows) { return rows; }
 /*  ⛔ העֵד לפינוי הוא פר-מפתח — ⚠️ הוא נכתב רק אחרי דחיפה שחזרה `ok`:
  *  ⭐ עֵד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה. */
@@ -384,7 +388,8 @@ var LS_CFG = {
   fixedSize: [
     { t: 'k_pledges',         why: 'פלעדזש — שורה לשנה עברית, ⛔ ואינה גדלה בתוך השנה' },
     { t: 'k_standing_orders', why: 'הוראות קבע — שורה להוראה, ⛔ והמופעים שלהן בטבלה משלהם' },
-    { t: 'k_lookups',         why: 'אופני הכנסה וצדקה — פריטים שנערכים בהגדרות' }
+    { t: 'k_lookups',         why: 'אופני הכנסה וצדקה — פריטים שנערכים בהגדרות' },
+    { t: KV_TABLE,            why: 'הגדרות — שורה למפתח, ⛔ והמפתחות קבועים' }
   ],
 };
 
@@ -513,7 +518,7 @@ function mergeTable(t, remote) {
    *  מסודרים אינה החוזה שלה: ⭐ היא מקבלת אובייקט אפשרויות, ⛔ ומפתח
    *  שאינו מגיע אליה מפיל את המיזוג בזמן ריצה. */
   var merged = mergeRows(MIRROR[t] || [], remote, m.key, function (k) {
-    return pendHas(t + ':' + k);
+    return pendHas(kPendKeyOf(t, k));
   });
   MIRROR[t] = merged;
   mirrorSave(t);
@@ -534,7 +539,7 @@ function kSyncPull() {
       any = true;
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
-    if (any) { tombPruneMerged(); hwNoteCloud(); }
+    if (any) { tombPruneMerged(); hwNoteCloud(); cfgApply(); }
     if (any && !_kPullLogged) { _kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
@@ -568,67 +573,39 @@ function saveRefresh() { kRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ההגדרות שבמסד — קריאה וכתיבה פר-מפתח
+   ההגדרות — שורות במראה, ונדחפות בשכבת הדחיפה
    ══════════════════════════════════════════════════════════════════════════
-   ⛔ הקריאה אינה ב-`single` — ⚠️ שורה שאינה קיימת מסומנת שם כשגיאה,
-   ⭐ ומסך שנתוניו תקינים מכריז «הרענון מהענן נכשל».
+   ⛔ הכתיבה מקומית-תחילה ⛔ ואינה פונה לענן — ⚠️ השורה נכתבת למראה, מסומנת
+   ⏳ ונדחפת ב-`schedulePush`: ⭐ כשל רשת משאיר את הסימון, ⛔ והניסיון החוזר
+   הוא זה של כל טבלה אחרת.
+   ⚠️ והקריאה היא מהמראה — ⭐ המשיכה ממזגת אותה פר-מפתח, ⛔ ושורה ⏳ אינה
+   נדרסת בה.
    ══════════════════════════════════════════════════════════════════════════ */
-/*  ⛔ תחילית ההגדרות המקומיות היא קבוע אחד — ⚠️ המפתח נבנה ממנה בשרשור עם
- *  שם ההגדרה: ⛔ תחילית פזורה כליטרל באתרים אינה ניתנת לשינוי ממקום
- *  אחד, ⚠️ ושינוי כזה מפספס את האתר שלא נמצא. */
-var CFG_PREFIX = 'k_cfg_';
-
-function cfgRead(key) {
-  return withTimeout(sb.from(KV_TABLE).select('value').eq('key', key).maybeSingle())
-    .then(function (r) {
-      if (!r || r.error || !r.data) return null;
-      var p = kvParse(key, r.data.value);
-      return p.ok ? p.value : null;
-    }, function () { return null; });
-}
 function cfgWrite(key, value) {
+  var l = MIRROR[KV_TABLE], row = null, i;
+  for (i = 0; i < l.length; i++) if (l[i].key === key) { row = l[i]; break; }
+  if (!row) { row = { key: key, deleted: false }; l.push(row); }
+  row.value = JSON.stringify(value);
+  row.updated_at = Date.now();
+  mirrorSave(KV_TABLE);
+  pendMark(kPendKeyOf(KV_TABLE, key));
   CFG[key] = value;
-  lsSet(CFG_PREFIX + key, JSON.stringify(value));
-  if (!sb) return Promise.resolve(false);
-  return withTimeout(sb.from(KV_TABLE).upsert(
-    { key: key, value: JSON.stringify(value), updated_at: Date.now() },
-    { onConflict: 'key' })).then(function (r) {
-      if (r && r.error) return false;
-      /*  ⛔ כתיבה שהצליחה מקדמת את החותמת — ⚠️ בלעדיה השינוי נשאר
-       *  בלתי-נראה לכל מכשיר אחר לנצח: ⭐ הם מושכים רק כשהיא מתקדמת. */
-      plTouch();
-      return true;
-    }, function () { return false; });
+  pushSoon();
+  return Promise.resolve(true);
 }
-function cfgBoot() {
-  var i, k, raw;
+/*  ⛔ המראה היא המקור — ⚠️ ערך שאינו JSON נשאר בערכו הקודם: ⭐ «לא ידעתי»
+ *  אינו «אין שם כלום». */
+function cfgApply() {
+  var l = MIRROR[KV_TABLE] || [], i, j, k, p;
   for (i = 0; i < CFG_KEYS.length; i++) {
     k = CFG_KEYS[i].key;
-    raw = lsGet(CFG_PREFIX + k);
-    if (raw !== null) { try { CFG[k] = JSON.parse(raw); } catch (e) {} }
+    for (j = 0; j < l.length; j++) {
+      if (l[j].key !== k || l[j].deleted) continue;
+      p = kvParse(k, l[j].value);
+      if (p.ok && p.value != null) CFG[k] = p.value;
+    }
   }
   if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
-  cfgRefresh();
-}
-/*  ⛔ הרענון מהענן בא **אחרי** הציור מהדיסק — ⚠️ המסך מציג מיד את מה
- *  שכבר יש, ⭐ והקריאה היא רענון: ⛔ כשל מחזיר `null` ⛔ ואינו דורס את
- *  הערך המקומי — ⚠️ «לא ידעתי» אינו «אין שם כלום». */
-function cfgRefresh() {
-  if (!sb) return Promise.resolve(false);
-  return Promise.all(CFG_KEYS.map(function (c) {
-    var k = c.key;
-    return cfgRead(k).then(function (v) {
-      if (v === null) return false;
-      CFG[k] = v;
-      lsSet(CFG_PREFIX + k, JSON.stringify(v));
-      return true;
-    });
-  })).then(function (hits) {
-    if (hits.indexOf(true) < 0) return false;
-    if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
-    kRender();
-    return true;
-  });
 }
 
 /* ── ERA_CFG — הדבר היחיד שנבדל בין האפליקציות ──────────────────────────── */
@@ -2293,8 +2270,8 @@ function kBoot() {
   sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   lsBoot();
   _kLoadPushed();
-  cfgBoot();
   mirrorBoot();
+  cfgApply();
   /*  ⛔ הפתיחה בחודש של היום — ⚠️ ולא בחודש האחרון שיש לו נתונים:
    *  ⭐ חודש ריק נפתח ריק, ⛔ ואינו נופל לחודש אחר. */
   view.monthKey = nowMonthKey() || null;
