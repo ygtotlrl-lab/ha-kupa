@@ -89,7 +89,7 @@
  *  הייתה מוצאת `undefined`. */
 import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure, dayNoon,
          dayToday, getDeviceId, kvParse, readNum, uniqHas, withTimeout } from './core/util.js';
-import { ctxEpoch, ctxStale, eraKick, idEq, mergeCore, newClientId,
+import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, mergeCore, newClientId,
          pendAlertDismiss, pendBoot, pendCount, pendHas, pendMark, plBoot,
          plNum, plTouch, pushDirty, rtyBoot, runSave, sbWatch, schedulePush,
          tombAt, tombBoot, tombPruneMerged } from './core/sync.js';
@@ -364,6 +364,13 @@ var LS_CFG = {
   logKey: 'k_ls_log',
   hzPrefix: 'k_ls_hz_',
   dismissKey: 'k_sw_dismissed',
+  /*  ⛔ המרשם — כל מפתח שהאפליקציה כותבת תחת התחילית: ⚠️ מפתח שאינו כאן
+   *  נמחק בעלייה, ⭐ והשמות נגזרים מהתצורה ומהכותבים ⛔ ואינם מוקלדים שוב. */
+  keys: function () {
+    return [LS_CFG.logKey, LS_CFG.dismissKey, DEV_CFG.key, PEND_CFG.key,
+            BK_CFG.flagKey, BK_CFG.logQueueKey, K_PUSHED_KEY]
+      .concat(eraKeys(), mirrorTables().map(mirrorKey));
+  },
 
   /*  ⭐ סוג האפליקציה — ⚠️ ממנו נגזר חלון הפינוי, ⛔ ואין מספר ימים באף
    *  רשומה: ⭐ והנימוק אומר על מה החישוב שלה נפרש. */
@@ -420,6 +427,9 @@ var BK_CFG = {
 
 var PEND_CFG = {
   app: 'kupa', key: 'k_pending',
+  /*  ⛔ קידומות הסימון — ⚠️ נגזרות ממפתח הסימון עצמו, ⭐ ⏳ שקידומתו אינה
+   *  כאן יורד בעלייה: ⛔ אין לו כותב, ⚠️ ואין שורה שתידחף ותוריד אותו. */
+  marks: function () { return PUSH_TABLES.map(function (t) { return kPendKeyOf(t, ''); }); },
   redraw: function () { try { kRender(); } catch (e) { } }
 };
 
