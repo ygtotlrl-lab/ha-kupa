@@ -89,7 +89,7 @@
  *  הייתה מוצאת `undefined`. */
 import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure, dayNoon,
          dayToday, getDeviceId, kvParse, readNum, uniqHas, withTimeout } from './core/util.js';
-import { ctxEpoch, ctxStale, eraKick, idEq, mergeCore, newClientId,
+import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, mergeCore, newClientId,
          pendAlertDismiss, pendBoot, pendCount, pendHas, pendMark, plBoot,
          plNum, plTouch, pushDirty, rtyBoot, runSave, sbWatch, schedulePush,
          tombAt, tombBoot, tombPruneMerged } from './core/sync.js';
@@ -171,7 +171,6 @@ var MSG_ADD_TZEDAKAH = 'צדקה';
 var MSG_ORDERS_TITLE = 'הוראות קבע';
 var MSG_SETTINGS_TITLE = 'הגדרות';
 var MSG_BACK = 'חזרה';
-var MSG_SENSORY = 'צליל ורטט באישור';
 var MSG_EDIT = 'עריכה';
 var MSG_ORDER_NEW = 'הוראת קבע חדשה';
 var MSG_ORDER_FROM = 'חודש תחילת פעילות';
@@ -207,13 +206,8 @@ var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
  *  ⭐ שם פזור אינו ניתן לשינוי ממקום אחד. */
 var CFG_LOOKUPS_EPOCH = 'lookups_epoch';
 var CFG_KEYS = [
-  { key: 'sensory', label: MSG_SENSORY },
   { key: CFG_LOOKUPS_EPOCH, label: 'עידן הרשימות' }
 ];
-
-/*  ⛔ הרגישות — ⚠️ צליל ורטט עוברים כאן בלבד: ⭐ מתג אחד בהגדרות,
- *  ⛔ ואין אתר שני שמשמיע. */
-var APP_SENSORY = { on: true };
 
 /* ═══ ליבת החישוב של «הקופה» — בלוק פר-אפליקציה ═══════════════════════════
    ⛔ אף סיכום אינו נשמר — ⚠️ כל מספר כאן נגזר מהרישומים בזמן קריאה,
@@ -364,6 +358,13 @@ var LS_CFG = {
   logKey: 'k_ls_log',
   hzPrefix: 'k_ls_hz_',
   dismissKey: 'k_sw_dismissed',
+  /*  ⛔ המרשם — כל מפתח שהאפליקציה כותבת תחת התחילית: ⚠️ מפתח שאינו כאן
+   *  נמחק בעלייה, ⭐ והשמות נגזרים מהתצורה ומהכותבים ⛔ ואינם מוקלדים שוב. */
+  keys: function () {
+    return [LS_CFG.logKey, LS_CFG.dismissKey, DEV_CFG.key, PEND_CFG.key,
+            BK_CFG.flagKey, BK_CFG.logQueueKey, K_PUSHED_KEY]
+      .concat(eraKeys(), mirrorTables().map(mirrorKey));
+  },
 
   /*  ⭐ סוג האפליקציה — ⚠️ ממנו נגזר חלון הפינוי, ⛔ ואין מספר ימים באף
    *  רשומה: ⭐ והנימוק אומר על מה החישוב שלה נפרש. */
@@ -420,6 +421,9 @@ var BK_CFG = {
 
 var PEND_CFG = {
   app: 'kupa', key: 'k_pending',
+  /*  ⛔ קידומות הסימון — ⚠️ נגזרות ממפתח הסימון עצמו, ⭐ ⏳ שקידומתו אינה
+   *  כאן יורד בעלייה: ⛔ אין לו כותב, ⚠️ ואין שורה שתידחף ותוריד אותו. */
+  marks: function () { return PUSH_TABLES.map(function (t) { return kPendKeyOf(t, ''); }); },
   redraw: function () { try { kRender(); } catch (e) { } }
 };
 
@@ -605,7 +609,6 @@ function cfgApply() {
       if (p.ok && p.value != null) CFG[k] = p.value;
     }
   }
-  if (typeof CFG.sensory === 'boolean') APP_SENSORY.on = CFG.sensory;
 }
 
 /* ── ERA_CFG — הדבר היחיד שנבדל בין האפליקציות ──────────────────────────── */
@@ -1558,8 +1561,9 @@ function coinReturn() {
  *  נבדלים, ⭐ כל אחד שני חלקיים לא-הרמוניים: ⛔ סינוס יחיד ארוך נשמע
  *  כצפצוף מכשיר ⛔ ולא כמתכת שנופלת. */
 var COIN_TAPS = [[1850, 0], [2480, 0.07], [2130, 0.15]];
+/*  ⛔ **והחוויה החושית תמיד פועלת** — ⚠️ אין לה הגדרה: ⭐ החלטת מנהל,
+ *  ⛔ ומתג שאיש אינו מציג הוא מפתח שהקוד מבקש ואינו במסד. */
 function sensoryFire() {
-  if (!APP_SENSORY.on) return;
   try { if (navigator.vibrate) navigator.vibrate([18, 26, 14, 30, 22]); } catch (e) {}
   try {
     var A = window.AudioContext || window.webkitAudioContext;
