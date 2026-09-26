@@ -50,14 +50,14 @@ create table if not exists public.k_pledges (
 
 create table if not exists public.k_settings (
   key text not null,
-  value jsonb,
+  value text,
   updated_at bigint not null,
   client_id text,
-  deleted boolean default false,
+  deleted boolean not null default false,
   deleted_at timestamp with time zone,
   deleted_by text,
   constraint k_settings_pkey PRIMARY KEY (key),
-  constraint k_settings_value_json CHECK (((value IS NULL) OR (value IS NOT NULL)))
+  constraint k_settings_value_json CHECK (((value IS NULL) OR ((value)::jsonb IS NOT NULL)))
 );
 
 create table if not exists public.k_so_instances (
