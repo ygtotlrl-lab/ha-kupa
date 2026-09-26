@@ -38,7 +38,7 @@ alter table public.TABLE_NAME enable row level security;
 ולכן ההרשאות האלה מיותרות בהגדרה ומסוכנות בפועל: מפתח ה-anon יושב גלוי
 ב-`index.html` הציבורי.
 
-מקור האמת המלא לסכימה: `migrations/000_initial_schema.sql`.
+מקור האמת המלא לסכימה: `migrations/000_schema.sql`.
 
 ---
 
