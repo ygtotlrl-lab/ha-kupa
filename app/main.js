@@ -1,17 +1,17 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, readNum, uniqHas } from '../core/util.js';
-import { eraKick, idEq, newClientId, pendAlertDismiss, pendBoot, plBoot, rtyBoot,
-         runSave, sbWatch, tombBoot } from '../core/sync.js';
+import { eraKick, idEq, newClientId, pendAlertDismiss, pendBoot, plBoot, rtyBoot, runSave,
+         sbWatch, tombBoot } from '../core/sync.js';
 import { hwBoot, lsBoot } from '../core/storage.js';
 import { MIRROR, mirrorBoot } from '../core/mirror.js';
 import { bkBoot } from '../core/backup.js';
 import { actRun, closeAsk, closeModal, esc, ksKey, modalBackdrop, modalEsc, openModal,
          shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
-import '../core/hebrew.js';
+import { hebYearLabelFull } from '../core/hebrew.js';
+import { EPS, MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC,
+         MSG_NEED_LABEL, MSG_ORDER_NEW, MSG_PLEDGE_EDIT, MSG_SETTINGS_TITLE, MSG_WAY_DUP,
+         MSG_WAY_NEW, SUPABASE_ANON_KEY, SUPABASE_URL } from './config.js';
 import { S, view } from './state.js';
-import { EPS, MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT,
-         MSG_NEED_DESC, MSG_NEED_LABEL, MSG_ORDER_NEW, MSG_PLEDGE_EDIT,
-         MSG_SETTINGS_TITLE, MSG_WAY_DUP, MSG_WAY_NEW, SUPABASE_ANON_KEY, SUPABASE_URL } from './config.js';
 import { _kLoadPushed, assetIcon, brandHTML, iconFor, kLive, kQ, kSyncPull, localPut,
          monthByKey, nextMonthOf, nowMonthKey, orderById, pledgeOfYear, prevMonthOf,
          pushSoon, soEnsureThroughNow } from './domain.js';
@@ -224,7 +224,7 @@ var DOM_ACTIONS = {
   'pledge-edit': function (el) {
     var y = String(el.dataset.id || '');
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
-    openModal(MSG_PLEDGE_EDIT + window.hebYearLabelFull(y),
+    openModal(MSG_PLEDGE_EDIT + hebYearLabelFull(y),
       '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
@@ -381,6 +381,6 @@ function kBoot() {
 
 kBoot();
 
-bootOk();
+window.bootOk();
 
 export { DOM_ACTIONS, TABS, kRender, tabHeadHTML };

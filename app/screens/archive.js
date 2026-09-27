@@ -1,8 +1,9 @@
 // app/screens/archive.js — מסך הארכיון
 import { esc } from '../../core/ui.js';
 import { barChart } from '../../core/chart.js';
-import { view } from '../state.js';
+import { hebYearLabelFull } from '../../core/hebrew.js';
 import { MSG_ARCH_EMPTY } from '../config.js';
+import { view } from '../state.js';
 import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey } from '../domain.js';
 import { TABS, tabHeadHTML } from '../main.js';
 
@@ -35,7 +36,7 @@ function archiveScreenHTML() {
   for (i = 0; i < years.length; i++) {
     var y = years[i], open = view.archYear === y;
     h += '<div class="card"><h2 class="fold" data-act="arch-year" data-id="' + esc(y) + '">' +
-         esc(window.hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
+         esc(hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
          '</span></h2>';
     if (open) {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();

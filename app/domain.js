@@ -1,16 +1,17 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
 import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
-import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark,
-         pushDirty, schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
+import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark, pushDirty,
+         schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
 import { bar } from '../core/chart.js';
-import { S, view } from './state.js';
+import { hebDate, hebMonthNames, hebYearLabelFull } from '../core/hebrew.js';
 import { EPS, KV_TABLE, MSG_ADD_INCOME, MSG_CLOSER, MSG_LEFT_SUM, MSG_OPENER,
          MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS, MSG_SUM_SELF, PUSH_TABLES,
          TABLES } from './config.js';
+import { S, view } from './state.js';
 import { ARCH_FIRST } from './screens/archive.js';
 import { kRender } from './main.js';
 
@@ -248,7 +249,7 @@ function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
 function monthLabel(k) {
   var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
   if (!y || i < 0) return '';
-  try { names = window.hebMonthNames(y); } catch (e) { return ''; }
+  try { names = hebMonthNames(y); } catch (e) { return ''; }
   return names[i] || '';
 }
 
@@ -500,7 +501,7 @@ function monthGreg(k) {
 
 // תווית השנה מהמנוע המשותף — צורה שנייה כאן הייתה מקור אמת שני לתצוגה.
 function monthTitle(m) {
-  return m.name + ' ' + window.hebYearLabelFull(m.year);
+  return m.name + ' ' + hebYearLabelFull(m.year);
 }
 
 // הציורים מוטמעים בקוד ולא בקבצים — הם נצבעים מאסימוני הערכה, וקובץ חיצוני אינו יורש משתני CSS.
