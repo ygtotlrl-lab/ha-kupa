@@ -1,49 +1,209 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
-import { MSG_DELETE, MSG_SAVED_LOCAL, readNum, uniqHas } from '../core/util.js';
-import { eraKick, idEq, newClientId, pendAlertDismiss, pendBoot, plBoot, rtyBoot, runSave,
-         sbWatch, tombBoot } from '../core/sync.js';
-import { hwBoot, lsBoot } from '../core/storage.js';
-import { MIRROR, mirrorBoot } from '../core/mirror.js';
+import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
+         withTimeout } from '../core/util.js';
+import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismiss,
+         pendBoot, pendCount, pendHas, plBoot, pushDirty, rtyBoot, runSave, sbWatch,
+         tombBoot } from '../core/sync.js';
+import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
+import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { bkBoot } from '../core/backup.js';
 import { actRun, closeAsk, closeModal, esc, ksKey, modalBackdrop, modalEsc, openModal,
          shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
-import { EPS, MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC,
-         MSG_NEED_LABEL, MSG_ORDER_NEW, MSG_PLEDGE_EDIT, MSG_SETTINGS_TITLE, MSG_WAY_DUP,
-         MSG_WAY_NEW, SUPABASE_ANON_KEY, SUPABASE_URL } from './config.js';
-import { S, view } from './state.js';
-import { _kLoadPushed, assetIcon, brandHTML, iconFor, kLive, kQ, kSyncPull, localPut,
-         monthByKey, nextMonthOf, nowMonthKey, orderById, pledgeOfYear, prevMonthOf,
-         pushSoon, soEnsureThroughNow } from './domain.js';
+import { CAT_LIST, EPS, KV_TABLE, K_PUSHED_KEY, METHOD_DEFAULT, MSG_ADD_INCOME,
+         MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
+         MSG_ORDER_NEW, MSG_PLEDGE_EDIT, MSG_WAY_DUP, MSG_WAY_NEW, PUSH_TABLES,
+         SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
+         TABS } from './constants.js';
+import { S, shell, view } from './state.js';
+import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, hwHorizonDate, iconFor,
+         kDirtyRows, kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
+         kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
+         nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
+         soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
-import { CAT_LIST, METHOD_DEFAULT, SRC_DEFAULT, entryById, entryDelete, entryUndo,
-         flowCollect, flowOpen, flowStart, flowSteps, flowValid, lookupReorder,
-         lookupRows, lookupSeed, monthScreenHTML } from './screens/month.js';
+import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+         flowValid, lookupReorder, lookupSeed,
+         monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
 import { coinWire, slideScreenHTML } from './screens/slide.js';
 
+// ── החיווט ──
+// החיווט נמסר בשומרי קריאה — ה-CFG מוגדרים בהמשך, והשומר קורא אותם בזמן הקריאה ולא בזמן המסירה.
+appConfigure({
+  get BK_CFG() { return BK_CFG; },
+  get DEV_CFG() { return DEV_CFG; },
+  get DOM_ACTIONS() { return DOM_ACTIONS; },
+  get ERA_CFG() { return ERA_CFG; },
+  get HW_CFG() { return HW_CFG; },
+  get LS_CFG() { return LS_CFG; },
+  get MIRROR_CFG() { return MIRROR_CFG; },
+  get PEND_CFG() { return PEND_CFG; },
+  get PL_CFG() { return PL_CFG; },
+  get PUSH_CFG() { return PUSH_CFG; },
+  get RTY_CFG() { return RTY_CFG; },
+  get saveRefresh() { return saveRefresh; }
+});
+
+var MIRROR_CFG = {
+  prefix: self.APP.prefix + 'mirror_',
+  app:    self.APP.prefix,
+  tables: function () { return TABLES.map(function (m) { return m.t; }); },
+  // ריק ומוצהר — שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
+  noPush: [],
+  empty:  function () { return []; },
+  ts:     function (r) { return kRowTs(r); },
+  clean:  function (t, rows) { return kStripRows(t, rows); },
+  fail:   function (where, e) { console.error('[mirror] ' + where, e); },
+};
+
+// פריט בלי ts זורק בפינוי.
+var LS_CFG = {
+  cachePrefix: self.APP.id + '-',
+  logKey: 'k_ls_log',
+  hzPrefix: 'k_ls_hz_',
+  dismissKey: 'k_sw_dismissed',
+  // מפתח שאינו במרשם נמחק בעלייה.
+  keys: function () {
+    return [LS_CFG.logKey, LS_CFG.dismissKey, DEV_CFG.key, PEND_CFG.key,
+            BK_CFG.flagKey, BK_CFG.logQueueKey, K_PUSHED_KEY]
+      .concat(eraKeys(), mirrorTables().map(mirrorKey));
+  },
+
+  // חלון הפינוי נגזר מסוג האפליקציה — אין מספר ימים באף רשומה.
+  appType: { type: 'annual', why: 'החישוב שלה נפרש על שנה — ⚠️ הפלעדזש הוא החלטה לשנה עברית, ⛔ וכל חודש בה נושא אותו' },
+  // ריק ומוצהר — כל מראה כאן היא הנתון עצמו ולא מטמון מהירות.
+  wholeKeys: [],
+  // oldRecords ריק ומוצהר — כל טבלה שגדלה כאן נדרשת במלואה.
+  // שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
+  oldRecords: [],
+  // יתרת החומש עוברת מחודש לחודש מהחודש הראשון — רשומה שפונתה היא יתרה שגויה, בכל אורך חלון.
+  fullHistory: [
+    { t: 'k_entries',      calc: 'chainAll' },
+    { t: 'k_so_instances', calc: 'chainAll' }
+  ],
+  // טבלה שגדלה ואינה בפינוי ממלאת אחסון של origin משותף — לכן כאן רק טבלה קבועה בגודלה, עם נימוקה.
+  fixedSize: [
+    { t: 'k_pledges',         why: 'פלעדזש — שורה לשנה עברית, ⛔ ואינה גדלה בתוך השנה' },
+    { t: 'k_standing_orders', why: 'הוראות קבע — שורה להוראה, ⛔ והמופעים שלהן בטבלה משלהם' },
+    { t: 'k_lookups',         why: 'אופני הכנסה וצדקה — פריטים שנערכים בהגדרות' },
+    { t: KV_TABLE,            why: 'הגדרות — שורה למפתח, ⛔ והמפתחות קבועים' }
+  ],
+};
+
+var DEV_CFG = { key: 'k_device_id' };
+
+var BK_CFG = {
+  client: function () { return S.sb; },
+  flagKey: 'k_last_backup',
+  logQueueKey: 'k_log_queue',
+  prefix: '',
+  device: function () { try { return getDeviceId(); } catch (e) { return null; } },
+  // אין כניסה ולכן אין שם משתמש — המכשיר הוא הזהות היחידה, ושדה מומצא היה עדות שאיש לא מסר.
+  user: function () { return null; },
+  secrets: [],
+  sources: function () {
+    return [
+      { kind: 'table', name: 'k_pledges',         order: 'hebrew_year', ts: 'updated_at' },
+      { kind: 'table', name: 'k_standing_orders', order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: 'k_lookups',         order: 'client_id', ts: 'updated_at' },
+      { kind: 'table', name: KV_TABLE,             order: 'key' }
+    ];
+  }
+};
+
+var PEND_CFG = {
+  app: 'kupa', key: 'k_pending',
+  // סימון שקידומתו אינה כאן יורד בעלייה — אין לו כותב ואין שורה שתידחף ותוריד אותו.
+  marks: function () { return PUSH_TABLES.map(function (t) { return kPendKeyOf(t, ''); }); },
+  redraw: function () { try { kRender(); } catch (e) { } }
+};
+
+var RTY_CFG = {
+  flush:   function () { return kSyncNow(); },
+  pending: function () { try { return pendCount() > 0; } catch (e) { return false; } },
+};
+
+var PL_CFG = {
+  every:  3000,
+  // אין כניסה — הפולינג פעיל כל עוד הלשונית גלויה, ותנאי של משתמש מחובר לא היה מתקיים כאן לעולם.
+  active: function () { return document.visibilityState !== 'hidden'; },
+  seen:   function () { return S._kSeenTs; },
+  note:   function (ts) { S._kSeenTs = ts; },
+  ok:     function () { S._lastSeenOk = Date.now(); },
+  pull:   function () { return kSyncNow(); },
+  client: function () { return S.sb; },
+  table:  function () { return KV_TABLE; },
+};
+
+var PUSH_CFG = {
+  tables: PUSH_TABLES,
+  chunk:  500,
+  delay:  400,
+  dirty:  function (t) { S._kPushEp = ctxEpoch(); return kDirtyRows(t); },
+  key:    function (t, row) { return kPendKey(t, row); },
+  send:   function (t, rows) {
+    var m = kTableMeta(t);
+    return withTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
+  },
+  mark:   function (t) { if (!ctxStale(S._kPushEp)) _kMarkPushed(t); },
+  run:    function () { kSyncNow(); },
+};
+
+var HW_CFG = {
+  enabled: true,
+  // אין כניסה ואין תפקיד — החלון החם פתוח למי שמחזיק את המכשיר.
+  admin: function () { return true; },
+  specs: [{
+    key: mirrorKey('k_entries'),
+    label: 'רישומי חודשים שנסגרו',
+    inWindow: function (r) {
+      var d = r && r.entry_date;
+      if (!d) return true;
+      return d >= hwHorizonDate();
+    },
+    idOf: function (r) { return r && r.client_id; },
+    ts: function (r) { return kRowTs(r); },
+    isPending: function (r) { return pendHas(kPendKey('k_entries', r)); },
+    fetch: function () {
+      return withTimeout(S.sb.from('k_entries').select('*'))
+        .then(function (r) {
+          return (r && !r.error && Array.isArray(r.data)) ? { ok: true, rows: r.data }
+                                                          : { ok: false, rows: [] };
+        }, function () { return { ok: false, rows: [] }; });
+    }
+  }]
+};
+
+var ERA_CFG = {
+  prefix: self.APP.prefix,
+  client: function () { return S.sb; },
+  table:  function () { return KV_TABLE; },
+  // גם אופק הפינוי נמחק — אופק ששרד מסנן את מה שהמשיכה מחזירה, והמכשיר היה נשאר ריק.
+  wipe:   function () {
+    mirrorTables().forEach(function (t) { MIRROR[t] = MIRROR_CFG.empty(); lsRemove(mirrorKey(t)); });
+    lsClearHorizons();
+  },
+  // הדחיפה היא ראיה טרייה ולא זיכרון — מכשיר נקי מקבל ok עם still ריק.
+  push:   function () { return pushDirty(null); },
+  refresh: function () { return kSyncNow(); }
+};
+
+function saveRefresh() { kRender(); }
+
 document.title = self.APP.name;
 
-// מפתח שאין לו מסך — הלחיצה עוברת והמסך אינו מתחלף.
-var TABS = [
-  { k: 'month',    lab: 'בית',    ic: 'home' },
-  { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
-  { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
-];
-
+// ── הסרגל ──
 function tabbarHTML() {
   return '<div class="in">' + TABS.map(function (t) {
     return '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
            '" data-act="tab-go" data-id="' + esc(t.k) + '">' +
            '<span class="ti">' + iconFor(t.ic) + '</span>' + esc(t.lab) + '</button>';
   }).join('') + '</div>';
-}
-
-function tabHeadHTML(lab) {
-  return '<div class="mrow"><span class="mid"><span class="mname">' +
-         esc(lab) + '</span></span></div>';
 }
 
 // ── הרינדור ──
@@ -357,6 +517,7 @@ document.addEventListener('pointerup', function () {
 
 // ── העלייה ──
 function kBoot() {
+  shell.kRender = kRender;
   S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   lsBoot();
   _kLoadPushed();
@@ -382,5 +543,3 @@ function kBoot() {
 kBoot();
 
 window.bootOk();
-
-export { DOM_ACTIONS, TABS, kRender, tabHeadHTML };

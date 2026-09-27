@@ -2,14 +2,10 @@
 import { esc } from '../../core/ui.js';
 import { barChart } from '../../core/chart.js';
 import { hebYearLabelFull } from '../../core/hebrew.js';
-import { MSG_ARCH_EMPTY } from '../config.js';
+import { ARCH_FIRST, MSG_ARCH_EMPTY, TABS } from '../constants.js';
 import { view } from '../state.js';
-import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey } from '../domain.js';
-import { TABS, tabHeadHTML } from '../main.js';
-
-// חודש שטרם הגיע מציג פסים ריקים, ונקרא כחודש שלא עמדנו בו.
-// תשרי תשפ״ז הוא החודש שממנו האפליקציה מנהלת, ואין רשומות שקודמות לו.
-var ARCH_FIRST = '5787-01';
+import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey,
+         tabHeadHTML } from '../domain.js';
 
 function archMonths() {
   var now = nowMonthKey();
@@ -52,4 +48,4 @@ function archiveScreenHTML() {
   return h + footHTML();
 }
 
-export { ARCH_FIRST, archiveScreenHTML };
+export { archiveScreenHTML };

@@ -3,7 +3,7 @@
 הטבלה ב-`TABLE.md` — מקור האמת היחיד ליכולת; סשן קורא ממנה את הפרקים שהסבב נוגע בהם.
 
 ## מפת המסכים
-- מסך ⟵ מודול: `month` (בית ותהליך הרישום) ⟵ `app/screens/month.js` · `archive` ⟵ `app/screens/archive.js` · `settings` (והוראות הקבע) ⟵ `app/screens/settings.js` · `slide` (אישור המטבע) ⟵ `app/screens/slide.js` · `done` ⟵ `app/screens/done.js`. החישוב, התקופה והסנכרון — `app/domain.js`; מצב הריצה — `app/state.js`; הניווט ומפת הפעולות — `app/main.js`.
+- מסך ⟵ מודול: `month` (בית ותהליך הרישום) ⟵ `app/screens/month.js` · `archive` ⟵ `app/screens/archive.js` · `settings` (והוראות הקבע) ⟵ `app/screens/settings.js` · `slide` (אישור המטבע) ⟵ `app/screens/slide.js` · `done` ⟵ `app/screens/done.js`. הנתונים והמחרוזות — `app/constants.js`; מצב הריצה ו-`shell` — `app/state.js`; החישוב, התקופה והסנכרון — `app/domain.js`; החיווט, הניווט ומפת הפעולות — `app/main.js`.
 - שלוש לשוניות בסרגל אחד: בית (החודש) · ארכיון · הגדרות. הזרימה היא מסך ⟵ דיאלוג ⟵ אישור, ואין כפתור חזרה — הגישה משורת הניווט. הלוגו בשלוש הלשוניות בלבד, ולא במסכי המשנה (הזנת תנועה ואילך).
 - «בית» פותחת תמיד את החודש של היום — חודש שנפתח מהארכיון אינו נשאר בה.
 - אין סליקה, ייצוא או תקציב בית, ואין לשונית שמבשרת אותם.
