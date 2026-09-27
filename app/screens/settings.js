@@ -3,12 +3,12 @@ import { MSG_FILL_ALL, readNum } from '../../core/util.js';
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { esc, uiNoDialog } from '../../core/ui.js';
+import { view } from '../state.js';
 import { EPS, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NO_ORDERS,
          MSG_ORDERS_TITLE, MSG_ORDER_FROM, MSG_ORDER_NEW, MSG_SETTINGS_TITLE,
          MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH } from '../config.js';
 import { footHTML, iconFor, kLive, kQ, localPut, money, monthByKey, monthTitle,
-         monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear, prevMonthOf,
-         view } from '../domain.js';
+         monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear, prevMonthOf } from '../domain.js';
 import { METHOD_DEFAULT, ORDER_METHODS, SRC_DEFAULT, lookupRows } from './month.js';
 import { tabHeadHTML } from '../main.js';
 

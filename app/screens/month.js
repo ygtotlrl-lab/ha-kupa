@@ -3,12 +3,13 @@ import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
+import { view } from '../state.js';
 import { EPS, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE, MSG_EMPTY_PRE,
          MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SUM_TZEDAKAH, MSG_UNDO } from '../config.js';
 import { K_CAT_SELF, chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill,
          kLive, kQ, kSortEntries, localPut, money, monthByKey, monthGreg, monthRows,
-         pushSoon, splitHTML, view } from '../domain.js';
+         pushSoon, splitHTML } from '../domain.js';
 import { kRender } from '../main.js';
 
 function monthScreenHTML() {

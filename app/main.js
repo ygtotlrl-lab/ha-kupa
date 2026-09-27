@@ -8,13 +8,13 @@ import { bkBoot } from '../core/backup.js';
 import { actRun, closeAsk, closeModal, esc, ksKey, modalBackdrop, modalEsc, openModal,
          shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import '../core/hebrew.js';
-import { S } from './state.js';
+import { S, view } from './state.js';
 import { EPS, MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT,
          MSG_NEED_DESC, MSG_NEED_LABEL, MSG_ORDER_NEW, MSG_PLEDGE_EDIT,
          MSG_SETTINGS_TITLE, MSG_WAY_DUP, MSG_WAY_NEW, SUPABASE_ANON_KEY, SUPABASE_URL } from './config.js';
 import { _kLoadPushed, assetIcon, brandHTML, iconFor, kLive, kQ, kSyncPull, localPut,
          monthByKey, nextMonthOf, nowMonthKey, orderById, pledgeOfYear, prevMonthOf,
-         pushSoon, soEnsureThroughNow, view } from './domain.js';
+         pushSoon, soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
 import { CAT_LIST, METHOD_DEFAULT, SRC_DEFAULT, entryById, entryDelete, entryUndo,

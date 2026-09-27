@@ -1,8 +1,9 @@
 // app/screens/archive.js — מסך הארכיון
 import { esc } from '../../core/ui.js';
 import { barChart } from '../../core/chart.js';
+import { view } from '../state.js';
 import { MSG_ARCH_EMPTY } from '../config.js';
-import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey, view } from '../domain.js';
+import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey } from '../domain.js';
 import { TABS, tabHeadHTML } from '../main.js';
 
 // חודש שטרם הגיע מציג פסים ריקים, ונקרא כחודש שלא עמדנו בו.

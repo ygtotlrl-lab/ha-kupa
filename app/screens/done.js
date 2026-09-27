@@ -1,7 +1,8 @@
 // app/screens/done.js — מסך הסיום
 import { esc } from '../../core/ui.js';
+import { view } from '../state.js';
 import { MSG_LEFT_SUM, MSG_OPENER, MSG_SUM_INCOME, MSG_TZ_BLESS } from '../config.js';
-import { chainOf, footHTML, money, signed, view } from '../domain.js';
+import { chainOf, footHTML, money, signed } from '../domain.js';
 
 // הכיתוב בתחתית והקונפטי מעליו — פתית שנופל על אות מסתיר אותה ברגע שבו היא נקראת.
 function doneScreenHTML() {

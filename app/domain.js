@@ -7,7 +7,7 @@ import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
 import { bar } from '../core/chart.js';
-import { S } from './state.js';
+import { S, view } from './state.js';
 import { EPS, KV_TABLE, MSG_ADD_INCOME, MSG_CLOSER, MSG_LEFT_SUM, MSG_OPENER,
          MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS, MSG_SUM_SELF, PUSH_TABLES,
          TABLES } from './config.js';
@@ -199,11 +199,6 @@ function mergeRows(local, remote, keyName, isPending) {
     dedupe: false, keyless: 'drop', localPick: 'first'
   }));
 }
-
-// ── מצב הריצה ──
-// אין כאן סיכום שמור ואין עותק של הטבלאות — העותק המקומי הוא MIRROR, ושם שני לו הוא עותק שאיש אינו מסנכרן.
-var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null,
-             lookOpen: null, archYear: null };
 
 var kQ = function (s) { return document.querySelector(s); };
 
@@ -665,4 +660,4 @@ export { K_CAT_SELF, K_PUSHED_KEY, _kLoadPushed, _kMarkPushed, assetIcon, brandH
          kSortEntries, kStripRows, kSyncNow, kSyncPull, kTableMeta, localPut, money,
          monthByKey, monthGreg, monthKeyOf, monthRows, monthTitle, monthsSorted,
          nextMonthOf, nowMonthKey, orderById, ordersLive, pledgeOfYear, prevMonthOf,
-         pushSoon, saveRefresh, signed, soEnsureThroughNow, splitHTML, view };
+         pushSoon, saveRefresh, signed, soEnsureThroughNow, splitHTML };
