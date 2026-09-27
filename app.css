@@ -1,34 +1,20 @@
-/* ═══ גיליון הסגנון — בלוק גיליון סגנון ═════════════════════════════════════
-   ⛔ CSS של האפליקציה יושב בקובץ ⛔ ולא ב-`index.html` — ⚠️ בלוק שאינו
-   נושא את סוגו נקרא כסוג אחר: ⭐ מחרוזת CSS בתוך JS נראית כ-CSS של
-   האפליקציה, ⛔ ואינה.
-   ════════════════════════════════════════════════════════════ */
+/* app.css — עיצוב האפליקציה */
 
-/* ══ אסימוני העיצוב ════════════════════════════════════════════════════ */
+/* ── אסימוני העיצוב ── */
 :root{
-  /*  ⛔ מרחק הטוסט מתחתית המסך — ⚠️ הערך היחיד שנבדל בשכבת הטוסט:
-   *  ⭐ הוא נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו, ⛔ וטוסט
-   *  שנמוך מהם מוסתר מאחוריהם. */
+  /* נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו — טוסט נמוך מהם מוסתר מאחוריהם. */
   --toast-bottom:150px;
-  /*  ⛔ רוחב עמודת התוכן — ⚠️ המסך, סרגל הלשוניות ומסילת הכפתור הצף
-   *  קוראים אותו: ⭐ ומעל כל נקודת שבירה הוא מתרחב, ⛔ ואינו נשאר
-   *  ברוחב הטלפון — ⚠️ וערך שכל צרכניו קוראים ממקום אחד מתרחב פעם אחת. */
+  /* המסך, סרגל הלשוניות ומסילת הכפתור הצף קוראים אותו, והוא מתרחב בכל נקודת שבירה. */
   --col:390px;
-  /*  ⛔ צבע הזהות — ⚠️ אסימון אחד בשם אחד, ⭐ והגוון הוא של האפליקציה:
-   *  ⛔ רכיב שמייצג את האפליקציה נגזר ממנו ⛔ ולא מדיו הטקסט.
-   *  ⛔ **והדיו שעליו צמד הפוך** — ⚠️ ומתחלף איתו יחד. */
+  /* רכיב שמייצג את האפליקציה נגזר מ---brand ולא מדיו הטקסט; הדיו שעליו צמד הפוך ומתחלף איתו. */
   --brand:var(--brand-fill); --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
 
   --bg:#F6F2FA; --card:#FFFFFF; --card-2:#FBF9FD;
   --text:#352B3F; --text-2:#7E6F90; --text-3:#9F94AC;
   --border:#E6DEF0;
   --brand-fill:#7C5CB0; --brand-ink:#5E3F8F; --brand-soft:#EFEAF6;
-  /*  ⛔ שלושת המצבים בגווני האפליקציה — ⚠️ הטורקיז לצד הסגול, והפטל
-   *  והאפרסק לצד האפרסק שבערכה: ⭐ אדום · ירוק · צהוב הם ערכת אזעקה,
-   *  ⛔ והם נקראים כתקלה גם כשהם מבשרים הצלחה.
-   *  ⚠️ **וכל אחד נשאר בתחום הגוון של שמו** — ⛔ אסימון שנושא שם של
-   *  תפקיד ממופה לאותו תפקיד: ⭐ `--bad` שאינו אדום צובע את הכשל בצבע
-   *  ההצלחה, ⛔ וכל צמד עומד ביחס בשני המצבים. */
+  /* המצבים בגווני האפליקציה ולא אדום, ירוק וצהוב — ערכת אזעקה נקראת כתקלה גם כשהיא מבשרת הצלחה.
+     כל אסימון נשאר בתחום הגוון של שמו — --bad שאינו אדום צובע כשל בצבע ההצלחה. */
   --ok:#1E715D; --ok-soft:#EAF6F3;
   --warn:#93492B; --warn-soft:#FAE8E1;
   --bad:#9D2541; --bad-soft:#F9EBEF;
@@ -36,11 +22,8 @@
   --shadow:0 1px 2px var(--sh-1);
   --shadow-lg:0 8px 22px rgba(53,43,63,.16);
 
-  /*  ⛔ אסימוני המוצר — ⚠️ הם קיימים כאן בלבד: ⭐ שבע דרגות הסגול הן
-   *  **תפקיד** — חומש · צדקה · ניווט, ⛔ ודרגות האפרסק הן פלעדזש ·
-   *  הכנסה · מטבע. ⛔ **והפטל בשני מקומות בלבד** — ⚠️ הכפתור הצף
-   *  ו«אין עוד מלבדו!»: ⭐ צבע שמופיע בכל מקום מפסיק להיות סימן.
-   *  ⭐ ואסימון שאין לו קורא יורד משתי הערכות. */
+  /* דרגות הסגול הן חומש, צדקה וניווט; דרגות האפרסק — פלעדזש, הכנסה ומטבע.
+     הפטל בשני מקומות בלבד — הכפתור הצף ו«אין עוד מלבדו!»: צבע שמופיע בכל מקום מפסיק להיות סימן. */
   --purple-1:#EFEAF6; --purple-2:#B49EE0; --purple-3:#9C7FD0; --purple-4:#8A6BC0;
   --purple-5:#7C5CB0; --purple-6:#5E3F8F; --purple-7:#3A2540;
   --peach-1:#FDE6DC; --peach-2:#F2A184;
@@ -49,7 +32,7 @@
   --ring-soft:rgba(255,255,255,.3);
 }
 
-/* ══ הערכה הכהה ════════════════════════════════════════════════════════ */
+/* ── הערכה הכהה ── */
 @media (prefers-color-scheme:dark){
     :root{
       --on-brand:#FFFFFF; --on-rasp:#2A1B3D;
@@ -73,12 +56,10 @@
     }
 }
 
-/* ══ בסיס ══════════════════════════════════════════════════════════════ */
+/* ── בסיס ── */
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
-/*  ⛔ המשוב בלחיצה נקבע ⛔ ולא נירש — ⚠️ ברירת המחדל של הדפדפן היא ריבוע
- *  כחול שאינו מערכת הצבעים שלנו, ⭐ והיא מופיעה במגע בלבד: ⛔ ומי שבודק
- *  בעכבר אינו רואה אותה. */
+/* ברירת המחדל של הדפדפן היא ריבוע כחול שמופיע במגע בלבד — ומי שבודק בעכבר אינו רואה אותו. */
 body{-webkit-tap-highlight-color:transparent}
 body{
   margin:0; background:var(--bg); color:var(--text);
@@ -89,64 +70,33 @@ body{
 h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
 button{font:inherit; color:inherit}
 input,select,textarea{font:inherit; color:inherit}
-/*  ⛔ טבעת המיקוד בגוון הערכה — ⚠️ ברירת המחדל של הדפדפן צהובה-כתומה:
- *  ⭐ היא אינה באוצר הצבעים של האפליקציה, ⛔ ונקראת כאזהרה על שדה תקין. */
+/* ברירת המחדל של הדפדפן אינה באוצר הצבעים, ונקראת כאזהרה על שדה תקין. */
 :focus-visible{outline:var(--sp-1) solid var(--purple-3);outline-offset:var(--sp-1)}
 
-/* ══ קליפה ═════════════════════════════════════════════════════════════ */
-/*  ⛔ שורש הקליפה אינו תיבה — ⚠️ הוא קיים כדי לשאת את המצב החשוף, ⭐ ומיכל
- *  התוכן ממשיך למלא את עמודת ה-`body`. */
+/* ── קליפה ──
+   שורש הקליפה אינו תיבה — הוא נושא את המצב החשוף, ומיכל התוכן ממשיך למלא את עמודת ה-body. */
 #shell{display:contents}
-/*  ⛔ שתי השורות בראש ובתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה. */
-/*  ⛔ שתי השורות בתחתית **כל** מסך — ⚠️ הן אינן קישוט, ⭐ והן מה
- *  שהמשתמש ביקש לראות בכל פתיחה: ⛔ והפתיחה מתחת לחתימה, ⚠️ בגופן
- *  גדול מעט ממנה.
- *  ⚠️ **וכפתור החזרה נכנס לאותו בלוק** — ⛔ הוא אינו כפתור פעולה,
- *  ⭐ ואינו נפרש לרוחב המסך כמותם. */
+/* הפתיחה מתחת לחתימה, בגופן גדול מעט ממנה; כפתור החזרה באותו בלוק ואינו נפרש לרוחב כמו כפתור פעולה. */
 .foot{text-align:center;padding:var(--sp-7) var(--sp-6) var(--sp-6)}
 .closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
   padding:0 0 var(--sp-3)}
 .opener{color:var(--rasp-ink);font-size:var(--fs-2);letter-spacing:var(--ls-1);text-align:center;
   font-weight:500;padding:0}
-/*  ⛔ העמודה אינה נמרחת עד לקצה — ⚠️ המסך כאן הוא ערימת כרטיסים קצרה,
- *  ⭐ ורוחב שנמתח על חלון רחב מפריד את המספר מהתווית שלו בשורה אחת.
- *  ⛔ **אך היא מתרחבת בכל נקודת שבירה** — ⚠️ עמודה שנשארת ברוחב הטלפון
- *  נראית זהה בכל מסך שמעליו: ⭐ והרוחב נקרא מ-`--col` ⛔ ואינו מוקלד כאן.
- *  ⚠️ **והרוחב הוא מידת רכיב יחיד** ⛔ ואינו דרגה בסולם. */
-/*  ⛔ הדף הוא עמודה שגובהה מלוא החלון — ⚠️ הכותרת ומיכל התוכן יחד:
- *  ⭐ המיכל ממלא את מה שהכותרת משאירה, ⛔ והתחתית נדחפת לתחתית המסך
- *  ⚠️ ולא לסוף התוכן — מסך קצר היה משאיר את שתי השורות באמצע. */
+/* העמודה אינה נמרחת עד לקצה אך מתרחבת בכל נקודת שבירה — הרוחב נקרא מ---col.
+   min-height של מלוא החלון דוחף את התחתית לתחתית המסך — מסך קצר היה משאיר אותה באמצע. */
 body{display:flex;flex-direction:column;min-height:100vh}
 main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
   width:100%;max-width:var(--col);margin:0 auto;
   flex:1 0 auto;display:flex;flex-direction:column}
 main > .foot{margin-top:auto}
-/*  ⛔ הלוגו הוא הנכס שהמחולל מייצר ⛔ ואינו ציור שני — ⚠️ תיאור בצורות
- *  של מאסטר קיים הוא מקור אמת שני, ⭐ ושניים שאיש אינו מצליב נפרדים. */
+/* הלוגו הוא הנכס שהמחולל מייצר — ציור שני של המאסטר היה מקור אמת שני. */
 .brand{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);
   padding:var(--sp-6) 0 var(--sp-2)}
 .brand img{width:40px;height:40px;border-radius:var(--r-4)}
-/*  ⛔ פס היעד אינו מוצג כאן — ⚠️ הוא מלא תמיד, ⭐ שהמכנה הוא מאה:
- *  ⛔ פס שאינו משתנה אינו אומר דבר, ⚠️ והוא נקרא כפס מצב שני.
- *  ⭐ **והערך עצמו נשאר** — ⛔ הוא המכנה שהרכיב המשותף מנרמל לפיו,
- *  ⚠️ והסרתו מהנתון הייתה משנה את אורכי הפסים. */
+/* פס היעד מוסתר כי הוא מלא תמיד; הערך עצמו נשאר — הוא המכנה שהרכיב המשותף מנרמל לפיו, והסרתו משנה את אורכי הפסים. */
 
-/*  ⛔ הכפתור הצף הוא **סרגל** ⛔ ואינו מודאל — ⚠️ הוא פותח דיאלוג,
-    ⭐ ודרגה שווה לזו של המיכל משאירה את הסדר בעץ להכריע: ⛔ והוא אינו
-    מוצהר בשום מקום.
-    ⚠️ **והוא בקצה המסיים** — ⛔ המסמך ימין-לשמאל, ⭐ ולכן הקצה המסיים
-    הוא שמאל: ⛔ והוא יושב מעל סרגל הלשוניות ⛔ ולא עליו.
-    ⚠️ **והפלוס הוא ציור** ⛔ ולא תו — ⭐ תו נשען על קו הבסיס של הגופן,
-    ⛔ ומרכזו האופטי זז בין מנוע למנוע: ⚠️ בדסקטופ הוא נראה גבוה מדי.
-    ⚠️ **והמיקום האופקי נגזר מרוחב העמודה** — ⛔ מעל רוחב העמודה הכפתור
-    נצמד לקצה שלה ⛔ ולא לקצה החלון. */
-/*  ⛔ המסילה היא מה שקבוע למסך ⛔ ולא הכפתור — ⚠️ והיא בדיוק ברוחב
- *  העמודה: ⭐ כך הכפתור יושב על קצה העמודה בכל רוחב חלון, ⛔ ואינו
- *  מחושב מחצי המסך — ⚠️ חישוב מ-`50%` נושא את רוחב העמודה בתוכו,
- *  ⭐ ומקבע אותו: ⛔ והוא נשאר על רוחב אחד גם כשהעמודה התרחבה.
- *  ⚠️ **והמסילה שקופה ללחיצה** — ⛔ היא נמתחת על כל הרוחב, ⭐ והכפתור
- *  שבתוכה הוא היחיד שמקבל אותה. */
+/* הפלוס הוא ציור ולא תו — מרכזו האופטי של תו זז בין מנועים.
+   המסילה ולא הכפתור קבועה למסך, בדיוק ברוחב העמודה — חישוב מ-50% מקבע רוחב אחד; והיא שקופה ללחיצה. */
 .fabrail{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
   inset-inline:0;z-index:var(--z-2);display:flex;justify-content:center;
   pointer-events:none}
@@ -159,8 +109,7 @@ main > .foot{margin-top:auto}
   transition:transform var(--dur-3)}
 .fab svg{width:28px;height:28px;display:block}
 .fab:active{transform:scale(.93)}
-/*  ⛔ שלוש לשוניות, וסרגל אחד ⛔ שיושב בתוך העמודה — ⚠️ סרגל שנמתח על
- *  כל החלון מנתק את הניווט מהתוכן שמעליו. */
+/* הסרגל בתוך העמודה — סרגל על כל החלון מנתק את הניווט מהתוכן. */
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
   padding-bottom:env(safe-area-inset-bottom);
@@ -173,16 +122,13 @@ main > .foot{margin-top:auto}
 .tab-btn .ti{display:flex;align-items:center;justify-content:center}
 .tab-btn svg{width:20px;height:20px;display:block}
 .tab-btn.on{color:var(--purple-5);font-weight:500}
-/*  ⛔ `:hover` חל רק במכשיר שיש לו ריחוף — ⚠️ במגע הוא נשאר על הרכיב
- *  אחרי הלחיצה, ⭐ והלחצן נראה לחוץ עד שנוגעים במקום אחר: ⛔ המשוב במגע
- *  הוא `:active` בלבד, ⚠️ ולכן הוא נשאר מחוץ לבלוק.
- *  ⚠️ **וכל כלל ריחוף יושב ליד רכיבו ולא בסוף הגיליון** — ⛔ כלל ריחוף שיורד אל אחרי
- *  `.active` או `:active` באותה סגוליות גובר עליהם. */
+/* :hover רק במכשיר עם ריחוף — במגע הוא נשאר על הרכיב אחרי הלחיצה.
+   וכלל ריחוף יושב ליד רכיבו — אחרי .active באותה סגוליות הוא היה גובר עליו. */
 @media (hover:hover){
   .tab-btn:hover{color:var(--purple-5)}
 }
 
-/* ══ רכיבים ════════════════════════════════════════════════════════════ */
+/* ── רכיבים ── */
 .card{
   background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
@@ -190,8 +136,7 @@ main > .foot{margin-top:auto}
   margin-bottom:var(--sp-5);font-weight:500}
 .card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-2);
   color:var(--text-2)}
-/*  ⛔ הסימן שייך למספר — ⚠️ והאלגוריתם הדו-כיווני מעיף אותו אל קצה
- *  השורה: ⭐ עטיפה בכיוון שמאל-ימין מצמידה אותו למקומו. */
+/* עטיפה בכיוון שמאל-ימין — אחרת האלגוריתם הדו-כיווני מעיף את הסימן לקצה השורה. */
 .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
 .empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
 .big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
@@ -220,8 +165,7 @@ main > .foot{margin-top:auto}
   min-width:44px;min-height:44px;margin-bottom:var(--sp-5)}
 .skel{background:var(--purple-1);border-radius:var(--radius-sm);height:14px;
   margin-bottom:var(--sp-4)}
-/*  ⛔ שני המיכלים חולקים כלל אחד — ⚠️ המודול המשותף מדליק `open` בשניהם:
- *  ⭐ מחלקה אחרת בגיליון היא דיאלוג שאינו נפתח, ⛔ ובלי שדבר מודיע. */
+/* המודול המשותף מדליק open בשני המיכלים — מחלקה אחרת היא דיאלוג שאינו נפתח, בשקט. */
 .veil{align-items:center;padding:var(--sp-6)}
 .veil .sheet{background:var(--card);border-radius:var(--radius);width:100%;
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
@@ -235,73 +179,47 @@ main > .foot{margin-top:auto}
   padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
 #ask .sheet-ft button:active{transform:translateY(1px)}
 #ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
-/*  ⛔ כותרת, גוף או תחתית ריקים אינם תופסים מקום — ⚠️ הדיאלוג
- *  שנושא את הזרימה אינו נושא כותרת, ⭐ וכפתוריו יושבים
- *  בתוך היקף ה-`ksave` שבגוף. */
-.sheet-bd:empty,/*  ⛔ בורר סוג התנועה — ⚠️ שני כפתורים, וכל אחד נושא את הציור שהפירוט
- *  ומסך האישור מציגים: ⭐ אותו ציור בשלושת המקומות. */
+/* כותרת, גוף או תחתית ריקים אינם תופסים מקום — דיאלוג הזרימה בלי כותרת, וכפתוריו בתוך הגוף. */
+.sheet-bd:empty,
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
-/*  ⛔ הגוון פר-אפליקציה נכתב **אחרי** הכלל המשותף — ⚠️ שני הכללים באותה
- *  סגוליות, ⭐ והמאוחר גובר: ⛔ גוון שנכתב לפניו אינו חל כלל. */
+/* הגוון פר-אפליקציה נכתב אחרי הכלל המשותף — באותה סגוליות המאוחר גובר. */
 .btrack{background:var(--purple-1)}
 .btrack i{transition:width var(--dur-4) var(--ease)}
 .btrack.peach{background:var(--peach-1)}
 .btrack.peach i{background:var(--peach-2)}
 
-/* ══ מסכים ═════════════════════════════════════════════════════════════ */
-/* ── בית ── */
-/*  ⛔ המסגרת מסמנת יתרת זכות — ⚠️ והיא בגוון הערכה ⛔ ולא בצבע מצב:
- *  ⭐ באנר תופס שורה שלמה על כל רישום, ⛔ ומסגרת אומרת את אותו דבר בלי
- *  לגזול מקום.
- *  ⛔ **והיא בוהקת ⛔ ואינה רמז** — ⚠️ טבעת בעובי דרגה ובגוון מלא:
- *  ⭐ מסגרת בגוון החיוור ביותר נבלעת ברקע, ⛔ והמשתמש אינו מבחין שהיעד הושלם. */
+/* ── מסכים ──
+   ── בית ──
+   יתרת זכות מסומנת במסגרת ולא בבאנר — באנר תופס שורה שלמה; טבעת בגוון מלא, שגוון חיוור נבלע ברקע. */
 .comp-meter{margin-top:var(--sp-2)}
 .comp.plus{border-color:var(--purple-3);
   box-shadow:0 0 0 var(--sp-1) var(--purple-2),var(--shadow-lg)}
-/*  ⛔ והמסגרת נושאת את גוון הרכיב — ⚠️ חומש סגול ופלעדזש אפרסק:
- *  ⭐ תפקידי הצבע קבועים, ⛔ ומסגרת בגוון אחד היא סימן שאינו אומר במה. */
+/* המסגרת בגוון הרכיב — מסגרת בגוון אחד אינה אומרת באיזה רכיב מדובר. */
 .comp.peach.plus{border-color:var(--peach-2);
   box-shadow:0 0 0 var(--sp-1) var(--peach-2),var(--shadow-lg)}
-/*  ⛔ המספר הגדול ולידו שני חלקיו — ⚠️ החלק שמהחודש והחלק שמהיתרה:
- *  ⭐ הם מה שמסביר מאין החובה הכוללת באה. */
 .crow{display:flex;align-items:flex-end;gap:var(--sp-5);margin-top:var(--sp-5)}
 .crow .big{flex:1;min-width:0}
 .crow .parts{display:grid;gap:var(--sp-1);font-size:var(--fs-2);color:var(--text-2);
   text-align:end;flex:none}
-/*  ⛔ כותרת המשנה שבתוך הפירוט — ⚠️ היא מסמנת את מקום הוראות הקבע,
- *  ⭐ ואינה כותרת כרטיס: ⛔ הן המשך אותה רשימה. */
 .subhd{font-size:var(--fs-1);color:var(--text-3);letter-spacing:var(--ls-1);
   padding:var(--sp-5) 0 var(--sp-2);border-top:.5px solid var(--line-soft);
   margin-top:var(--sp-4)}
-/*  ⛔ ומתחתיה אוויר — ⚠️ רכיב שנצמד אל הכותרת נקרא כחלק ממנה:
- *  ⭐ והמרווח הוא מה שמפריד בין ההקשר לבין מה שנמדד בו. */
+/* מרווח מתחת לכותרת — רכיב שנצמד אליה נקרא כחלק ממנה. */
 .mrow{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);
   padding:var(--sp-5) 0 var(--sp-7)}
 .mrow .mid{text-align:center;flex:1}
-/*  ⛔ שם החודש בשורה משלו ומעל השנה — ⚠️ הוא מה שהמסך עוסק בו, ⭐ והשנה
- *  היא ההקשר: ⛔ שורה אחת נותנת לשניהם אותו משקל, ⚠️ והעין קוראת אותם
- *  כשם אחד ארוך. */
+/* שם החודש בשורה משלו מעל השנה — בשורה אחת העין קוראת אותם כשם אחד ארוך. */
 .mrow .mname{font-size:var(--fs-6);font-weight:500;color:var(--text);display:block;
   line-height:var(--lh-2)}
 .mrow .myear{display:block;font-size:var(--fs-3);color:var(--text-2);font-weight:400}
-/*  ⛔ טווח התאריכים הלועזי מתחת לשם — ⚠️ הוא נגזר מראש החודש ומראש
- *  הבא אחריו, ⭐ ואינו נשלף משורה שמישהו מילא. */
 .mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
 .mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
   min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
-/*  ⛔ שורות הסיכום — ⚠️ התווית בצד הפותח והמספר בצד המסיים: ⭐ המסמך
- *  ימין-לשמאל, ⛔ ולכן המספר בשמאל.
- *  ⛔ **והן משתלבות ואינן בולטות** — ⚠️ הן אינן הרכיבים: ⭐ גוון הדיו
- *  המשני ⛔ ולא הדיו הראשי, ⚠️ ומידה שאינה גדולה מכותרת כרטיס —
- *  ⛔ מספר בגודל הרכיבים גוזל מהם את העין. */
+/* שורות הסיכום בדיו המשני ובמידה שאינה גדולה מכותרת כרטיס — מספר בגודל הרכיבים גוזל מהם את העין. */
 .inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
   font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
 .inc b{font-size:var(--fs-3);font-weight:500;color:var(--text-2)}
-/*  ⛔ פיצול הצדקה קטן משתיהן — ⚠️ הוא אינו סכום נוסף אלא חלוקה של זה
- *  שמעליו: ⭐ ושתי המנות שלו שוות במשקלן.
- *  ⛔ **והוא נצמד לצד המספרים** ⛔ ולא לצד התוויות — ⚠️ המסמך ימין-לשמאל,
- *  ⭐ ולכן הקצה המסיים: ⛔ הוא מתאר את המספרים שמעליו, ⚠️ ושורה שנצמדת
- *  לצד השני נקראת כתווית שאיבדה את ערכה. */
+/* הפיצול נצמד לצד המספרים ולא לצד התוויות — שורה בצד השני נקראת כתווית שאיבדה את ערכה. */
 .inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-end;
   gap:var(--sp-5);padding-top:0}
 .det{list-style:none;margin:0;padding:0}
@@ -311,62 +229,44 @@ main > .foot{margin-top:auto}
 .det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
   justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
 .det .ico svg{width:14px;height:14px}
-/*  ⛔ אייקון שהוא הציור עצמו אינו יושב בשבשבת — ⚠️ הצבע בא מן
- *  הציור, ⭐ ורקע שמתחתיו הופך אותו לכתם. */
+/* אייקון שהוא הציור עצמו בלי רקע — הצבע בא מהציור, ורקע מתחתיו הופך אותו לכתם. */
 .det .ico.art{background:none;color:inherit}
 .det .ico.art svg{width:24px;height:24px}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
 .det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
-/*  ⛔ מופע שיום חיובו טרם הגיע הוא צפי — ⚠️ נספר בחישוב, ⭐ ומעומעם
- *  כדי שלא ייקרא כתשלום שיצא. */
+/* מופע שיום חיובו טרם הגיע נספר בחישוב, ומעומעם כדי שלא ייקרא כתשלום שיצא. */
 .det li.pend{opacity:var(--op-5)}
 .det .amt{font-size:var(--fs-3);min-width:36px;text-align:start;flex:none;font-weight:500}
-/*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
- *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה. */
 .det.drag li.dragging{opacity:var(--op-3)}
-/* ── ארכיון ── */
-/*  ⛔ חודש בארכיון הוא שמו ומתחתיו שני פסיו — ⚠️ ואין בו מספרים:
- *  ⭐ הפס הוא כל מה שנשאל, ⛔ ומספר לצידו הופך את הארכיון למסך החודש. */
+/* ── ארכיון ──
+   חודש בארכיון בלי מספרים — מספר לצד הפס הופך את הארכיון למסך החודש. */
 .amon{padding:var(--sp-5) 0;border-bottom:.5px solid var(--line-soft)}
 .amon:last-child{border-bottom:0}
-/*  ⛔ כותרת החודש בולטת מתוויות הפסים שתחתיה — ⚠️ באותה מידה ובאותו
- *  גוון העין אינה יודעת מי מהן הכותרת. */
-/*  ⛔ והוא כפתור ⛔ ולא `div` — ⚠️ `div` לחיץ אינו נגיש למקלדת: ⭐ ולכן
- *  עיצוב הדפדפן מאופס, ⛔ והרמז ללחיצה הוא צבע, משקל וחץ — ⚠️ לא מסגרת.
- *  ⭐ הריפוד מקוזז בשוליים — ⛔ השם נשאר מיושר עם הפסים שתחתיו, ⚠️ והרקע
- *  בלחיצה אינו נצמד לאותיות. */
+/* כפתור ולא div — div לחיץ אינו נגיש למקלדת.
+   הריפוד מקוזז בשוליים — השם נשאר מיושר עם הפסים שתחתיו. */
 .amn{display:inline-flex;align-items:baseline;gap:var(--sp-3);background:none;border:0;
   padding:var(--sp-2) var(--sp-4);margin:0 calc(var(--sp-4) * -1) var(--sp-2);
   border-radius:var(--r-3);font-size:var(--fs-4);font-weight:600;color:var(--brand-ink);
   text-align:start;cursor:pointer;transition:background var(--dur-2) var(--ease)}
-/*  ⛔ `‹` ⛔ ולא `›` — ⚠️ בעברית החץ שמאלה הוא «קדימה». */
+/* ‹ ולא › — בעברית החץ שמאלה הוא «קדימה». */
 .amn::after{content:"‹";display:inline-block;font-size:var(--fs-3);opacity:var(--op-5);
   transition:transform var(--dur-3) var(--ease)}
 .amn:active{background:var(--brand-soft)}
 .amn:active::after{transform:translateX(calc(var(--sp-2) * -1))}
 .amn:focus-visible{outline-color:var(--brand)}
-/*  ⛔ שורת הפלעדזש בגוון שלה — ⚠️ הסדרה נבנית ברכיב המשותף, ⭐ והוא
- *  אינו מקבל גוון פר-שורה: ⛔ והתפקיד נגזר מהמיקום — ⚠️ החומש ראשון
- *  והפלעדזש שני, ⭐ בדיוק כמו במסך הבית. */
+/* הרכיב המשותף אינו מקבל גוון פר-שורה — הפלעדזש מזוהה במיקומו כשורה האחרונה, כמו במסך הבית. */
 .amon .bchart .brow:last-child .btrack{background:var(--peach-1)}
 .amon .bchart .brow:last-child .btrack i{background:var(--peach-2)}
 @media (hover:hover){
   .amn:hover{background:var(--brand-soft)}
 }
-/* ── הגדרות ── */
-/*  ⛔ כותרת שנפתחת היא כפתור לכל דבר — ⚠️ שטח הלחיצה הוא כל הכותרת,
- *  ⭐ ולא החץ לבדו. */
-/*  ⛔ הבורר נכתב בלי ספרה לפני הנקודה — ⚠️ `h2.fold` נראה לסורק
- *  המחלקות כמספר עשרוני, ⭐ והוא מדלג עליו: ⛔ ואז המחלקה נספרת כמי
- *  שאין לה כלל. */
+/* ── הגדרות ──
+   הבורר נכתב בלי תגית לפני הנקודה — h2.fold נראה לסורק המחלקות כמספר עשרוני, והוא מדלג עליו. */
 .card > .fold{cursor:pointer;margin-bottom:0;min-height:44px}
 .card > .fold + .det,.card > .fold + .drag{margin-top:var(--sp-5)}
 .card > .fold .st{color:var(--purple-5)}
-/*  ⛔ הידית היא מה שאומר שהשורה נגררת — ⚠️ שורה שאין בה סימן נראית
- *  קבועה, ⭐ ואיש אינו מנסה להזיז אותה.
- *  ⛔ **ו-`touch-action` עליה בלבד** — ⚠️ באצבע, אלמנט שאינו מבטל את
- *  פעולת המגע גולל את הדף במקום לגרור; ⭐ וביטולו על כל השורה היה נועל
- *  את גלילת המסך בכל הרשימה. */
+/* touch-action:none על הידית בלבד — במגע אלמנט שאינו מבטל אותו גולל במקום לגרור,
+   וביטולו על כל השורה היה נועל את גלילת הרשימה. */
 .grip{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex:none;
   color:var(--text-3);font-size:var(--fs-4);letter-spacing:var(--ls-n1);
   touch-action:none;cursor:grab}
@@ -375,9 +275,6 @@ main > .foot{margin-top:auto}
 @media (hover:hover){
   .pk:hover{border-color:var(--purple-3);background:var(--brand-soft)}
 }
-/*  ⛔ כותרת ממורכזת לכל שלב, ומעליה אייקון — ⚠️ השלב
- *  הוא שדה אחד במסך ריק: ⭐ וכותרת צמודה לקצה אינה אומרת במה
- *  המסך עוסק. */
 .fhd{text-align:center;margin-bottom:var(--sp-6)}
 .fhd h2{margin-bottom:0}
 .fic{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;
@@ -401,8 +298,7 @@ main > .foot{margin-top:auto}
 .pk:active{transform:translateY(1px)}
 .pk .pi{display:flex;align-items:center;justify-content:center;width:84px;height:66px}
 .pk .pi svg{width:100%;height:100%;display:block}
-/*  ⛔ שורת הכפתורים של הזרימה — ⚠️ היא בתוך היקף ה-`ksave`, ⭐ והאישור
- *  רחב מהחזרה: ⛔ שני כפתורים שווים אינם אומרים מה הפעולה הראשית. */
+/* האישור רחב מהחזרה — שני כפתורים שווים אינם אומרים מה הפעולה הראשית. */
 .frow{display:flex;gap:var(--sp-4);margin-top:var(--sp-6)}
 .frow .btn{flex:2}
 .frow .btn.ghost{flex:1}
@@ -412,16 +308,12 @@ main > .foot{margin-top:auto}
 .slide .ttl{font-size:var(--fs-5);font-weight:500;color:var(--text);margin-top:var(--sp-7)}
 .slide .sub{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4)}
 .slide .bk{position:absolute;inset-block-start:var(--sp-6);inset-inline-start:var(--sp-6)}
-/*  ⛔ היעד יושב **מתחת** למטבע — ⚠️ המטבע נגרר כלפי מטה אל תוכו,
- *  ⭐ וזו התנועה שהאגודל עושה מעצמו: ⛔ יעד שמעליו דורש גרירה כלפי מעלה,
- *  ⚠️ והיד מכסה את מה שהיא גוררת אליו. */
+/* היעד מתחת למטבע — גרירה כלפי מטה היא התנועה הטבעית, ויעד שמעליו מכוסה ביד הגוררת. */
 .target{margin-top:auto;margin-bottom:var(--sp-7)}
-/*  ⛔ שני הרוחבים הם שני הציורים ⛔ ולא סולם — ⚠️ הארנק רחב מהקופה,
- *  ⭐ והמספר הוא מידת הציור עצמו: ⛔ ורוחב מוטבע היה מחלקה שלא נכתבה. */
+/* שני הרוחבים הם מידות שני הציורים — הארנק רחב מהקופה — ואינם דרגות בסולם. */
 .target.wide{width:270px}
 .target.narrow{width:230px}
-/*  ⛔ המיקום ב-`--x`/`--y` ⛔ ולא בתגית — ⚠️ הגרירה כותבת אותם
- *  ב-`setProperty`, ⭐ והכלל הזה הוא היחיד שקורא אותם. */
+/* הגרירה כותבת את --x ו---y ב-setProperty, והכלל הזה הוא היחיד שקורא אותם. */
 .coin{--x:0;--y:0;left:var(--x);top:var(--y);
   position:absolute;width:150px;height:150px;border-radius:var(--r-7);
   background:var(--peach-2);display:flex;align-items:center;justify-content:center;
@@ -430,34 +322,27 @@ main > .foot{margin-top:auto}
 .coin .ring{position:absolute;inset:9px;border-radius:var(--r-7);
   border:1px solid var(--ring-soft)}
 .coin.over{transform:scale(1.05)}
-/*  ⛔ שני שלבי התנועה הם מחלקות — ⚠️ חזרה והחלקה ליעד (`settle`), ⭐ ואחריה
- *  הבליעה (`swallow`): ⛔ המעבר מתחלף בין השלבים, ⚠️ ולכן אינו על `.coin`. */
+/* המעבר מתחלף בין שני השלבים, ולכן אינו על .coin. */
 .coin.settle{transition:left var(--dur-4) ease,top var(--dur-4) ease}
 .coin.swallow{transition:transform var(--dur-4) ease,opacity var(--dur-4) ease;transform:scale(.9,.06);opacity:0}
-/*  ⛔ הכיתוב יושב בתחתית המסך — ⚠️ הפתיתים דהויים וחולפים, ⭐ והכיתוב
- *  נשאר: ⛔ פתית שנופל על אות מסתיר אותה בדיוק ברגע שבו היא נקראת. */
+/* הכיתוב בתחתית המסך — פתית שנופל על אות מסתיר אותה ברגע שבו היא נקראת. */
 .donewrap{display:flex;align-items:flex-end;justify-content:center;min-height:58vh}
 .done{text-align:center;padding:var(--sp-7) var(--sp-6)}
 .done .line1{font-size:var(--fs-6);font-weight:500;color:var(--purple-5)}
 .done .line2{font-size:var(--fs-4);color:var(--text-2);margin-top:var(--sp-5)}
 .done-back{margin-top:var(--sp-5)}
-/*  ⛔ הקונפטי על כל המסך ⛔ ולא בחציו העליון — ⚠️ הוא ממורכז סביב אמצעו:
- *  ⭐ פס עליון נראה כמו משהו שנשפך מהקצה. */
+/* הקונפטי ממורכז סביב אמצע המסך — פס עליון נראה כמשהו שנשפך מהקצה. */
 .conf{position:fixed;inset:0;z-index:var(--z-7);pointer-events:none}
 .conf i{--cf-x:50%;--cf-y:50%;--cf-c:var(--purple-3);position:absolute;left:var(--cf-x);top:var(--cf-y);background:var(--cf-c);width:8px;height:8px;border-radius:var(--r-1)}
-/*  ⚠️ הקונפטי יורד כולו תחת הפחתת תנועה — ⭐ תנועתו נכתבת מ-JS לכל חלקיק,
- *  ⛔ ואפס בסולם המשך מקצר אותה ואינו מבטל אותה. */
+/* תנועת הקונפטי נכתבת מ-JS לכל חלקיק, ואפס בסולם המשך אינו מבטל אותה — לכן הוא יורד כולו. */
 @media (prefers-reduced-motion:reduce){
   .conf{display:none}
 }
 
-/* ══ נקודות שבירה ══════════════════════════════════════════════════════ */
-/*  ⛔ סולם העמודה — ⚠️ בכל נקודת שבירה העמודה מתרחבת, ⭐ ואיתה המסך,
- *  סרגל הלשוניות ומסילת הכפתור: ⛔ ונקודה שאין לה מה להשתנות בה מוצהרת
- *  בשמה ⛔ ואינה מושמטת. */
+/* ── נקודות שבירה ──
+   נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
 @media (min-width:480px){:root{--col:440px}}
 @media (min-width:640px){:root{--col:520px}}
 @media (min-width:900px){:root{--col:600px}}
 @media (min-width:1200px){:root{--col:680px}}
 
-/* ═══ סוף גיליון הסגנון — בלוק גיליון סגנון ══════════════════════════════ */
