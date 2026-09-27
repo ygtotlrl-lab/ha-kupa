@@ -88,7 +88,7 @@
  *  מודול: ⭐ סקריפט קלאסי רץ **לפני** כל מודול, ⛔ וקריאה אליו בעלייה
  *  הייתה מוצאת `undefined`. */
 import { MSG_DELETE, MSG_FILL_ALL, MSG_SAVED_LOCAL, appConfigure, dayNoon,
-         dayToday, getDeviceId, kvParse, readNum, uniqHas, withTimeout } from './core/util.js';
+         dayToday, getDeviceId, readNum, uniqHas, withTimeout } from './core/util.js';
 import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, mergeCore, newClientId,
          pendAlertDismiss, pendBoot, pendCount, pendHas, pendMark, plBoot,
          pushDirty, rtyBoot, runSave, sbWatch, schedulePush,
@@ -195,19 +195,6 @@ var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר
 var KV_TABLE = 'k_settings';
 var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
                    'k_so_instances', 'k_entries', 'k_lookups', KV_TABLE];
-
-/*  ⛔ העידן — ⚠️ מספר בענן שמכשיר מיושן זורק מולו את העותק המקומי:
- *  ⭐ תיקון בקוד אינו מנקה מכשיר שכבר מזוהם. */
-/*  ⛔ מרשם מפתחות ההגדרה — ⚠️ **מה נכנס**: המפתח שבטבלת ההגדרות ⟵
- *  התווית שלצידו; ⛔ **ומה מפיל**: מפתח שהקוד קורא ואינו במסד.
- *  ⭐ **ולמה מרשם**: `cfgApply` עובר עליו, ⛔ ושתי
- *  רשימות לאותם מפתחות הן שני מקומות לתקן. */
-/*  ⛔ שם המפתח בקבוע אחד — ⚠️ הוא נקרא במרשם ונכתב בכל שינוי ברשימות:
- *  ⭐ שם פזור אינו ניתן לשינוי ממקום אחד. */
-var CFG_LOOKUPS_EPOCH = 'lookups_epoch';
-var CFG_KEYS = [
-  { key: CFG_LOOKUPS_EPOCH, label: 'עידן הרשימות' }
-];
 
 /* ═══ ליבת החישוב של «הקופה» — בלוק פר-אפליקציה ═══════════════════════════
    ⛔ אף סיכום אינו נשמר — ⚠️ כל מספר כאן נגזר מהרישומים בזמן קריאה,
@@ -533,7 +520,7 @@ function kSyncPull() {
       any = true;
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
-    if (any) { tombPruneMerged(); hwNoteCloud(); cfgApply(); }
+    if (any) { tombPruneMerged(); hwNoteCloud(); }
     if (any && !_kPullLogged) { _kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
@@ -565,41 +552,6 @@ function kSyncNow() {
 function pushSoon() { schedulePush(); }
 function saveRefresh() { kRender(); }
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
-
-/* ══════════════════════════════════════════════════════════════════════════
-   ההגדרות — שורות במראה, ונדחפות בשכבת הדחיפה
-   ══════════════════════════════════════════════════════════════════════════
-   ⛔ הכתיבה מקומית-תחילה ⛔ ואינה פונה לענן — ⚠️ השורה נכתבת למראה, מסומנת
-   ⏳ ונדחפת ב-`schedulePush`: ⭐ כשל רשת משאיר את הסימון, ⛔ והניסיון החוזר
-   הוא זה של כל טבלה אחרת.
-   ⚠️ והקריאה היא מהמראה — ⭐ המשיכה ממזגת אותה פר-מפתח, ⛔ ושורה ⏳ אינה
-   נדרסת בה.
-   ══════════════════════════════════════════════════════════════════════════ */
-function cfgWrite(key, value) {
-  var l = MIRROR[KV_TABLE], row = null, i;
-  for (i = 0; i < l.length; i++) if (l[i].key === key) { row = l[i]; break; }
-  if (!row) { row = { key: key, deleted: false }; l.push(row); }
-  row.value = JSON.stringify(value);
-  row.updated_at = Date.now();
-  mirrorSave(KV_TABLE);
-  pendMark(kPendKeyOf(KV_TABLE, key));
-  CFG[key] = value;
-  pushSoon();
-  return Promise.resolve(true);
-}
-/*  ⛔ המראה היא המקור — ⚠️ ערך שאינו JSON נשאר בערכו הקודם: ⭐ «לא ידעתי»
- *  אינו «אין שם כלום». */
-function cfgApply() {
-  var l = MIRROR[KV_TABLE] || [], i, j, k, p;
-  for (i = 0; i < CFG_KEYS.length; i++) {
-    k = CFG_KEYS[i].key;
-    for (j = 0; j < l.length; j++) {
-      if (l[j].key !== k || l[j].deleted) continue;
-      p = kvParse(k, l[j].value);
-      if (p.ok && p.value != null) CFG[k] = p.value;
-    }
-  }
-}
 
 /* ── ERA_CFG — הדבר היחיד שנבדל בין האפליקציות ──────────────────────────── */
 /*  ⛔ העידן שהקוד הזה כותב בו — ⚠️ הוא עולה **רק בשינוי צורת שורה**:
@@ -643,7 +595,6 @@ function mergeRows(local, remote, keyName, isPending) {
    ⛔ **והעותק המקומי של הטבלאות אינו כאן** — ⚠️ הוא `MIRROR`, ⭐ והוא
    הנתון עצמו: ⛔ שם שני לאותו מבנה הוא עותק שני שאיש אינו מסנכרן.
    ══════════════════════════════════════════════════════════════════════════ */
-var CFG = {};
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null,
              lookOpen: null, archYear: null };
 
@@ -1309,7 +1260,6 @@ function lookupSeed(kind, dflt) {
     localPut('k_lookups', { client_id: newClientId(), kind: kind, label: dflt[i],
                             sort: i + 1, updated_at: Date.now(), deleted: false });
   pushSoon();
-  cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
 }
 /*  ⛔ הסדר נכתב מחדש לכל השורות ⛔ ולא לזו שזזה — ⚠️ שתי שורות באותו
  *  `sort` הן סדר שאיש לא הכריע בו, ⭐ ומיזוג בין מכשירים מקבע אותו.
@@ -1330,10 +1280,6 @@ function lookupReorder(kind, ids) {
     localPut('k_lookups', out[i]);
   }
   pushSoon();
-  /*  ⛔ שינוי ברשימות מקדם את עידן הרשימות — ⚠️ הכתיבה עוברת בנקודת
-   *  המעבר האחת לענן, ⭐ והיא מקדמת את אות הפולינג: ⛔ בלעדיה מכשיר אחר
-   *  אינו לומד שהסדר השתנה עד המשיכה הבאה במקרה. */
-  cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
   return true;
 }
 
@@ -2177,7 +2123,6 @@ var DOM_ACTIONS = {
       r.updated_at = Date.now();
       localPut('k_lookups', r);
       pushSoon();
-      cfgWrite(CFG_LOOKUPS_EPOCH, Date.now());
       closeModal();
       kRender();
       return Promise.resolve();
@@ -2265,7 +2210,6 @@ function kBoot() {
   lsBoot();
   _kLoadPushed();
   mirrorBoot();
-  cfgApply();
   /*  ⛔ הפתיחה בחודש של היום — ⚠️ ולא בחודש האחרון שיש לו נתונים:
    *  ⭐ חודש ריק נפתח ריק, ⛔ ואינו נופל לחודש אחר. */
   view.monthKey = nowMonthKey() || null;
