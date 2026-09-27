@@ -1,6 +1,6 @@
--- ═══ 000_schema.sql — הקופה: הסכימה החיה ═══════════════════════════════
+-- migrations/000_schema.sql — הקופה: הסכימה החיה
 
--- ─── הקופה ─────────────────────────────────────────────────────────────
+-- ── הקופה ──
 
 create table if not exists public.k_entries (
   client_id text not null,
@@ -98,8 +98,7 @@ create index if not exists k_lookups_kind_idx ON public.k_lookups USING btree (k
 create index if not exists k_so_instances_month_idx ON public.k_so_instances USING btree (month_key);
 create index if not exists k_so_instances_order_idx ON public.k_so_instances USING btree (standing_order_client_id);
 
--- ⛔ revoke לפני grant — GRANT מוסיף ואינו מחליף, וטבלה חדשה ב-Supabase נולדת
---    עם DELETE ו-TRUNCATE ל-anon: המחיקה היא deleted=true, ולא DELETE.
+-- revoke לפני grant — GRANT מוסיף ואינו מחליף, וטבלה חדשה ב-Supabase נולדת עם DELETE ו-TRUNCATE ל-anon.
 revoke all on table public.k_entries from anon, authenticated;
 grant select, insert, update on table public.k_entries to anon, authenticated;
 grant all on table public.k_entries to service_role;
