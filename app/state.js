@@ -1,7 +1,7 @@
 // app/state.js — המצב המשותף בין המודולים
 
 // מצב שמודולים שונים כותבים — אובייקט אחד, כי קישור מיובא אינו ניתן להשמה.
-export const S = {
+const S = {
   sb: null,
   // העד נכתב רק אחרי דחיפה שחזרה ok — עד שמתעדכן גם במשיכה מוחק מהדיסק רשומה שמעולם לא עלתה.
   _kPushedAt: {},
@@ -17,4 +17,8 @@ export const S = {
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null,
              lookOpen: null, archYear: null };
 
-export { view };
+// ── מה שמסך צריך מ-main ──
+// main רושם כאן בעלייה — מודול שמייבא מ-main סוגר מעגל, והרישום הוא הכיוון האחד.
+const shell = { kRender: null };
+
+export { S, shell, view };

@@ -1,10 +1,9 @@
 // app/screens/slide.js — מסך אישור המטבע
 import { newClientId } from '../../core/sync.js';
 import { esc, uiNoDialog } from '../../core/ui.js';
-import { view } from '../state.js';
-import { MSG_SLIDE_KUPA, MSG_SLIDE_SUB, MSG_SLIDE_WALLET } from '../config.js';
+import { MSG_SLIDE_KUPA, MSG_SLIDE_SUB, MSG_SLIDE_WALLET } from '../constants.js';
+import { shell, view } from '../state.js';
 import { assetIcon, localPut, money, monthKeyOf, pushSoon } from '../domain.js';
-import { kRender } from '../main.js';
 
 // שחרור מעל היעד מאשר ושחרור בצד מחזיר את המטבע — האישור הוא התנועה עצמה, ואין כפתור אישור שני.
 var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false };
@@ -159,7 +158,7 @@ function flowCommit() {
   pushSoon();
   view.screen = 'done';
   view.doneInc = isInc;
-  kRender();
+  shell.kRender();
 }
 
 export { coinWire, slideScreenHTML };

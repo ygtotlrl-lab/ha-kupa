@@ -3,14 +3,18 @@ import { MSG_FILL_ALL, readNum } from '../../core/util.js';
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { esc, uiNoDialog } from '../../core/ui.js';
-import { view } from '../state.js';
-import { EPS, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NO_ORDERS,
+import { hebYearLabelFull } from '../../core/hebrew.js';
+import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NO_ORDERS,
          MSG_ORDERS_TITLE, MSG_ORDER_FROM, MSG_ORDER_NEW, MSG_SETTINGS_TITLE,
-         MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH } from '../config.js';
-import { footHTML, iconFor, kLive, kQ, localPut, money, monthByKey, monthTitle,
-         monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear, prevMonthOf } from '../domain.js';
-import { METHOD_DEFAULT, ORDER_METHODS, SRC_DEFAULT, lookupRows } from './month.js';
-import { tabHeadHTML } from '../main.js';
+         MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH,
+         SRC_DEFAULT } from '../constants.js';
+import { view } from '../state.js';
+import { footHTML, iconFor, kLive, kQ, localPut, lookupRows, money, monthByKey,
+         monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
+         prevMonthOf, tabHeadHTML } from '../domain.js';
+
+// הוראת קבע מחויבת באשראי או בהעברה בלבד — רשימת המקורות שבהגדרות היא של התנועות ולא של ההוראות.
+var ORDER_METHODS = ['אשראי', 'העברה'];
 
 // הכפתור בתוך הכרטיס — כפתור שנצמד לכרטיס הבא נקרא כשייך לו.
 function ordersCardHTML() {
@@ -174,7 +178,7 @@ function pledgeCardHTML() {
     ys.map(function (y) {
       return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
              '<span class="ico">' + iconFor('amount') + '</span>' +
-             '<span class="nm">' + esc(window.hebYearLabelFull(y)) + '</span>' +
+             '<span class="nm">' + esc(hebYearLabelFull(y)) + '</span>' +
              '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
     }).join('') + '</ul></div>';
 }

@@ -1,4 +1,4 @@
-/* app.css — עיצוב האפליקציה */
+/* app/style.css — עיצוב האפליקציה */
 
 /* ── אסימוני העיצוב ── */
 :root{
@@ -179,8 +179,6 @@ main > .foot{margin-top:auto}
   padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
 #ask .sheet-ft button:active{transform:translateY(1px)}
 #ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
-/* כותרת, גוף או תחתית ריקים אינם תופסים מקום — דיאלוג הזרימה בלי כותרת, וכפתוריו בתוך הגוף. */
-.sheet-bd:empty,
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
 /* הגוון פר-אפליקציה נכתב אחרי הכלל המשותף — באותה סגוליות המאוחר גובר. */
 .btrack{background:var(--purple-1)}

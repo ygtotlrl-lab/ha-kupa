@@ -3,14 +3,14 @@ import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
-import { view } from '../state.js';
-import { EPS, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE, MSG_EMPTY_PRE,
-         MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
-         MSG_SUM_TZEDAKAH, MSG_UNDO } from '../config.js';
-import { K_CAT_SELF, chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill,
-         kLive, kQ, kSortEntries, localPut, money, monthByKey, monthGreg, monthRows,
+import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
+import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
+         MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
+         MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
+import { shell, view } from '../state.js';
+import { chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill, kLive, kQ,
+         kSortEntries, localPut, lookupRows, money, monthByKey, monthGreg, monthRows,
          pushSoon, splitHTML } from '../domain.js';
-import { kRender } from '../main.js';
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
@@ -22,7 +22,7 @@ function monthScreenHTML() {
   var h = '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">›</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
-       '<span class="myear">' + esc(window.hebYearLabelFull(m.year)) + '</span>' +
+       '<span class="myear">' + esc(hebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">‹</button>' +
        '</div>';
@@ -61,20 +61,6 @@ function monthScreenHTML() {
 var FLOW_TZ = ['amount', 'desc', 'source', 'category', 'date'];
 
 var FLOW_INC = ['amount', 'desc', 'method', 'date'];
-
-var SRC_DEFAULT = ['מזומן', 'ביט', 'אשראי מענדי', 'אשראי חני', 'העברה', 'אחר'];
-
-var METHOD_DEFAULT = ['העברה ישירה', 'ביט ופייבוקס', 'מזומן', 'צ׳קים'];
-
-var CAT_LIST = ['לאחרים', K_CAT_SELF];
-
-// הוראת קבע מחויבת באשראי או בהעברה בלבד — רשימת המקורות שבהגדרות היא של התנועות ולא של ההוראות.
-var ORDER_METHODS = ['אשראי', 'העברה'];
-
-function lookupRows(kind) {
-  return kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
-    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
-}
 
 function lookupList(kind, dflt) {
   var l = lookupRows(kind).map(function (r) { return r.label; });
@@ -250,7 +236,7 @@ function entryDelete(id) {
     UNDO.row = copy;
     if (UNDO.timer) clearTimeout(UNDO.timer);
     UNDO.timer = setTimeout(function () { UNDO.row = null; pushSoon(); }, 5000);
-    kRender();
+    shell.kRender();
     toast(MSG_DELETED + ' · ' + MSG_UNDO, 5000, 'good');
   });
 }
@@ -263,9 +249,8 @@ function entryUndo() {
   UNDO.row = null;
   if (UNDO.timer) clearTimeout(UNDO.timer);
   pushSoon();
-  kRender();
+  shell.kRender();
 }
 
-export { CAT_LIST, METHOD_DEFAULT, ORDER_METHODS, SRC_DEFAULT, entryById, entryDelete,
-         entryUndo, flowCollect, flowOpen, flowStart, flowSteps, flowValid,
-         lookupReorder, lookupRows, lookupSeed, monthScreenHTML };
+export { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+         flowValid, lookupReorder, lookupSeed, monthScreenHTML };

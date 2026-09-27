@@ -1,25 +1,22 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
 import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
-import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark,
-         pushDirty, schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
+import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark, pushDirty,
+         schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
 import { bar } from '../core/chart.js';
-import { S, view } from './state.js';
-import { EPS, KV_TABLE, MSG_ADD_INCOME, MSG_CLOSER, MSG_LEFT_SUM, MSG_OPENER,
-         MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS, MSG_SUM_SELF, PUSH_TABLES,
-         TABLES } from './config.js';
-import { ARCH_FIRST } from './screens/archive.js';
-import { kRender } from './main.js';
+import { hebDate, hebMonthNames, hebYearLabelFull } from '../core/hebrew.js';
+import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, K_PUSHED_KEY, MSG_ADD_INCOME, MSG_CLOSER,
+         MSG_LEFT_SUM, MSG_OPENER, MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS,
+         MSG_SUM_SELF, PUSH_TABLES, TABLES } from './constants.js';
+import { S, shell, view } from './state.js';
 
 // ── ליבת החישוב ──
 // אין .rpc וקריאה למסד — חישוב בשרת שובר אופליין.
 // שתי היתרות מעבירות זכות וחובה; הפלעדזש מתאפס בראש השנה העברית והחומש אינו מתאפס.
 var K_CHUMASH_RATE = 0.2;
-
-var K_CAT_SELF = 'אישי';
 
 function kSum(a) { var s = 0, i; for (i = 0; i < a.length; i++) s += a[i]; return s; }
 
@@ -103,8 +100,6 @@ function kPendKeyOf(t, k) { return (t === KV_TABLE ? 'setting' : t) + ':' + k; }
 
 function kStripRows(t, rows) { return rows; }
 
-var K_PUSHED_KEY = 'k_pushed_at';
-
 function _kLoadPushed() {
   try { S._kPushedAt = JSON.parse(lsGet(K_PUSHED_KEY) || '{}') || {}; } catch (e) { S._kPushedAt = {}; }
 }
@@ -163,7 +158,7 @@ function kSyncPull() {
     return any;
   }).then(function (any) {
     S._syncBusy = false;
-    if (any) kRender();
+    if (any) shell.kRender();
     return any;
   }, function (e) {
     S._syncBusy = false;
@@ -184,8 +179,6 @@ function kSyncNow() {
 }
 
 function pushSoon() { schedulePush(); }
-
-function saveRefresh() { kRender(); }
 
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
@@ -248,7 +241,7 @@ function keyOrdinal(k) { return +String(k || '').slice(5) || 0; }
 function monthLabel(k) {
   var y = +keyYear(k), i = keyOrdinal(k) - 1, names;
   if (!y || i < 0) return '';
-  try { names = window.hebMonthNames(y); } catch (e) { return ''; }
+  try { names = hebMonthNames(y); } catch (e) { return ''; }
   return names[i] || '';
 }
 
@@ -500,7 +493,7 @@ function monthGreg(k) {
 
 // תווית השנה מהמנוע המשותף — צורה שנייה כאן הייתה מקור אמת שני לתצוגה.
 function monthTitle(m) {
-  return m.name + ' ' + window.hebYearLabelFull(m.year);
+  return m.name + ' ' + hebYearLabelFull(m.year);
 }
 
 // הציורים מוטמעים בקוד ולא בקבצים — הם נצבעים מאסימוני הערכה, וקובץ חיצוני אינו יורש משתני CSS.
@@ -654,10 +647,21 @@ function kKill(table, row) {
   return row;
 }
 
-export { K_CAT_SELF, K_PUSHED_KEY, _kLoadPushed, _kMarkPushed, assetIcon, brandHTML,
-         chainOf, compCardHTML, compPct, detailRowHTML, footHTML, hwHorizonDate,
-         iconFor, kDirtyRows, kKill, kLive, kPendKey, kPendKeyOf, kQ, kRowTs,
-         kSortEntries, kStripRows, kSyncNow, kSyncPull, kTableMeta, localPut, money,
-         monthByKey, monthGreg, monthKeyOf, monthRows, monthTitle, monthsSorted,
-         nextMonthOf, nowMonthKey, orderById, ordersLive, pledgeOfYear, prevMonthOf,
-         pushSoon, saveRefresh, signed, soEnsureThroughNow, splitHTML };
+// ── משותף למסכים ──
+function tabHeadHTML(lab) {
+  return '<div class="mrow"><span class="mid"><span class="mname">' +
+         esc(lab) + '</span></span></div>';
+}
+
+function lookupRows(kind) {
+  return kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
+    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+}
+
+export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
+         detailRowHTML, footHTML, hwHorizonDate, iconFor, kDirtyRows, kKill, kLive,
+         kPendKey, kPendKeyOf, kQ, kRowTs, kSortEntries, kStripRows, kSyncNow, kSyncPull,
+         kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
+         monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
+         ordersLive, pledgeOfYear, prevMonthOf, pushSoon, signed, soEnsureThroughNow,
+         splitHTML, tabHeadHTML };
