@@ -2,7 +2,7 @@
 import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
-import { ask, closeModal, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
+import { ask, closeModal, dragDef, dragOrder, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
@@ -93,6 +93,12 @@ function lookupReorder(kind, ids) {
   pushSoon();
   return true;
 }
+
+function lookupDragApply(list, kind) {
+  if (lookupReorder(kind, dragOrder(list, kind, 'data-id'))) shell.kRender();
+}
+dragDef('method', lookupDragApply);
+dragDef('source', lookupDragApply);
 
 function descSuggest(q, type) {
   var seen = {}, l = kLive(MIRROR.k_entries), i, d;
@@ -253,4 +259,4 @@ function entryUndo() {
 }
 
 export { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupReorder, lookupSeed, monthScreenHTML };
+         flowValid, lookupSeed, monthScreenHTML };

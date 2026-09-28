@@ -7,8 +7,9 @@ import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismi
 import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { bkBoot } from '../core/backup.js';
-import { actRun, closeAsk, closeModal, esc, ksKey, modalBackdrop, modalEsc, openModal,
-         shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
+import { actRun, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, ksKey,
+         modalBackdrop, modalEsc, openModal, shellBare, swApply, swHideUpdate, toast,
+         uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, K_PUSHED_KEY, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
@@ -24,8 +25,7 @@ import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, hwHorizonDate, iconFo
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
 import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupReorder, lookupSeed,
-         monthScreenHTML } from './screens/month.js';
+         flowValid, lookupSeed, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
 import { coinDown, coinMove, coinUp, coinWire, slideScreenHTML } from './screens/slide.js';
@@ -477,49 +477,12 @@ document.addEventListener('keydown', function (e) {
   modalEsc(e);
 });
 
-// גרירה על אירועי מצביע ולא HTML5 — dragstart, dragover ו-drop אינם נורים במגע.
-// הגרירה מתחילה מהידית בלבד — שורה שכולה נגררת חוטפת את הגלילה, ו-touch-action על כל השורה נועל את הדף.
-var DRAG = { el: null, list: null, kind: null, moved: false };
-
-document.addEventListener('pointerdown', function (e) {
-  if (coinDown(e)) return;
-  var g = e.target.closest && e.target.closest('[data-grip]');
-  if (!g) return;
-  var li = g.closest('[data-drag]');
-  if (!li) return;
-  DRAG.el = li; DRAG.list = li.parentNode;
-  DRAG.kind = li.dataset.drag; DRAG.moved = false;
-  li.classList.add('dragging');
-  // בלי לכידת המצביע אצבע שיוצאת מגבול האלמנט מפסיקה לשדר, והגרירה נתקעת.
-  try { g.setPointerCapture(e.pointerId); } catch (e1) {}
-  e.preventDefault();
-});
-
-document.addEventListener('pointermove', function (e) {
-  if (coinMove(e)) return;
-  if (!DRAG.el) return;
-  e.preventDefault();
-  var over = document.elementFromPoint(e.clientX, e.clientY);
-  var li = over && over.closest ? over.closest('[data-drag="' + DRAG.kind + '"]') : null;
-  if (!li || li === DRAG.el || li.parentNode !== DRAG.list) return;
-  DRAG.moved = true;
-  // ההזזה בעץ בזמן הגרירה היא המשוב היחיד; החצי התחתון של שורת היעד מכניס אחריה.
-  var r = li.getBoundingClientRect();
-  DRAG.list.insertBefore(DRAG.el, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
-});
-
-document.addEventListener('pointerup', function (e) {
-  if (coinUp(e)) return;
-  if (!DRAG.el) return;
-  var el = DRAG.el, list = DRAG.list, kind = DRAG.kind, moved = DRAG.moved;
-  DRAG.el = null; DRAG.list = null; DRAG.kind = null; DRAG.moved = false;
-  el.classList.remove('dragging');
-  if (!moved) return;
-  var ids = [].slice.call(list.children).map(function (x) { return x.dataset.id; });
-  if (lookupReorder(kind, ids)) kRender();
-});
-
-document.addEventListener('pointercancel', function (e) { coinUp(e); });
+// גרירת המטבע קודמת לגרירה לסידור — שתיהן על אירועי מצביע, והמטבע נתפס רק במסך האישור.
+// הגרירה לסידור במנגנון שבליבה; המחיל לכל סוג — ליד lookupReorder.
+document.addEventListener('pointerdown', function (e) { if (!coinDown(e)) dragDown(e); });
+document.addEventListener('pointermove', function (e) { if (!coinMove(e)) dragMove(e); });
+document.addEventListener('pointerup', function (e) { if (!coinUp(e)) dragUp(e); });
+document.addEventListener('pointercancel', function (e) { if (!coinUp(e)) dragCancel(e); });
 
 // ── העלייה ──
 function kBoot() {
