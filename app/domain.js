@@ -1,7 +1,7 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
+import { dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
-         schedulePush, tombAt } from '../core/sync.js';
+         schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
@@ -178,8 +178,6 @@ function kSyncNow() {
 }
 
 function pushSoon() { schedulePush(); }
-
-function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
 var kQ = function (s) { return document.querySelector(s); };
 
@@ -608,29 +606,16 @@ var K_CHILDREN = {
   k_so_instances:    [{ table: 'k_entries',      fk: 'so_instance_client_id' }]
 };
 
-// החותמות נלקחות מהאב — שתי חותמות לאותה מחיקה הן שתי הכרעות במנוע המיזוג.
-function kChildKill(parent, kid) {
-  kid.deleted = !!parent.deleted;
-  kid.deleted_at = parent.deleted_at;
-  kid.deleted_by = parent.deleted_by;
-  kid.updated_at = parent.updated_at;
-  return kid;
-}
-
 // כל מחיקה רכה עוברת כאן — מחיקה באתר הקריאה משאירה בן יתום, והוא נספר בסיכום.
 function kKill(table, row) {
-  row.deleted = true;
-  row.updated_at = Date.now();
-  row.deleted_at = tombAt(row.updated_at);
-  row.deleted_by = devId();
-  localPut(table, row);
+  localPut(table, tombKill(row));
   var kids = K_CHILDREN[table] || [], i, j, list, kid;
   for (i = 0; i < kids.length; i++) {
     list = kLive(MIRROR[kids[i].table] || []);
     for (j = 0; j < list.length; j++) {
       kid = list[j];
       if (!idEq(kid[kids[i].fk], row.client_id)) continue;
-      localPut(kids[i].table, kChildKill(row, kid));
+      localPut(kids[i].table, tombInherit(row, kid));
     }
   }
   return row;
