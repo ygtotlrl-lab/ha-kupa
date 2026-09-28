@@ -6,7 +6,7 @@ import { shell, view } from '../state.js';
 import { assetIcon, localPut, money, monthKeyOf, pushSoon } from '../domain.js';
 
 // שחרור מעל היעד מאשר ושחרור בצד מחזיר את המטבע — האישור הוא התנועה עצמה, ואין כפתור אישור שני.
-var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false };
+var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false, on: false, pid: null };
 
 function slideScreenHTML() {
   var isInc = view.flow === 'income';
@@ -35,25 +35,29 @@ function coinAt(p) {
 function coinWire() {
   var c = document.getElementById('coin'), t = document.getElementById('slide-target');
   if (!c || !t) { uiNoDialog('coinWire', 'coin'); return; }
-  COIN.el = c; COIN.tgt = t;
+  COIN.el = c; COIN.tgt = t; COIN.on = false;
   coinAt(coinHome());
-  c.addEventListener('pointerdown', coinDown);
 }
 
+// הערך המוחזר עוצר את גרירת הרשימה — אירוע של המטבע אינו ממשיך אליה.
 function coinDown(e) {
-  var c = COIN.el, r = c.getBoundingClientRect();
+  var c = COIN.el;
+  if (!c || !e.target.closest || e.target.closest('#coin') !== c) return false;
+  var r = c.getBoundingClientRect();
+  COIN.on = true; COIN.pid = e.pointerId;
   c.classList.remove('settle');
   COIN.dx = e.clientX - r.left; COIN.dy = e.clientY - r.top;
   c.setPointerCapture(e.pointerId);
-  c.addEventListener('pointermove', coinMove);
-  c.addEventListener('pointerup', coinUp);
+  return true;
 }
 
 function coinMove(e) {
+  if (!COIN.on || e.pointerId !== COIN.pid) return false;
   var c = COIN.el;
   coinAt({ x: e.clientX - COIN.dx, y: e.clientY - COIN.dy });
   var over = coinOverTarget();
   if (over !== COIN.over) { COIN.over = over; c.classList.toggle('over', over); }
+  return true;
 }
 
 function coinOverTarget() {
@@ -62,12 +66,12 @@ function coinOverTarget() {
   return cx > b.left && cx < b.right && cy > b.top - 40 && cy < b.bottom;
 }
 
+// גרירה שבוטלה חוזרת למקומה — ביטול אינו שחרור מעל היעד.
 function coinUp(e) {
-  var c = COIN.el;
-  c.removeEventListener('pointermove', coinMove);
-  c.removeEventListener('pointerup', coinUp);
-  if (!coinOverTarget()) { coinReturn(); return; }
-  coinSwallow();
+  if (!COIN.on || e.pointerId !== COIN.pid) return false;
+  COIN.on = false;
+  if (e.type !== 'pointercancel' && coinOverTarget()) coinSwallow(); else coinReturn();
+  return true;
 }
 
 function coinReturn() {
@@ -161,4 +165,4 @@ function flowCommit() {
   shell.kRender();
 }
 
-export { coinWire, slideScreenHTML };
+export { coinDown, coinMove, coinUp, coinWire, slideScreenHTML };

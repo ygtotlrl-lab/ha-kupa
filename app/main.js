@@ -28,7 +28,7 @@ import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, fl
          monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
-import { coinWire, slideScreenHTML } from './screens/slide.js';
+import { coinDown, coinMove, coinUp, coinWire, slideScreenHTML } from './screens/slide.js';
 
 // ── החיווט ──
 // החיווט נמסר בשומרי קריאה — ה-CFG מוגדרים בהמשך, והשומר קורא אותם בזמן הקריאה ולא בזמן המסירה.
@@ -482,6 +482,7 @@ document.addEventListener('keydown', function (e) {
 var DRAG = { el: null, list: null, kind: null, moved: false };
 
 document.addEventListener('pointerdown', function (e) {
+  if (coinDown(e)) return;
   var g = e.target.closest && e.target.closest('.det.drag > li .grip');
   if (!g) return;
   var li = g.closest('li');
@@ -494,6 +495,7 @@ document.addEventListener('pointerdown', function (e) {
 });
 
 document.addEventListener('pointermove', function (e) {
+  if (coinMove(e)) return;
   if (!DRAG.el) return;
   e.preventDefault();
   var over = document.elementFromPoint(e.clientX, e.clientY);
@@ -505,7 +507,8 @@ document.addEventListener('pointermove', function (e) {
   DRAG.list.insertBefore(DRAG.el, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
 });
 
-document.addEventListener('pointerup', function () {
+document.addEventListener('pointerup', function (e) {
+  if (coinUp(e)) return;
   if (!DRAG.el) return;
   var el = DRAG.el, list = DRAG.list, kind = DRAG.kind, moved = DRAG.moved;
   DRAG.el = null; DRAG.list = null; DRAG.kind = null; DRAG.moved = false;
@@ -514,6 +517,8 @@ document.addEventListener('pointerup', function () {
   var ids = [].slice.call(list.children).map(function (x) { return x.dataset.id; });
   if (lookupReorder(kind, ids)) kRender();
 });
+
+document.addEventListener('pointercancel', function (e) { coinUp(e); });
 
 // ── העלייה ──
 function kBoot() {
