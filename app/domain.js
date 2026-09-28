@@ -109,11 +109,6 @@ function _kMarkPushed(t) {
   lsSet(K_PUSHED_KEY, JSON.stringify(S._kPushedAt));
 }
 
-// הסימון יורד רק כשהכתיבה הוכרעה — כשל רשת משאיר את השורה מלוכלכת.
-function kDirtyRows(t) {
-  return (MIRROR[t] || []).filter(function (r) { return pendHas(kPendKey(t, r)); });
-}
-
 // האופק אינו ראיה עננית — הפינוי נעשה מול העד, והחלון אומר רק מה מוצג.
 function hwHorizonDate() {
   var t = dayToday();
@@ -591,8 +586,8 @@ function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
 
 // ── הכתיבה ──
 function localPut(table, row) {
-  var l = MIRROR[table], i;
-  for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, row.client_id)) { l[i] = row; break; }
+  var l = MIRROR[table], k = kTableMeta(table).key, i;
+  for (i = 0; i < l.length; i++) if (idEq(l[i][k], row[k])) { l[i] = row; break; }
   if (i === l.length) l.push(row);
   mirrorSave(table);
   // מפתח אחד — קריאה בשני ארגומנטים מסמנת את שם הטבלה ולא את השורה.
@@ -633,7 +628,7 @@ function lookupRows(kind) {
 }
 
 export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, hwHorizonDate, iconFor, kDirtyRows, kKill, kLive,
+         detailRowHTML, footHTML, hwHorizonDate, iconFor, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kRowTs, kSortEntries, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
