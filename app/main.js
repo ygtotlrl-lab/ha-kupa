@@ -303,7 +303,7 @@ var DOM_ACTIONS = {
     var r = entryById(el.dataset.id);
     if (!r) { uiNoDialog('entry-menu', el.dataset.id); return; }
     openModal(MSG_EDIT + ' · ' + r.description,
-      '<div class="ksave">' +
+      '<div data-ks>' +
       '<div class="fld"><label for="e-amt">סכום</label>' +
       '<input id="e-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(r.amount) + '"></div>' +
@@ -385,7 +385,7 @@ var DOM_ACTIONS = {
     var y = String(el.dataset.id || '');
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
     openModal(MSG_PLEDGE_EDIT + hebYearLabelFull(y),
-      '<div class="ksave"><div class="fld"><label for="p-amt">סכום</label>' +
+      '<div data-ks><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
       '<button class="btn" data-act="pledge-save" data-id="' + esc(y) +
@@ -462,7 +462,7 @@ var DOM_ACTIONS = {
 document.addEventListener('click', function (e) {
   if (modalBackdrop(e)) return;
   // לחיצה על ידית הגרירה היא סופה של גרירה, ולא בחירה בשורה — אינה פותחת את העורך.
-  if (e.target.closest('.grip')) return;
+  if (e.target.closest('[data-grip]')) return;
   var el = e.target.closest('[data-act]');
   if (!el) return;
   var fn = DOM_ACTIONS[el.dataset.act];
@@ -483,11 +483,12 @@ var DRAG = { el: null, list: null, kind: null, moved: false };
 
 document.addEventListener('pointerdown', function (e) {
   if (coinDown(e)) return;
-  var g = e.target.closest && e.target.closest('.det.drag > li .grip');
+  var g = e.target.closest && e.target.closest('[data-grip]');
   if (!g) return;
-  var li = g.closest('li');
+  var li = g.closest('[data-drag]');
+  if (!li) return;
   DRAG.el = li; DRAG.list = li.parentNode;
-  DRAG.kind = DRAG.list.dataset.kind; DRAG.moved = false;
+  DRAG.kind = li.dataset.drag; DRAG.moved = false;
   li.classList.add('dragging');
   // בלי לכידת המצביע אצבע שיוצאת מגבול האלמנט מפסיקה לשדר, והגרירה נתקעת.
   try { g.setPointerCapture(e.pointerId); } catch (e1) {}
@@ -499,7 +500,7 @@ document.addEventListener('pointermove', function (e) {
   if (!DRAG.el) return;
   e.preventDefault();
   var over = document.elementFromPoint(e.clientX, e.clientY);
-  var li = over && over.closest ? over.closest('.det.drag > li') : null;
+  var li = over && over.closest ? over.closest('[data-drag="' + DRAG.kind + '"]') : null;
   if (!li || li === DRAG.el || li.parentNode !== DRAG.list) return;
   DRAG.moved = true;
   // ההזזה בעץ בזמן הגרירה היא המשוב היחיד; החצי התחתון של שורת היעד מכניס אחריה.

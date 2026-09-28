@@ -124,7 +124,7 @@ var STEP_META = {
 function flowBodyHTML() {
   var steps = flowSteps(), key = steps[view.step], d = view.draft;
   var meta = STEP_META[key] || STEP_META.amount;
-  var h = '<div class="ksave">' +
+  var h = '<div data-ks>' +
     '<div class="fhd"><span class="fic">' + iconFor(meta.ic) + '</span>' +
     '<h2>' + esc(meta.lab) + '</h2></div>';
 
@@ -160,7 +160,7 @@ function flowBodyHTML() {
       '<input id="f-date" type="date" value="' + esc(d.entry_date) + '">' +
       '<div class="sml" id="f-hdate">' + esc(hebLabel(d.entry_date)) + '</div></div>';
   }
-  // הכפתורים בתוך היקף ה-ksave ולא בתחתית המיכל — ksKey מחפש רק בתוך ההיקף, וכפתור מחוצה לו אינו עונה למקש.
+  // הכפתורים בתוך היקף ה-data-ks ולא בתחתית המיכל — ksKey מחפש רק בתוך ההיקף, וכפתור מחוצה לו אינו עונה למקש.
   return h + '<div class="frow">' +
     '<button class="btn ghost" data-act="flow-back" data-kesc>' + esc(MSG_BACK) + '</button>' +
     '<button class="btn" data-act="flow-next" data-ksave>' +
