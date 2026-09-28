@@ -105,7 +105,7 @@ var BK_CFG = {
   secrets: [],
   sources: function () {
     return [
-      { kind: 'table', name: 'k_pledges',         order: 'pledge_heb_year', ts: 'updated_at' },
+      { kind: 'table', name: 'k_pledges',         order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'k_standing_orders', order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
@@ -398,8 +398,9 @@ var DOM_ACTIONS = {
     if (v === null || v < 0) { toast(MSG_NEED_AMOUNT, 4000, 'bad'); return; }
     return runSave(function () {
       var l = kLive(MIRROR.k_pledges), i, row = null;
-      for (i = 0; i < l.length; i++) if (l[i].pledge_heb_year === y) { row = l[i]; break; }
-      if (!row) row = { client_id: newClientId(), pledge_heb_year: y, deleted: false };
+      // המזהה הוא השנה — שני מכשירים שקובעים את אותה שנה מגיעים לאותה שורה.
+      for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, y)) { row = l[i]; break; }
+      if (!row) row = { client_id: String(y), pledge_heb_year: y, deleted: false };
       row.pledge = v;
       row.updated_at = Date.now();
       localPut('k_pledges', row);
