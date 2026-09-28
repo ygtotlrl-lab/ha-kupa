@@ -39,14 +39,14 @@ function lookupCardHTML(kind, title, dflt) {
   return '<div class="card"><h2 class="fold" data-act="look-toggle" data-id="' + esc(kind) + '">' +
     esc(title) + '<span class="st">' + esc(open ? '⌃' : '⌄') + '</span></h2>' +
     (!open ? '' :
-      '<ul class="det drag" data-kind="' + esc(kind) + '">' +
+      '<ul class="det drag">' +
       (labels ? labels.map(function (x) {
         return '<li><span class="ico">' + iconFor('other') + '</span>' +
                '<span class="nm">' + esc(x) + '</span></li>';
       }).join('')
       : rows.map(function (r) {
-        return '<li data-act="look-edit" data-id="' + esc(r.client_id) + '">' +
-               '<span class="grip" aria-hidden="true">⠿</span>' +
+        return '<li data-act="look-edit" data-drag="' + esc(kind) + '" data-id="' + esc(r.client_id) + '">' +
+               '<span class="grip" data-grip aria-hidden="true">⠿</span>' +
                '<span class="nm">' + esc(r.label) + '</span></li>';
       }).join('')) + '</ul>' +
       '<button class="btn ghost card-add" data-act="look-add" data-id="' + esc(kind) + '">' +
@@ -99,7 +99,7 @@ function monthOptions(extra) {
 function orderFormHTML(o) {
   var list = ORDER_METHODS;
   var from = (o && o.valid_from_month) || nowMonthKey();
-  return '<div class="ksave">' +
+  return '<div data-ks>' +
     '<div class="fld"><label for="o-amt">סכום</label>' +
     '<input id="o-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
     esc(o ? o.amount : '') + '"></div>' +
@@ -150,7 +150,7 @@ function lookupById(id) {
 }
 
 function lookupFormHTML(r) {
-  return '<div class="ksave"><div class="fld"><label for="l-label">' +
+  return '<div data-ks><div class="fld"><label for="l-label">' +
     esc(MSG_WAY_LABEL) + '</label>' +
     '<input id="l-label" type="text" autocomplete="off" value="' +
     esc(r ? r.label : '') + '"></div></div>';

@@ -16,7 +16,7 @@ function slideScreenHTML() {
     '<div class="sub">' + esc(MSG_SLIDE_SUB) + '</div>' +
     '<div class="target ' + (isInc ? 'wide' : 'narrow') + '" id="slide-target">' +
     assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</div>' +
-    '<div class="coin" id="coin"><span class="ring"></span>' +
+    '<div class="coin" id="coin" data-coin><span class="ring"></span>' +
     money(Math.abs(view.draft.amount)) + '</div></div>';
 }
 
@@ -42,7 +42,7 @@ function coinWire() {
 // הערך המוחזר עוצר את גרירת הרשימה — אירוע של המטבע אינו ממשיך אליה.
 function coinDown(e) {
   var c = COIN.el;
-  if (!c || !e.target.closest || e.target.closest('#coin') !== c) return false;
+  if (!c || !e.target.closest || e.target.closest('[data-coin]') !== c) return false;
   var r = c.getBoundingClientRect();
   COIN.on = true; COIN.pid = e.pointerId;
   c.classList.remove('settle');
