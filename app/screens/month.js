@@ -1,6 +1,6 @@
 // app/screens/month.js — מסך החודש ותהליך הרישום
 import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
-import { idEq, newClientId } from '../../core/sync.js';
+import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, dragDef, dragOrder, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
@@ -68,10 +68,11 @@ function lookupList(kind, dflt) {
 }
 
 // ברירות המחדל מתממשות לשורות בפעולת המשתמש הראשונה ולא ברינדור — עריכה וגרירה דורשות מזהה, וכתיבה ברינדור הייתה כותבת במכשיר שרק קורא.
+// המזהה נגזר ממקום הפריט בזריעה — <kind>:<תווית ברירת המחדל> — ושני מכשירים ריקים שזורעים מגיעים לאותה שורה; התווית עצמה ניתנת לעריכה.
 function lookupSeed(kind, dflt) {
   if (lookupRows(kind).length) return;
   for (var i = 0; i < dflt.length; i++)
-    localPut('k_lookups', { client_id: newClientId(), kind: kind, label: dflt[i],
+    localPut('k_lookups', { client_id: kind + ':' + dflt[i], kind: kind, label: dflt[i],
                             sort: i + 1, updated_at: Date.now(), deleted: false });
   pushSoon();
 }
