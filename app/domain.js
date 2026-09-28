@@ -1,7 +1,7 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
 import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark, pushDirty,
-         schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
+         schedulePush, tombAt } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
@@ -131,10 +131,9 @@ function pullTable(t) {
 
 function mergeTable(t, remote) {
   var m = kTableMeta(t);
-  // המיזוג עובר בעוטף — הליבה מקבלת אובייקט אפשרויות, וקריאה ישירה בארגומנטים מסודרים מפילה אותה בזמן ריצה.
-  var merged = mergeRows(MIRROR[t] || [], remote, m.key, function (k) {
+  var merged = mergeCore(MIRROR[t] || [], remote, { key: m.key, isPending: function (k) {
     return pendHas(kPendKeyOf(t, k));
-  });
+  } });
   MIRROR[t] = merged;
   mirrorSave(t);
   return merged;
@@ -153,7 +152,7 @@ function kSyncPull() {
       any = true;
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
-    if (any) { tombPruneMerged(); hwNoteCloud(); }
+    if (any) hwNoteCloud();
     if (any && !S._kPullLogged) { S._kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
@@ -181,17 +180,6 @@ function kSyncNow() {
 function pushSoon() { schedulePush(); }
 
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
-
-// המפתח שם עמודה, ו-String() עליו לעולם אינו null — ולכן ענף keyless אינו נגיש כאן.
-// dedupe: false — כפילות נשארת גלויה ואינה מכווצת בשקט.
-// localPick: 'first' — ההתאמה הראשונה היא זו שמתמודדת מול הענן.
-function mergeRows(local, remote, keyName, isPending) {
-  return tombPruneMerged(mergeCore(local, remote, {
-    getKey: function (r) { return String(r[keyName]); },
-    ts: kRowTs, isPending: isPending, keepUnversionedLocal: true,
-    dedupe: false, keyless: 'drop', localPick: 'first'
-  }));
-}
 
 var kQ = function (s) { return document.querySelector(s); };
 

@@ -6,7 +6,7 @@ import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismi
          tombBoot } from '../core/sync.js';
 import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
-import { bkBoot } from '../core/backup.js';
+import { bkBoot, logAwait } from '../core/backup.js';
 import { actRun, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, ksKey,
          modalBackdrop, modalEsc, openModal, shellBare, swApply, swHideUpdate, toast,
          uiNoDialog } from '../core/ui.js';
@@ -49,7 +49,6 @@ appConfigure({
 
 var MIRROR_CFG = {
   prefix: self.APP.prefix + 'mirror_',
-  app:    self.APP.prefix,
   tables: function () { return TABLES.map(function (m) { return m.t; }); },
   // ריק ומוצהר — שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
   noPush: [],
@@ -117,7 +116,7 @@ var BK_CFG = {
 };
 
 var PEND_CFG = {
-  app: 'kupa', key: 'k_pending',
+  key: 'k_pending',
   // סימון שקידומתו אינה כאן יורד בעלייה — אין לו כותב ואין שורה שתידחף ותוריד אותו.
   marks: function () { return PUSH_TABLES.map(function (t) { return kPendKeyOf(t, ''); }); },
   redraw: function () { try { kRender(); } catch (e) { } }
@@ -190,7 +189,8 @@ var ERA_CFG = {
   },
   // הדחיפה היא ראיה טרייה ולא זיכרון — מכשיר נקי מקבל ok עם still ריק.
   push:   function () { return pushDirty(null); },
-  refresh: function () { return kSyncNow(); }
+  refresh: function () { return kSyncNow(); },
+  log:    function (action, entries) { return logAwait(action, entries); }
 };
 
 function saveRefresh() { kRender(); }
