@@ -296,7 +296,7 @@ function monthsWithData(withView) {
   l = kLive(MIRROR.k_entries);
   for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
   l = kLive(MIRROR.k_so_instances);
-  for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
+  for (i = 0; i < l.length; i++) { k = String(l[i].due_heb_month || ''); if (k) seen[k] = true; }
   k = nowMonthKey();
   if (k) seen[k] = true;
   // החודש שמוצג נכנס לשרשרת — אחרת חודש מחוץ לטווח נפתח באפסים גם כשלשנה שלו יש יעד.
@@ -325,7 +325,7 @@ function entriesOfMonth(k) {
 
 // מופע ממתין נספר בצדקה מיד — אחרת ה«חסר» שגוי מתחילת החודש ועד יום החיוב.
 function instancesOfMonth(k) {
-  return kLive(MIRROR.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
+  return kLive(MIRROR.k_so_instances).filter(function (r) { return String(r.due_heb_month || '') === k; });
 }
 
 // הוראה נספרת גם בלי מופע שמור — המופע נכתב רק עד החודש הנוכחי, וכתיבה בניווט הייתה יוצרת שורות לעתיד.
@@ -364,13 +364,13 @@ function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 // שנה בלי שורה היא אפס ולא כשל — התקנה טרייה אינה נושאת אף שורה.
 function pledgeOfYear(y) {
   var l = kLive(MIRROR.k_pledges), i;
-  for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === String(y)) return +l[i].pledge || 0;
+  for (i = 0; i < l.length; i++) if (l[i].pledge_heb_year === Number(y)) return +l[i].pledge || 0;
   return 0;
 }
 
 function openingBalance() {
   var l = kLive(MIRROR.k_pledges).slice().sort(function (a, b) {
-    return String(a.hebrew_year).localeCompare(String(b.hebrew_year));
+    return a.pledge_heb_year - b.pledge_heb_year;
   });
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
 }
@@ -405,8 +405,8 @@ function orderById(id) {
 // גרסה שנפתחה בעריכת מופע מקבלת «תוקף עד» החודש הקודם, והחדשה מתחילה מהחודש הנוכחי — מופעים קודמים אינם משתנים.
 function orderAppliesTo(o, m) {
   var key = m.key;
-  if (o.valid_from_month && key < o.valid_from_month) return false;
-  if (o.valid_to_month && key > o.valid_to_month) return false;
+  if (o.valid_from_heb_month && key < o.valid_from_heb_month) return false;
+  if (o.valid_to_heb_month && key > o.valid_to_heb_month) return false;
   return true;
 }
 
@@ -430,7 +430,7 @@ function soEnsureInstances(monthKey) {
     });
     if (has) continue;
     made.push({ client_id: newClientId(), standing_order_client_id: o.client_id,
-                month_key: monthKey, amount: +o.amount || 0,
+                due_heb_month: monthKey, amount: +o.amount || 0,
                 updated_at: Date.now(), deleted: false });
   }
   return made;

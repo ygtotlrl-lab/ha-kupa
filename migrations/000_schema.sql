@@ -36,7 +36,7 @@ create table if not exists public.k_lookups (
 
 create table if not exists public.k_pledges (
   client_id text not null,
-  hebrew_year text not null,
+  pledge_heb_year integer not null,
   pledge numeric not null,
   chumash_opening_balance numeric,
   created_at timestamp with time zone default now(),
@@ -45,7 +45,7 @@ create table if not exists public.k_pledges (
   deleted_at timestamp with time zone,
   deleted_by text,
   constraint k_pledges_pkey PRIMARY KEY (client_id),
-  constraint k_pledges_hebrew_year_key UNIQUE (hebrew_year)
+  constraint k_pledges_pledge_heb_year_key UNIQUE (pledge_heb_year)
 );
 
 create table if not exists public.k_settings (
@@ -63,14 +63,15 @@ create table if not exists public.k_settings (
 create table if not exists public.k_so_instances (
   client_id text not null,
   standing_order_client_id text not null,
-  month_key text not null,
+  due_heb_month text not null,
   amount numeric not null,
   created_at timestamp with time zone default now(),
   updated_at bigint not null,
   deleted boolean default false,
   deleted_at timestamp with time zone,
   deleted_by text,
-  constraint k_so_instances_pkey PRIMARY KEY (client_id)
+  constraint k_so_instances_pkey PRIMARY KEY (client_id),
+  constraint k_so_instances_due_heb_month_check CHECK ((due_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text))
 );
 
 create table if not exists public.k_standing_orders (
@@ -81,21 +82,23 @@ create table if not exists public.k_standing_orders (
   method text,
   category text,
   active boolean default true,
-  valid_from_month text,
-  valid_to_month text,
-  supersedes_id text,
+  valid_from_heb_month text,
+  valid_to_heb_month text,
+  supersedes_client_id text,
   created_at timestamp with time zone default now(),
   updated_at bigint not null,
   deleted boolean default false,
   deleted_at timestamp with time zone,
   deleted_by text,
-  constraint k_standing_orders_pkey PRIMARY KEY (client_id)
+  constraint k_standing_orders_pkey PRIMARY KEY (client_id),
+  constraint k_standing_orders_valid_from_heb_month_check CHECK (((valid_from_heb_month IS NULL) OR (valid_from_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text))),
+  constraint k_standing_orders_valid_to_heb_month_check CHECK (((valid_to_heb_month IS NULL) OR (valid_to_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text)))
 );
 
 create index if not exists k_entries_date_idx ON public.k_entries USING btree (entry_date);
 create index if not exists k_entries_type_idx ON public.k_entries USING btree (type, deleted);
 create index if not exists k_lookups_kind_idx ON public.k_lookups USING btree (kind, sort);
-create index if not exists k_so_instances_month_idx ON public.k_so_instances USING btree (month_key);
+create index if not exists k_so_instances_due_heb_month_idx ON public.k_so_instances USING btree (due_heb_month);
 create index if not exists k_so_instances_order_idx ON public.k_so_instances USING btree (standing_order_client_id);
 
 -- revoke לפני grant — GRANT מוסיף ואינו מחליף, וטבלה חדשה ב-Supabase נולדת עם DELETE ו-TRUNCATE ל-anon.
