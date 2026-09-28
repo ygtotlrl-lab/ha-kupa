@@ -18,7 +18,7 @@ import { CAT_LIST, EPS, KV_TABLE, K_PUSHED_KEY, METHOD_DEFAULT, MSG_ADD_INCOME,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
 import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, hwHorizonDate, iconFor,
-         kDirtyRows, kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
+         kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
          soEnsureThroughNow } from './domain.js';
@@ -143,7 +143,7 @@ var PUSH_CFG = {
   tables: PUSH_TABLES,
   chunk:  500,
   delay:  400,
-  dirty:  function (t) { S._kPushEp = ctxEpoch(); return kDirtyRows(t); },
+  rows:   function (t) { S._kPushEp = ctxEpoch(); return MIRROR[t] || []; },
   key:    function (t, row) { return kPendKey(t, row); },
   send:   function (t, rows) {
     var m = kTableMeta(t);

@@ -1,7 +1,7 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
+import { dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
-         schedulePush, tombAt } from '../core/sync.js';
+         schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
@@ -109,11 +109,6 @@ function _kMarkPushed(t) {
   lsSet(K_PUSHED_KEY, JSON.stringify(S._kPushedAt));
 }
 
-// הסימון יורד רק כשהכתיבה הוכרעה — כשל רשת משאיר את השורה מלוכלכת.
-function kDirtyRows(t) {
-  return (MIRROR[t] || []).filter(function (r) { return pendHas(kPendKey(t, r)); });
-}
-
 // האופק אינו ראיה עננית — הפינוי נעשה מול העד, והחלון אומר רק מה מוצג.
 function hwHorizonDate() {
   var t = dayToday();
@@ -178,8 +173,6 @@ function kSyncNow() {
 }
 
 function pushSoon() { schedulePush(); }
-
-function devId() { try { return getDeviceId(); } catch (e) { return null; } }
 
 var kQ = function (s) { return document.querySelector(s); };
 
@@ -593,8 +586,8 @@ function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
 
 // ── הכתיבה ──
 function localPut(table, row) {
-  var l = MIRROR[table], i;
-  for (i = 0; i < l.length; i++) if (idEq(l[i].client_id, row.client_id)) { l[i] = row; break; }
+  var l = MIRROR[table], k = kTableMeta(table).key, i;
+  for (i = 0; i < l.length; i++) if (idEq(l[i][k], row[k])) { l[i] = row; break; }
   if (i === l.length) l.push(row);
   mirrorSave(table);
   // מפתח אחד — קריאה בשני ארגומנטים מסמנת את שם הטבלה ולא את השורה.
@@ -608,29 +601,16 @@ var K_CHILDREN = {
   k_so_instances:    [{ table: 'k_entries',      fk: 'so_instance_client_id' }]
 };
 
-// החותמות נלקחות מהאב — שתי חותמות לאותה מחיקה הן שתי הכרעות במנוע המיזוג.
-function kChildKill(parent, kid) {
-  kid.deleted = !!parent.deleted;
-  kid.deleted_at = parent.deleted_at;
-  kid.deleted_by = parent.deleted_by;
-  kid.updated_at = parent.updated_at;
-  return kid;
-}
-
 // כל מחיקה רכה עוברת כאן — מחיקה באתר הקריאה משאירה בן יתום, והוא נספר בסיכום.
 function kKill(table, row) {
-  row.deleted = true;
-  row.updated_at = Date.now();
-  row.deleted_at = tombAt(row.updated_at);
-  row.deleted_by = devId();
-  localPut(table, row);
+  localPut(table, tombKill(row));
   var kids = K_CHILDREN[table] || [], i, j, list, kid;
   for (i = 0; i < kids.length; i++) {
     list = kLive(MIRROR[kids[i].table] || []);
     for (j = 0; j < list.length; j++) {
       kid = list[j];
       if (!idEq(kid[kids[i].fk], row.client_id)) continue;
-      localPut(kids[i].table, kChildKill(row, kid));
+      localPut(kids[i].table, tombInherit(row, kid));
     }
   }
   return row;
@@ -648,7 +628,7 @@ function lookupRows(kind) {
 }
 
 export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, hwHorizonDate, iconFor, kDirtyRows, kKill, kLive,
+         detailRowHTML, footHTML, hwHorizonDate, iconFor, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kRowTs, kSortEntries, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
