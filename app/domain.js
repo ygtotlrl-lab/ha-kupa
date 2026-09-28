@@ -1,6 +1,6 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
 import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
-import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark, pushDirty,
+import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombAt } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
@@ -92,7 +92,7 @@ function kTableMeta(t) {
 
 function kRowTs(r) { return (r && +r.updated_at) || 0; }
 
-// המפתח נגזר מהמטא ואינו client_id — k_pledges ממופתחת בשנה העברית, ומפתח מוקלד היה מסמן שורה שהמיזוג אינו מוצא.
+// המפתח נגזר מהמטא — טבלת ההגדרות ממופתחת ב-key, ומפתח מוקלד היה מסמן שורה שהמיזוג אינו מוצא.
 function kPendKey(t, r) { return kPendKeyOf(t, r && r[kTableMeta(t).key]); }
 
 // ההגדרות מסומנות setting:<מפתח> בלי שם הטבלה — זה הסימון המשותף, ולא מה שנבדל.
@@ -418,6 +418,7 @@ function soDate(monthKey, o) {
 }
 
 // פעם אחת לכל צמד הוראה וחודש — ריצה שנייה אינה משנה דבר.
+// המזהה נגזר מהצמד — שני מכשירים שעולים יחד כותבים את אותה שורה ולא שתיים.
 function soEnsureInstances(monthKey) {
   var m = monthByKey(monthKey);
   if (!m) return [];
@@ -429,7 +430,7 @@ function soEnsureInstances(monthKey) {
       return idEq(x.standing_order_client_id, o.client_id);
     });
     if (has) continue;
-    made.push({ client_id: newClientId(), standing_order_client_id: o.client_id,
+    made.push({ client_id: o.client_id + ':' + monthKey, standing_order_client_id: o.client_id,
                 due_heb_month: monthKey, amount: +o.amount || 0,
                 updated_at: Date.now(), deleted: false });
   }
