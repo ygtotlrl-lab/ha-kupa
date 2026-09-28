@@ -6,7 +6,7 @@ import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismi
          tombBoot } from '../core/sync.js';
 import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
-import { bkBoot } from '../core/backup.js';
+import { bkBoot, logAwait } from '../core/backup.js';
 import { actRun, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, ksKey,
          modalBackdrop, modalEsc, openModal, shellBare, swApply, swHideUpdate, toast,
          uiNoDialog } from '../core/ui.js';
@@ -49,7 +49,6 @@ appConfigure({
 
 var MIRROR_CFG = {
   prefix: self.APP.prefix + 'mirror_',
-  app:    self.APP.prefix,
   tables: function () { return TABLES.map(function (m) { return m.t; }); },
   // ריק ומוצהר — שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
   noPush: [],
@@ -106,7 +105,7 @@ var BK_CFG = {
   secrets: [],
   sources: function () {
     return [
-      { kind: 'table', name: 'k_pledges',         order: 'hebrew_year', ts: 'updated_at' },
+      { kind: 'table', name: 'k_pledges',         order: 'pledge_heb_year', ts: 'updated_at' },
       { kind: 'table', name: 'k_standing_orders', order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
       { kind: 'table', name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
@@ -117,7 +116,7 @@ var BK_CFG = {
 };
 
 var PEND_CFG = {
-  app: 'kupa', key: 'k_pending',
+  key: 'k_pending',
   // סימון שקידומתו אינה כאן יורד בעלייה — אין לו כותב ואין שורה שתידחף ותוריד אותו.
   marks: function () { return PUSH_TABLES.map(function (t) { return kPendKeyOf(t, ''); }); },
   redraw: function () { try { kRender(); } catch (e) { } }
@@ -190,7 +189,8 @@ var ERA_CFG = {
   },
   // הדחיפה היא ראיה טרייה ולא זיכרון — מכשיר נקי מקבל ok עם still ריק.
   push:   function () { return pushDirty(null); },
-  refresh: function () { return kSyncNow(); }
+  refresh: function () { return kSyncNow(); },
+  log:    function (action, entries) { return logAwait(action, entries); }
 };
 
 function saveRefresh() { kRender(); }
@@ -351,8 +351,8 @@ var DOM_ACTIONS = {
       localPut('k_standing_orders', {
         client_id: newClientId(), name: p.name, amount: p.amount,
         day_of_month: p.day_of_month, method: p.method, category: CAT_LIST[0],
-        active: true, valid_from_month: view.monthKey, valid_to_month: null,
-        supersedes_id: null, updated_at: Date.now(), deleted: false
+        active: true, valid_from_heb_month: view.monthKey, valid_to_heb_month: null,
+        supersedes_client_id: null, updated_at: Date.now(), deleted: false
       });
       pushSoon();
       closeModal();
@@ -392,14 +392,14 @@ var DOM_ACTIONS = {
       '" data-ksave>שמור</button>');
   },
   'pledge-save': function (el) {
-    var inp = kQ('#p-amt'), y = String(el.dataset.id || '');
+    var inp = kQ('#p-amt'), y = Number(el.dataset.id);
     if (!inp) { uiNoDialog('pledge-save', 'p-amt'); return; }
     var v = readNum(inp, null);
     if (v === null || v < 0) { toast(MSG_NEED_AMOUNT, 4000, 'bad'); return; }
     return runSave(function () {
       var l = kLive(MIRROR.k_pledges), i, row = null;
-      for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === y) { row = l[i]; break; }
-      if (!row) row = { client_id: newClientId(), hebrew_year: y, deleted: false };
+      for (i = 0; i < l.length; i++) if (l[i].pledge_heb_year === y) { row = l[i]; break; }
+      if (!row) row = { client_id: newClientId(), pledge_heb_year: y, deleted: false };
       row.pledge = v;
       row.updated_at = Date.now();
       localPut('k_pledges', row);

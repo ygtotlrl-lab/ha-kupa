@@ -65,7 +65,7 @@ function orderNewVersion(o, patch, fromMonth) {
     return idEq(x.client_id, o.client_id);
   })[0];
   if (old) {
-    old.valid_to_month = prev ? prev.key : key;
+    old.valid_to_heb_month = prev ? prev.key : key;
     old.active = false;
     old.updated_at = Date.now();
     localPut('k_standing_orders', old);
@@ -76,8 +76,8 @@ function orderNewVersion(o, patch, fromMonth) {
     day_of_month: patch.day_of_month != null ? patch.day_of_month : o.day_of_month,
     method: patch.method != null ? patch.method : o.method,
     category: o.category, active: true,
-    valid_from_month: key, valid_to_month: null,
-    supersedes_id: o.client_id, updated_at: Date.now(), deleted: false
+    valid_from_heb_month: key, valid_to_heb_month: null,
+    supersedes_client_id: o.client_id, updated_at: Date.now(), deleted: false
   };
   localPut('k_standing_orders', next);
   return next;
@@ -98,7 +98,7 @@ function monthOptions(extra) {
 
 function orderFormHTML(o) {
   var list = ORDER_METHODS;
-  var from = (o && o.valid_from_month) || nowMonthKey();
+  var from = (o && o.valid_from_heb_month) || nowMonthKey();
   return '<div data-ks>' +
     '<div class="fld"><label for="o-amt">סכום</label>' +
     '<input id="o-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
@@ -116,7 +116,7 @@ function orderFormHTML(o) {
     esc(o ? o.day_of_month : '') + '"></div>' +
     // לא רטרואקטיבית — מופעים של חודשים קודמים כבר נספרו, ושינוי בדיעבד היה מזיז חודש סגור.
     '<div class="fld"><label for="o-from">' + esc(MSG_ORDER_FROM) + '</label>' +
-    '<select id="o-from">' + monthOptions(o && o.valid_from_month).map(function (k) {
+    '<select id="o-from">' + monthOptions(o && o.valid_from_heb_month).map(function (k) {
       return '<option value="' + esc(k) + '"' + (k === from ? ' selected' : '') + '>' +
              esc(monthTitle(monthByKey(k))) + '</option>';
     }).join('') + '</select></div></div>';
@@ -129,7 +129,7 @@ function orderRead() {
   if (!a || !nm || !me || !dy || !fr) { uiNoDialog('orderRead', 'o-amt'); return null; }
   return { amount: readNum(a, null), name: nm.value.trim(),
            method: me.value, day_of_month: readNum(dy, null),
-           valid_from_month: fr.value };
+           valid_from_heb_month: fr.value };
 }
 
 function orderValid(p) {
@@ -137,7 +137,7 @@ function orderValid(p) {
   if (p.amount === null || p.amount <= EPS) return MSG_NEED_AMOUNT;
   if (!p.name) return MSG_NEED_DESC;
   if (p.day_of_month === null || p.day_of_month < 1 || p.day_of_month > 30) return MSG_NEED_DAY;
-  if (!p.valid_from_month) return MSG_FILL_ALL;
+  if (!p.valid_from_heb_month) return MSG_FILL_ALL;
   return '';
 }
 
@@ -165,9 +165,9 @@ function lookupFootHTML(r, kind) {
 function pledgeYears() {
   var seen = {}, out = [], ms = monthsSorted(true), l = kLive(MIRROR.k_pledges), i;
   for (i = 0; i < ms.length; i++) seen[ms[i].year] = true;
-  for (i = 0; i < l.length; i++) seen[String(l[i].hebrew_year)] = true;
-  for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
-  return out.sort().reverse();
+  for (i = 0; i < l.length; i++) seen[l[i].pledge_heb_year] = true;
+  for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(Number(i));
+  return out.sort(function (a, b) { return b - a; });
 }
 
 // שנה שאין לה שורה היא אפס, ולא כשל.

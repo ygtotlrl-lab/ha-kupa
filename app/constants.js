@@ -3,12 +3,11 @@ import { appConfigure } from '../core/util.js';
 
 // ── מסירת התצורה ──
 // כאן הנתונים שהליבה קוראת, והחיווט — ב-main.js; הקובץ הזה נטען ראשון, לפני כל קריאה לליבה.
-// העידן עולה רק בשינוי צורת שורה — שורה ישנה שנדחפת נושאת מפתח שאין לו עמודה, נופלת ב-42703 וחוסמת את התור
-var DATA_ERA = 3;
+// העידן עולה בשינוי צורת רשומה או מפתחה, ושינוי שם טבלה הוא שינוי כזה — המראה ממופתחת בשם.
+// עותק בעידן ישן אינו נדחף — הממתין בו נרשם ביומן, והוא נזרק ונמשך מלא.
+var DATA_ERA = 4;
 
-var TOAST_DEFAULT_MS = 2600;
-
-appConfigure({ DATA_ERA: DATA_ERA, TOAST_DEFAULT_MS: TOAST_DEFAULT_MS });
+appConfigure({ DATA_ERA: DATA_ERA });
 
 var SUPABASE_URL = self.APP.supabase.url;
 
@@ -104,7 +103,7 @@ var PUSH_TABLES = ['k_pledges', 'k_standing_orders',
 // ── מטא-הטבלאות ──
 // שם, מפתח ועמודת התנגשות במקום אחד — שם שנכתב פעמיים מתפצל ביום שאחד האתרים נערך.
 var TABLES = [
-  { t: 'k_pledges',         key: 'hebrew_year' },
+  { t: 'k_pledges',         key: 'pledge_heb_year' },
   { t: 'k_standing_orders', key: 'client_id' },
   { t: 'k_so_instances',   key: 'client_id' },
   { t: 'k_entries',        key: 'client_id' },

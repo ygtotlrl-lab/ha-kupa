@@ -1,7 +1,7 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
 import { dayNoon, dayToday, getDeviceId, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, newClientId, pendHas, pendMark, pushDirty,
-         schedulePush, tombAt, tombPruneMerged } from '../core/sync.js';
+         schedulePush, tombAt } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
@@ -131,10 +131,9 @@ function pullTable(t) {
 
 function mergeTable(t, remote) {
   var m = kTableMeta(t);
-  // המיזוג עובר בעוטף — הליבה מקבלת אובייקט אפשרויות, וקריאה ישירה בארגומנטים מסודרים מפילה אותה בזמן ריצה.
-  var merged = mergeRows(MIRROR[t] || [], remote, m.key, function (k) {
+  var merged = mergeCore(MIRROR[t] || [], remote, { key: m.key, isPending: function (k) {
     return pendHas(kPendKeyOf(t, k));
-  });
+  } });
   MIRROR[t] = merged;
   mirrorSave(t);
   return merged;
@@ -153,7 +152,7 @@ function kSyncPull() {
       any = true;
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
-    if (any) { tombPruneMerged(); hwNoteCloud(); }
+    if (any) hwNoteCloud();
     if (any && !S._kPullLogged) { S._kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
@@ -181,17 +180,6 @@ function kSyncNow() {
 function pushSoon() { schedulePush(); }
 
 function devId() { try { return getDeviceId(); } catch (e) { return null; } }
-
-// המפתח שם עמודה, ו-String() עליו לעולם אינו null — ולכן ענף keyless אינו נגיש כאן.
-// dedupe: false — כפילות נשארת גלויה ואינה מכווצת בשקט.
-// localPick: 'first' — ההתאמה הראשונה היא זו שמתמודדת מול הענן.
-function mergeRows(local, remote, keyName, isPending) {
-  return tombPruneMerged(mergeCore(local, remote, {
-    getKey: function (r) { return String(r[keyName]); },
-    ts: kRowTs, isPending: isPending, keepUnversionedLocal: true,
-    dedupe: false, keyless: 'drop', localPick: 'first'
-  }));
-}
 
 var kQ = function (s) { return document.querySelector(s); };
 
@@ -308,7 +296,7 @@ function monthsWithData(withView) {
   l = kLive(MIRROR.k_entries);
   for (i = 0; i < l.length; i++) { k = monthKeyOf(l[i].entry_date); if (k) seen[k] = true; }
   l = kLive(MIRROR.k_so_instances);
-  for (i = 0; i < l.length; i++) { k = String(l[i].month_key || ''); if (k) seen[k] = true; }
+  for (i = 0; i < l.length; i++) { k = String(l[i].due_heb_month || ''); if (k) seen[k] = true; }
   k = nowMonthKey();
   if (k) seen[k] = true;
   // החודש שמוצג נכנס לשרשרת — אחרת חודש מחוץ לטווח נפתח באפסים גם כשלשנה שלו יש יעד.
@@ -337,7 +325,7 @@ function entriesOfMonth(k) {
 
 // מופע ממתין נספר בצדקה מיד — אחרת ה«חסר» שגוי מתחילת החודש ועד יום החיוב.
 function instancesOfMonth(k) {
-  return kLive(MIRROR.k_so_instances).filter(function (r) { return String(r.month_key || '') === k; });
+  return kLive(MIRROR.k_so_instances).filter(function (r) { return String(r.due_heb_month || '') === k; });
 }
 
 // הוראה נספרת גם בלי מופע שמור — המופע נכתב רק עד החודש הנוכחי, וכתיבה בניווט הייתה יוצרת שורות לעתיד.
@@ -376,13 +364,13 @@ function monthRows(k) { return entriesOfMonth(k).concat(instanceRows(k)); }
 // שנה בלי שורה היא אפס ולא כשל — התקנה טרייה אינה נושאת אף שורה.
 function pledgeOfYear(y) {
   var l = kLive(MIRROR.k_pledges), i;
-  for (i = 0; i < l.length; i++) if (String(l[i].hebrew_year) === String(y)) return +l[i].pledge || 0;
+  for (i = 0; i < l.length; i++) if (l[i].pledge_heb_year === Number(y)) return +l[i].pledge || 0;
   return 0;
 }
 
 function openingBalance() {
   var l = kLive(MIRROR.k_pledges).slice().sort(function (a, b) {
-    return String(a.hebrew_year).localeCompare(String(b.hebrew_year));
+    return a.pledge_heb_year - b.pledge_heb_year;
   });
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
 }
@@ -417,8 +405,8 @@ function orderById(id) {
 // גרסה שנפתחה בעריכת מופע מקבלת «תוקף עד» החודש הקודם, והחדשה מתחילה מהחודש הנוכחי — מופעים קודמים אינם משתנים.
 function orderAppliesTo(o, m) {
   var key = m.key;
-  if (o.valid_from_month && key < o.valid_from_month) return false;
-  if (o.valid_to_month && key > o.valid_to_month) return false;
+  if (o.valid_from_heb_month && key < o.valid_from_heb_month) return false;
+  if (o.valid_to_heb_month && key > o.valid_to_heb_month) return false;
   return true;
 }
 
@@ -442,7 +430,7 @@ function soEnsureInstances(monthKey) {
     });
     if (has) continue;
     made.push({ client_id: newClientId(), standing_order_client_id: o.client_id,
-                month_key: monthKey, amount: +o.amount || 0,
+                due_heb_month: monthKey, amount: +o.amount || 0,
                 updated_at: Date.now(), deleted: false });
   }
   return made;
