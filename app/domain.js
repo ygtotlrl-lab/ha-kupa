@@ -1,5 +1,5 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { HE_COLLATOR, dayNoon, dayToday, withTimeout } from '../core/util.js';
+import { HE_COLLATOR, dayAdd, dayDiff, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
@@ -228,19 +228,6 @@ function monthLabel(k) {
   return names[i] || '';
 }
 
-// חשבון על מספר יום שלם ולא על מילישניות — חיבור של 24 שעות חוצה גבול שעון-קיץ ונופל ליום הקודם.
-function kDayNum(y, m, d) { return Math.floor(Date.UTC(y, m, d) / 86400000); }
-
-function kIsoOfDay(n) {
-  var d = new Date(n * 86400000);
-  return d.getUTCFullYear() + '-' + kPad2(d.getUTCMonth() + 1) + '-' + kPad2(d.getUTCDate());
-}
-
-function kAddDays(iso, n) {
-  var p = String(iso).slice(0, 10).split('-');
-  return kIsoOfDay(kDayNum(+p[0], +p[1] - 1, +p[2]) + n);
-}
-
 function kScale(iso) { var h = kHeb(iso); return h ? h.year * 100 + h.monthIndex + 1 : 0; }
 
 // המנוע ממפה לועזי לעברי בכיוון אחד, והסולם «שנה×100 + חודש» מונוטוני — ולכן ראש החודש נמצא בחיפוש בינארי.
@@ -252,14 +239,15 @@ function monthStart(k) {
   if (_kMonthStart[k] !== undefined) return _kMonthStart[k];
   if (y && ord) {
     want = y * 100 + ord;
-    lo = kDayNum(y - 3762, 0, 1);
-    hi = kDayNum(y - 3760, 11, 31);
-    if (kScale(kIsoOfDay(lo)) < want && kScale(kIsoOfDay(hi)) >= want) {
+    var base = (y - 3762) + '-01-01';
+    lo = 0;
+    hi = dayDiff(base, (y - 3760) + '-12-31');
+    if (kScale(dayAdd(base, lo)) < want && kScale(dayAdd(base, hi)) >= want) {
       while (hi - lo > 1) {
         mid = Math.floor((lo + hi) / 2);
-        if (kScale(kIsoOfDay(mid)) >= want) hi = mid; else lo = mid;
+        if (kScale(dayAdd(base, mid)) >= want) hi = mid; else lo = mid;
       }
-      if (kScale(kIsoOfDay(hi)) === want) out = kIsoOfDay(hi);
+      if (kScale(dayAdd(base, hi)) === want) out = dayAdd(base, hi);
     }
   }
   _kMonthStart[k] = out;
@@ -269,12 +257,12 @@ function monthStart(k) {
 // חודש ריק הוא חודש — דילוג עליו מסתיר מהמשתמש לאן הגיע.
 function prevMonthOf(k) {
   var s = monthStart(k);
-  return s ? monthByKey(monthKeyOf(kAddDays(s, -1))) : null;
+  return s ? monthByKey(monthKeyOf(dayAdd(s, -1))) : null;
 }
 
 function nextMonthOf(k) {
   var s = monthStart(k);
-  return s ? monthByKey(monthKeyOf(kAddDays(s, 31))) : null;
+  return s ? monthByKey(monthKeyOf(dayAdd(s, 31))) : null;
 }
 
 function monthByKey(k) {
@@ -407,7 +395,7 @@ function orderAppliesTo(o, m) {
 function soDate(monthKey, o) {
   var s = monthStart(monthKey);
   if (!s) return '';
-  return o ? kAddDays(s, Math.max(1, +o.day_of_month || 1) - 1) : s;
+  return o ? dayAdd(s, Math.max(1, +o.day_of_month || 1) - 1) : s;
 }
 
 // פעם אחת לכל צמד הוראה וחודש — ריצה שנייה אינה משנה דבר.
@@ -470,7 +458,7 @@ function gregShort(iso) {
 function monthGreg(k) {
   var a = monthStart(k), nx = nextMonthOf(k), b = nx ? monthStart(nx.key) : '';
   if (!a) return '';
-  return gregShort(a) + ' – ' + (b ? gregShort(kAddDays(b, -1)) : '');
+  return gregShort(a) + ' – ' + (b ? gregShort(dayAdd(b, -1)) : '');
 }
 
 // תווית השנה מהמנוע המשותף — צורה שנייה כאן הייתה מקור אמת שני לתצוגה.
