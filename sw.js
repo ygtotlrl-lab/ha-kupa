@@ -17,6 +17,7 @@ var CORE = [
   './core/storage.js',
   './core/mirror.js',
   './core/backup.js',
+  './core/boot-run.js',
   './core/ui.js',
   './core/chart.js',
   './core/hebrew.js',
