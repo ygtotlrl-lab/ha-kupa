@@ -2,7 +2,7 @@
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
          withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismiss,
-         pendBoot, pendCount, pendHas, plBoot, pushDirty, rtyBoot, runSave, sbWatch,
+         pendBoot, pendCount, plBoot, pushDirty, rtyBoot, runSave, sbWatch,
          tombBoot } from '../core/sync.js';
 import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
@@ -17,7 +17,7 @@ import { CAT_LIST, EPS, KV_TABLE, K_PUSHED_KEY, METHOD_DEFAULT, MSG_ADD_INCOME,
          SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
-import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, hwHorizonDate, iconFor,
+import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, iconFor,
          kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
@@ -153,29 +153,12 @@ var PUSH_CFG = {
   run:    function () { kSyncNow(); },
 };
 
+// החלון החם כבוי — כל טבלה שגדלה כאן נדרשת במלואה (fullHistory): יתרת החומש עוברת מהחודש הראשון,
+// וחודש שפונה מהדיסק הוא יתרה שגויה אופליין. המנגנון מחווט, ואין לו מה לצמצם.
 var HW_CFG = {
-  enabled: true,
-  // אין כניסה ואין תפקיד — החלון החם פתוח למי שמחזיק את המכשיר.
+  enabled: false,
   admin: function () { return true; },
-  specs: [{
-    key: mirrorKey('k_entries'),
-    label: 'רישומי חודשים שנסגרו',
-    inWindow: function (r) {
-      var d = r && r.entry_date;
-      if (!d) return true;
-      return d >= hwHorizonDate();
-    },
-    idOf: function (r) { return r && r.client_id; },
-    ts: function (r) { return kRowTs(r); },
-    isPending: function (r) { return pendHas(kPendKey('k_entries', r)); },
-    fetch: function () {
-      return withTimeout(S.sb.from('k_entries').select('*'))
-        .then(function (r) {
-          return (r && !r.error && Array.isArray(r.data)) ? { ok: true, rows: r.data }
-                                                          : { ok: false, rows: [] };
-        }, function () { return { ok: false, rows: [] }; });
-    }
-  }]
+  specs: []
 };
 
 var ERA_CFG = {
