@@ -1,5 +1,5 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { dayNoon, dayToday, withTimeout } from '../core/util.js';
+import { HE_COLLATOR, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
@@ -161,7 +161,7 @@ function kSyncPull() {
   });
 }
 
-// אין לרשום כל מחזור סנכרון — הפולינג רץ כל שלוש שניות, ו-sh_sync_log היא insert בלבד ואי-אפשר לדלל אותה.
+// אין לרשום כל מחזור סנכרון — הבדיקה המחזורית רצה כל שלוש שניות, ו-sh_sync_log היא insert בלבד ואי-אפשר לדלל אותה.
 // אין כניסה — user_name נרשם null, והמכשיר הוא שמזהה את הרישום.
 function kSyncLog(action, key, recordCount, details) {
   try { logAction(action, key, recordCount, details); } catch (e) { }
@@ -182,17 +182,36 @@ var NUM_FMT = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 });
 function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
 
 // הוראות הקבע בתחתית, ומעליהן התאריכים מהחדש לישן ובתוך תאריך סדר הא״ב — ואין קיבוץ לפי סוג.
-var HE_COLL = new Intl.Collator('he');
-
 function kSortEntries(list) {
   return list.slice().sort(function (a, b) {
     var sa = a.source === 'standing' ? 1 : 0, sb = b.source === 'standing' ? 1 : 0;
     if (sa !== sb) return sa - sb;
     var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
     if (!sa && d !== 0) return d;
-    var n = HE_COLL.compare(String(a.description || ''), String(b.description || ''));
+    var n = HE_COLLATOR.compare(String(a.description || ''), String(b.description || ''));
     return n !== 0 ? n : String(a.client_id).localeCompare(String(b.client_id));
   });
+}
+
+// מפתח החודש «YYYY-MM» — הסדר הלקסיקוגרפי הוא סדר הזמן.
+function kSortMonthKeys(list) { return list.slice().sort(); }
+
+// השנה הקרובה ראשונה.
+function kSortYears(list) { return list.slice().sort(function (a, b) { return b - a; }); }
+
+// השנה הראשונה ראשונה — ממנה נקראת יתרת הפתיחה.
+function kSortPledges(list) {
+  return list.slice().sort(function (a, b) { return a.pledge_heb_year - b.pledge_heb_year; });
+}
+
+// לפי הסדר שנגרר בהגדרות.
+function kSortLookups(list) {
+  return list.slice().sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+}
+
+// הנפוץ ראשון, ובשוויון — א״ב.
+function kSortDescriptions(list, counts) {
+  return list.slice().sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
 }
 
 // ── התקופה ──
@@ -295,7 +314,7 @@ function monthsWithData(withView) {
   // החודש שמוצג נכנס לשרשרת — אחרת חודש מחוץ לטווח נפתח באפסים גם כשלשנה שלו יש יעד.
   if (withView && view.monthKey) seen[view.monthKey] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
-  return out.sort();
+  return kSortMonthKeys(out);
 }
 
 // השרשרת רצה על כל חודש שבטווח — חודש ריק צורך את העודף שנשאר מקודמו.
@@ -362,9 +381,7 @@ function pledgeOfYear(y) {
 }
 
 function openingBalance() {
-  var l = kLive(MIRROR.k_pledges).slice().sort(function (a, b) {
-    return a.pledge_heb_year - b.pledge_heb_year;
-  });
+  var l = kSortPledges(kLive(MIRROR.k_pledges));
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
 }
 
@@ -623,13 +640,13 @@ function tabHeadHTML(lab) {
 }
 
 function lookupRows(kind) {
-  return kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
-    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+  return kSortLookups(kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; }));
 }
 
 export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
          detailRowHTML, footHTML, hwHorizonDate, iconFor, kKill, kLive,
-         kPendKey, kPendKeyOf, kQ, kRowTs, kSortEntries, kStripRows, kSyncNow, kSyncPull,
+         kPendKey, kPendKeyOf, kQ, kRowTs, kSortDescriptions, kSortEntries, kSortLookups,
+         kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
          ordersLive, pledgeOfYear, prevMonthOf, pushSoon, signed, soEnsureThroughNow,
