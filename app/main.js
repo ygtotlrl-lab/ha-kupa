@@ -1,10 +1,11 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
-         withTimeout } from '../core/util.js';
+         netTimeout } from '../core/util.js';
 import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, pushDirty, runSave, sbWatch } from '../core/sync.js';
 
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
-import { coreBoot, logAwait } from '../core/backup.js';
+import { logAwait } from '../core/backup.js';
+import { bootRun } from '../core/boot-run.js';
 import { actWire, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, openModal,
          shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
@@ -144,7 +145,7 @@ var PUSH_CFG = {
   key:    function (t, row) { return kPendKey(t, row); },
   send:   function (t, rows) {
     var m = kTableMeta(t);
-    return withTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
+    return netTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
   },
   run:    function () { kSyncNow(); },
 };
@@ -447,7 +448,7 @@ function kBoot() {
   shell.kRender = kRender;
   S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   // הליבה עולה לפני הציור הראשון — המסך עולה מהמראה, והסימונים הממתינים מוצגים מהשנייה הראשונה.
-  coreBoot();
+  bootRun();
   // הפתיחה בחודש של היום ולא בחודש האחרון שיש לו נתונים — חודש ריק נפתח ריק.
   view.monthKey = nowMonthKey() || null;
   kRender();

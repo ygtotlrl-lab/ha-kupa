@@ -1,5 +1,5 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { HE_COLLATOR, dayAdd, dayIso, dayNoon, dayToday, withTimeout } from '../core/util.js';
+import { dayAdd, dayIso, dayNoon, dayToday, netTimeout, sortCompare } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
@@ -102,7 +102,7 @@ function kStripRows(t, rows) { return rows; }
 // ── משיכה, מיזוג ודחיפה ──
 // כשל מחזיר «אין ראיה» — מיזוג מול מערך ריק מוחק את מה שלא הספיק לעלות.
 function pullTable(t) {
-  return withTimeout(S.sb.from(t).select('*')).then(function (r) {
+  return netTimeout(S.sb.from(t).select('*')).then(function (r) {
     if (!r || r.error || !Array.isArray(r.data)) return { ok: false, rows: [] };
     return { ok: true, rows: r.data };
   }, function () { return { ok: false, rows: [] }; });
@@ -171,7 +171,7 @@ function kSortEntries(list) {
     if (sa !== sb) return sa - sb;
     var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
     if (!sa && d !== 0) return d;
-    var n = HE_COLLATOR.compare(String(a.description || ''), String(b.description || ''));
+    var n = sortCompare(String(a.description || ''), String(b.description || ''));
     return n !== 0 ? n : String(a.client_id).localeCompare(String(b.client_id));
   });
 }
