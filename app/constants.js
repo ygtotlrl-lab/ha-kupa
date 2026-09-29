@@ -114,8 +114,6 @@ var TABLES = [
 // ── קבועים משותפים ──
 var K_CAT_SELF = 'אישי';
 
-var K_PUSHED_KEY = 'k_pushed_at';
-
 // חודש שטרם הגיע מציג פסים ריקים, ונקרא כחודש שלא עמדנו בו.
 // תשרי תשפ״ז הוא החודש שממנו האפליקציה מנהלת, ואין רשומות שקודמות לו.
 var ARCH_FIRST = '5787-01';
@@ -133,7 +131,7 @@ var TABS = [
   { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
 ];
 
-export { ARCH_FIRST, CAT_LIST, EPS, KV_TABLE, K_CAT_SELF, K_PUSHED_KEY, METHOD_DEFAULT,
+export { ARCH_FIRST, CAT_LIST, EPS, KV_TABLE, K_CAT_SELF, METHOD_DEFAULT,
          MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_ARCH_EMPTY, MSG_BACK, MSG_CLOSER,
          MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE, MSG_EDIT, MSG_EMPTY_PRE, MSG_LEFT_SUM,
          MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NEED_LABEL, MSG_NO_ORDERS,

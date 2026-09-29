@@ -2,13 +2,12 @@
 import { HE_COLLATOR, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
-import { lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
 import { bar } from '../core/chart.js';
 import { hebDate, hebMonthNames, hebYearLabelFull } from '../core/hebrew.js';
-import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, K_PUSHED_KEY, MSG_ADD_INCOME, MSG_CLOSER,
+import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER,
          MSG_LEFT_SUM, MSG_OPENER, MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS,
          MSG_SUM_SELF, PUSH_TABLES, TABLES } from './constants.js';
 import { S, shell, view } from './state.js';
@@ -99,15 +98,6 @@ function kPendKey(t, r) { return kPendKeyOf(t, r && r[kTableMeta(t).key]); }
 function kPendKeyOf(t, k) { return (t === KV_TABLE ? 'setting' : t) + ':' + k; }
 
 function kStripRows(t, rows) { return rows; }
-
-function _kLoadPushed() {
-  try { S._kPushedAt = JSON.parse(lsGet(K_PUSHED_KEY) || '{}') || {}; } catch (e) { S._kPushedAt = {}; }
-}
-
-function _kMarkPushed(t) {
-  S._kPushedAt[t] = Date.now();
-  lsSet(K_PUSHED_KEY, JSON.stringify(S._kPushedAt));
-}
 
 // ── משיכה, מיזוג ודחיפה ──
 // כשל מחזיר «אין ראיה» — מיזוג מול מערך ריק מוחק את מה שלא הספיק לעלות.
@@ -636,7 +626,7 @@ function lookupRows(kind) {
   return kSortLookups(kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; }));
 }
 
-export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
+export { assetIcon, brandHTML, chainOf, compCardHTML, compPct,
          detailRowHTML, footHTML, iconFor, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kRowTs, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,

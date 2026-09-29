@@ -1,9 +1,8 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
          withTimeout } from '../core/util.js';
-import { ctxEpoch, ctxStale, eraKeys, eraKick, idEq, newClientId, pendAlertDismiss,
-         pendBoot, pendCount, plBoot, pushDirty, rtyBoot, runSave, sbWatch,
-         tombBoot } from '../core/sync.js';
+import { eraKeys, eraKick, idEq, newClientId, pendAlertDismiss, pendBoot, pendCount, plBoot,
+         pushDirty, rtyBoot, runSave, sbWatch, tombBoot } from '../core/sync.js';
 import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
 import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { bkBoot, logAwait } from '../core/backup.js';
@@ -11,13 +10,13 @@ import { actRun, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, e
          modalBackdrop, modalEsc, openModal, shellBare, swApply, swHideUpdate, toast,
          uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
-import { CAT_LIST, EPS, KV_TABLE, K_PUSHED_KEY, METHOD_DEFAULT, MSG_ADD_INCOME,
+import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
          MSG_ORDER_NEW, MSG_PLEDGE_EDIT, MSG_WAY_DUP, MSG_WAY_NEW, PUSH_TABLES,
          SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
-import { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, iconFor,
+import { assetIcon, brandHTML, iconFor,
          kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
@@ -67,7 +66,7 @@ var LS_CFG = {
   // מפתח שאינו במרשם נמחק בעלייה.
   keys: function () {
     return [LS_CFG.logKey, LS_CFG.dismissKey, DEV_CFG.key, PEND_CFG.key,
-            BK_CFG.flagKey, BK_CFG.logQueueKey, K_PUSHED_KEY]
+            BK_CFG.flagKey, BK_CFG.logQueueKey]
       .concat(eraKeys(), mirrorTables().map(mirrorKey));
   },
 
@@ -89,7 +88,7 @@ var LS_CFG = {
     { t: 'k_standing_orders', why: 'הוראות קבע — שורה להוראה, ⛔ והמופעים שלהן בטבלה משלהם' },
     { t: 'k_lookups',         why: 'אופני הכנסה וצדקה — פריטים שנערכים בהגדרות' },
     { t: KV_TABLE,            why: 'הגדרות — שורה למפתח, ⛔ והמפתחות קבועים' }
-  ],
+  ]
 };
 
 var DEV_CFG = { key: 'k_device_id' };
@@ -143,13 +142,12 @@ var PUSH_CFG = {
   tables: PUSH_TABLES,
   chunk:  500,
   delay:  400,
-  rows:   function (t) { S._kPushEp = ctxEpoch(); return MIRROR[t] || []; },
+  rows:   function (t) { return MIRROR[t] || []; },
   key:    function (t, row) { return kPendKey(t, row); },
   send:   function (t, rows) {
     var m = kTableMeta(t);
     return withTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
   },
-  mark:   function (t) { if (!ctxStale(S._kPushEp)) _kMarkPushed(t); },
   run:    function () { kSyncNow(); },
 };
 
@@ -471,7 +469,6 @@ function kBoot() {
   shell.kRender = kRender;
   S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   lsBoot();
-  _kLoadPushed();
   mirrorBoot();
   // הפתיחה בחודש של היום ולא בחודש האחרון שיש לו נתונים — חודש ריק נפתח ריק.
   view.monthKey = nowMonthKey() || null;
