@@ -129,7 +129,7 @@ var RTY_CFG = {
 
 var PL_CFG = {
   every:  3000,
-  // אין כניסה — הפולינג פעיל כל עוד הלשונית גלויה, ותנאי של משתמש מחובר לא היה מתקיים כאן לעולם.
+  // אין כניסה — הבדיקה המחזורית פעילה כל עוד הלשונית גלויה, ותנאי של משתמש מחובר לא היה מתקיים כאן לעולם.
   active: function () { return document.visibilityState !== 'hidden'; },
   seen:   function () { return S._kSeenTs; },
   note:   function (ts) { S._kSeenTs = ts; },

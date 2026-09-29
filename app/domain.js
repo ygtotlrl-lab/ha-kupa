@@ -161,7 +161,7 @@ function kSyncPull() {
   });
 }
 
-// אין לרשום כל מחזור סנכרון — הפולינג רץ כל שלוש שניות, ו-sh_sync_log היא insert בלבד ואי-אפשר לדלל אותה.
+// אין לרשום כל מחזור סנכרון — הבדיקה המחזורית רצה כל שלוש שניות, ו-sh_sync_log היא insert בלבד ואי-אפשר לדלל אותה.
 // אין כניסה — user_name נרשם null, והמכשיר הוא שמזהה את הרישום.
 function kSyncLog(action, key, recordCount, details) {
   try { logAction(action, key, recordCount, details); } catch (e) { }
