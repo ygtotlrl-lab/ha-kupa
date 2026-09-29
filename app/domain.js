@@ -1,12 +1,12 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { HE_COLLATOR, dayAdd, dayDiff, dayNoon, dayToday, withTimeout } from '../core/util.js';
+import { HE_COLLATOR, dayAdd, dayIso, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
 import { bar } from '../core/chart.js';
-import { hebDate, hebMonthNames, hebYearLabelFull } from '../core/hebrew.js';
+import { hebDate, hebMonthNames, hebToGreg, hebYearLabelFull } from '../core/hebrew.js';
 import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER,
          MSG_LEFT_SUM, MSG_OPENER, MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS,
          MSG_SUM_SELF, PUSH_TABLES, TABLES } from './constants.js';
@@ -228,30 +228,10 @@ function monthLabel(k) {
   return names[i] || '';
 }
 
-function kScale(iso) { var h = kHeb(iso); return h ? h.year * 100 + h.monthIndex + 1 : 0; }
-
-// המנוע ממפה לועזי לעברי בכיוון אחד, והסולם «שנה×100 + חודש» מונוטוני — ולכן ראש החודש נמצא בחיפוש בינארי.
-// התוצאה במטמון — כל חישוב הוא כתריסר גזירות.
-var _kMonthStart = {};
-
+// ראש החודש — מהמנוע שבליבה, שממפה עברי ללועזי; המפתח נושא את מספר החודש מתשרי, ומנוע בלי ראיה על השנה מחזיר ריק.
 function monthStart(k) {
-  var y = +keyYear(k), ord = keyOrdinal(k), want, lo, hi, mid, out = '';
-  if (_kMonthStart[k] !== undefined) return _kMonthStart[k];
-  if (y && ord) {
-    want = y * 100 + ord;
-    var base = (y - 3762) + '-01-01';
-    lo = 0;
-    hi = dayDiff(base, (y - 3760) + '-12-31');
-    if (kScale(dayAdd(base, lo)) < want && kScale(dayAdd(base, hi)) >= want) {
-      while (hi - lo > 1) {
-        mid = Math.floor((lo + hi) / 2);
-        if (kScale(dayAdd(base, mid)) >= want) hi = mid; else lo = mid;
-      }
-      if (kScale(dayAdd(base, hi)) === want) out = dayAdd(base, hi);
-    }
-  }
-  _kMonthStart[k] = out;
-  return out;
+  var g = hebToGreg(+keyYear(k), keyOrdinal(k) - 1, 1);
+  return g ? dayIso(g) : '';
 }
 
 // חודש ריק הוא חודש — דילוג עליו מסתיר מהמשתמש לאן הגיע.
