@@ -1,5 +1,5 @@
 // app/domain.js — החישוב, התקופה, הוראות הקבע והסנכרון
-import { dayNoon, dayToday, withTimeout } from '../core/util.js';
+import { HE_COLLATOR, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
@@ -182,15 +182,13 @@ var NUM_FMT = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 });
 function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
 
 // הוראות הקבע בתחתית, ומעליהן התאריכים מהחדש לישן ובתוך תאריך סדר הא״ב — ואין קיבוץ לפי סוג.
-var HE_COLL = new Intl.Collator('he');
-
 function kSortEntries(list) {
   return list.slice().sort(function (a, b) {
     var sa = a.source === 'standing' ? 1 : 0, sb = b.source === 'standing' ? 1 : 0;
     if (sa !== sb) return sa - sb;
     var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
     if (!sa && d !== 0) return d;
-    var n = HE_COLL.compare(String(a.description || ''), String(b.description || ''));
+    var n = HE_COLLATOR.compare(String(a.description || ''), String(b.description || ''));
     return n !== 0 ? n : String(a.client_id).localeCompare(String(b.client_id));
   });
 }
