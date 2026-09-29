@@ -2,7 +2,7 @@
 import { HE_COLLATOR, dayNoon, dayToday, withTimeout } from '../core/util.js';
 import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
-import { hwNoteCloud, lsGet, lsSet } from '../core/storage.js';
+import { lsGet, lsSet } from '../core/storage.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
 import { esc } from '../core/ui.js';
@@ -109,12 +109,6 @@ function _kMarkPushed(t) {
   lsSet(K_PUSHED_KEY, JSON.stringify(S._kPushedAt));
 }
 
-// האופק אינו ראיה עננית — הפינוי נעשה מול העד, והחלון אומר רק מה מוצג.
-function hwHorizonDate() {
-  var t = dayToday();
-  return (+t.slice(0, 4) - 1) + t.slice(4);
-}
-
 // ── משיכה, מיזוג ודחיפה ──
 // כשל מחזיר «אין ראיה» — מיזוג מול מערך ריק מוחק את מה שלא הספיק לעלות.
 function pullTable(t) {
@@ -147,7 +141,6 @@ function kSyncPull() {
       any = true;
       mergeTable(PUSH_TABLES[i], res[i].rows);
     }
-    if (any) hwNoteCloud();
     if (any && !S._kPullLogged) { S._kPullLogged = true; kSyncLog('pull', null, null); }
     return any;
   }).then(function (any) {
@@ -644,7 +637,7 @@ function lookupRows(kind) {
 }
 
 export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, hwHorizonDate, iconFor, kKill, kLive,
+         detailRowHTML, footHTML, iconFor, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kRowTs, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
