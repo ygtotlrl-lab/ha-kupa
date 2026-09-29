@@ -1,6 +1,6 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
-         withTimeout } from '../core/util.js';
+         netTimeout } from '../core/util.js';
 import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, pushDirty, runSave, sbWatch } from '../core/sync.js';
 
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
@@ -145,7 +145,7 @@ var PUSH_CFG = {
   key:    function (t, row) { return kPendKey(t, row); },
   send:   function (t, rows) {
     var m = kTableMeta(t);
-    return withTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
+    return netTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
   },
   run:    function () { kSyncNow(); },
 };
