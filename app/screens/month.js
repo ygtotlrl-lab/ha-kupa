@@ -9,8 +9,8 @@ import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG
          MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill, kLive, kQ,
-         kSortEntries, localPut, lookupRows, money, monthByKey, monthGreg, monthRows,
-         pushSoon, splitHTML } from '../domain.js';
+         kSortDescriptions, kSortEntries, localPut, lookupRows, money, monthByKey, monthGreg,
+         monthRows, pushSoon, splitHTML } from '../domain.js';
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
@@ -110,9 +110,8 @@ function descSuggest(q, type) {
     if (!d) continue;
     seen[d] = (seen[d] || 0) + 1;
   }
-  return Object.keys(seen)
-    .filter(function (d) { return !q || d.indexOf(q) === 0; })
-    .sort(function (a, b) { return seen[b] - seen[a] || a.localeCompare(b); })
+  return kSortDescriptions(Object.keys(seen)
+    .filter(function (d) { return !q || d.indexOf(q) === 0; }), seen)
     .slice(0, 5);
 }
 

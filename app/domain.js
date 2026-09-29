@@ -193,6 +193,27 @@ function kSortEntries(list) {
   });
 }
 
+// מפתח החודש «YYYY-MM» — הסדר הלקסיקוגרפי הוא סדר הזמן.
+function kSortMonthKeys(list) { return list.slice().sort(); }
+
+// השנה הקרובה ראשונה.
+function kSortYears(list) { return list.slice().sort(function (a, b) { return b - a; }); }
+
+// השנה הראשונה ראשונה — ממנה נקראת יתרת הפתיחה.
+function kSortPledges(list) {
+  return list.slice().sort(function (a, b) { return a.pledge_heb_year - b.pledge_heb_year; });
+}
+
+// לפי הסדר שנגרר בהגדרות.
+function kSortLookups(list) {
+  return list.slice().sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+}
+
+// הנפוץ ראשון, ובשוויון — א״ב.
+function kSortDescriptions(list, counts) {
+  return list.slice().sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
+}
+
 // ── התקופה ──
 // המפתח YYYY-NN מרופד לשתי ספרות — בלי הריפוד ההשוואה הלקסיקוגרפית מסדרת את החודש העשירי לפני השני.
 function kPad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -293,7 +314,7 @@ function monthsWithData(withView) {
   // החודש שמוצג נכנס לשרשרת — אחרת חודש מחוץ לטווח נפתח באפסים גם כשלשנה שלו יש יעד.
   if (withView && view.monthKey) seen[view.monthKey] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
-  return out.sort();
+  return kSortMonthKeys(out);
 }
 
 // השרשרת רצה על כל חודש שבטווח — חודש ריק צורך את העודף שנשאר מקודמו.
@@ -360,9 +381,7 @@ function pledgeOfYear(y) {
 }
 
 function openingBalance() {
-  var l = kLive(MIRROR.k_pledges).slice().sort(function (a, b) {
-    return a.pledge_heb_year - b.pledge_heb_year;
-  });
+  var l = kSortPledges(kLive(MIRROR.k_pledges));
   return l.length ? (+l[0].chumash_opening_balance || 0) : 0;
 }
 
@@ -621,13 +640,13 @@ function tabHeadHTML(lab) {
 }
 
 function lookupRows(kind) {
-  return kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; })
-    .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); });
+  return kSortLookups(kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; }));
 }
 
 export { _kLoadPushed, _kMarkPushed, assetIcon, brandHTML, chainOf, compCardHTML, compPct,
          detailRowHTML, footHTML, hwHorizonDate, iconFor, kKill, kLive,
-         kPendKey, kPendKeyOf, kQ, kRowTs, kSortEntries, kStripRows, kSyncNow, kSyncPull,
+         kPendKey, kPendKeyOf, kQ, kRowTs, kSortDescriptions, kSortEntries, kSortLookups,
+         kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
          ordersLive, pledgeOfYear, prevMonthOf, pushSoon, signed, soEnsureThroughNow,

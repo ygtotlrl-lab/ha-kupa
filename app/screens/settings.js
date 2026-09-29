@@ -9,8 +9,8 @@ import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_
          MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH,
          SRC_DEFAULT } from '../constants.js';
 import { view } from '../state.js';
-import { footHTML, iconFor, kLive, kQ, localPut, lookupRows, money, monthByKey,
-         monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
+import { footHTML, iconFor, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
+         monthByKey, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
          prevMonthOf, tabHeadHTML } from '../domain.js';
 
 // הוראת קבע מחויבת באשראי או בהעברה בלבד — רשימת המקורות שבהגדרות היא של התנועות ולא של ההוראות.
@@ -93,7 +93,7 @@ function monthOptions(extra) {
   for (i = 0; i < ORDER_AHEAD && k; i++) { seen[k] = true; var n = nextMonthOf(k); k = n ? n.key : ''; }
   if (extra) seen[extra] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(i);
-  return out.sort();
+  return kSortMonthKeys(out);
 }
 
 function orderFormHTML(o) {
@@ -167,7 +167,7 @@ function pledgeYears() {
   for (i = 0; i < ms.length; i++) seen[ms[i].year] = true;
   for (i = 0; i < l.length; i++) seen[l[i].pledge_heb_year] = true;
   for (i in seen) if (Object.prototype.hasOwnProperty.call(seen, i)) out.push(Number(i));
-  return out.sort(function (a, b) { return b - a; });
+  return kSortYears(out);
 }
 
 // שנה שאין לה שורה היא אפס, ולא כשל.
