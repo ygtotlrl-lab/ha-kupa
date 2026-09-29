@@ -109,7 +109,7 @@ var BK_CFG = {
       { name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
       { name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
       { name: 'k_lookups',         order: 'client_id', ts: 'updated_at' },
-      { name: KV_TABLE,             order: 'key' }
+      { name: KV_TABLE,            order: 'key',       ts: 'updated_at' }
     ];
   }
 };
