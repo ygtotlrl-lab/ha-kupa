@@ -1,14 +1,12 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
          withTimeout } from '../core/util.js';
-import { eraKeys, eraKick, idEq, newClientId, pendAlertDismiss, pendBoot, pendCount, plBoot,
-         pushDirty, rtyBoot, runSave, sbWatch, tombBoot } from '../core/sync.js';
-import { hwBoot, lsBoot, lsClearHorizons, lsRemove } from '../core/storage.js';
-import { MIRROR, mirrorBoot, mirrorKey, mirrorTables } from '../core/mirror.js';
-import { bkBoot, logAwait } from '../core/backup.js';
-import { actRun, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, ksKey,
-         modalBackdrop, modalEsc, openModal, shellBare, swApply, swHideUpdate, toast,
-         uiNoDialog } from '../core/ui.js';
+import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, pushDirty, runSave, sbWatch } from '../core/sync.js';
+
+import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
+import { coreBoot, logAwait } from '../core/backup.js';
+import { actWire, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, openModal,
+         shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
@@ -161,11 +159,6 @@ var ERA_CFG = {
   prefix: self.APP.prefix,
   client: function () { return S.sb; },
   table:  function () { return KV_TABLE; },
-  // גם אופק הפינוי נמחק — אופק ששרד מסנן את מה שהמשיכה מחזירה, והמכשיר היה נשאר ריק.
-  wipe:   function () {
-    mirrorTables().forEach(function (t) { MIRROR[t] = MIRROR_CFG.empty(); lsRemove(mirrorKey(t)); });
-    lsClearHorizons();
-  },
   // הדחיפה היא ראיה טרייה ולא זיכרון — מכשיר נקי מקבל ok עם still ריק.
   push:   function () { return pushDirty(null); },
   refresh: function () { return kSyncNow(); },
@@ -439,23 +432,8 @@ var DOM_ACTIONS = {
 
 // ── המאזינים הגלובליים ──
 // מאזין אחד לכל אירוע, בהאצלה מ-document — המסכים נבנים מחדש בכל רינדור, ומאזין שנקשר לאלמנט מת איתו.
-document.addEventListener('click', function (e) {
-  if (modalBackdrop(e)) return;
-  // לחיצה על ידית הגרירה היא סופה של גרירה, ולא בחירה בשורה — אינה פותחת את העורך.
-  if (e.target.closest('[data-grip]')) return;
-  var el = e.target.closest('[data-act]');
-  if (!el) return;
-  var fn = DOM_ACTIONS[el.dataset.act];
-  if (!fn) return;
-  if (el.tagName === 'A') return;
-  e.preventDefault();
-  actRun(el, fn);
-});
+actWire(DOM_ACTIONS);
 
-document.addEventListener('keydown', function (e) {
-  if (ksKey(e)) return;
-  modalEsc(e);
-});
 
 // גרירת המטבע קודמת לגרירה לסידור — שתיהן על אירועי מצביע, והמטבע נתפס רק במסך האישור.
 // הגרירה לסידור במנגנון שבליבה; המחיל לכל סוג — ליד lookupReorder.
@@ -468,18 +446,11 @@ document.addEventListener('pointercancel', function (e) { if (!coinUp(e)) dragCa
 function kBoot() {
   shell.kRender = kRender;
   S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
-  lsBoot();
-  mirrorBoot();
+  // הליבה עולה לפני הציור הראשון — המסך עולה מהמראה, והסימונים הממתינים מוצגים מהשנייה הראשונה.
+  coreBoot();
   // הפתיחה בחודש של היום ולא בחודש האחרון שיש לו נתונים — חודש ריק נפתח ריק.
   view.monthKey = nowMonthKey() || null;
   kRender();
-  pendBoot();
-  tombBoot();
-  try { eraKick(); } catch (e) { console.warn('[era] eraKick', e); }
-  bkBoot();
-  hwBoot();
-  rtyBoot();
-  plBoot();
   kSyncPull().then(function () {
     var made = soEnsureThroughNow(), i;
     for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
