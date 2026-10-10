@@ -23,7 +23,7 @@ import { assetIcon, brandHTML, iconFor,
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
 import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupSeed, monthScreenHTML } from './screens/month.js';
+         flowValid, lookupList, lookupSeed, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
 import { coinDown, coinMove, coinUp, coinWire, slideScreenHTML } from './screens/slide.js';
@@ -205,6 +205,17 @@ function kRender() {
   shellBare(false);
 }
 
+// ערך שירד מהרשימה בהגדרות נשאר אפשרות בעורך, ותנועה בלי ערך מקבלת אפשרות ריקה —
+// בלעדיהם הבחירה הראשונה הייתה נבחרת, והשמירה דורסת את הקיים בשקט.
+function entrySelectHTML(id, label, list, cur) {
+  var opts = list.indexOf(cur || '') < 0 ? [cur || ''].concat(list) : list;
+  return '<div class="fld"><label for="' + id + '">' + esc(label) + '</label><select id="' + id + '">' +
+    opts.map(function (x) {
+      return '<option value="' + esc(x) + '"' + (x === cur ? ' selected' : '') + '>' +
+             esc(x) + '</option>';
+    }).join('') + '</select></div>';
+}
+
 // ── מפת הפעולות ──
 // מטפל שממתין לכתיבה מחזיר את ההבטחה — הניתוב מנטרל את הכפתור עד שהסתיימה.
 var DOM_ACTIONS = {
@@ -272,6 +283,7 @@ var DOM_ACTIONS = {
   'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.remove(); },
   'pend-alert-ok':       function () { pendAlertDismiss(); },
   // לחיצה על תנועה פותחת עורך ולא מוחקת — מסלול שמחיקתו היא הלחיצה היחידה מוחק על טעות.
+  // העורך מציג כל שדה שהרישום קובע — שדה שאינו בעורך אינו נראה בשום מקום, ותיקונו היה מחיקה ורישום מחדש.
   'entry-menu': function (el) {
     var r = entryById(el.dataset.id);
     if (!r) { uiNoDialog('entry-menu', el.dataset.id); return; }
@@ -284,7 +296,11 @@ var DOM_ACTIONS = {
       '<input id="e-desc" type="text" autocomplete="off" value="' +
       esc(r.description || '') + '"></div>' +
       '<div class="fld"><label for="e-date">תאריך</label>' +
-      '<input id="e-date" type="date" value="' + esc(r.entry_date || '') + '"></div></div>',
+      '<input id="e-date" type="date" value="' + esc(r.entry_date || '') + '"></div>' +
+      entrySelectHTML('e-method', 'אופן', r.type === 'income'
+        ? lookupList('method', METHOD_DEFAULT) : lookupList('source', SRC_DEFAULT), r.method) +
+      (r.type === 'income' ? '' : entrySelectHTML('e-cat', 'קטגוריה', CAT_LIST, r.category)) +
+      '</div>',
       '<button class="btn ghost" data-act="entry-del" data-id="' + esc(r.client_id) +
       '">' + esc(MSG_DELETE) + '</button>' +
       '<button class="btn" data-act="entry-save" data-id="' + esc(r.client_id) +
@@ -300,9 +316,12 @@ var DOM_ACTIONS = {
       toast(MSG_NEED_AMOUNT, 4000, 'bad'); return;
     }
     if (!txt) { toast(MSG_NEED_DESC, 4000, 'bad'); return; }
+    var me = kQ('#e-method'), ca = kQ('#e-cat');
     return runSave(function () {
       r.amount = v; r.description = txt;
       if (day) r.entry_date = day;
+      if (me) r.method = me.value;
+      if (ca) r.category = ca.value;
       r.updated_at = Date.now();
       localPut('k_entries', r);
       pushSoon();

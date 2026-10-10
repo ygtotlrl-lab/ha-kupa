@@ -259,4 +259,4 @@ function entryUndo() {
 }
 
 export { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupSeed, monthScreenHTML };
+         flowValid, lookupList, lookupSeed, monthScreenHTML };
