@@ -3,6 +3,7 @@ import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHa
          netTimeout } from '../core/util.js';
 import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, pushDirty, runSave, sbWatch } from '../core/sync.js';
 
+import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
@@ -16,7 +17,7 @@ import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
 import { assetIcon, brandHTML, iconFor,
-         kLive, kPendKey, kPendKeyOf, kQ, kRowTs, kStripRows, kSyncNow,
+         kLive, kPendKey, kPendKeyOf, kQ, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
          soEnsureThroughNow } from './domain.js';
@@ -35,7 +36,6 @@ appConfigure({
   get DEV_CFG() { return DEV_CFG; },
   get DOM_ACTIONS() { return DOM_ACTIONS; },
   get ERA_CFG() { return ERA_CFG; },
-  get HW_CFG() { return HW_CFG; },
   get LS_CFG() { return LS_CFG; },
   get MIRROR_CFG() { return MIRROR_CFG; },
   get PEND_CFG() { return PEND_CFG; },
@@ -51,43 +51,20 @@ var MIRROR_CFG = {
   // ריק ומוצהר — שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
   noPush: [],
   empty:  function () { return []; },
-  ts:     function (r) { return kRowTs(r); },
   clean:  function (t, rows) { return kStripRows(t, rows); },
   fail:   function (where, e) { console.error('[mirror] ' + where, e); },
 };
 
-// פריט בלי ts זורק בפינוי.
 var LS_CFG = {
   cachePrefix: self.APP.id + '-',
   logKey: 'k_ls_log',
-  hzPrefix: 'k_ls_hz_',
   dismissKey: 'k_sw_dismissed',
   // מפתח שאינו במרשם נמחק בעלייה.
   keys: function () {
     return [LS_CFG.logKey, LS_CFG.dismissKey, DEV_CFG.key, PEND_CFG.key,
             BK_CFG.flagKey, BK_CFG.logQueueKey]
       .concat(eraKeys(), mirrorTables().map(mirrorKey));
-  },
-
-  // חלון הפינוי נגזר מסוג האפליקציה — אין מספר ימים באף רשומה.
-  appType: { type: 'annual', why: 'החישוב שלה נפרש על שנה — ⚠️ הפלעדזש הוא החלטה לשנה עברית, ⛔ וכל חודש בה נושא אותו' },
-  // ריק ומוצהר — כל מראה כאן היא הנתון עצמו ולא מטמון מהירות.
-  wholeKeys: [],
-  // oldRecords ריק ומוצהר — כל טבלה שגדלה כאן נדרשת במלואה.
-  // שדה חסר נקרא «לא נשאל», וריק נקרא «נמדד ואין».
-  oldRecords: [],
-  // יתרת החומש עוברת מחודש לחודש מהחודש הראשון — רשומה שפונתה היא יתרה שגויה, בכל אורך חלון.
-  fullHistory: [
-    { t: 'k_entries',      calc: 'chainAll' },
-    { t: 'k_so_instances', calc: 'chainAll' }
-  ],
-  // טבלה שגדלה ואינה בפינוי ממלאת אחסון של origin משותף — לכן כאן רק טבלה קבועה בגודלה, עם נימוקה.
-  fixedSize: [
-    { t: 'k_pledges',         why: 'פלעדזש — שורה לשנה עברית, ⛔ ואינה גדלה בתוך השנה' },
-    { t: 'k_standing_orders', why: 'הוראות קבע — שורה להוראה, ⛔ והמופעים שלהן בטבלה משלהם' },
-    { t: 'k_lookups',         why: 'אופני הכנסה וצדקה — פריטים שנערכים בהגדרות' },
-    { t: KV_TABLE,            why: 'הגדרות — שורה למפתח, ⛔ והמפתחות קבועים' }
-  ]
+  }
 };
 
 var DEV_CFG = { key: 'k_device_id' };
@@ -148,12 +125,6 @@ var PUSH_CFG = {
     return netTimeout(S.sb.from(t).upsert(rows, { onConflict: m.key }));
   },
   run:    function () { kSyncNow(); },
-};
-
-// רשימה ריקה — כל טבלה שגדלה כאן נדרשת במלואה (LS_CFG.fullHistory): יתרת החומש עוברת מהחודש הראשון,
-// וחודש שפונה מהדיסק הוא יתרה שגויה אופליין.
-var HW_CFG = {
-  specs: []
 };
 
 var ERA_CFG = {
@@ -479,6 +450,8 @@ function kBoot() {
   });
 }
 
+// האחסון נפתח לפני כל קריאה ממנו — אחרי שה-CFG הוגדרו, כי המרשם והייבוא קוראים אותם.
+await lsOpen();
 kBoot();
 
 window.bootOk();
