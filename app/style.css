@@ -3,7 +3,7 @@
 /* ── אסימוני העיצוב ── */
 :root{
   /* נגזר מגובה סרגל הלשוניות ומהכפתור הצף שמעליו — טוסט נמוך מהם מוסתר מאחוריהם. */
-  --toast-bottom:150px;
+  --toast-bottom:calc(var(--tabbar-h) + 86px);
   /* המסך, סרגל הלשוניות ומסילת הכפתור הצף קוראים אותו, והוא מתרחב בכל נקודת שבירה. */
   --col:390px;
   /* רכיב שמייצג את האפליקציה נגזר מ---brand ולא מדיו הטקסט; הדיו שעליו צמד הפוך ומתחלף איתו. */
@@ -85,7 +85,8 @@ input,select,textarea{font:inherit; color:inherit}
 /* העמודה אינה נמרחת עד לקצה אך מתרחבת בכל נקודת שבירה — הרוחב נקרא מ---col.
    min-height של מלוא החלון דוחף את התחתית לתחתית המסך — מסך קצר היה משאיר אותה באמצע. */
 body{display:flex;flex-direction:column;min-height:100vh}
-main{padding:0 var(--sp-6); padding-bottom:calc(150px + env(safe-area-inset-bottom));
+/* סוף התוכן מרוחק מסרגל הלשוניות כראשו מהכותרת. */
+main{padding:0 var(--sp-6); padding-bottom:calc(var(--tabbar-h) + var(--sp-6) + env(safe-area-inset-bottom));
   width:100%;max-width:var(--col);margin:0 auto;
   flex:1 0 auto;display:flex;flex-direction:column}
 main > .foot{margin-top:auto}
@@ -97,7 +98,7 @@ main > .foot{margin-top:auto}
 
 /* הפלוס הוא ציור ולא תו — מרכזו האופטי של תו זז בין מנועים.
    המסילה ולא הכפתור קבועה למסך, בדיוק ברוחב העמודה — חישוב מ-50% מקבע רוחב אחד; והיא שקופה ללחיצה. */
-.fabrail{position:fixed;inset-block-end:calc(74px + env(safe-area-inset-bottom));
+.fabrail{position:fixed;inset-block-end:calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom));
   inset-inline:0;z-index:var(--z-2);display:flex;justify-content:center;
   pointer-events:none}
 .fabrail .in{width:100%;max-width:var(--col);display:flex;justify-content:flex-end;
@@ -112,11 +113,11 @@ main > .foot{margin-top:auto}
 /* הסרגל בתוך העמודה — סרגל על כל החלון מנתק את הניווט מהתוכן. */
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
-  padding-bottom:env(safe-area-inset-bottom);
+  height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
   background:var(--card);border-top:1px solid var(--border)}
 .tabbar .in{display:flex;width:100%;max-width:var(--col)}
 .tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
-  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
   padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
   transition:color var(--dur-3)}
 .tab-btn .ti{display:flex;align-items:center;justify-content:center}

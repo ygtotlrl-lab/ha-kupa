@@ -2,14 +2,15 @@
 import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
 import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
-import { ask, closeModal, dragDef, dragOrder, esc, openModal, toast, uiNoDialog } from '../../core/ui.js';
+import { ask, closeModal, dragDef, esc, lookupDragApply, lookupList, openModal, toast,
+         uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill, kLive, kQ,
-         kSortDescriptions, kSortEntries, localPut, lookupRows, money, monthByKey, monthGreg,
+         kSortDescriptions, kSortEntries, localPut, money, monthByKey, monthGreg,
          monthRows, pushSoon, splitHTML } from '../domain.js';
 
 function monthScreenHTML() {
@@ -62,42 +63,6 @@ var FLOW_TZ = ['amount', 'desc', 'source', 'category', 'date'];
 
 var FLOW_INC = ['amount', 'desc', 'method', 'date'];
 
-function lookupList(kind, dflt) {
-  var l = lookupRows(kind).map(function (r) { return r.label; });
-  return l.length ? l : dflt;
-}
-
-// ברירות המחדל מתממשות לשורות בפעולת המשתמש הראשונה ולא ברינדור — עריכה וגרירה דורשות מזהה, וכתיבה ברינדור הייתה כותבת במכשיר שרק קורא.
-// המזהה נגזר ממקום הפריט בזריעה — <kind>:<תווית ברירת המחדל> — ושני מכשירים ריקים שזורעים מגיעים לאותה שורה; התווית עצמה ניתנת לעריכה.
-function lookupSeed(kind, dflt) {
-  if (lookupRows(kind).length) return;
-  for (var i = 0; i < dflt.length; i++)
-    localPut('k_lookups', { client_id: kind + ':' + dflt[i], kind: kind, label: dflt[i],
-                            sort: i + 1, updated_at: Date.now(), deleted: false });
-  pushSoon();
-}
-
-// הסדר נכתב מחדש לכל השורות — שתי שורות באותו sort הן סדר שאיש לא הכריע, והמיזוג מקבע אותו.
-// הקלט הוא הסדר הסופי שב-DOM ולא צמד «מאיפה לאן», וסדר שאינו מכיל בדיוק את כל השורות נדחה.
-function lookupReorder(kind, ids) {
-  var rows = lookupRows(kind), by = {}, out = [], i, changed = false;
-  for (i = 0; i < rows.length; i++) by[String(rows[i].client_id)] = rows[i];
-  for (i = 0; i < ids.length; i++) if (by[String(ids[i])]) out.push(by[String(ids[i])]);
-  if (out.length !== rows.length) return false;
-  for (i = 0; i < out.length; i++) if (+out[i].sort !== i + 1) changed = true;
-  if (!changed) return false;
-  for (i = 0; i < out.length; i++) {
-    out[i].sort = i + 1;
-    out[i].updated_at = Date.now();
-    localPut('k_lookups', out[i]);
-  }
-  pushSoon();
-  return true;
-}
-
-function lookupDragApply(list, kind) {
-  if (lookupReorder(kind, dragOrder(list, kind, 'data-id'))) shell.kRender();
-}
 dragDef('method', lookupDragApply);
 dragDef('source', lookupDragApply);
 
@@ -259,4 +224,4 @@ function entryUndo() {
 }
 
 export { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupList, lookupSeed, monthScreenHTML };
+         flowValid, monthScreenHTML };
