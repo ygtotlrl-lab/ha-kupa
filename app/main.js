@@ -7,8 +7,8 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
-import { actWire, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, openModal,
-         shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
+import { actWire, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
+         lookupSeed, openModal, shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
@@ -24,7 +24,7 @@ import { assetIcon, brandHTML, iconFor,
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
 import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
-         flowValid, lookupList, lookupSeed, monthScreenHTML } from './screens/month.js';
+         flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
 import { coinDown, coinMove, coinUp, coinWire, slideScreenHTML } from './screens/slide.js';
@@ -36,6 +36,7 @@ appConfigure({
   get DEV_CFG() { return DEV_CFG; },
   get DOM_ACTIONS() { return DOM_ACTIONS; },
   get ERA_CFG() { return ERA_CFG; },
+  get LOOKUP_CFG() { return LOOKUP_CFG; },
   get LS_CFG() { return LS_CFG; },
   get MIRROR_CFG() { return MIRROR_CFG; },
   get PEND_CFG() { return PEND_CFG; },
@@ -44,6 +45,14 @@ appConfigure({
   get RTY_CFG() { return RTY_CFG; },
   get saveRefresh() { return saveRefresh; }
 });
+
+// הרשימות לסידור — השורות והכתיבה של הקופה, והזריעה והסידור בליבה.
+var LOOKUP_CFG = {
+  rows:   function (kind) { return lookupRows(kind); },
+  put:    function (row) { localPut('k_lookups', row); },
+  after:  function () { pushSoon(); },
+  render: function () { shell.kRender(); }
+};
 
 var MIRROR_CFG = {
   prefix: self.APP.prefix + 'mirror_',
@@ -425,7 +434,7 @@ actWire(DOM_ACTIONS);
 
 
 // גרירת המטבע קודמת לגרירה לסידור — שתיהן על אירועי מצביע, והמטבע נתפס רק במסך האישור.
-// הגרירה לסידור במנגנון שבליבה; המחיל לכל סוג — ליד lookupReorder.
+// הגרירה לסידור במנגנון שבליבה.
 document.addEventListener('pointerdown', function (e) { if (!coinDown(e)) dragDown(e); });
 document.addEventListener('pointermove', function (e) { if (!coinMove(e)) dragMove(e); });
 document.addEventListener('pointerup', function (e) { if (!coinUp(e)) dragUp(e); });
