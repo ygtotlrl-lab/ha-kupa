@@ -1,7 +1,7 @@
 // app/main.js — העלייה, מפת הפעולות והניווט
 import { MSG_DELETE, MSG_SAVED_LOCAL, appConfigure, getDeviceId, readNum, uniqHas,
          netTimeout } from '../core/util.js';
-import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, pushDirty, runSave, sbWatch } from '../core/sync.js';
+import { eraKeys, idEq, newClientId, pendAlertDismiss, pendCount, runSave, sbWatch } from '../core/sync.js';
 
 import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
@@ -131,8 +131,6 @@ var ERA_CFG = {
   prefix: self.APP.prefix,
   client: function () { return S.sb; },
   table:  function () { return KV_TABLE; },
-  // הדחיפה היא ראיה טרייה ולא זיכרון — מכשיר נקי מקבל ok עם still ריק.
-  push:   function () { return pushDirty(null); },
   refresh: function () { return kSyncNow(); },
   log:    function (action, entries) { return logAwait(action, entries); }
 };
