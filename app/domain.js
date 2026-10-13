@@ -89,8 +89,6 @@ function kTableMeta(t) {
   return { t: t, key: 'client_id' };
 }
 
-function kRowTs(r) { return (r && +r.updated_at) || 0; }
-
 // המפתח נגזר מהמטא — טבלת ההגדרות ממופתחת ב-key, ומפתח מוקלד היה מסמן שורה שהמיזוג אינו מוצא.
 function kPendKey(t, r) { return kPendKeyOf(t, r && r[kTableMeta(t).key]); }
 
@@ -596,7 +594,7 @@ function lookupRows(kind) {
 
 export { assetIcon, brandHTML, chainOf, compCardHTML, compPct,
          detailRowHTML, footHTML, iconFor, kKill, kLive,
-         kPendKey, kPendKeyOf, kQ, kRowTs, kSortDescriptions, kSortEntries, kSortLookups,
+         kPendKey, kPendKeyOf, kQ, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
