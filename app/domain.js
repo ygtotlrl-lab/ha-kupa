@@ -4,7 +4,7 @@ import { ctxEpoch, ctxStale, idEq, mergeCore, pendHas, pendMark, pushDirty,
          schedulePush, tombInherit, tombKill } from '../core/sync.js';
 import { MIRROR, mirrorSave } from '../core/mirror.js';
 import { logAction } from '../core/backup.js';
-import { esc } from '../core/ui.js';
+import { esc, pullRender } from '../core/ui.js';
 import { bar } from '../core/chart.js';
 import { hebDate, hebMonthNames, hebToGreg, hebYearLabelFull } from '../core/hebrew.js';
 import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER,
@@ -133,7 +133,8 @@ function kSyncPull() {
     return any;
   }).then(function (any) {
     S._syncBusy = false;
-    if (any) shell.kRender();
+    // הציור שאחרי משיכה עובר בשומר — כמו בשאר האפליקציות; ההזנה בחלון דו-שיח, והשומר דוחה את הציור כשהוא פתוח
+    if (any) pullRender(shell.kRender);
     return any;
   }, function (e) {
     S._syncBusy = false;
