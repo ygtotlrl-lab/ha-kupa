@@ -1,6 +1,6 @@
 // app/screens/slide.js — מסך אישור המטבע
 import { newClientId } from '../../core/sync.js';
-import { esc, uiNoDialog } from '../../core/ui.js';
+import { esc, uiHold, uiNoDialog } from '../../core/ui.js';
 import { MSG_SLIDE_KUPA, MSG_SLIDE_SUB, MSG_SLIDE_WALLET } from '../constants.js';
 import { shell, view } from '../state.js';
 import { assetIcon, localPut, money, monthKeyOf, pushSoon } from '../domain.js';
@@ -45,6 +45,8 @@ function coinDown(e) {
   if (!c || !e.target.closest || e.target.closest('[data-coin]') !== c) return false;
   var r = c.getBoundingClientRect();
   COIN.on = true; COIN.pid = e.pointerId;
+  // המטבע ביד — ציור שאחרי משיכה היה מחזיר אותו לנקודת המוצא; ההחזקה נמשכת עד סוף הבליעה
+  uiHold(true);
   c.classList.remove('settle');
   COIN.dx = e.clientX - r.left; COIN.dy = e.clientY - r.top;
   c.setPointerCapture(e.pointerId);
@@ -75,6 +77,7 @@ function coinUp(e) {
 }
 
 function coinReturn() {
+  uiHold(false);
   var c = COIN.el, p = coinHome();
   c.classList.remove('over');
   c.classList.add('settle');
@@ -138,7 +141,7 @@ function coinSwallow() {
     c.classList.remove('settle', 'over');
     c.classList.add('swallow');
   }, 280);
-  setTimeout(function () { sensoryFire(); confetti(); flowCommit(); }, 600);
+  setTimeout(function () { sensoryFire(); confetti(); flowCommit(); uiHold(false); }, 600);
 }
 
 function flowCommit() {
