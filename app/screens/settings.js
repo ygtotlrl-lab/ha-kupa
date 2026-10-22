@@ -9,7 +9,7 @@ import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_
          MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH,
          SRC_DEFAULT } from '../constants.js';
 import { view } from '../state.js';
-import { footHTML, iconFor, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
+import { footHTML, iconFor, kKill, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
          monthByKey, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
          prevMonthOf, tabHeadHTML } from '../domain.js';
 
@@ -64,11 +64,22 @@ function orderNewVersion(o, patch, fromMonth) {
   var old = kLive(MIRROR.k_standing_orders).filter(function (x) {
     return idEq(x.client_id, o.client_id);
   })[0];
+  // עריכה מתחילת ההוראה אינה גרסה — הישנה הייתה נשארת בלי אף חודש, והשורה מתעדכנת במקומה.
+  if (old && (!old.valid_from_heb_month || key <= old.valid_from_heb_month)) {
+    ['name', 'amount', 'day_of_month', 'method'].forEach(function (f) { if (patch[f] != null) old[f] = patch[f]; });
+    old.valid_from_heb_month = key;
+    old.updated_at = Date.now();
+    localPut('k_standing_orders', old);
+    orderDropInstancesFrom(old, '');
+    return old;
+  }
   if (old) {
     old.valid_to_heb_month = prev ? prev.key : key;
     old.active = false;
     old.updated_at = Date.now();
     localPut('k_standing_orders', old);
+    // מופעי הגרסה הישנה מהחודש הזה והלאה יורדים — החדשה כותבת את שלה, ושניהם יחד היו נספרים פעמיים.
+    orderDropInstancesFrom(old, key);
   }
   var next = {
     client_id: newClientId(), name: patch.name != null ? patch.name : o.name,
@@ -81,6 +92,27 @@ function orderNewVersion(o, patch, fromMonth) {
   };
   localPut('k_standing_orders', next);
   return next;
+}
+
+// מופעי ההוראה מחודש נתון והלאה יורדים; '' — כולם, ובעדכון במקום הסכום נכתב מחדש במופע הבא.
+function orderDropInstancesFrom(o, fromKey) {
+  kLive(MIRROR.k_so_instances).forEach(function (x) {
+    if (!idEq(x.standing_order_client_id, o.client_id)) return;
+    if (fromKey && String(x.due_heb_month || '') < fromKey) return;
+    kKill('k_so_instances', x);
+  });
+}
+
+// הפסקה ולא מחיקה — ההוראה אינה נספרת מהחודש הנוכחי והלאה, והחודשים שעברו נשארים כמו שהם.
+// הוראה שעוד לא התחילה יורדת כולה — אין לה חודש שנספר.
+function orderStop(o) {
+  var now = nowMonthKey(), prev = prevMonthOf(now);
+  if (!o.valid_from_heb_month || o.valid_from_heb_month >= now) { kKill('k_standing_orders', o); return; }
+  o.valid_to_heb_month = prev ? prev.key : now;
+  o.active = false;
+  o.updated_at = Date.now();
+  localPut('k_standing_orders', o);
+  orderDropInstancesFrom(o, now);
 }
 
 // day_of_month הוא מספר בין 1 ל-30 ולא תאריך מלא — והתווית אומרת זאת.
@@ -193,5 +225,5 @@ function settingsScreenHTML() {
     footHTML();
 }
 
-export { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
+export { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML };

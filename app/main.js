@@ -7,12 +7,12 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
-import { actWire, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
+import { actWire, ask, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
          lookupSeed, openModal, shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
-         MSG_ORDER_NEW, MSG_PLEDGE_EDIT, MSG_WAY_DUP, MSG_WAY_NEW, PUSH_TABLES,
+         MSG_ORDER_NEW, MSG_ORDER_STOP, MSG_ORDER_STOPPED, MSG_ORDER_STOP_Q, MSG_PLEDGE_EDIT, MSG_WAY_DUP, MSG_WAY_NEW, PUSH_TABLES,
          SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
@@ -25,7 +25,7 @@ import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
 import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
-import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion,
+import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
 import { coinDown, coinMove, coinUp, coinWire, slideScreenHTML } from './screens/slide.js';
 
@@ -321,9 +321,10 @@ var DOM_ACTIONS = {
       localPut('k_standing_orders', {
         client_id: newClientId(), name: p.name, amount: p.amount,
         day_of_month: p.day_of_month, method: p.method, category: CAT_LIST[0],
-        active: true, valid_from_heb_month: view.monthKey, valid_to_heb_month: null,
+        active: true, valid_from_heb_month: p.valid_from_heb_month, valid_to_heb_month: null,
         supersedes_client_id: null, updated_at: Date.now(), deleted: false
       });
+      soWriteNow();
       pushSoon();
       closeModal();
       kRender();
@@ -335,7 +336,24 @@ var DOM_ACTIONS = {
     if (!o) { uiNoDialog('order-edit', el.dataset.id); return; }
     openModal(MSG_EDIT + ' · ' + o.name, orderFormHTML(o),
       '<button class="btn" data-act="order-save" data-id="' + esc(o.client_id) +
-      '" data-ksave>שמור</button>');
+      '" data-ksave>שמור</button>' +
+      '<button class="btn ghost" data-act="order-stop" data-id="' + esc(o.client_id) + '">' +
+      esc(MSG_ORDER_STOP) + '</button>');
+  },
+  'order-stop': function (el) {
+    var o = orderById(el.dataset.id);
+    if (!o) { uiNoDialog('order-stop', el.dataset.id); return; }
+    return ask(MSG_ORDER_STOP + ' · ' + o.name, MSG_ORDER_STOP_Q, MSG_ORDER_STOP).then(function (yes) {
+      if (!yes) return;
+      return runSave(function () {
+        orderStop(o);
+        soWriteNow();
+        pushSoon();
+        closeModal();
+        kRender();
+        return Promise.resolve();
+      }, MSG_ORDER_STOPPED);
+    });
   },
   'order-save': function (el) {
     var o = orderById(el.dataset.id);
@@ -343,7 +361,9 @@ var DOM_ACTIONS = {
     var p = orderRead(), bad = orderValid(p);
     if (bad) { toast(bad, 4000, 'bad'); return; }
     return runSave(function () {
-      orderNewVersion(o, p, view.monthKey);
+      // מחודש התוקף שבטופס — ולא מהחודש שמוצג במסך הבית
+      orderNewVersion(o, p, p.valid_from_heb_month);
+      soWriteNow();
       pushSoon();
       closeModal();
       kRender();
@@ -450,11 +470,16 @@ function kBoot() {
   view.monthKey = nowMonthKey() || null;
   kRender();
   kSyncPull().then(function () {
-    var made = soEnsureThroughNow(), i;
-    for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
-    if (made.length) pushSoon();
+    if (soWriteNow()) pushSoon();
     kRender();
   });
+}
+
+// המופעים עד החודש של השעון — בעלייה ואחרי כל שינוי בהוראה, כדי שמופע שירד ייכתב מחדש בערכים החדשים.
+function soWriteNow() {
+  var made = soEnsureThroughNow(), i;
+  for (i = 0; i < made.length; i++) localPut('k_so_instances', made[i]);
+  return made.length;
 }
 
 // האחסון נפתח לפני כל קריאה ממנו — אחרי שה-CFG הוגדרו, כי המרשם קורא אותם.

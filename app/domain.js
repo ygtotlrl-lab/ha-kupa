@@ -169,7 +169,7 @@ function kSortEntries(list) {
     var sa = a.source === 'standing' ? 1 : 0, sb = b.source === 'standing' ? 1 : 0;
     if (sa !== sb) return sa - sb;
     var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
-    if (!sa && d !== 0) return d;
+    if (d !== 0) return d;
     var n = sortCompare(String(a.description || ''), String(b.description || ''));
     return n !== 0 ? n : String(a.client_id).localeCompare(String(b.client_id));
   });
@@ -505,9 +505,9 @@ function detailRowHTML(r) {
   var isInc = r.type === 'income';
   var so = r.source === 'standing';
   var tag = so ? 'הו״ק' : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : ''));
-  return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '') +
-               ' data-act="order-edit" data-id="' + esc(r.order_id || '')
-             : '<li data-act="entry-menu" data-id="' + esc(r.client_id)) + '">' +
+  // מופע הוראת קבע אינו נערך מהפירוט — ההוראה נערכת בהגדרות בלבד, ועריכה ממופע של גרסה ישנה פתחה ענף שני.
+  return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '')
+             : '<li data-act="entry-menu" data-id="' + esc(r.client_id) + '"') + '>' +
          '<span class="ico art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
          '<span class="tag">' + esc(tag) + '</span>' +

@@ -7,7 +7,7 @@ import { ask, closeModal, dragDef, esc, lookupDragApply, lookupList, openModal, 
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
-         MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
+         MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill, kLive, kQ,
          kSortDescriptions, kSortEntries, localPut, money, monthByKey, monthGreg,
@@ -39,16 +39,19 @@ function monthScreenHTML() {
        '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
        '<div class="inc sub">' + splitHTML(c) + '</div>';
 
-  var dated = rows.filter(function (r) { return r.source !== 'standing'; });
+  // שלושה חלקים באותו כרטיס, כל אחד מהחדש לישן — הכנסות · צדקה · הוראות קבע; חלק ריק אינו מוצג.
+  var inc = rows.filter(function (r) { return r.source !== 'standing' && r.type === 'income'; });
+  var tz = rows.filter(function (r) { return r.source !== 'standing' && r.type !== 'income'; });
   var std = rows.filter(function (r) { return r.source === 'standing'; });
+  var part = function (title, list) {
+    return list.length ? '<div class="subhd">' + esc(title) + '</div>' +
+                         '<ul class="det">' + list.map(detailRowHTML).join('') + '</ul>' : '';
+  };
   if (!rows.length) {
     h += '<div class="card"><div class="empty">' + esc(MSG_EMPTY_PRE + m.name) + '</div></div>';
   } else {
     h += '<div class="card"><h2>פירוט</h2>' +
-         (dated.length ? '<ul class="det">' + dated.map(detailRowHTML).join('') + '</ul>' : '') +
-         // כותרת משנה ולא כותרת כרטיס — הוראות הקבע הן המשך אותה רשימה.
-         (std.length ? '<div class="subhd">' + esc(MSG_ORDERS_TITLE) + '</div>' +
-                       '<ul class="det">' + std.map(detailRowHTML).join('') + '</ul>' : '') +
+         part(MSG_SEC_INCOME, inc) + part(MSG_SEC_TZEDAKAH, tz) + part(MSG_ORDERS_TITLE, std) +
          '</div>';
   }
   // הביטול הוא כפתור על המסך ולא טקסט בטוסט — טוסט אינו אתר לחיצה.
