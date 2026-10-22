@@ -212,8 +212,14 @@ main > .foot{margin-top:auto}
   line-height:var(--lh-2)}
 .mrow .myear{display:block;font-size:var(--fs-3);color:var(--text-2);font-weight:400}
 .mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
-.mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:var(--sp-4);
+.mnav{background:none;border:0;cursor:pointer;color:var(--purple-5);padding:0;
   min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+/* עיגול רך ברקע הלבנדר, והחץ קו דק; בלחיצה העיגול מתכהה מעט — בלי צל ובלי גרדיאנט. */
+.mnav-dot{width:36px;height:36px;border-radius:50%;background:var(--purple-1);
+  display:flex;align-items:center;justify-content:center;transition:background .15s}
+.mnav:active .mnav-dot{background:color-mix(in srgb,var(--purple-1),var(--purple-2) 40%)}
+.mnav-dot svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
 /* שורות הסיכום בדיו המשני ובמידה שאינה גדולה מכותרת כרטיס — מספר בגודל הרכיבים גוזל מהם את העין. */
 .inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
   font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
