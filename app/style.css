@@ -231,12 +231,12 @@ main > .foot{margin-top:auto}
 .det li{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-5) 0;
   border-bottom:.5px solid var(--line-soft);min-height:44px}
 .det li:last-child{border-bottom:0}
-.det .ico{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
+.det .det-ic{width:26px;height:26px;border-radius:var(--r-3);display:flex;align-items:center;
   justify-content:center;flex:none;background:var(--purple-1);color:var(--purple-6)}
-.det .ico svg{width:14px;height:14px}
+.det .det-ic svg{width:14px;height:14px}
 /* אייקון שהוא הציור עצמו בלי רקע — הצבע בא מהציור, ורקע מתחתיו הופך אותו לכתם. */
-.det .ico.art{background:none;color:inherit}
-.det .ico.art svg{width:24px;height:24px}
+.det .det-ic.art{background:none;color:inherit}
+.det .det-ic.art svg{width:24px;height:24px}
 .det .nm{flex:1;font-size:var(--fs-3);min-width:0}
 .det .tag{font-size:var(--fs-1);color:var(--text-3);flex:none}
 /* מופע שיום חיובו טרם הגיע נספר בחישוב, ומעומעם כדי שלא ייקרא כתשלום שיצא. */
@@ -350,4 +350,6 @@ main > .foot{margin-top:auto}
 @media (min-width:640px){:root{--col:520px}}
 @media (min-width:900px){:root{--col:600px}}
 @media (min-width:1200px){:root{--col:680px}}
-
+/* ── אייקונים ── */
+/* העובי נקבע כאן ולא ב-icon() — גוף הפונקציה אינו נערך לאפליקציה אחת. */
+.ico{width:1.15em;height:1.15em;flex:none;stroke-width:1.75}

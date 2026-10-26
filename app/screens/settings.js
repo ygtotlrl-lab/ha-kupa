@@ -9,7 +9,8 @@ import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_
          MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH,
          SRC_DEFAULT } from '../constants.js';
 import { view } from '../state.js';
-import { footHTML, iconFor, kKill, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
+import { icon } from '../icons.js';
+import { footHTML, kKill, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
          monthByKey, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
          prevMonthOf, tabHeadHTML } from '../domain.js';
 
@@ -22,7 +23,7 @@ function ordersCardHTML() {
   return '<div class="card"><h2>' + esc(MSG_ORDERS_TITLE) + '</h2>' +
     (os.length ? '<ul class="det">' + os.map(function (o) {
       return '<li data-act="order-edit" data-id="' + esc(o.client_id) + '">' +
-             '<span class="ico">' + iconFor('standing') + '</span>' +
+             '<span class="det-ic">' + icon('standing') + '</span>' +
              '<span class="nm">' + esc(o.name) + '</span>' +
              '<span class="tag">' + esc('יום ' + o.day_of_month) + '</span>' +
              '<span class="amt">' + money(o.amount) + '</span></li>';
@@ -37,11 +38,11 @@ function lookupCardHTML(kind, title, dflt) {
   var rows = open ? lookupRows(kind) : [];
   var labels = open && !rows.length ? dflt : null;
   return '<div class="card"><h2 class="fold" data-act="look-toggle" data-id="' + esc(kind) + '">' +
-    esc(title) + '<span class="st">' + esc(open ? '⌃' : '⌄') + '</span></h2>' +
+    esc(title) + '<span class="st">' + icon(open ? 'up' : 'down') + '</span></h2>' +
     (!open ? '' :
       '<ul class="det drag">' +
       (labels ? labels.map(function (x) {
-        return '<li><span class="ico">' + iconFor('other') + '</span>' +
+        return '<li><span class="det-ic">' + icon('other') + '</span>' +
                '<span class="nm">' + esc(x) + '</span></li>';
       }).join('')
       : rows.map(function (r) {
@@ -209,7 +210,7 @@ function pledgeCardHTML() {
   return '<div class="card"><h2>יעד פלעדזש שנתי</h2><ul class="det">' +
     ys.map(function (y) {
       return '<li data-act="pledge-edit" data-id="' + esc(y) + '">' +
-             '<span class="ico">' + iconFor('amount') + '</span>' +
+             '<span class="det-ic">' + icon('amount') + '</span>' +
              '<span class="nm">' + esc(hebYearLabelFull(y)) + '</span>' +
              '<span class="amt">' + money(pledgeOfYear(y)) + '</span></li>';
     }).join('') + '</ul></div>';

@@ -9,7 +9,8 @@ import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
-import { chainOf, compCardHTML, detailRowHTML, footHTML, iconFor, kKill, kLive, kQ,
+import { icon } from '../icons.js';
+import { chainOf, compCardHTML, detailRowHTML, footHTML, kKill, kLive, kQ,
          kSortDescriptions, kSortEntries, localPut, money, monthByKey, monthGreg,
          monthRows, pushSoon, splitHTML } from '../domain.js';
 
@@ -21,15 +22,13 @@ function monthScreenHTML() {
   var rows = kSortEntries(monthRows(view.monthKey));
 
   // החץ קו דק בתוך עיגול רך, ופונה החוצה — לחודש שעוברים אליו; אזור המגע גדול מהעיגול
-  var chev = function (d) {
-    return '<span class="mnav-dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg></span>';
-  };
+  var chev = function (name) { return '<span class="mnav-dot">' + icon(name) + '</span>'; };
   var h = '<div class="mrow">' +
-       '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">' + chev('M9 6l6 6-6 6') + '</button>' +
+       '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">' + chev('prev') + '</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
        '<span class="myear">' + esc(hebYearLabelFull(m.year)) + '</span>' +
        '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
-       '<button class="mnav" data-act="month-next" aria-label="חודש הבא">' + chev('M15 6l-6 6 6 6') + '</button>' +
+       '<button class="mnav" data-act="month-next" aria-label="חודש הבא">' + chev('next') + '</button>' +
        '</div>';
 
   h += compCardHTML('חומש', '', c.chumashDue, c.chumash, c.chumashCarry,
@@ -103,7 +102,7 @@ function flowBodyHTML() {
   var steps = flowSteps(), key = steps[view.step], d = view.draft;
   var meta = STEP_META[key] || STEP_META.amount;
   var h = '<div data-ks>' +
-    '<div class="fhd"><span class="fic">' + iconFor(meta.ic) + '</span>' +
+    '<div class="fhd"><span class="fic">' + icon(meta.ic) + '</span>' +
     '<h2>' + esc(meta.lab) + '</h2></div>';
 
   if (key === 'amount') {

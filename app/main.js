@@ -16,7 +16,8 @@ import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
-import { assetIcon, brandHTML, iconFor,
+import { icon } from './icons.js';
+import { assetIcon, brandHTML,
          kLive, kPendKey, kPendKeyOf, kQ, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
@@ -153,7 +154,7 @@ function tabbarHTML() {
   return '<div class="in">' + TABS.map(function (t) {
     return '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
            '" data-act="tab-go" data-id="' + esc(t.k) + '">' +
-           '<span class="ti">' + iconFor(t.ic) + '</span>' + esc(t.lab) + '</button>';
+           '<span class="ti">' + icon(t.ic) + '</span>' + esc(t.lab) + '</button>';
   }).join('') + '</div>';
 }
 
@@ -451,6 +452,10 @@ var DOM_ACTIONS = {
 // ── המאזינים הגלובליים ──
 // מאזין אחד לכל אירוע, בהאצלה מ-document — המסכים נבנים מחדש בכל רינדור, ומאזין שנקשר לאלמנט מת איתו.
 actWire(DOM_ACTIONS);
+
+// הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
+var fabEl = document.getElementById('fab');
+if (fabEl) fabEl.innerHTML = icon('plus');
 
 
 // גרירת המטבע קודמת לגרירה לסידור — שתיהן על אירועי מצביע, והמטבע נתפס רק במסך האישור.

@@ -480,26 +480,6 @@ function assetIcon(id) {
   return K_ASSETS[id];
 }
 
-function iconFor(kind) {
-  // סט קווי-מעוגל אחד בעובי 1.75, ואייקון קבוע לכל מקור.
-  var p = {
-    other:    'M12 4v16 M4 12h16',
-    standing: 'M12 7v5l3 2 M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-    home:     'M4 11l8-7 8 7 M7 10v10h10V10',
-    archive:  'M4 8h16v12H4z M3 4h18v4H3z M10 12h4',
-    gear:     'M4 7h10 M18 7h2 M4 12h4 M12 12h8 M4 17h10 M18 17h2',
-    amount:   'M12 3v18 M7 8h7a3 3 0 010 6H7',
-    desc:     'M5 6h14 M5 11h14 M5 16h9',
-    method:   'M3 7h18v10H3z M3 11h18',
-    date:     'M4 6h16v14H4z M4 10h16 M8 3v4 M16 3v4',
-    category: 'M4 5h7l2 3h7v11H4z'
-  }[kind] || 'M12 4v16 M4 12h16';
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-         'stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">' +
-         p.split(' M').map(function (s, i) { return '<path d="' + (i ? 'M' + s : s) + '"/>'; }).join('') +
-         '</svg>';
-}
-
 // שורת הוראת קבע נפתחת בעורך ההוראה ולא בעורך התנועה — אין לה שורה ב-k_entries, והעורך היה מוצא ריק.
 function detailRowHTML(r) {
   var isInc = r.type === 'income';
@@ -508,7 +488,7 @@ function detailRowHTML(r) {
   // מופע הוראת קבע אינו נערך מהפירוט — ההוראה נערכת בהגדרות בלבד, ועריכה ממופע של גרסה ישנה פתחה ענף שני.
   return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '')
              : '<li data-act="entry-menu" data-id="' + esc(r.client_id) + '"') + '>' +
-         '<span class="ico art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
+         '<span class="det-ic art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
          '<span class="tag">' + esc(tag) + '</span>' +
          '<span class="amt">' + money(r.amount) + '</span></li>';
@@ -594,7 +574,7 @@ function lookupRows(kind) {
 }
 
 export { assetIcon, brandHTML, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, iconFor, kKill, kLive,
+         detailRowHTML, footHTML, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,

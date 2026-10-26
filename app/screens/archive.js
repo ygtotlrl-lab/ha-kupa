@@ -4,6 +4,7 @@ import { barChart } from '../../core/chart.js';
 import { hebYearLabelFull } from '../../core/hebrew.js';
 import { ARCH_FIRST, MSG_ARCH_EMPTY, TABS } from '../constants.js';
 import { view } from '../state.js';
+import { icon } from '../icons.js';
 import { chainOf, compPct, footHTML, monthsSorted, nowMonthKey,
          tabHeadHTML } from '../domain.js';
 
@@ -32,7 +33,7 @@ function archiveScreenHTML() {
   for (i = 0; i < years.length; i++) {
     var y = years[i], open = view.archYear === y;
     h += '<div class="card"><h2 class="fold" data-act="arch-year" data-id="' + esc(y) + '">' +
-         esc(hebYearLabelFull(y)) + '<span class="st">' + esc(open ? '⌃' : '⌄') +
+         esc(hebYearLabelFull(y)) + '<span class="st">' + icon(open ? 'up' : 'down') +
          '</span></h2>';
     if (open) {
       var mine = ms.filter(function (m) { return m.year === y; }).reverse();

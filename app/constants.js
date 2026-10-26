@@ -133,7 +133,7 @@ var CAT_LIST = ['לאחרים', K_CAT_SELF];
 var TABS = [
   { k: 'month',    lab: 'בית',    ic: 'home' },
   { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
-  { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'gear' }
+  { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'settings' }
 ];
 
 export { ARCH_FIRST, CAT_LIST, EPS, KV_TABLE, K_CAT_SELF, METHOD_DEFAULT,
