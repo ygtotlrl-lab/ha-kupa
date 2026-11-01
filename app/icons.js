@@ -1,5 +1,6 @@
 // app/icons.js — סט האייקונים של הממשק: קו אחד, פינות מעוגלות, בצבע הטקסט
 // כולם באותה רשת (24) ובאותו עובי קו — אמוג׳י מתחלף בין מערכות ההפעלה ואינו נשמע לצבע.
+import { iconSet } from '../core/icons.js';
 var PATHS = {
   home:     '<path d="M4 11l8-7 8 7"/><path d="M7 10v10h10V10"/>',
   archive:  '<path d="M4 8h16v12H4z"/><path d="M3 4h18v4H3z"/><path d="M10 12h4"/>',
@@ -18,9 +19,7 @@ var PATHS = {
   down:     '<path d="M6 9l6 6 6-6"/>'
 };
 
-function icon(name) {
-  return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" ' +
-    'stroke-linecap="round" stroke-linejoin="round">' + (PATHS[name] || '') + '</svg>';
-}
+// הצייר — core/icons.js, גוף אחד בכולן; כאן רק הסט.
+var icon = iconSet(PATHS);
 
 export { icon };
