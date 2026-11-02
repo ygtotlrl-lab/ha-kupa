@@ -22,9 +22,9 @@ var MSG_CLOSER = 'יחי אדוננו מורנו ורבינו מלך המשיח 
 
 var MSG_TZ_BLESS = 'גדולה צדקה שמקרבת את הגאולה';
 
-var MSG_NEED_AMOUNT = '⚠️ הסכום חסר — נא להזין סכום לרישום';
+var MSG_NEED_AMOUNT = 'הסכום חסר — נא להזין סכום לרישום';
 
-var MSG_NEED_DESC = '⚠️ נא למלא פירוט';
+var MSG_NEED_DESC = 'נא למלא פירוט';
 
 var MSG_SLIDE_KUPA = 'החלק את המטבע לקופה';
 
@@ -86,17 +86,17 @@ var MSG_WAY_NEW = 'אופן חדש';
 
 var MSG_WAY_LABEL = 'שם האופן';
 
-var MSG_NEED_LABEL = '⚠️ נא למלא שם לאופן';
+var MSG_NEED_LABEL = 'נא למלא שם לאופן';
 
 var MSG_NO_ORDERS = 'עוד לא נרשמה הוראת קבע';
 
 var MSG_ARCH_EMPTY = 'אין כאן עדיין כלום';
 
-var MSG_WAY_DUP = '⚠️ אופן בשם הזה כבר קיים';
+var MSG_WAY_DUP = 'אופן בשם הזה כבר קיים';
 
 var MSG_PLEDGE_EDIT = 'יעד הפלעדזש · ';
 
-var MSG_NEED_DAY = '⚠️ יום החיוב חסר — נא להזין מספר בין 1 ל-30';
+var MSG_NEED_DAY = 'יום החיוב חסר — נא להזין מספר בין 1 ל-30';
 
 // ── תצורה ──
 // טבלה שנכתבת מקומית ואינה ב-PUSH_TABLES — שורותיה אינן עולות לעולם; והאב לפני הבן, אחרת הבן נקרא כיתום.

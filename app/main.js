@@ -292,9 +292,9 @@ var DOM_ACTIONS = {
     if (!r) { uiNoDialog('entry-save', el.dataset.id); return; }
     var v = readNum(a, null), txt = ds.value.trim(), day = dt.value;
     if (v === null || (r.type !== 'income' && v <= EPS) || Math.abs(v) <= EPS) {
-      toast(MSG_NEED_AMOUNT, 4000, 'bad'); return;
+      toast(MSG_NEED_AMOUNT, 4000, 'warn'); return;
     }
-    if (!txt) { toast(MSG_NEED_DESC, 4000, 'bad'); return; }
+    if (!txt) { toast(MSG_NEED_DESC, 4000, 'warn'); return; }
     var me = kQ('#e-method'), ca = kQ('#e-cat');
     return runSave(function () {
       r.amount = v; r.description = txt;
@@ -386,7 +386,7 @@ var DOM_ACTIONS = {
     var inp = kQ('#p-amt'), y = Number(el.dataset.id);
     if (!inp) { uiNoDialog('pledge-save', 'p-amt'); return; }
     var v = readNum(inp, null);
-    if (v === null || v < 0) { toast(MSG_NEED_AMOUNT, 4000, 'bad'); return; }
+    if (v === null || v < 0) { toast(MSG_NEED_AMOUNT, 4000, 'warn'); return; }
     return runSave(function () {
       var l = kLive(MIRROR.k_pledges), i, row = null;
       // המזהה הוא השנה — שני מכשירים שקובעים את אותה שנה מגיעים לאותה שורה.
@@ -426,11 +426,11 @@ var DOM_ACTIONS = {
     var inp = kQ('#l-label');
     if (!inp) { uiNoDialog('look-save', 'l-label'); return; }
     var txt = inp.value.trim(), id = el.dataset.id, kind = el.dataset.k;
-    if (!txt) { toast(MSG_NEED_LABEL, 4000, 'bad'); return; }
+    if (!txt) { toast(MSG_NEED_LABEL, 4000, 'warn'); return; }
     // השורה שנערכת מוחרגת מהבדיקה — אחרת היא מתנגשת בעצמה.
     var others = lookupRows(kind).filter(function (x) { return !idEq(x.client_id, id); })
       .map(function (x) { return x.label; });
-    if (uniqHas(others, txt)) { toast(MSG_WAY_DUP, 4000, 'bad'); return; }
+    if (uniqHas(others, txt)) { toast(MSG_WAY_DUP, 4000, 'warn'); return; }
     return runSave(function () {
       var r = id ? lookupById(id) : null;
       if (r) { r.label = txt; }
