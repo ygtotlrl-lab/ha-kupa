@@ -172,7 +172,7 @@ main > .foot{margin-top:auto}
   max-width:420px;box-shadow:var(--shadow-lg);overflow:hidden}
 .sheet-hd{padding:var(--sp-6);font-size:var(--fs-5);font-weight:500;border-bottom:1px solid var(--border)}
 .sheet-hd h3{flex:1;margin:0;font:inherit}
-.sheet-hd .x{color:var(--text-2);padding:0 var(--sp-2);border-radius:var(--radius-sm)}
+.sheet-hd .x{color:var(--text-2);border-radius:var(--radius-sm)}
 .sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
 .sheet-ft{padding:var(--sp-6);gap:var(--sp-4);justify-content:flex-end;border-top:1px solid var(--border)}
 #ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);

@@ -1,7 +1,8 @@
 // app/icons.js — סט האייקונים של הממשק: קו אחד, פינות מעוגלות, בצבע הטקסט
 // כולם באותה רשת (24) ובאותו עובי קו — אמוג׳י מתחלף בין מערכות ההפעלה ואינו נשמע לצבע.
-import { iconSet } from '../core/icons.js';
+import { iconSet, shellIcon } from '../core/icons.js';
 var PATHS = {
+  close:    '<path d="M6 6l12 12M18 6L6 18"/>',
   home:     '<path d="M4 11l8-7 8 7"/><path d="M7 10v10h10V10"/>',
   archive:  '<path d="M4 8h16v12H4z"/><path d="M3 4h18v4H3z"/><path d="M10 12h4"/>',
   settings: '<path d="M4 6h8.5M16.5 6H20M4 12h2.5M10.5 12H20M4 18h6.5M14.5 18H20"/><circle cx="14.5" cy="6" r="2"/><circle cx="8.5" cy="12" r="2"/><circle cx="12.5" cy="18" r="2"/>',
@@ -21,5 +22,6 @@ var PATHS = {
 
 // הצייר — core/icons.js, גוף אחד בכולן; כאן רק הסט.
 var icon = iconSet(PATHS);
+shellIcon('close', icon('close')); // ✕ של המעטפת והליבה — מהסט של האפליקציה
 
 export { icon };
