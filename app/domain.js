@@ -425,7 +425,7 @@ function footHTML() {
 
 // הלוגו הוא הנכס שהמחולל מייצר — ציור שני של המאסטר היה מקור אמת שני.
 function brandHTML() {
-  return '<img src="icons/icon-192.d0797c7a.png" alt="" width="40" height="40">';
+  return '<img src="icons/icon-192.09e5344f.png" alt="" width="40" height="40">';
 }
 
 // טווח התאריכים הלועזי נגזר מראש החודש ומראש הבא, בצורה יום.חודש.
