@@ -15,6 +15,6 @@
   "icons": [
     { "src": "icons/icon-192.09e5344f.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.33c4bf42.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.03f6b1af.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/icon-maskable-512.da4e7e74.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
