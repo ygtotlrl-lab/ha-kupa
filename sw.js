@@ -1,7 +1,7 @@
 // sw.js — service worker של האפליקציה
 importScripts('./app.config.js');
 // מכאן נגזרת גרסת האפליקציה שבבאנר.
-var CACHE_NAME = self.APP.id + '-v150';
+var CACHE_NAME = self.APP.id + '-v151';
 
 var CORE = [
   './',
@@ -35,6 +35,7 @@ var CORE = [
   './manifest.json',
   './icons/icon-192.09e5344f.png',
   './icons/icon-512.33c4bf42.png',
+  './icons/icon-maskable-512.03f6b1af.png',
 ];
 
 // גרסאות נעוצות במדויק — major צף נשבר בשחרור של הספק בלי שינוי קוד.
