@@ -23,15 +23,15 @@ self.APP = Object.freeze({
     // צבע כפתור הניסיון החוזר בדף האופליין של המעטפת
     accent: '#9c7fd0',
     // לעולם אינו יורד — בלי קידום המכשיר המותקן אינו מקבל את ה-APK החדש.
-    versionCode: 13,
+    versionCode: 14,
     versionName: '2.0',
     launcherBg: { kind: 'solid', color: '#9C7FD0' },
     // אפליקציות אחרות שקישור intent: רשאי לפתוח — שם ⟵ חבילה; ריק — המעטפת אינה פותחת אף אחת
     launch: {},
     // כפתור «יציאה» שהמעטפת קולטת וסוגרת בו את האפליקציה
     exit: false,
-    // FileProvider ו-androidx — רק באפליקציה שמייצאת קובץ
-    share: false
+    // גשר השיתוף (FileProvider ו-androidx) וגשר ההדפסה — בכל האפליקציות, אחידים
+    share: { chooser: 'שיתוף הקובץ', print: true }
   },
   // sign-apk.sh מסרב לחתום בכל מפתח אחר
   signSha256: '3C:25:41:21:83:93:BB:37:ED:7D:89:2E:8F:1F:02:18:EF:BE:B2:CA:EA:0D:06:D4:91:2B:C8:19:94:22:0C:9D',
