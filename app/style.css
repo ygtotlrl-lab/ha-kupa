@@ -78,7 +78,7 @@ input,select,textarea{font:inherit; color:inherit}
 
 /* ── קליפה ──
    שורש הקליפה אינו תיבה — הוא נושא את המצב החשוף, ומיכל התוכן ממשיך למלא את עמודת ה-body. */
-#shell{display:contents}
+.shell{display:contents}
 /* הפתיחה מתחת לחתימה, בגופן גדול מעט ממנה; כפתור החזרה באותו בלוק ואינו נפרש לרוחב כמו כפתור פעולה. */
 .foot{text-align:center;padding:var(--sp-7) var(--sp-6) var(--sp-6)}
 .closer{color:var(--purple-5);font-size:var(--fs-1);text-align:center;font-weight:400;
@@ -154,7 +154,7 @@ main > .foot{margin-top:auto}
   .back:hover{text-decoration:underline}
 }
 @media (hover:hover){
-  #ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
+  .veil-ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
 }
 .fld{margin-bottom:var(--sp-6)}
 .fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
@@ -180,11 +180,11 @@ main > .foot{margin-top:auto}
 .sheet-hd .x{color:var(--text-2);border-radius:var(--radius-sm)}
 .sheet-bd{padding:var(--sp-6);font-size:var(--fs-4);color:var(--text-2)}
 .sheet-ft{padding:var(--sp-6);gap:var(--sp-4);justify-content:flex-end;border-top:1px solid var(--border)}
-#ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);
+.veil-ask .sheet-ft button{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);
   cursor:pointer;background:var(--card);color:var(--text-2);
   padding:var(--sp-5) var(--sp-6);font:inherit;font-weight:500;min-height:44px}
-#ask .sheet-ft button:active{transform:translateY(1px)}
-#ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.veil-ask .sheet-ft button:active{transform:translateY(1px)}
+.veil-ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
 /* הגוון פר-אפליקציה נכתב אחרי הכלל המשותף — באותה סגוליות המאוחר גובר. */
 .btrack{background:color-mix(in srgb,var(--purple-1),var(--purple-2) 35%)}
