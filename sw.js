@@ -33,9 +33,9 @@ var CORE = [
   './app/screens/slide.js',
   './app/main.js',
   './manifest.json',
-  './icons/icon-192.09e5344f.png',
-  './icons/icon-512.33c4bf42.png',
-  './icons/icon-maskable-512.da4e7e74.png',
+  './icons/icon-192.feeec4eb.png',
+  './icons/icon-512.0f15c43c.png',
+  './icons/icon-maskable-512.db94f719.png',
 ];
 
 // גרסאות נעוצות במדויק — major צף נשבר בשחרור של הספק בלי שינוי קוד.
