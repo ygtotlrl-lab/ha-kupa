@@ -298,10 +298,15 @@ main > .foot{margin-top:auto}
   font-size:var(--fs-4);cursor:pointer;min-height:44px;text-align:start;width:100%}
 .opt.on{border-color:var(--purple-3);background:var(--brand-soft);color:var(--brand-ink)}
 .card-add{margin-top:var(--sp-5)}
-.acbox{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-.acbox button{background:var(--card-2);border:1px solid var(--border);cursor:pointer;
-  border-radius:var(--radius-sm);padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);
-  text-align:start;min-height:44px}
+/* הרשימה הנפתחת של הליבה — בגווני הקופה: כרטיס לבן במסגרת, שורה לכל הצעה, ו«עוד אפשרויות» בסגול */
+.combo-list{--combo-gap:var(--sp-2);--combo-max:280px;background:var(--card);border:1px solid var(--card-line);
+  border-radius:var(--r-6);overflow-y:auto}
+.combo-opt{min-height:44px;padding:var(--sp-4) var(--sp-5);font-size:var(--fs-4);color:var(--text);
+  border-bottom:.5px solid var(--line-soft)}
+.combo-opt.is-on,.combo-opt:active,.combo-opt:focus-visible{background:var(--brand-soft);color:var(--brand-ink);outline:none}
+.combo-opt mark{background:none;color:var(--brand-ink);font-weight:600}
+.combo-empty{padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);color:var(--text-3)}
+.combo-more{min-height:44px;padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);font-weight:600;color:var(--purple-5)}
 .pk{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);cursor:pointer;
   background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);
   padding:var(--sp-6) var(--sp-5);font-size:var(--fs-4);font-weight:500;color:var(--text);

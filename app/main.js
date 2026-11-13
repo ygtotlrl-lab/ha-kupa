@@ -7,7 +7,7 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
-import { actWire, ask, closeAsk, closeModal, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
+import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
          lookupSeed, openModal, shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
@@ -250,11 +250,8 @@ var DOM_ACTIONS = {
     flowOpen();
   },
   'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
-  'flow-ac': function (el) {
-    var f = kQ('#f-desc');
-    if (!f) { uiNoDialog('flow-ac', 'f-desc'); return; }
-    f.value = el.dataset.v;
-  },
+  'combo-pick': function (el) { return comboPick(el); },
+  'combo-more': function (el) { return comboMore(el); },
   // הרקע ו-Escape עונים «לא», והכפתורים הם המסלול היחיד שעונה «כן».
   'ask-yes': function () { closeAsk(true); },
   'ask-no':  function () { closeAsk(false); },
@@ -452,6 +449,11 @@ var DOM_ACTIONS = {
 // ── המאזינים הגלובליים ──
 // מאזין אחד לכל אירוע, בהאצלה מ-document — המסכים נבנים מחדש בכל רינדור, ומאזין שנקשר לאלמנט מת איתו.
 actWire(DOM_ACTIONS);
+
+// הרשימה הנפתחת בליבה — ההקלדה מסננת, והמיקוד פותח את הרשימה.
+// focusin ולא focus — focus אינו עולה בעץ, ושדה בדיאלוג נבנה מחדש בכל שלב.
+document.addEventListener('input', function (e) { comboInput(e); });
+document.addEventListener('focusin', comboFocus);
 
 // הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
 var fabEl = document.getElementById('fab');

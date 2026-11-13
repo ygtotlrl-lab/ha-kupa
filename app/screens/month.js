@@ -2,7 +2,7 @@
 import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
 import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
-import { ask, closeModal, dragDef, esc, lookupDragApply, lookupList, openModal, toast,
+import { ask, closeModal, comboDef, comboHTML, dragDef, esc, lookupDragApply, lookupList, openModal, toast,
          uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
@@ -72,19 +72,26 @@ var FLOW_INC = ['amount', 'desc', 'method', 'date'];
 dragDef('method', lookupDragApply);
 dragDef('source', lookupDragApply);
 
-function descSuggest(q, type) {
+// הפירוטים הנרשמים ביותר בסוג הזה — הכנסה וצדקה הם שני אוצרות מילים, ורשימה מעורבת מציעה את מה שאינו שייך.
+// חמישה בפתיחה, ו«עוד אפשרויות» — עד שלושים; ההקלדה מסננת ברכיב המשותף.
+var DESC_SHOW = 5, DESC_MORE = 30;
+function descSuggest(type) {
   var seen = {}, l = kLive(MIRROR.k_entries), i, d;
   for (i = 0; i < l.length; i++) {
-    // פירוטי הכנסה וצדקה הם שני אוצרות מילים — רשימה מעורבת מציעה את מה שאינו שייך.
     if (type && l[i].type !== type) continue;
     d = (l[i].description || '').trim();
     if (!d) continue;
     seen[d] = (seen[d] || 0) + 1;
   }
-  return kSortDescriptions(Object.keys(seen)
-    .filter(function (d) { return !q || d.indexOf(q) === 0; }), seen)
-    .slice(0, 5);
+  return kSortDescriptions(Object.keys(seen), seen);
 }
+comboDef('desc', {
+  items: function () {
+    return descSuggest(view.flow === 'income' ? 'income' : 'tzedakah')
+      .map(function (x) { return { value: x, label: x }; });
+  },
+  max: DESC_SHOW, more: DESC_MORE, hl: true
+});
 
 function flowSteps() { return view.flow === 'income' ? FLOW_INC : FLOW_TZ; }
 
@@ -111,12 +118,8 @@ function flowBodyHTML() {
       'value="' + esc(d.amount === null ? '' : String(d.amount)) + '"></div>';
   } else if (key === 'desc') {
     h += '<div class="fld"><label for="f-desc">פירוט</label>' +
-      '<input id="f-desc" type="text" autocomplete="off" value="' + esc(d.description) + '">' +
-      '<div class="acbox" id="f-ac">' +
-      descSuggest('', view.flow === 'income' ? 'income' : 'tzedakah').map(function (s) {
-        return '<button type="button" data-act="flow-ac" data-v="' + esc(s) + '">' +
-               esc(s) + '</button>';
-      }).join('') + '</div></div>';
+      comboHTML('desc', { id: 'f-desc-box', qid: 'f-desc', label: 'פירוט', placeholder: 'פירוט',
+        picked: d.description ? { value: d.description, label: d.description } : null }) + '</div>';
   } else if (key === 'source' || key === 'method') {
     var list = key === 'source' ? lookupList('source', SRC_DEFAULT)
                                 : lookupList('method', METHOD_DEFAULT);
