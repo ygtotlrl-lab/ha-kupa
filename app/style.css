@@ -30,6 +30,9 @@
   --rasp:#B8446B; --rasp-ink:#B8446B;
   --line-soft:#EFEAF6;
   --ring-soft:rgba(255,255,255,.3);
+  /* קו מוחשי לכרטיס ולסרגל — הגבול לבדו נבלע ברקע ומשאיר את המסך חיוור. */
+  --card-line:color-mix(in srgb,var(--border),var(--purple-2) 45%);
+  --ink-2:color-mix(in srgb,var(--text-2),var(--text) 25%);
 }
 
 /* ── הערכה הכהה ── */
@@ -114,7 +117,7 @@ main > .foot{margin-top:auto}
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
   height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
-  background:var(--card);border-top:1px solid var(--border)}
+  background:var(--card);border-top:1px solid var(--card-line)}
 .tabbar .in{display:flex;width:100%;max-width:var(--col)}
 .tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--text-3);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
@@ -131,16 +134,16 @@ main > .foot{margin-top:auto}
 
 /* ── רכיבים ── */
 .card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);
   padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
 .card > h2{font-size:var(--fs-5);color:var(--text);display:flex;align-items:center;gap:var(--sp-4);
-  margin-bottom:var(--sp-5);font-weight:500}
+  margin-bottom:var(--sp-5);font-weight:600}
 .card > h2 .st{margin-inline-start:auto;font-weight:400;font-size:var(--fs-2);
   color:var(--text-2)}
 /* עטיפה בכיוון שמאל-ימין — אחרת האלגוריתם הדו-כיווני מעיף את הסימן לקצה השורה. */
 .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
 .empty{color:var(--text-3);text-align:center;padding:var(--sp-7) var(--sp-5);font-size:var(--fs-3)}
-.big{font-size:var(--fs-6);font-weight:500;line-height:var(--lh-1);color:var(--text)}
+.big{font-size:var(--fs-6);font-weight:600;line-height:var(--lh-1);color:var(--text)}
 .sml{font-size:var(--fs-3);color:var(--text-2);margin-top:var(--sp-4);line-height:var(--lh-3)}
 @media (hover:hover){
   .btn:hover{box-shadow:var(--shadow-lg)}
@@ -182,9 +185,10 @@ main > .foot{margin-top:auto}
 #ask .sheet-ft button.danger{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5)}
 /* הגוון פר-אפליקציה נכתב אחרי הכלל המשותף — באותה סגוליות המאוחר גובר. */
-.btrack{background:var(--purple-1)}
+.btrack{background:color-mix(in srgb,var(--purple-1),var(--purple-2) 35%)}
+.comp .btrack{height:10px}
 .btrack i{transition:width var(--dur-4) var(--ease)}
-.btrack.peach{background:var(--peach-1)}
+.btrack.peach{background:color-mix(in srgb,var(--peach-1),var(--peach-2) 30%)}
 .btrack.peach i{background:var(--peach-2)}
 
 /* ── מסכים ──
@@ -198,7 +202,7 @@ main > .foot{margin-top:auto}
   box-shadow:0 0 0 var(--sp-1) var(--peach-2),var(--shadow-lg)}
 .crow{display:flex;align-items:flex-end;gap:var(--sp-5);margin-top:var(--sp-5)}
 .crow .big{flex:1;min-width:0}
-.crow .parts{display:grid;gap:var(--sp-1);font-size:var(--fs-2);color:var(--text-2);
+.crow .parts{display:grid;gap:var(--sp-1);font-size:var(--fs-2);color:var(--ink-2);
   text-align:end;flex:none}
 .subhd{font-size:var(--fs-1);color:var(--text-3);letter-spacing:var(--ls-1);
   padding:var(--sp-5) 0 var(--sp-2);border-top:.5px solid var(--line-soft);
@@ -208,7 +212,7 @@ main > .foot{margin-top:auto}
   padding:var(--sp-5) 0 var(--sp-7)}
 .mrow .mid{text-align:center;flex:1}
 /* שם החודש בשורה משלו מעל השנה — בשורה אחת העין קוראת אותם כשם אחד ארוך. */
-.mrow .mname{font-size:var(--fs-6);font-weight:500;color:var(--text);display:block;
+.mrow .mname{font-size:var(--fs-6);font-weight:600;color:var(--text);display:block;
   line-height:var(--lh-2)}
 .mrow .myear{display:block;font-size:var(--fs-3);color:var(--text-2);font-weight:400}
 .mrow .mgreg{display:block;font-size:var(--fs-2);color:var(--text-3);font-weight:400}
@@ -222,8 +226,8 @@ main > .foot{margin-top:auto}
   stroke-linecap:round;stroke-linejoin:round}
 /* שורות הסיכום בדיו המשני ובמידה שאינה גדולה מכותרת כרטיס — מספר בגודל הרכיבים גוזל מהם את העין. */
 .inc{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
-  font-size:var(--fs-2);color:var(--text-3);padding:var(--sp-3) var(--sp-2)}
-.inc b{font-size:var(--fs-3);font-weight:500;color:var(--text-2)}
+  font-size:var(--fs-2);color:var(--text-2);padding:var(--sp-3) var(--sp-2)}
+.inc b{font-size:var(--fs-3);font-weight:600;color:var(--text)}
 /* הפיצול נצמד לצד המספרים ולא לצד התוויות — שורה בצד השני נקראת כתווית שאיבדה את ערכה. */
 .inc.sub{font-size:var(--fs-1);color:var(--text-3);justify-content:flex-end;
   gap:var(--sp-5);padding-top:0}
