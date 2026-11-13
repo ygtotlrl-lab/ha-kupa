@@ -7,7 +7,7 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
-import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel, dragDown, dragMove, dragUp, esc, lookupList,
+import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel, methodPick, dragDown, dragMove, dragUp, esc, lookupList,
          lookupSeed, openModal, shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
@@ -252,6 +252,7 @@ var DOM_ACTIONS = {
   'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
   'combo-pick': function (el) { return comboPick(el); },
   'combo-more': function (el) { return comboMore(el); },
+  'method-pick': function (el) { methodPick(el); },
   // הרקע ו-Escape עונים «לא», והכפתורים הם המסלול היחיד שעונה «כן».
   'ask-yes': function () { closeAsk(true); },
   'ask-no':  function () { closeAsk(false); },

@@ -6,6 +6,7 @@
   --toast-bottom:calc(var(--tabbar-h) + 86px);
   /* המסך, סרגל הלשוניות ומסילת הכפתור הצף קוראים אותו, והוא מתרחב בכל נקודת שבירה. */
   --col:390px;
+  --combo-k-max:280px;
   /* רכיב שמייצג את האפליקציה נגזר מ---brand ולא מדיו הטקסט; הדיו שעליו צמד הפוך ומתחלף איתו. */
   --brand:var(--brand-fill); --on-brand:#FFFFFF; --on-rasp:#FFFFFF;
 
@@ -117,9 +118,10 @@ main > .foot{margin-top:auto}
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
   height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
-  background:transparent}
-/* כמו בשכר לימוד ובהנהלה: רקע לבנדר כהה מהכרטיסים, פינות עליונות מעוגלות, והלשונית הפעילה — גלולה מלאה */
-.tabbar .in{display:flex;width:100%;max-width:var(--col);background:color-mix(in srgb,var(--purple-1),var(--purple-2) 30%);border-radius:22px 22px 0 0;padding:0 var(--sp-2)}
+  margin:0 auto;padding-inline:var(--sp-2);
+  /* כמו בשכר לימוד ובהנהלה: בטלפון — על כל רוחב המסך, וממסך רחב — ברוחב העמודה, ברקע לבנדר מעט כהה מהכרטיסים, פינות עליונות מעוגלות, והלשונית הפעילה — גלולה מלאה */
+  background:color-mix(in srgb,var(--purple-1),var(--purple-2) 18%);border-radius:22px 22px 0 0}
+.tabbar .in{display:flex;width:100%}
 .tab-btn{flex:1;background:none;border:0;cursor:pointer;color:var(--purple-6);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
   padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
@@ -299,13 +301,15 @@ main > .foot{margin-top:auto}
 .opt.on{border-color:var(--purple-3);background:var(--brand-soft);color:var(--brand-ink)}
 .card-add{margin-top:var(--sp-5)}
 /* הרשימה הנפתחת של הליבה — בגווני הקופה: כרטיס לבן במסגרת, שורה לכל הצעה, ו«עוד אפשרויות» בסגול */
-.combo-list{--combo-gap:var(--sp-2);--combo-max:280px;background:var(--card);border:1px solid var(--card-line);
+.combo-list{--combo-gap:var(--sp-2);--combo-max:var(--combo-k-max);background:var(--card);border:1px solid var(--card-line);
   border-radius:var(--r-6);overflow-y:auto}
 .combo-opt{min-height:44px;padding:var(--sp-4) var(--sp-5);font-size:var(--fs-4);color:var(--text);
   border-bottom:.5px solid var(--line-soft)}
 .combo-opt.is-on,.combo-opt:active,.combo-opt:focus-visible{background:var(--brand-soft);color:var(--brand-ink);outline:none}
 .combo-opt mark{background:none;color:var(--brand-ink);font-weight:600}
 .combo-empty{padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);color:var(--text-3)}
+/* הרשימה צפה מתחת לשדה — כשהיא פתוחה, השדה מפנה לה מקום, כדי שכפתורי «המשך» ו«חזור» לא יוסתרו מתחתיה. */
+.fld:has(.combo-q[aria-expanded="true"]){padding-bottom:calc(var(--combo-k-max) + var(--sp-4))}
 .combo-more{min-height:44px;padding:var(--sp-4) var(--sp-5);font-size:var(--fs-3);font-weight:600;color:var(--purple-5)}
 .pk{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);cursor:pointer;
   background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);
@@ -357,7 +361,7 @@ main > .foot{margin-top:auto}
 
 /* ── נקודות שבירה ──
    נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
-@media (min-width:480px){:root{--col:440px}}
+@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}}
 @media (min-width:640px){:root{--col:520px}}
 @media (min-width:900px){:root{--col:600px}}
 @media (min-width:1200px){:root{--col:680px}}

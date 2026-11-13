@@ -2,7 +2,7 @@
 import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
 import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
-import { ask, closeModal, comboDef, comboHTML, dragDef, esc, lookupDragApply, lookupList, openModal, toast,
+import { ask, closeModal, comboDef, comboHTML, dragDef, methodGridHTML, methodIcon, esc, lookupDragApply, lookupList, openModal, toast,
          uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
@@ -123,12 +123,10 @@ function flowBodyHTML() {
   } else if (key === 'source' || key === 'method') {
     var list = key === 'source' ? lookupList('source', SRC_DEFAULT)
                                 : lookupList('method', METHOD_DEFAULT);
-    h += '<div class="opts">' +
-      list.map(function (x) {
-        return '<button type="button" class="opt' + (d.method === x ? ' on' : '') +
-               '" data-act="flow-pick" data-k="method" data-v="' + esc(x) + '">' +
-               esc(x) + '</button>';
-      }).join('') + '</div>';
+    // הרשת של הליבה — עיגול ובו אייקון האמצעי, והשם מתחתיו; הערך בשדה הנסתר f-method.
+    h += '<input type="hidden" id="f-method" value="' + esc(d.method) + '">' +
+      methodGridHTML({ target: 'f-method', list: list, cur: d.method, label: STEP_META[key].lab,
+        ico: function (l) { return icon(methodIcon(l)); } });
   } else if (key === 'category') {
     h += '<div class="opts">' + CAT_LIST.map(function (x) {
       return '<button type="button" class="opt' + (d.category === x ? ' on' : '') +
@@ -175,6 +173,8 @@ function flowCollect() {
     view.draft.amount = el ? readNum(el, null) : null;
   } else if (key === 'desc') {
     el = kQ('#f-desc'); view.draft.description = el ? el.value.trim() : '';
+  } else if (key === 'source' || key === 'method') {
+    el = kQ('#f-method'); view.draft.method = el ? el.value : '';
   } else if (key === 'date') {
     el = kQ('#f-date'); if (el && el.value) view.draft.entry_date = el.value;
   }
