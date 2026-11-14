@@ -105,7 +105,8 @@ main > .foot{margin-top:auto}
 .fabrail{position:fixed;inset-block-end:calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom));
   inset-inline:0;z-index:var(--z-2);display:flex;justify-content:center;
   pointer-events:none}
-.fabrail .in{width:100%;max-width:var(--col);display:flex;justify-content:flex-end;
+/* בטלפון — כמו שורת הניווט, על כל רוחב המסך: הכפתור קרוב לקצה, ולא צמוד אליו; ממסך רחב — בעמודה */
+.fabrail .in{width:100%;display:flex;justify-content:flex-end;
   padding-inline-end:var(--sp-6)}
 .fab{position:relative;pointer-events:auto;
   width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
@@ -361,7 +362,7 @@ main > .foot{margin-top:auto}
 
 /* ── נקודות שבירה ──
    נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
-@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}}
+@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}.fabrail .in{max-width:var(--col)}}
 @media (min-width:640px){:root{--col:520px}}
 @media (min-width:900px){:root{--col:600px}}
 @media (min-width:1200px){:root{--col:680px}}
