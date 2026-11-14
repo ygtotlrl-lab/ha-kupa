@@ -13,8 +13,8 @@
   "dir": "rtl",
   "orientation": "portrait",
   "icons": [
-    { "src": "icons/icon-192.985fb61c.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.a901d39c.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.34251542.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/icon-192.e9afe127.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.522fadc9.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.712de8f6.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
