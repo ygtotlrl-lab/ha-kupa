@@ -7,8 +7,9 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
-import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel, methodPick, dragDown, dragMove, dragUp, esc, lookupList,
-         lookupSeed, openModal, shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
+import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel,
+         dragDown, dragMove, dragUp, esc, lookupList, lookupSeed, methodPick, modalDismiss, openModal,
+         shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
 import { hebYearLabelFull } from '../core/hebrew.js';
 import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
@@ -256,7 +257,7 @@ var DOM_ACTIONS = {
   // הרקע ו-Escape עונים «לא», והכפתורים הם המסלול היחיד שעונה «כן».
   'ask-yes': function () { closeAsk(true); },
   'ask-no':  function () { closeAsk(false); },
-  'modal-close': function () { closeModal(); },
+  'modal-close': function () { modalDismiss(); },
   'ls-alert-close':      function () { var el = document.getElementById('ls-alert'); if (el) el.remove(); },
   'pend-alert-ok':       function () { pendAlertDismiss(); },
   // לחיצה על תנועה פותחת עורך ולא מוחקת — מסלול שמחיקתו היא הלחיצה היחידה מוחק על טעות.
