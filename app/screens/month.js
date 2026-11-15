@@ -141,7 +141,7 @@ function flowBodyHTML() {
   // הכפתורים בתוך היקף ה-data-ks ולא בתחתית המיכל — ksKey מחפש רק בתוך ההיקף, וכפתור מחוצה לו אינו עונה למקש.
   return h + '<div class="frow">' +
     '<button class="btn ghost" data-act="flow-back" data-kesc>' + esc(MSG_BACK) + '</button>' +
-    '<button class="btn" data-act="flow-next" data-ksave>' +
+    '<button class="btn" data-act="flow-next" data-ksave data-noguard>' +
     esc(view.step === flowSteps().length - 1 ? 'אישור' : 'המשך') + '</button></div></div>';
 }
 
