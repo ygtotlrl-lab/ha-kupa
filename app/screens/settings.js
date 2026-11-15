@@ -191,8 +191,9 @@ function lookupFormHTML(r) {
 
 // כפתור אחד לשני המסלולים — שני ליטרלים הם שני מקומות שבהם data-ksave יכול להישמט.
 function lookupFootHTML(r, kind) {
-  return '<button class="btn" data-act="look-save" data-id="' + esc(r ? r.client_id : '') +
-    '" data-k="' + esc(kind) + '" data-ksave>שמור</button>';
+  return '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
+    '<button class="btn" data-act="look-save" data-id="' + esc(r ? r.client_id : '') +
+    '" data-k="' + esc(kind) + '" data-ksave>' + icon('save') + 'שמירה</button>';
 }
 
 function pledgeYears() {

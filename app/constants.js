@@ -36,7 +36,7 @@ var MSG_DEL_PRE = 'למחוק את «';
 
 var MSG_DEL_POST = '»?';
 
-var MSG_UNDO = 'בטל';
+var MSG_UNDO = 'ביטול';
 
 var MSG_DELETED = 'נמחק';
 

@@ -164,7 +164,7 @@ main > .foot{margin-top:auto}
 .fld input,.fld select{width:100%;background:var(--card);color:var(--text);
   border:1px solid var(--border);border-radius:var(--radius-sm);
   padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
-.btn{display:block;width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
+.btn{display:flex;align-items:center;justify-content:center;gap:var(--sp-3);width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
   background:var(--brand);color:var(--on-brand);font-size:var(--fs-5);font-weight:500;
   padding:var(--sp-5);min-height:44px}
 .btn.ghost{background:var(--card);color:var(--text-2);border:1px solid var(--border)}

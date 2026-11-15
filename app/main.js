@@ -279,10 +279,11 @@ var DOM_ACTIONS = {
         ? lookupList('method', METHOD_DEFAULT) : lookupList('source', SRC_DEFAULT), r.method) +
       (r.type === 'income' ? '' : entrySelectHTML('e-cat', 'קטגוריה', CAT_LIST, r.category)) +
       '</div>',
+      '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
       '<button class="btn ghost" data-act="entry-del" data-id="' + esc(r.client_id) +
       '">' + esc(MSG_DELETE) + '</button>' +
       '<button class="btn" data-act="entry-save" data-id="' + esc(r.client_id) +
-      '" data-ksave>שמור</button>');
+      '" data-ksave>' + icon('save') + 'שמירה</button>');
   },
   'entry-save': function (el) {
     var a = kQ('#e-amt'), ds = kQ('#e-desc'), dt = kQ('#e-date');
@@ -312,7 +313,8 @@ var DOM_ACTIONS = {
   'entry-undo': function () { entryUndo(); },
   'order-add': function () {
     openModal(MSG_ORDER_NEW, orderFormHTML(null),
-      '<button class="btn" data-act="order-new" data-ksave>שמור</button>');
+      '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
+      '<button class="btn" data-act="order-new" data-ksave>' + icon('save') + 'שמירה</button>');
   },
   'order-new': function () {
     var p = orderRead(), bad = orderValid(p);
@@ -335,10 +337,11 @@ var DOM_ACTIONS = {
     var o = orderById(el.dataset.id);
     if (!o) { uiNoDialog('order-edit', el.dataset.id); return; }
     openModal(MSG_EDIT + ' · ' + o.name, orderFormHTML(o),
-      '<button class="btn" data-act="order-save" data-id="' + esc(o.client_id) +
-      '" data-ksave>שמור</button>' +
+      '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
       '<button class="btn ghost" data-act="order-stop" data-id="' + esc(o.client_id) + '">' +
-      esc(MSG_ORDER_STOP) + '</button>');
+      esc(MSG_ORDER_STOP) + '</button>' +
+      '<button class="btn" data-act="order-save" data-id="' + esc(o.client_id) +
+      '" data-ksave>' + icon('save') + 'שמירה</button>');
   },
   'order-stop': function (el) {
     var o = orderById(el.dataset.id);
@@ -378,8 +381,9 @@ var DOM_ACTIONS = {
       '<div data-ks><div class="fld"><label for="p-amt">סכום</label>' +
       '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
+      '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
       '<button class="btn" data-act="pledge-save" data-id="' + esc(y) +
-      '" data-ksave>שמור</button>');
+      '" data-ksave>' + icon('save') + 'שמירה</button>');
   },
   'pledge-save': function (el) {
     var inp = kQ('#p-amt'), y = Number(el.dataset.id);
