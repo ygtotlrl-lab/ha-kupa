@@ -7,7 +7,7 @@ import { logAction } from '../core/backup.js';
 import { esc, pullRender } from '../core/ui.js';
 import { bar } from '../core/chart.js';
 import { hebDate, hebMonthNames, hebToGreg, hebYearLabelFull } from '../core/hebrew.js';
-import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER,
+import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER, MSG_DEDUCT,
          MSG_LEFT_SUM, MSG_OPENER, MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS,
          MSG_SUM_SELF, PUSH_TABLES, TABLES } from './constants.js';
 import { S, shell, view } from './state.js';
@@ -484,17 +484,19 @@ function assetIcon(id) {
 function detailRowHTML(r) {
   var isInc = r.type === 'income';
   var so = r.source === 'standing';
-  var tag = so ? 'הו״ק' : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : ''));
+  // ניכוי הוצאה — הכנסה בסכום שלילי; התגית והמינוס מבדילים אותה מהכנסה.
+  var ded = isInc && !so && +r.amount < 0;
+  var tag = so ? 'הו״ק' : (ded ? MSG_DEDUCT : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : '')));
   // מופע הוראת קבע אינו נערך מהפירוט — ההוראה נערכת בהגדרות בלבד, ועריכה ממופע של גרסה ישנה פתחה ענף שני.
   return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '')
              : '<li data-act="entry-menu" data-id="' + esc(r.client_id) + '"') + '>' +
          '<span class="det-ic art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
          '<span class="nm">' + esc(r.description || '') + '</span>' +
          '<span class="tag">' + esc(tag) + '</span>' +
-         '<span class="amt">' + money(r.amount) + '</span></li>';
+         '<span class="amt">' + (ded ? signed(r.amount) : money(r.amount)) + '</span></li>';
 }
 
-// סכום שעוד חייבים נכתב בלי סימן, והמינוס שמור ליתרת זכות בלבד.
+// סכום שעוד חייבים נכתב בלי סימן, והמינוס שמור ליתרת זכות ולניכוי הוצאה.
 // מינוס טיפוגרפי ולא מקף — המקף נקרא כחלק מהמילה שלפניו; והעטיפה ב-ltr מונעת מהאלגוריתם הדו-כיווני להעיף את הסימן לקצה השורה.
 function signed(n) {
   // Math.round(-0.2) הוא -0, שאינו קטן מאפס — בלי האיפוס המעצב מדפיס «-0 ₪», שנקרא כחוב של כלום.

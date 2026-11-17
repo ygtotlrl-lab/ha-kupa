@@ -5,14 +5,14 @@ import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, comboDef, comboHTML, dragDef, methodGridHTML, methodIcon, esc, lookupDragApply, lookupList, openModal, toast,
          uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
-import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
+import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DEDUCT_CHK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { icon } from '../icons.js';
 import { chainOf, compCardHTML, detailRowHTML, footHTML, kKill, kLive, kQ,
          kSortDescriptions, kSortEntries, localPut, money, monthByKey, monthGreg,
-         monthRows, pushSoon, splitHTML } from '../domain.js';
+         monthRows, pushSoon, signed, splitHTML } from '../domain.js';
 
 function monthScreenHTML() {
   var m = monthByKey(view.monthKey);
@@ -37,7 +37,7 @@ function monthScreenHTML() {
                     c.tzedakah, c.pledgeBalance);
 
   h += '<div class="inc">' + esc(MSG_SUM_INCOME) +
-       '<b>' + esc(money(c.income || 0)) + '</b></div>' +
+       '<b>' + signed(c.income || 0) + '</b></div>' +
        '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
        '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
        '<div class="inc sub">' + splitHTML(c) + '</div>';
@@ -115,7 +115,9 @@ function flowBodyHTML() {
   if (key === 'amount') {
     h += '<div class="fld"><label for="f-amount">סכום</label>' +
       '<input id="f-amount" type="text" inputmode="decimal" autocomplete="off" ' +
-      'value="' + esc(d.amount === null ? '' : String(d.amount)) + '"></div>';
+      'value="' + esc(d.amount === null ? '' : String(Math.abs(d.amount))) + '"></div>';
+    // במקלדת המספרים אין מינוס — הסימון הוא שהופך את הסכום לניכוי.
+    if (view.flow === 'income') h += deductChkHTML('f-deduct', d.amount !== null && d.amount < 0);
   } else if (key === 'desc') {
     h += '<div class="fld"><label for="f-desc">פירוט</label>' +
       comboHTML('desc', { id: 'f-desc-box', qid: 'f-desc', label: 'פירוט', placeholder: 'פירוט',
@@ -145,6 +147,17 @@ function flowBodyHTML() {
     esc(view.step === flowSteps().length - 1 ? 'אישור' : 'המשך') + '</button></div></div>';
 }
 
+function deductChkHTML(id, on) {
+  return '<label class="fld chk"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') +
+         '><span>' + esc(MSG_DEDUCT_CHK) + '</span></label>';
+}
+
+// הסכום מוקלד בלי סימן, והסימון קובע אותו — מינוס שהוקלד ביד אינו נספר פעמיים.
+function deductAmount(v, chk) {
+  if (v === null) return null;
+  return chk && chk.checked ? -Math.abs(v) : Math.abs(v);
+}
+
 // openModal מחליף את התוכן ואינו סוגר את המיכל; המיקוד מוחזר לשדה הראשון — שדה שנבנה מחדש מאבד אותו.
 function flowOpen() {
   openModal('', flowBodyHTML(), '');
@@ -171,6 +184,7 @@ function flowCollect() {
   if (key === 'amount') {
     el = kQ('#f-amount');
     view.draft.amount = el ? readNum(el, null) : null;
+    if (view.flow === 'income') view.draft.amount = deductAmount(view.draft.amount, kQ('#f-deduct'));
   } else if (key === 'desc') {
     el = kQ('#f-desc'); view.draft.description = el ? el.value.trim() : '';
   } else if (key === 'source' || key === 'method') {
@@ -184,7 +198,7 @@ function flowValid() {
   var key = flowSteps()[view.step], d = view.draft;
   if (key === 'amount') {
     if (d.amount === null) return MSG_NEED_AMOUNT;
-    // בהכנסה מותר סכום שלילי — הוא קיזוז; בצדקה הוא חייב להיות גדול מאפס.
+    // בהכנסה מותר סכום שלילי — הוא ניכוי הוצאה; בצדקה הוא חייב להיות גדול מאפס.
     if (view.flow !== 'income' && d.amount <= EPS) return MSG_NEED_AMOUNT;
     if (view.flow === 'income' && Math.abs(d.amount) <= EPS) return MSG_NEED_AMOUNT;
     return '';
@@ -232,5 +246,5 @@ function entryUndo() {
   shell.kRender();
 }
 
-export { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+export { deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML };

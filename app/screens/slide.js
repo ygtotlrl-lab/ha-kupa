@@ -3,7 +3,7 @@ import { newClientId } from '../../core/sync.js';
 import { esc, uiHold, uiNoDialog } from '../../core/ui.js';
 import { MSG_SLIDE_KUPA, MSG_SLIDE_SUB, MSG_SLIDE_WALLET } from '../constants.js';
 import { shell, view } from '../state.js';
-import { assetIcon, localPut, money, monthKeyOf, pushSoon } from '../domain.js';
+import { assetIcon, localPut, money, monthKeyOf, pushSoon, signed } from '../domain.js';
 
 // שחרור מעל היעד מאשר ושחרור בצד מחזיר את המטבע — האישור הוא התנועה עצמה, ואין כפתור אישור שני.
 var COIN = { el: null, tgt: null, dx: 0, dy: 0, over: false, on: false, pid: null };
@@ -17,7 +17,7 @@ function slideScreenHTML() {
     '<div class="target ' + (isInc ? 'wide' : 'narrow') + '" id="slide-target">' +
     assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</div>' +
     '<div class="coin" id="coin" data-coin><span class="ring"></span>' +
-    money(Math.abs(view.draft.amount)) + '</div></div>';
+    (view.draft.amount < 0 ? signed(view.draft.amount) : money(view.draft.amount)) + '</div></div>';
 }
 
 // המטבע מתחיל מעל היעד — הוא נופל לתוכו, וגרירה כלפי מעלה אינה תנועה שמישהו מצפה לה.

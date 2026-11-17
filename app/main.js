@@ -25,7 +25,7 @@ import { assetIcon, brandHTML,
          soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
-import { entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+import { deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
@@ -269,7 +269,8 @@ var DOM_ACTIONS = {
       '<div data-ks>' +
       '<div class="fld"><label for="e-amt">סכום</label>' +
       '<input id="e-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
-      esc(r.amount) + '"></div>' +
+      esc(Math.abs(+r.amount || 0)) + '"></div>' +
+      (r.type === 'income' ? deductChkHTML('e-deduct', +r.amount < 0) : '') +
       '<div class="fld"><label for="e-desc">פירוט</label>' +
       '<input id="e-desc" type="text" autocomplete="off" value="' +
       esc(r.description || '') + '"></div>' +
@@ -291,6 +292,7 @@ var DOM_ACTIONS = {
     var r = entryById(el.dataset.id);
     if (!r) { uiNoDialog('entry-save', el.dataset.id); return; }
     var v = readNum(a, null), txt = ds.value.trim(), day = dt.value;
+    if (r.type === 'income') v = deductAmount(v, kQ('#e-deduct'));
     if (v === null || (r.type !== 'income' && v <= EPS) || Math.abs(v) <= EPS) {
       toast(MSG_NEED_AMOUNT, 4000, 'warn'); return;
     }
