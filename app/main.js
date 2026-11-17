@@ -18,7 +18,7 @@ import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          TABS } from './constants.js';
 import { S, shell, view } from './state.js';
 import { icon } from './icons.js';
-import { assetIcon, brandHTML,
+import { assetIcon,
          kLive, kPendKey, kPendKeyOf, kQ, kStripRows, kSyncNow,
          kSyncPull, kTableMeta, localPut, lookupRows, monthByKey, nextMonthOf,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
@@ -163,7 +163,7 @@ function tabbarHTML() {
 function kRender() {
   var root = kQ('#view');
   if (!root) { uiNoDialog('kRender', 'view'); return; }
-  var fab = kQ('#fab'), tb = kQ('#tabbar'), hd = kQ('#masthead');
+  var fab = kQ('#fab'), tb = kQ('#tabbar');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
@@ -173,10 +173,6 @@ function kRender() {
   // אין סרגל בזרימה — ניווט באמצעה מאבד את הטיוטה.
   var onTab = TABS.some(function (t) { return t.k === view.screen; });
   if (fab) fab.classList.toggle('hidden', !onMonth);
-  if (hd) {
-    hd.classList.toggle('hidden', !onTab);
-    hd.innerHTML = onTab ? brandHTML() : '';
-  }
   if (tb) {
     tb.classList.toggle('hidden', !onTab);
     tb.innerHTML = tabbarHTML();

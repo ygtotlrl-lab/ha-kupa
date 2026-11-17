@@ -424,10 +424,6 @@ function footHTML() {
 }
 
 // הלוגו הוא הנכס שהמחולל מייצר — ציור שני של המאסטר היה מקור אמת שני.
-function brandHTML() {
-  return '<img src="icons/icon-192.27906b2a.png" alt="" width="40" height="40">';
-}
-
 // טווח התאריכים הלועזי נגזר מראש החודש ומראש הבא, בצורה יום.חודש.
 function gregShort(iso) {
   var t = String(iso || '');
@@ -575,7 +571,7 @@ function lookupRows(kind) {
   return kSortLookups(kLive(MIRROR.k_lookups).filter(function (r) { return r.kind === kind; }));
 }
 
-export { assetIcon, brandHTML, chainOf, compCardHTML, compPct,
+export { assetIcon, chainOf, compCardHTML, compPct,
          detailRowHTML, footHTML, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,

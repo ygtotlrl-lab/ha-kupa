@@ -90,14 +90,10 @@ input,select,textarea{font:inherit; color:inherit}
    min-height של מלוא החלון דוחף את התחתית לתחתית המסך — מסך קצר היה משאיר אותה באמצע. */
 body{display:flex;flex-direction:column;min-height:100vh}
 /* סוף התוכן מרוחק מסרגל הלשוניות כראשו מהכותרת. */
-main{padding:0 var(--sp-6); padding-bottom:calc(var(--tabbar-h) + var(--sp-6) + env(safe-area-inset-bottom));
+main{padding:var(--sp-7) var(--sp-6) 0; padding-bottom:calc(var(--tabbar-h) + var(--sp-6) + env(safe-area-inset-bottom));
   width:100%;max-width:var(--col);margin:0 auto;
   flex:1 0 auto;display:flex;flex-direction:column}
 main > .foot{margin-top:auto}
-/* הלוגו הוא הנכס שהמחולל מייצר — ציור שני של המאסטר היה מקור אמת שני. */
-.brand{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);
-  padding:var(--sp-6) 0 var(--sp-2)}
-.brand img{width:40px;height:40px;border-radius:var(--r-4)}
 /* פס היעד מוסתר כי הוא מלא תמיד; הערך עצמו נשאר — הוא המכנה שהרכיב המשותף מנרמל לפיו, והסרתו משנה את אורכי הפסים. */
 
 /* הפלוס הוא ציור ולא תו — מרכזו האופטי של תו זז בין מנועים.
