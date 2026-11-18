@@ -4,7 +4,7 @@ import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, comboDef, comboHTML, dragDef, methodGridHTML, methodIcon, esc, lookupDragApply, lookupList, openModal, toast,
          uiNoDialog } from '../../core/ui.js';
-import { hebDayLabel, hebGematria, hebMonthNames, hebToGreg, hebYearInfo, hebYearLabelFull } from '../../core/hebrew.js';
+import { hebDayLabel, hebMonthNames, hebToGreg, hebYearInfo, hebYearLabelFull } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DEDUCT_CHK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
@@ -164,48 +164,87 @@ function flowOpen() {
 }
 
 // ── בורר התאריך הכפול ──
-// שני בוררים לאותו יום — לועזי ועברי; שינוי באחד מעדכן את השני, והערך שנשמר הוא של הלועזי, <px>-date.
+// שני בוררים לאותו יום — לועזי (הבורר של המערכת) ועברי (לוח חודשי שנפתח בלחיצה); שינוי באחד מעדכן את השני,
+// והערך שנשמר הוא של הלועזי, <px>-date.
 function datePairHTML(px, iso) {
   return '<div class="fld"><label for="' + px + '-date">תאריך לועזי</label>' +
     '<input id="' + px + '-date" type="date" data-chg="date-greg" data-px="' + px + '" value="' + esc(iso || '') + '"></div>' +
-    '<div class="fld"><label for="' + px + '-hd">תאריך עברי</label>' +
-    '<div class="hpick" data-hpick="' + px + '">' + hebPickHTML(px, iso) + '</div></div>';
+    '<div class="fld"><label for="' + px + '-hbtn">תאריך עברי</label>' +
+    '<button type="button" class="hpick-trg" id="' + px + '-hbtn" data-act="hpick-open" data-px="' + px + '">' +
+    '<span id="' + px + '-hlbl">' + esc(hebFull(iso)) + '</span>' + icon('date') + '</button>' +
+    '<div class="hpick-pop" id="' + px + '-hpop" hidden></div></div>';
 }
 
-function hebOpt(v, lab, cur) {
-  return '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + esc(lab) + '</option>';
+function hebFull(iso) {
+  var h = kHeb(iso);
+  return h ? hebDayLabel(h.day) + ' ' + h.monthName + ' ' + hebYearLabelFull(h.year) : '';
 }
 
-// השנים — משנה לפני השנה של היום ועד שנה אחריה, והשנה של הרשומה תמיד בתוכן.
-function hebPickHTML(px, iso) {
-  var h = kHeb(iso) || kHeb(dayToday()), now = kHeb(dayToday());
-  if (!h) return '';
-  var info = hebYearInfo(h.year), names = hebMonthNames(h.year), i, d = '', m = '', y = '';
-  var y0 = Math.min(h.year, now ? now.year - 1 : h.year), y1 = Math.max(h.year, now ? now.year + 1 : h.year);
-  for (i = 1; i <= (info ? info.ml[h.monthIndex] : 30); i++) d += hebOpt(i, hebDayLabel(i), h.day);
-  for (i = 0; i < names.length; i++) m += hebOpt(i, names[i], h.monthIndex);
-  for (i = y0; i <= y1; i++) y += hebOpt(i, hebGematria(i % 1000, '״'), h.year);
-  var at = ' data-chg="date-heb" data-px="' + px + '"';
-  return '<select id="' + px + '-hd"' + at + ' aria-label="יום">' + d + '</select>' +
-    '<select id="' + px + '-hm"' + at + ' aria-label="חודש">' + m + '</select>' +
-    '<select id="' + px + '-hy"' + at + ' aria-label="שנה">' + y + '</select>';
+// הלוח של חודש עברי אחד — בלי גבול שנים; בגריד מימין לשמאל התא הימני הוא יום ראשון.
+function hebCalHTML(px, hy, mi) {
+  var info = hebYearInfo(hy), first = hebToGreg(hy, mi, 1);
+  if (!info || !first) return '';
+  var sel = kHeb((kQ('#' + px + '-date') || {}).value), now = kHeb(dayToday()), i, d, cls;
+  var h = '<div class="hcal-head">' +
+    '<button type="button" class="hcal-nav" data-act="hpick-nav" data-px="' + px + '" data-dir="-1" aria-label="החודש הקודם">' + icon('next') + '</button>' +
+    '<span class="hcal-month">' + esc(hebMonthNames(hy)[mi] + ' ' + hebYearLabelFull(hy)) + '</span>' +
+    '<button type="button" class="hcal-nav" data-act="hpick-nav" data-px="' + px + '" data-dir="1" aria-label="החודש הבא">' + icon('prev') + '</button></div>' +
+    '<div class="hcal-grid">' + ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'].map(function (x) { return '<span class="hcal-dow">' + x + '</span>'; }).join('');
+  for (i = 0; i < first.getDay(); i++) h += '<span></span>';
+  for (d = 1; d <= info.ml[mi]; d++) {
+    cls = 'hcal-day' + (sel && sel.year === hy && sel.monthIndex === mi && sel.day === d ? ' on' : '') +
+      (now && now.year === hy && now.monthIndex === mi && now.day === d ? ' today' : '');
+    h += '<button type="button" class="' + cls + '" data-act="hpick-pick" data-px="' + px +
+      '" data-hy="' + hy + '" data-mi="' + mi + '" data-day="' + d + '">' + hebDayLabel(d) + '</button>';
+  }
+  return h + '</div>';
 }
 
-// חודש שאינו בשנה שנבחרה (אדר ב בשנה רגילה) ויום שאינו בחודש — נעצרים באחרון שקיים.
-function datePairChange(e) {
-  var t = e.target, chg = t && t.dataset ? t.dataset.chg : '', box, px, inp, info, y, mi, d, g;
-  if (chg !== 'date-greg' && chg !== 'date-heb') return;
-  px = t.dataset.px; box = kQ('[data-hpick="' + px + '"]'); inp = kQ('#' + px + '-date');
-  if (!box || !inp) return;
-  if (chg === 'date-greg') { if (t.value) box.innerHTML = hebPickHTML(px, t.value); return; }
-  y = +kQ('#' + px + '-hy').value; mi = +kQ('#' + px + '-hm').value; d = +kQ('#' + px + '-hd').value;
-  info = hebYearInfo(y);
-  if (!info) return;
-  mi = Math.min(mi, info.ml.length - 1); d = Math.min(d, info.ml[mi]);
-  g = hebToGreg(y, mi, d);
-  if (!g) return;
+function hpickDraw(px, hy, mi) {
+  var pop = kQ('#' + px + '-hpop');
+  if (!pop) return;
+  pop.dataset.hy = hy; pop.dataset.mi = mi;
+  pop.innerHTML = hebCalHTML(px, hy, mi);
+}
+
+// פתיחה בחודש של התאריך שבבורר הלועזי; לחיצה שנייה סוגרת.
+function hpickOpen(el) {
+  var px = el.dataset.px, pop = kQ('#' + px + '-hpop'), h;
+  if (!pop) return;
+  if (!pop.hidden) { pop.hidden = true; return; }
+  h = kHeb((kQ('#' + px + '-date') || {}).value) || kHeb(dayToday());
+  if (!h) return;
+  hpickDraw(px, h.year, h.monthIndex);
+  pop.hidden = false;
+}
+
+function hpickNav(el) {
+  var px = el.dataset.px, pop = kQ('#' + px + '-hpop'), hy, mi, info;
+  if (!pop) return;
+  hy = +pop.dataset.hy; mi = +pop.dataset.mi + (+el.dataset.dir);
+  if (mi < 0) { hy -= 1; info = hebYearInfo(hy); mi = info ? info.ml.length - 1 : 0; }
+  else { info = hebYearInfo(hy); if (info && mi >= info.ml.length) { hy += 1; mi = 0; } }
+  hpickDraw(px, hy, mi);
+}
+
+function hpickPick(el) {
+  var px = el.dataset.px, g = hebToGreg(+el.dataset.hy, +el.dataset.mi, +el.dataset.day), inp = kQ('#' + px + '-date');
+  var lbl = kQ('#' + px + '-hlbl'), pop = kQ('#' + px + '-hpop');
+  if (!g || !inp) return;
   inp.value = dayIso(g);
-  box.innerHTML = hebPickHTML(px, inp.value);
+  inp.dispatchEvent(new Event('input', { bubbles: true }));
+  if (lbl) lbl.textContent = hebFull(inp.value);
+  if (pop) pop.hidden = true;
+}
+
+// הבורר הלועזי השתנה — התווית העברית מתעדכנת, ולוח פתוח עובר לחודש החדש.
+function datePairChange(e) {
+  var t = e.target, px, lbl, pop, h;
+  if (!t || !t.dataset || t.dataset.chg !== 'date-greg' || !t.value) return;
+  px = t.dataset.px; lbl = kQ('#' + px + '-hlbl'); pop = kQ('#' + px + '-hpop');
+  if (lbl) lbl.textContent = hebFull(t.value);
+  h = kHeb(t.value);
+  if (pop && !pop.hidden && h) hpickDraw(px, h.year, h.monthIndex);
 }
 
 function flowStart(kind) {
@@ -283,5 +322,5 @@ function entryUndo() {
   shell.kRender();
 }
 
-export { datePairChange, datePairHTML, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+export { datePairChange, datePairHTML, hpickNav, hpickOpen, hpickPick, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML };

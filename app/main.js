@@ -25,7 +25,7 @@ import { assetIcon,
          soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
-import { datePairChange, datePairHTML, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+import { datePairChange, datePairHTML, hpickNav, hpickOpen, hpickPick, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
@@ -246,6 +246,9 @@ var DOM_ACTIONS = {
     view.step--;
     flowOpen();
   },
+  'hpick-open': hpickOpen,
+  'hpick-nav': hpickNav,
+  'hpick-pick': hpickPick,
   'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
   'combo-pick': function (el) { return comboPick(el); },
   'combo-more': function (el) { return comboMore(el); },

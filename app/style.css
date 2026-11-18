@@ -156,10 +156,23 @@ main > .foot{margin-top:auto}
   .veil-ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
 }
 .fld{margin-bottom:var(--sp-6)}
-/* בורר התאריך העברי — יום · חודש · שנה בשורה אחת. */
-.hpick{display:flex;gap:var(--sp-3)}
-.hpick select{flex:1.5;min-width:0;padding-inline:var(--sp-4)}
-.hpick select:first-child{flex:1}
+/* בורר התאריך העברי — כפתור בצורת השדה, ומתחתיו לוח חודשי שנפתח בלחיצה. */
+.hpick-trg{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);width:100%;cursor:pointer;
+  background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-5);font-family:inherit;font-size:var(--fs-5);min-height:44px;text-align:start}
+.hpick-trg .ico{width:20px;height:20px;color:var(--text-2);flex:none}
+.hpick-pop{margin-top:var(--sp-3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-4);background:var(--card)}
+.hpick-pop[hidden]{display:none}
+.hcal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-4)}
+.hcal-month{font-weight:700;font-size:var(--fs-4);color:var(--text)}
+.hcal-nav{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;
+  background:var(--purple-1);color:var(--purple-5);cursor:pointer;padding:0}
+.hcal-nav .ico{width:18px;height:18px}
+.hcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.hcal-dow{font-size:var(--fs-2);font-weight:700;color:var(--text-3);padding:var(--sp-2) 0}
+.hcal-day{border:0;background:none;color:var(--text);font-family:inherit;font-size:var(--fs-3);padding:var(--sp-3) 0;border-radius:var(--radius-sm);cursor:pointer}
+.hcal-day.today{outline:1px solid var(--purple-5);outline-offset:-1px;font-weight:700}
+.hcal-day.on{background:var(--brand);color:var(--on-brand);font-weight:700}
 .fld.chk{display:flex;align-items:center;gap:var(--sp-4);cursor:pointer}
 .fld.chk input{width:19px;height:19px;accent-color:var(--purple-5);flex:none;margin:0;padding:0}
 .fld.chk > span{margin:0;font-size:var(--fs-3);color:var(--text)}
