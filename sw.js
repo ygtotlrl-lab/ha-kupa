@@ -1,7 +1,7 @@
 // sw.js — service worker של האפליקציה
 importScripts('./app.config.js');
 // מכאן נגזרת גרסת האפליקציה שבבאנר.
-var CACHE_NAME = self.APP.id + '-v182';
+var CACHE_NAME = self.APP.id + '-v183';
 
 var CORE = [
   './',
@@ -33,9 +33,9 @@ var CORE = [
   './app/screens/slide.js',
   './app/main.js',
   './manifest.json',
-  './icons/icon-192.27906b2a.png',
-  './icons/icon-512.3c9a0e83.png',
-  './icons/icon-maskable-512.281cbedc.png',
+  './icons/icon-192.411422bb.png',
+  './icons/icon-512.b5392912.png',
+  './icons/icon-maskable-512.48c2f8dd.png',
 ];
 
 // גרסאות נעוצות במדויק — major צף נשבר בשחרור של הספק בלי שינוי קוד.

@@ -1,9 +1,8 @@
 <svg viewBox="0 0 512 512" width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#633B91"/><stop offset="1" stop-color="#422262"/></linearGradient></defs>
-<rect width="512" height="512" fill="url(#b)"/>
-<circle cx="256" cy="214" r="100" fill="#FAF6EC"/>
-<circle cx="256" cy="214" r="74" fill="#D9CDEB"/>
-<circle cx="256" cy="214" r="60" fill="#FAF6EC"/>
-<rect x="92" y="296" width="328" height="132" rx="38" fill="#D9CDEB"/>
-<rect x="140" y="296" width="232" height="24" rx="12" fill="#422262"/>
+<rect width="512" height="512" fill="#7C5CB0"/>
+<circle cx="256" cy="214" r="100" fill="#F6A98C"/>
+<circle cx="256" cy="214" r="74" fill="#FDE6DC"/>
+<circle cx="256" cy="214" r="60" fill="#F6A98C"/>
+<rect x="92" y="296" width="328" height="132" rx="38" fill="#E3D6F5"/>
+<rect x="140" y="296" width="232" height="24" rx="12" fill="#4A2F78"/>
 </svg>
