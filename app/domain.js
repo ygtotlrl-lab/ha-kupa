@@ -586,7 +586,7 @@ function lookupRows(kind) {
 }
 
 export { assetIcon, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, kKill, kLive,
+         detailRowHTML, footHTML, kHeb, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,

@@ -25,7 +25,7 @@ import { assetIcon,
          soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
-import { deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+import { datePairChange, datePairHTML, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
@@ -270,8 +270,7 @@ var DOM_ACTIONS = {
       '<div class="fld"><label for="e-desc">פירוט</label>' +
       '<input id="e-desc" type="text" autocomplete="off" value="' +
       esc(r.description || '') + '"></div>' +
-      '<div class="fld"><label for="e-date">תאריך</label>' +
-      '<input id="e-date" type="date" value="' + esc(r.entry_date || '') + '"></div>' +
+      datePairHTML('e', r.entry_date) +
       entrySelectHTML('e-method', 'אופן', r.type === 'income'
         ? lookupList('method', METHOD_DEFAULT) : lookupList('source', SRC_DEFAULT), r.method) +
       (r.type === 'income' ? '' : entrySelectHTML('e-cat', 'קטגוריה', CAT_LIST, r.category)) +
@@ -458,6 +457,8 @@ actWire(DOM_ACTIONS);
 // focusin ולא focus — focus אינו עולה בעץ, ושדה בדיאלוג נבנה מחדש בכל שלב.
 document.addEventListener('input', function (e) { comboInput(e); });
 document.addEventListener('focusin', comboFocus);
+// בורר התאריך הכפול — שינוי בלועזי או בעברי מעדכן את השני.
+document.addEventListener('change', datePairChange);
 
 // הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
 var fabEl = document.getElementById('fab');

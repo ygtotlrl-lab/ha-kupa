@@ -156,6 +156,10 @@ main > .foot{margin-top:auto}
   .veil-ask .sheet-ft button:hover{box-shadow:var(--shadow-lg)}
 }
 .fld{margin-bottom:var(--sp-6)}
+/* בורר התאריך העברי — יום · חודש · שנה בשורה אחת. */
+.hpick{display:flex;gap:var(--sp-3)}
+.hpick select{flex:1.5;min-width:0;padding-inline:var(--sp-4)}
+.hpick select:first-child{flex:1}
 .fld.chk{display:flex;align-items:center;gap:var(--sp-4);cursor:pointer}
 .fld.chk input{width:19px;height:19px;accent-color:var(--purple-5);flex:none;margin:0;padding:0}
 .fld.chk > span{margin:0;font-size:var(--fs-3);color:var(--text)}

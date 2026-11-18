@@ -1,16 +1,16 @@
 // app/screens/month.js — מסך החודש ותהליך הרישום
-import { MSG_DELETE, MSG_FILL_ALL, dayNoon, dayToday, readNum } from '../../core/util.js';
+import { MSG_DELETE, MSG_FILL_ALL, dayIso, dayToday, readNum } from '../../core/util.js';
 import { idEq } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
 import { ask, closeModal, comboDef, comboHTML, dragDef, methodGridHTML, methodIcon, esc, lookupDragApply, lookupList, openModal, toast,
          uiNoDialog } from '../../core/ui.js';
-import { hebYearLabelFull, hebrewDate } from '../../core/hebrew.js';
+import { hebDayLabel, hebGematria, hebMonthNames, hebToGreg, hebYearInfo, hebYearLabelFull } from '../../core/hebrew.js';
 import { CAT_LIST, EPS, METHOD_DEFAULT, MSG_BACK, MSG_DEDUCT_CHK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE,
          MSG_EMPTY_PRE, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_ORDERS_TITLE, MSG_SUM_INCOME,
          MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_SUM_TZEDAKAH, MSG_UNDO, SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { icon } from '../icons.js';
-import { chainOf, compCardHTML, detailRowHTML, footHTML, kKill, kLive, kQ,
+import { chainOf, compCardHTML, detailRowHTML, footHTML, kHeb, kKill, kLive, kQ,
          kSortDescriptions, kSortEntries, localPut, money, monthByKey, monthGreg,
          monthRows, pushSoon, signed, splitHTML } from '../domain.js';
 
@@ -136,9 +136,7 @@ function flowBodyHTML() {
              esc(x) + '</button>';
     }).join('') + '</div>';
   } else if (key === 'date') {
-    h += '<div class="fld"><label for="f-date">תאריך</label>' +
-      '<input id="f-date" type="date" value="' + esc(d.entry_date) + '">' +
-      '<div class="sml" id="f-hdate">' + esc(hebLabel(d.entry_date)) + '</div></div>';
+    h += datePairHTML('f', d.entry_date);
   }
   // הכפתורים בתוך היקף ה-data-ks ולא בתחתית המיכל — ksKey מחפש רק בתוך ההיקף, וכפתור מחוצה לו אינו עונה למקש.
   return h + '<div class="frow">' +
@@ -165,10 +163,49 @@ function flowOpen() {
   if (el) el.focus();
 }
 
-// עוגן בצהריים מקומיים — חצות נופל ליום הקודם במעבר לשעון חורף.
-function hebLabel(iso) {
-  if (!iso) return '';
-  return hebrewDate(dayNoon(iso));
+// ── בורר התאריך הכפול ──
+// שני בוררים לאותו יום — לועזי ועברי; שינוי באחד מעדכן את השני, והערך שנשמר הוא של הלועזי, <px>-date.
+function datePairHTML(px, iso) {
+  return '<div class="fld"><label for="' + px + '-date">תאריך לועזי</label>' +
+    '<input id="' + px + '-date" type="date" data-chg="date-greg" data-px="' + px + '" value="' + esc(iso || '') + '"></div>' +
+    '<div class="fld"><label for="' + px + '-hd">תאריך עברי</label>' +
+    '<div class="hpick" data-hpick="' + px + '">' + hebPickHTML(px, iso) + '</div></div>';
+}
+
+function hebOpt(v, lab, cur) {
+  return '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + esc(lab) + '</option>';
+}
+
+// השנים — משנה לפני השנה של היום ועד שנה אחריה, והשנה של הרשומה תמיד בתוכן.
+function hebPickHTML(px, iso) {
+  var h = kHeb(iso) || kHeb(dayToday()), now = kHeb(dayToday());
+  if (!h) return '';
+  var info = hebYearInfo(h.year), names = hebMonthNames(h.year), i, d = '', m = '', y = '';
+  var y0 = Math.min(h.year, now ? now.year - 1 : h.year), y1 = Math.max(h.year, now ? now.year + 1 : h.year);
+  for (i = 1; i <= (info ? info.ml[h.monthIndex] : 30); i++) d += hebOpt(i, hebDayLabel(i), h.day);
+  for (i = 0; i < names.length; i++) m += hebOpt(i, names[i], h.monthIndex);
+  for (i = y0; i <= y1; i++) y += hebOpt(i, hebGematria(i % 1000, '״'), h.year);
+  var at = ' data-chg="date-heb" data-px="' + px + '"';
+  return '<select id="' + px + '-hd"' + at + ' aria-label="יום">' + d + '</select>' +
+    '<select id="' + px + '-hm"' + at + ' aria-label="חודש">' + m + '</select>' +
+    '<select id="' + px + '-hy"' + at + ' aria-label="שנה">' + y + '</select>';
+}
+
+// חודש שאינו בשנה שנבחרה (אדר ב בשנה רגילה) ויום שאינו בחודש — נעצרים באחרון שקיים.
+function datePairChange(e) {
+  var t = e.target, chg = t && t.dataset ? t.dataset.chg : '', box, px, inp, info, y, mi, d, g;
+  if (chg !== 'date-greg' && chg !== 'date-heb') return;
+  px = t.dataset.px; box = kQ('[data-hpick="' + px + '"]'); inp = kQ('#' + px + '-date');
+  if (!box || !inp) return;
+  if (chg === 'date-greg') { if (t.value) box.innerHTML = hebPickHTML(px, t.value); return; }
+  y = +kQ('#' + px + '-hy').value; mi = +kQ('#' + px + '-hm').value; d = +kQ('#' + px + '-hd').value;
+  info = hebYearInfo(y);
+  if (!info) return;
+  mi = Math.min(mi, info.ml.length - 1); d = Math.min(d, info.ml[mi]);
+  g = hebToGreg(y, mi, d);
+  if (!g) return;
+  inp.value = dayIso(g);
+  box.innerHTML = hebPickHTML(px, inp.value);
 }
 
 function flowStart(kind) {
@@ -246,5 +283,5 @@ function entryUndo() {
   shell.kRender();
 }
 
-export { deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+export { datePairChange, datePairHTML, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML };
