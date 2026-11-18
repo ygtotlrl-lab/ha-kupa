@@ -163,11 +163,25 @@ var NUM_FMT = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 });
 
 function money(n) { return NUM_FMT.format(Math.round(n)) + ' ₪'; }
 
-// הוראות הקבע בתחתית, ומעליהן התאריכים מהחדש לישן ובתוך תאריך סדר הא״ב — ואין קיבוץ לפי סוג.
+// הוראות הקבע בסדר שנגרר בהגדרות (sort של ההוראה), ובלי סדר — בסוף, לפי א״ב.
+function orderRank(o) { return o && o.sort != null ? +o.sort : 1e9; }
+function kSortOrders(list) {
+  return list.slice().sort(function (a, b) {
+    return orderRank(a) - orderRank(b) || sortCompare(String(a.name || ''), String(b.name || '')) || String(a.client_id).localeCompare(String(b.client_id));
+  });
+}
+
+// הוראות הקבע בתחתית — בסדר שבהגדרות; ומעליהן התאריכים מהחדש לישן ובתוך תאריך סדר הא״ב — ואין קיבוץ לפי סוג.
 function kSortEntries(list) {
   return list.slice().sort(function (a, b) {
     var sa = a.source === 'standing' ? 1 : 0, sb = b.source === 'standing' ? 1 : 0;
     if (sa !== sb) return sa - sb;
+    if (sa) {
+      var r = orderRank(orderById(a.order_id)) - orderRank(orderById(b.order_id));
+      if (r !== 0) return r;
+      var nm = sortCompare(String(a.description || ''), String(b.description || ''));
+      return nm !== 0 ? nm : String(a.client_id).localeCompare(String(b.client_id));
+    }
     var d = String(b.entry_date || '').localeCompare(String(a.entry_date || ''));
     if (d !== 0) return d;
     var n = sortCompare(String(a.description || ''), String(b.description || ''));
@@ -353,7 +367,7 @@ function chainOf(k, withView) {
 
 // ── הוראות קבע ──
 function ordersLive() {
-  return kLive(MIRROR.k_standing_orders).filter(function (o) { return o.active !== false; });
+  return kSortOrders(kLive(MIRROR.k_standing_orders).filter(function (o) { return o.active !== false; }));
 }
 
 function orderById(id) {

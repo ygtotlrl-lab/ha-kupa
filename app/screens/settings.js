@@ -2,17 +2,17 @@
 import { MSG_FILL_ALL, readNum } from '../../core/util.js';
 import { idEq, newClientId } from '../../core/sync.js';
 import { MIRROR } from '../../core/mirror.js';
-import { esc, uiNoDialog } from '../../core/ui.js';
+import { dragDef, dragOrder, esc, uiNoDialog } from '../../core/ui.js';
 import { hebYearLabelFull } from '../../core/hebrew.js';
 import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NO_ORDERS,
          MSG_ORDERS_TITLE, MSG_ORDER_FROM, MSG_ORDER_NEW, MSG_SETTINGS_TITLE,
          MSG_WAY_INCOME, MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH,
          SRC_DEFAULT } from '../constants.js';
-import { view } from '../state.js';
+import { shell, view } from '../state.js';
 import { icon } from '../icons.js';
 import { footHTML, kKill, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
          monthByKey, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
-         prevMonthOf, tabHeadHTML } from '../domain.js';
+         prevMonthOf, pushSoon, tabHeadHTML } from '../domain.js';
 
 // הוראת קבע מחויבת באשראי או בהעברה בלבד — רשימת המקורות שבהגדרות היא של התנועות ולא של ההוראות.
 var ORDER_METHODS = ['אשראי', 'העברה'];
@@ -21,9 +21,9 @@ var ORDER_METHODS = ['אשראי', 'העברה'];
 function ordersCardHTML() {
   var os = ordersLive();
   return '<div class="card"><h2>' + esc(MSG_ORDERS_TITLE) + '</h2>' +
-    (os.length ? '<ul class="det">' + os.map(function (o) {
-      return '<li data-act="order-edit" data-id="' + esc(o.client_id) + '">' +
-             '<span class="det-ic">' + icon('standing') + '</span>' +
+    (os.length ? '<ul class="det drag">' + os.map(function (o) {
+      return '<li data-act="order-edit" data-drag="order" data-id="' + esc(o.client_id) + '">' +
+             '<span class="grip" data-grip aria-hidden="true">⠿</span>' +
              '<span class="nm">' + esc(o.name) + '</span>' +
              '<span class="tag">' + esc('יום ' + o.day_of_month) + '</span>' +
              '<span class="amt">' + money(o.amount) + '</span></li>';
@@ -32,6 +32,19 @@ function ordersCardHTML() {
     '<button class="btn ghost card-add" data-act="order-add">' + esc(MSG_ORDER_NEW) + '</button>' +
     '</div>';
 }
+
+// גרירה מהידית קובעת את סדר ההוראות — כאן ובפירוט של כל חודש; הסדר נכתב לכל ההוראות הפעילות מה-DOM הסופי.
+dragDef('order', function (list, kind) {
+  var ids = dragOrder(list, kind, 'data-id'), os = ordersLive(), by = {}, changed = false;
+  os.forEach(function (o) { by[String(o.client_id)] = o; });
+  ids.forEach(function (id, i) {
+    var o = by[String(id)];
+    if (!o || +o.sort === i + 1) return;
+    o.sort = i + 1; o.updated_at = Date.now();
+    localPut('k_standing_orders', o); changed = true;
+  });
+  if (changed) { pushSoon(); shell.kRender(); }
+});
 
 function lookupCardHTML(kind, title, dflt) {
   var open = view.lookOpen === kind;
@@ -89,7 +102,7 @@ function orderNewVersion(o, patch, fromMonth) {
     method: patch.method != null ? patch.method : o.method,
     category: o.category, active: true,
     valid_from_heb_month: key, valid_to_heb_month: null,
-    supersedes_client_id: o.client_id, updated_at: Date.now(), deleted: false
+    supersedes_client_id: o.client_id, sort: o.sort == null ? null : o.sort, updated_at: Date.now(), deleted: false
   };
   localPut('k_standing_orders', next);
   return next;

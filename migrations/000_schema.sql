@@ -85,6 +85,7 @@ create table if not exists public.k_standing_orders (
   valid_from_heb_month text,
   valid_to_heb_month text,
   supersedes_client_id text,
+  sort integer,
   created_at timestamp with time zone default now(),
   updated_at bigint not null,
   deleted boolean default false,
