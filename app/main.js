@@ -25,7 +25,7 @@ import { assetIcon,
          soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
 import { doneScreenHTML } from './screens/done.js';
-import { datePairChange, datePairHTML, hpickNav, hpickOpen, hpickPick, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+import { datePairHTML, dpOpen, dpPick, dpScroll, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
@@ -246,9 +246,8 @@ var DOM_ACTIONS = {
     view.step--;
     flowOpen();
   },
-  'hpick-open': hpickOpen,
-  'hpick-nav': hpickNav,
-  'hpick-pick': hpickPick,
+  'dp-open': dpOpen,
+  'dp-pick': dpPick,
   'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
   'combo-pick': function (el) { return comboPick(el); },
   'combo-more': function (el) { return comboMore(el); },
@@ -460,8 +459,8 @@ actWire(DOM_ACTIONS);
 // focusin ולא focus — focus אינו עולה בעץ, ושדה בדיאלוג נבנה מחדש בכל שלב.
 document.addEventListener('input', function (e) { comboInput(e); });
 document.addEventListener('focusin', comboFocus);
-// בורר התאריך הכפול — שינוי בלועזי או בעברי מעדכן את השני.
-document.addEventListener('change', datePairChange);
+// בורר התאריך — גלגל שנעצר קובע את היום; scroll אינו עולה בעץ, ולכן בלכידה.
+document.addEventListener('scroll', dpScroll, true);
 
 // הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
 var fabEl = document.getElementById('fab');

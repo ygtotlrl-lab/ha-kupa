@@ -74,6 +74,8 @@ var MSG_ORDER_STOPPED = 'ההוראה הופסקה';
 var MSG_SETTINGS_TITLE = 'הגדרות';
 
 var MSG_BACK = 'חזרה';
+// שמות החודשים הלועזיים — לבורר התאריך ולתווית שלו.
+var GREG_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
 
 var MSG_EDIT = 'עריכה';
 
@@ -139,7 +141,7 @@ var TABS = [
   { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'settings' }
 ];
 
-export { ARCH_FIRST, CAT_LIST, EPS, KV_TABLE, K_CAT_SELF, METHOD_DEFAULT,
+export { ARCH_FIRST, CAT_LIST, EPS, GREG_MONTHS, KV_TABLE, K_CAT_SELF, METHOD_DEFAULT,
          MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_ARCH_EMPTY, MSG_BACK, MSG_CLOSER,
          MSG_DEDUCT, MSG_DEDUCT_CHK, MSG_DELETED, MSG_DEL_POST, MSG_DEL_PRE, MSG_EDIT, MSG_EMPTY_PRE, MSG_LEFT_SUM,
          MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NEED_LABEL, MSG_NO_ORDERS,
