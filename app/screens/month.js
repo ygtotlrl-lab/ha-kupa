@@ -324,7 +324,7 @@ function entryDelete(id) {
   closeModal();
   if (!r) { uiNoDialog('entryDelete', id); return Promise.resolve(); }
   return ask(MSG_DELETE, MSG_DEL_PRE + r.description + ' ' + money(r.amount) + MSG_DEL_POST,
-             MSG_DELETE).then(function (yes) {
+             MSG_DELETE, null, null, true).then(function (yes) {
     if (!yes) return;
     var copy = JSON.parse(JSON.stringify(r));
     kKill('k_entries', r);
