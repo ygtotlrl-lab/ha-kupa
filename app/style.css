@@ -123,10 +123,10 @@ main > .foot{margin-top:auto}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
   padding:var(--sp-5) var(--sp-2);font-size:var(--fs-1);min-height:44px;
   transition:color var(--dur-3)}
-.tab-btn .ti{display:flex;align-items:center;justify-content:center;width:44px;height:30px;border-radius:999px;transition:background var(--dur-3)}
+.tab-btn .ti{display:flex;align-items:center;justify-content:center;width:var(--tab-pill-w);height:var(--tab-pill-h);border-radius:var(--r-7);transition:background var(--dur-3)}
 .tab-btn svg{width:20px;height:20px;display:block}
-.tab-btn.on{color:var(--purple-7);font-weight:700}
-.tab-btn.on .ti{background:var(--brand-fill);color:var(--on-brand)}
+.tab-btn.on{color:var(--brand-ink);font-weight:700}
+.tab-btn.on .ti{background:var(--brand-soft);color:var(--brand-ink)}
 /* :hover רק במכשיר עם ריחוף — במגע הוא נשאר על הרכיב אחרי הלחיצה.
    וכלל ריחוף יושב ליד רכיבו — אחרי .active באותה סגוליות הוא היה גובר עליו. */
 @media (hover:hover){
