@@ -14,6 +14,8 @@ self.APP = Object.freeze({
     url: 'https://zrftjkghhjhqzopvdzou.supabase.co',
     key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZnRqa2doaGpocXpvcHZkem91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMDc4MzQsImV4cCI6MjEwMDg4MzgzNH0.DWcW3o4Y9Is3jGx1frHkrUz7cc045aH1m1uKsrwRhIA'
   },
+  // הכניסה — חובה, בחשבון Google מתוך רשימת המשתמשים (core/gauth.js); דרכים: google · password
+  auth: { required: true, ways: ['google'] },
   android: {
     package: 'com.ha.kupa',
     // ממנה נגזר המקור היחיד שגשר השיתוף מקבל
@@ -23,13 +25,17 @@ self.APP = Object.freeze({
     // צבע כפתור הניסיון החוזר בדף האופליין של המעטפת
     accent: '#9c7fd0',
     // לעולם אינו יורד — בלי קידום המכשיר המותקן אינו מקבל את ה-APK החדש.
-    versionCode: 22,
-    versionName: '2.0',
+    versionCode: 23,
+    versionName: '3.0',
     launcherBg: { kind: 'solid', color: '#7C5CB0' },
     // אפליקציות אחרות שקישור intent: רשאי לפתוח — שם ⟵ חבילה; ריק — המעטפת אינה פותחת אף אחת
     launch: {},
     // כפתור «יציאה» שהמעטפת קולטת וסוגרת בו את האפליקציה
     exit: false,
+    // ההתראות — FCM במעטפת; google-services.json שב-android/app — של האפליקציה הזו בלבד
+    push: true,
+    // הכניסה עם Google במעטפת — לקוח ה-Web של פרויקט Google (הקהל של אסימון הזהות); ריק — אין כניסה עם Google
+    google: '1083124359240-4umlnm6fic0locuq2tm8m4q6udmbrgdv.apps.googleusercontent.com',
     // גשר השיתוף (FileProvider ו-androidx) וגשר ההדפסה — בכל האפליקציות, אחידים
     share: { chooser: 'שיתוף הקובץ', print: true }
   },

@@ -10,6 +10,7 @@ import { EPS, METHOD_DEFAULT, MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_
          SRC_DEFAULT } from '../constants.js';
 import { shell, view } from '../state.js';
 import { icon } from '../icons.js';
+import { gauthCardHTML } from '../../core/gauth.js';
 import { footHTML, kKill, kLive, kQ, kSortMonthKeys, kSortYears, localPut, lookupRows, money,
          monthByKey, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, ordersLive, pledgeOfYear,
          prevMonthOf, pushSoon, tabHeadHTML } from '../domain.js';
@@ -237,6 +238,7 @@ function settingsScreenHTML() {
     // אין לאחד את שני אוצרות המילים לרשימה אחת — רשימה מעורבת מציעה בהכנסה את מה ששייך לצדקה.
     lookupCardHTML('method', MSG_WAY_INCOME, METHOD_DEFAULT) +
     lookupCardHTML('source', MSG_WAY_TZEDAKAH, SRC_DEFAULT) +
+    gauthCardHTML() + // החשבון — בתחתית: המשתמש, «משתמשים» למנהל, התראות ויציאה
     footHTML();
 }
 

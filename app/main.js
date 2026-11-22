@@ -7,6 +7,7 @@ import { lsOpen } from '../core/storage.js';
 import { MIRROR, mirrorKey, mirrorTables } from '../core/mirror.js';
 import { logAwait } from '../core/backup.js';
 import { bootRun } from '../core/boot-run.js';
+import { GAUTH_ACTIONS, gauthClientOpts, gauthGate, gauthHeaders, gauthUser } from '../core/gauth.js';
 import { actWire, ask, closeAsk, closeModal, comboFocus, comboInput, comboMore, comboPick, dragCancel,
          dragDown, dragMove, dragUp, esc, lookupList, lookupSeed, methodPick, modalDismiss, openModal,
          shellBare, swApply, swHideUpdate, toast, uiNoDialog } from '../core/ui.js';
@@ -37,6 +38,8 @@ appConfigure({
   get BK_CFG() { return BK_CFG; },
   get DEV_CFG() { return DEV_CFG; },
   get DOM_ACTIONS() { return DOM_ACTIONS; },
+  get GAUTH_CFG() { return GAUTH_CFG; },
+  get NOTIFY_CFG() { return NOTIFY_CFG; },
   get ERA_CFG() { return ERA_CFG; },
   get LOOKUP_CFG() { return LOOKUP_CFG; },
   get LS_CFG() { return LS_CFG; },
@@ -47,6 +50,17 @@ appConfigure({
   get RTY_CFG() { return RTY_CFG; },
   get saveRefresh() { return saveRefresh; }
 });
+
+// הכניסה עם Google (core/gauth.js) — הלקוח של האפליקציה; וההתראות (core/push.js) — המשתמש מזוהה מול השער באסימון הסשן
+var GAUTH_CFG = {
+  sb: function () { return S.sb; },
+  // כרטיס החשבון — בצורת שאר הכרטיסים של המסך
+  card: function (title, inner) { return '<div class="card ga-card"><h2>' + esc(title) + '</h2>' + inner + '</div>'; }
+};
+var NOTIFY_CFG = {
+  auth: async function () { return { headers: await gauthHeaders() }; },
+  user: function () { return gauthUser(); }
+};
 
 // הרשימות לסידור — השורות והכתיבה של הקופה, והזריעה והסידור בליבה.
 var LOOKUP_CFG = {
@@ -453,6 +467,7 @@ var DOM_ACTIONS = {
 
 // ── המאזינים הגלובליים ──
 // מאזין אחד לכל אירוע, בהאצלה מ-document — המסכים נבנים מחדש בכל רינדור, ומאזין שנקשר לאלמנט מת איתו.
+Object.assign(DOM_ACTIONS, GAUTH_ACTIONS);
 actWire(DOM_ACTIONS);
 
 // הרשימה הנפתחת בליבה — ההקלדה מסננת, והמיקוד פותח את הרשימה.
@@ -477,7 +492,6 @@ document.addEventListener('pointercancel', function (e) { if (!coinUp(e)) dragCa
 // ── העלייה ──
 function kBoot() {
   shell.kRender = kRender;
-  S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
   // הליבה עולה לפני הציור הראשון — המסך עולה מהמראה, והסימונים הממתינים מוצגים מהשנייה הראשונה.
   bootRun();
   // הפתיחה בחודש של היום ולא בחודש האחרון שיש לו נתונים — חודש ריק נפתח ריק.
@@ -498,6 +512,9 @@ function soWriteNow() {
 
 // האחסון נפתח לפני כל קריאה ממנו — אחרי שה-CFG הוגדרו, כי המרשם קורא אותם.
 await lsOpen();
-kBoot();
-
+// הלקוח — עם הסשן של האפליקציה (core/gauth.js), לפני הכניסה ולפני הסנכרון
+S.sb = sbWatch(window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, gauthClientOpts()));
 window.bootOk();
+// הכניסה — מסך הכניסה מעל הכל, עד שנכנס משתמש מהרשימה; והסנכרון רק אחריה
+await gauthGate();
+kBoot();
