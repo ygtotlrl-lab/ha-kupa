@@ -24,7 +24,7 @@ function monthBarsHTML(c, name) {
 }
 
 function archiveScreenHTML() {
-  var ms = archMonths(), h = tabHeadHTML(TABS[1].lab);
+  var ms = archMonths(), h = tabHeadHTML(TABS[2].lab);
   if (!ms.length) return h + '<div class="card"><div class="empty">' + esc(MSG_ARCH_EMPTY) +
                              '</div></div>' + footHTML();
   var years = [], seen = {}, i;

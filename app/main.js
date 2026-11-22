@@ -16,7 +16,7 @@ import { CAT_LIST, EPS, KV_TABLE, METHOD_DEFAULT, MSG_ADD_INCOME,
          MSG_ADD_TZEDAKAH, MSG_EDIT, MSG_NEED_AMOUNT, MSG_NEED_DESC, MSG_NEED_LABEL,
          MSG_ORDER_NEW, MSG_ORDER_STOP, MSG_ORDER_STOPPED, MSG_ORDER_STOP_Q, MSG_PLEDGE_EDIT, MSG_WAY_DUP, MSG_WAY_NEW, PUSH_TABLES,
          SRC_DEFAULT, SUPABASE_ANON_KEY, SUPABASE_URL, TABLES,
-         TABS } from './constants.js';
+         TABS, TAB_FAB_AT } from './constants.js';
 import { S, shell, view } from './state.js';
 import { icon } from './icons.js';
 import { assetIcon,
@@ -25,6 +25,7 @@ import { assetIcon,
          nowMonthKey, orderById, pledgeOfYear, prevMonthOf, pushSoon,
          soEnsureThroughNow } from './domain.js';
 import { archiveScreenHTML } from './screens/archive.js';
+import { statsScreenHTML } from './screens/stats.js';
 import { doneScreenHTML } from './screens/done.js';
 import { datePairHTML, dpOpen, dpPick, dpScroll, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
@@ -165,9 +166,11 @@ function saveRefresh() { kRender(); }
 document.title = self.APP.name;
 
 // ── הסרגל ──
+// הפלוס — באמצע הסרגל (TAB_FAB_AT), עיגול שעולה מעליו; רישום חדש מכל לשונית, והתנועה בתאריך של היום
 function tabbarHTML() {
-  return '<div class="in">' + TABS.map(function (t) {
-    return '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
+  return '<div class="in">' + TABS.map(function (t, i) {
+    return (i === TAB_FAB_AT ? '<span class="tab-fab-slot"><button class="tab-fab" data-act="add-open" aria-label="רישום חדש">' + icon('plus') + '</button></span>' : '') +
+           '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
            '" data-act="tab-go" data-id="' + esc(t.k) + '">' +
            '<span class="ti">' + icon(t.ic) + '</span>' + esc(t.lab) + '</button>';
   }).join('') + '</div>';
@@ -177,16 +180,15 @@ function tabbarHTML() {
 function kRender() {
   var root = kQ('#view');
   if (!root) { uiNoDialog('kRender', 'view'); return; }
-  var fab = kQ('#fab'), tb = kQ('#tabbar');
+  var tb = kQ('#tabbar');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
   else if (view.screen === 'archive') root.innerHTML = archiveScreenHTML();
+  else if (view.screen === 'stats') root.innerHTML = statsScreenHTML();
   else if (view.screen === 'settings') root.innerHTML = settingsScreenHTML();
-  var onMonth = view.screen === 'month';
   // אין סרגל בזרימה — ניווט באמצעה מאבד את הטיוטה.
   var onTab = TABS.some(function (t) { return t.k === view.screen; });
-  if (fab) fab.classList.toggle('hidden', !onMonth);
   if (tb) {
     tb.classList.toggle('hidden', !onTab);
     tb.innerHTML = tabbarHTML();
@@ -236,6 +238,7 @@ var DOM_ACTIONS = {
     if (view.screen === 'month') view.monthKey = nowMonthKey() || null;
     kRender();
   },
+  'stat-year': function (el) { if (el.dataset.id) { view.statYear = el.dataset.id; kRender(); } },
   'arch-month': function (el) {
     var m = monthByKey(el.dataset.id);
     if (m) { view.monthKey = m.key; view.screen = 'month'; kRender(); }
@@ -478,8 +481,6 @@ document.addEventListener('focusin', comboFocus);
 document.addEventListener('scroll', dpScroll, true);
 
 // הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
-var fabEl = document.getElementById('fab');
-if (fabEl) fabEl.innerHTML = icon('plus');
 
 
 // גרירת המטבע קודמת לגרירה לסידור — שתיהן על אירועי מצביע, והמטבע נתפס רק במסך האישור.

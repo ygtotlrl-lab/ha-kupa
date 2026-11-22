@@ -586,10 +586,10 @@ function lookupRows(kind) {
 }
 
 export { assetIcon, chainOf, compCardHTML, compPct,
-         detailRowHTML, footHTML, kHeb, kKill, kLive,
+         detailRowHTML, footHTML, kHeb, kIncome, kKill, kLive,
          kPendKey, kPendKeyOf, kQ, kSortDescriptions, kSortEntries, kSortLookups,
          kSortMonthKeys, kSortPledges, kSortYears, kStripRows, kSyncNow, kSyncPull,
          kTableMeta, localPut, lookupRows, money, monthByKey, monthGreg, monthKeyOf,
          monthRows, monthTitle, monthsSorted, nextMonthOf, nowMonthKey, orderById,
          ordersLive, pledgeOfYear, prevMonthOf, pushSoon, signed, soEnsureThroughNow,
-         splitHTML, tabHeadHTML };
+         splitHTML, kTzedakah, tabHeadHTML };

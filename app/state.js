@@ -12,7 +12,7 @@ const S = {
 // ── מצב הריצה ──
 // אין כאן סיכום שמור ואין עותק של הטבלאות — העותק המקומי הוא MIRROR, ושם שני לו הוא עותק שאיש אינו מסנכרן.
 var view = { screen: 'month', monthKey: null, flow: null, step: 0, draft: null,
-             lookOpen: null, archYear: null };
+             lookOpen: null, archYear: null, statYear: null };
 
 // ── מה שמסך צריך מ-main ──
 // main רושם כאן בעלייה — מודול שמייבא מ-main סוגר מעגל, והרישום הוא הכיוון האחד.

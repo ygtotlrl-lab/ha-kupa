@@ -135,11 +135,16 @@ var METHOD_DEFAULT = ['העברה ישירה', 'ביט ופייבוקס', 'מז�
 var CAT_LIST = ['לאחרים', K_CAT_SELF];
 
 // מפתח שאין לו מסך — הלחיצה עוברת והמסך אינו מתחלף.
+var MSG_STATS_TITLE = 'סטטיסטיקות';
+var MSG_STATS_EMPTY = 'עוד אין נתונים לסטטיסטיקה';
+// הסדר בסרגל: בית · סטטיסטיקות · ＋ (באמצע, רישום חדש) · ארכיון · הגדרות — הפלוס נכנס אחרי שתי הראשונות
 var TABS = [
   { k: 'month',    lab: 'בית',    ic: 'home' },
+  { k: 'stats',    lab: MSG_STATS_TITLE, ic: 'stats' },
   { k: 'archive',  lab: 'ארכיון', ic: 'archive' },
   { k: 'settings', lab: MSG_SETTINGS_TITLE, ic: 'settings' }
 ];
+var TAB_FAB_AT = 2;
 
 export { ARCH_FIRST, CAT_LIST, EPS, GREG_MONTHS, KV_TABLE, K_CAT_SELF, METHOD_DEFAULT,
          MSG_ADD_INCOME, MSG_ADD_TZEDAKAH, MSG_ARCH_EMPTY, MSG_BACK, MSG_CLOSER,
@@ -147,7 +152,7 @@ export { ARCH_FIRST, CAT_LIST, EPS, GREG_MONTHS, KV_TABLE, K_CAT_SELF, METHOD_DE
          MSG_NEED_AMOUNT, MSG_NEED_DAY, MSG_NEED_DESC, MSG_NEED_LABEL, MSG_NO_ORDERS,
          MSG_OPENER, MSG_ORDERS_TITLE, MSG_ORDER_STOP, MSG_ORDER_STOPPED, MSG_ORDER_STOP_Q, MSG_SEC_INCOME, MSG_SEC_TZEDAKAH, MSG_ORDER_FROM, MSG_ORDER_NEW, MSG_PART_CARRY,
          MSG_PART_MONTH, MSG_PLEDGE_EDIT, MSG_SETTINGS_TITLE, MSG_SLIDE_KUPA,
-         MSG_SLIDE_SUB, MSG_SLIDE_WALLET, MSG_SUM_INCOME, MSG_SUM_OTHERS, MSG_SUM_SELF,
+         MSG_SLIDE_SUB, MSG_SLIDE_WALLET, MSG_STATS_EMPTY, MSG_STATS_TITLE, MSG_SUM_INCOME, MSG_SUM_OTHERS, MSG_SUM_SELF,
          MSG_SUM_TZEDAKAH, MSG_TZ_BLESS, MSG_UNDO, MSG_WAY_DUP, MSG_WAY_INCOME,
          MSG_WAY_LABEL, MSG_WAY_NEW, MSG_WAY_TZEDAKAH, PUSH_TABLES, SRC_DEFAULT,
-         SUPABASE_ANON_KEY, SUPABASE_URL, TABLES, TABS };
+         SUPABASE_ANON_KEY, SUPABASE_URL, TABLES, TABS, TAB_FAB_AT };

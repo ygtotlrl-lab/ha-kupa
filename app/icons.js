@@ -17,6 +17,7 @@ var PATHS = {
   refresh:  '<path d="M20 12a8 8 0 1 1-2.34-5.66L20 8.5"/><path d="M20 3.5v5h-5"/>',
   close:    '<path d="M6 6l12 12M18 6L6 18"/>',
   home:     '<path d="M4 11l8-7 8 7"/><path d="M7 10v10h10V10"/>',
+  stats:    '<path d="M4 20h16"/><path d="M7 20v-6"/><path d="M12 20V9"/><path d="M17 20v-9"/>',
   archive:  '<path d="M4 8h16v12H4z"/><path d="M3 4h18v4H3z"/><path d="M10 12h4"/>',
   settings: '<path d="M4 6h8.5M16.5 6H20M4 12h2.5M10.5 12H20M4 18h6.5M14.5 18H20"/><circle cx="14.5" cy="6" r="2"/><circle cx="8.5" cy="12" r="2"/><circle cx="12.5" cy="18" r="2"/>',
   plus:     '<path d="M12 5v14M5 12h14"/>',

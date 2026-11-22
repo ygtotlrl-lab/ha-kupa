@@ -96,21 +96,13 @@ main{padding:var(--sp-7) var(--sp-6) 0; padding-bottom:calc(var(--tabbar-h) + va
 main > .foot{margin-top:auto}
 /* פס היעד מוסתר כי הוא מלא תמיד; הערך עצמו נשאר — הוא המכנה שהרכיב המשותף מנרמל לפיו, והסרתו משנה את אורכי הפסים. */
 
-/* הפלוס הוא ציור ולא תו — מרכזו האופטי של תו זז בין מנועים.
-   המסילה ולא הכפתור קבועה למסך, בדיוק ברוחב העמודה — חישוב מ-50% מקבע רוחב אחד; והיא שקופה ללחיצה. */
-.fabrail{position:fixed;inset-block-end:calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom));
-  inset-inline:0;z-index:var(--z-2);display:flex;justify-content:center;
-  pointer-events:none}
-/* בטלפון — כמו שורת הניווט, על כל רוחב המסך: הכפתור קרוב לקצה, ולא צמוד אליו; ממסך רחב — בעמודה */
-.fabrail .in{width:100%;display:flex;justify-content:flex-end;
-  padding-inline-end:var(--sp-6)}
-.fab{position:relative;pointer-events:auto;
-  width:64px;height:64px;border-radius:var(--r-7);border:0;cursor:pointer;
-  background:var(--rasp);color:var(--on-rasp);line-height:var(--lh-1);
-  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
-  transition:transform var(--dur-3)}
-.fab svg{width:28px;height:28px;display:block}
-.fab:active{transform:scale(.93)}
+/* הפלוס — באמצע הסרגל, עיגול שעולה מעליו (תא ברוחב לשונית); ציור ולא תו — מרכזו האופטי של תו זז בין מנועים. */
+.tab-fab-slot{flex:1;display:flex;justify-content:center;align-items:flex-start}
+.tab-fab{position:relative;top:-22px;width:64px;height:64px;border-radius:50%;border:5px solid var(--bg);cursor:pointer;
+  background:var(--rasp);color:var(--on-rasp);display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-lg);transition:transform var(--dur-3)}
+.tab-fab svg{width:28px;height:28px;display:block}
+.tab-fab:active{transform:scale(.93)}
 /* הסרגל בתוך העמודה — סרגל על כל החלון מנתק את הניווט מהתוכן. */
 .tabbar{position:fixed;inset-block-end:0;inset-inline:0;z-index:var(--z-2);
   display:flex;justify-content:center;
@@ -369,10 +361,33 @@ main > .foot{margin-top:auto}
 
 /* ── נקודות שבירה ──
    נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
-@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}.fabrail .in{max-width:var(--col)}}
-@media (min-width:640px){:root{--col:520px}}
-@media (min-width:900px){:root{--col:600px}}
-@media (min-width:1200px){:root{--col:680px}}
+@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}}
+@media (min-width:640px){:root{--col:560px}}
+@media (min-width:900px){:root{--col:720px}}
+@media (min-width:1200px){:root{--col:760px}}
 /* ── אייקונים ── */
 /* העובי נקבע כאן ולא ב-icon() — גוף הפונקציה אינו נערך לאפליקציה אחת. */
 .ico{width:1.15em;height:1.15em;flex:none;stroke-width:1.75}
+
+/* ── סטטיסטיקות ── */
+.st-year{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);margin:0 0 var(--sp-6);font-weight:600;color:var(--purple-6)}
+.st-year .mnav[disabled]{opacity:.35;cursor:default}
+.st-kpis{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.st-k{background:var(--card);border-radius:var(--r-6);padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-2)}
+.st-k small{color:var(--text-2);font-size:var(--fs-1)}
+.st-k b{font-size:var(--fs-5);color:var(--purple-6);font-weight:600}
+.st-k b.peach,.st-legend .peach,.st-mon .vals .peach{color:var(--peach-ink,var(--peach-2))}
+@media (min-width:640px){.st-kpis{grid-template-columns:repeat(4,1fr)}}
+.st-legend{display:flex;gap:var(--sp-5);font-size:var(--fs-1);color:var(--purple-6);margin-bottom:var(--sp-4)}
+.st-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--purple-3,var(--purple-5));margin-inline-end:6px;vertical-align:-1px}
+.st-legend .peach::before{background:var(--peach-2)}
+.st-mon{display:grid;grid-template-columns:4.2em 1fr auto;align-items:center;gap:var(--sp-4);padding:var(--sp-3) 0;border-top:1px solid var(--line,var(--purple-1))}
+.st-mon:first-of-type{border-top:0}
+.st-mon .nm{font-weight:600;color:var(--text)}
+.st-mon .bars{display:flex;flex-direction:column;gap:4px}
+.st-mon .bars .btrack{height:8px}
+.st-mon .vals{display:flex;flex-direction:column;align-items:flex-end;font-size:var(--fs-1);color:var(--purple-6);font-variant-numeric:tabular-nums}
+.st-top{list-style:none;margin:0;padding:0}
+.st-top li{display:grid;grid-template-columns:1fr auto;gap:4px var(--sp-4);padding:var(--sp-3) 0}
+.st-top li .btrack{grid-column:1 / -1;height:6px}
+.st-top .amt{font-variant-numeric:tabular-nums;color:var(--purple-6)}
