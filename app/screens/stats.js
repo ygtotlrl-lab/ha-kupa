@@ -47,20 +47,44 @@ function topHTML(title, list, tone) {
     }).join('') + '</ul></div>';
 }
 
+// השוואה לאשתקד — אותו מספר חודשים מתחילת השנה, כך שהשנה שבאמצע נמדדת מול אותו קטע באשתקד
+function yearSums(y, n) {
+  var all = [];
+  statMonths().filter(function (m) { return m.year === y; }).slice(0, n).forEach(function (m) { all = all.concat(monthRows(m.key)); });
+  return { rows: all, inc: kIncome(all), tz: kTzedakah(all) };
+}
+function selfOf(rows) {
+  return kLive(rows).filter(function (r) { return r.type === 'tzedakah' && r.category === K_CAT_SELF; })
+    .reduce(function (s, r) { return s + (+r.amount || 0); }, 0);
+}
+function standingOf(rows) {
+  return kLive(rows).filter(function (r) { return r.type === 'tzedakah' && r.source === 'standing'; })
+    .reduce(function (s, r) { return s + (+r.amount || 0); }, 0);
+}
+// חץ מול אשתקד — בסכום: אחוז השינוי; באחוז: נקודות האחוז. בלי אשתקד — כלום
+function deltaHTML(now, prev, pts) {
+  if (prev == null) return '';
+  var d = pts ? now - prev : (prev ? Math.round((now - prev) / Math.abs(prev) * 100) : null);
+  if (d == null || !isFinite(d)) return '';
+  var dir = d > 0 ? 'up' : d < 0 ? 'down' : 'eq';
+  return '<span class="st-d ' + dir + '">' + (dir === 'eq' ? '' : icon(dir === 'up' ? 'up' : 'down')) +
+    Math.abs(d) + (pts ? ' נק׳' : '%') + ' <i>מול אשתקד</i></span>';
+}
+function kpiHTML(label, val, cls, delta) {
+  return '<div class="st-k"><small>' + esc(label) + '</small><b' + (cls ? ' class="' + cls + '"' : '') + '>' + val + '</b>' + (delta || '') + '</div>';
+}
+
 function statsScreenHTML() {
   var h = tabHeadHTML(MSG_STATS_TITLE), y = statYear(), ys = statYears();
   if (!y) return h + '<div class="card"><div class="empty">' + esc(MSG_STATS_EMPTY) + '</div></div>' + footHTML();
   var ms = statMonths().filter(function (m) { return m.year === y; });
-  var all = [], per = ms.map(function (m) {
-    var rows = monthRows(m.key);
-    all = all.concat(rows);
-    return { m: m, inc: kIncome(rows), tz: kTzedakah(rows) };
-  });
-  var inc = kIncome(all), tz = kTzedakah(all);
-  var self = kLive(all).filter(function (r) { return r.type === 'tzedakah' && r.category === K_CAT_SELF; })
-    .reduce(function (s, r) { return s + (+r.amount || 0); }, 0);
-  var selfPct = tz ? Math.round(self / tz * 100) : 0;
-  var tzPct = inc > 0 ? Math.round(tz / inc * 100) : 0;
+  var cur = yearSums(y, ms.length), all = cur.rows;
+  var inc = cur.inc, tz = cur.tz;
+  var pct = function (a, b) { return b > 0 ? Math.round(a / b * 100) : 0; };
+  var selfPct = pct(selfOf(all), tz), tzPct = pct(tz, inc), soPct = pct(standingOf(all), tz);
+  // אשתקד — רק כשיש בה נתונים
+  var py = ys.indexOf(y - 1) >= 0 ? yearSums(y - 1, ms.length) : null;
+  var P = py ? { inc: py.inc, tz: py.tz, tzPct: pct(py.tz, py.inc), self: pct(selfOf(py.rows), py.tz), so: pct(standingOf(py.rows), py.tz) } : {};
   var i = ys.indexOf(y);
 
   // מעבר בין השנים — כמו החיצים של החודש
@@ -69,23 +93,19 @@ function statsScreenHTML() {
     '<span>' + esc(hebYearLabelFull(y)) + '</span>' +
     '<button class="mnav" data-act="stat-year" data-id="' + esc(ys[i + 1] || '') + '"' + (i < ys.length - 1 ? '' : ' disabled') + ' aria-label="השנה הבאה">' + icon('next') + '</button></div>';
 
-  // השנה במספרים — ארבע קוביות
+  // השנה במספרים — וכל קובייה מול אותו קטע באשתקד
   h += '<div class="st-kpis">' +
-    '<div class="st-k"><small>הכנסות</small><b class="peach">' + money(inc) + '</b></div>' +
-    '<div class="st-k"><small>צדקה</small><b>' + money(tz) + '</b></div>' +
-    '<div class="st-k"><small>צדקה מההכנסה</small><b>' + tzPct + '%</b></div>' +
-    '<div class="st-k"><small>אישי · אחרים</small><b>' + selfPct + '% · ' + (tz ? 100 - selfPct : 0) + '%</b></div>' +
+    kpiHTML('הכנסות', money(inc), 'peach', deltaHTML(inc, py ? P.inc : null)) +
+    kpiHTML('צדקה', money(tz), '', deltaHTML(tz, py ? P.tz : null)) +
+    kpiHTML('צדקה מההכנסה', tzPct + '%', '', deltaHTML(tzPct, py ? P.tzPct : null, true)) +
+    kpiHTML('אישי · אחרים', selfPct + '% · ' + (tz ? 100 - selfPct : 0) + '%', '', deltaHTML(selfPct, py ? P.self : null, true)) +
+    kpiHTML('הוראות קבע מתוך הצדקה', soPct + '%', '', deltaHTML(soPct, py ? P.so : null, true)) +
     '</div>';
 
-  // חודש אחר חודש — שני פסים לכל חודש, באותו סולם: הכנסות (אפרסק) וצדקה (סגול)
-  var max = Math.max.apply(null, per.map(function (p) { return Math.max(p.inc, p.tz); }).concat([1]));
-  h += '<div class="card st-card"><h2>חודש אחר חודש</h2>' +
-    '<div class="st-legend"><span class="peach">הכנסות</span><span>צדקה</span></div>' +
-    per.slice().reverse().map(function (p) {
-      return '<div class="st-mon"><span class="nm">' + esc(p.m.name) + '</span>' +
-        '<span class="bars">' + bar((Math.max(p.inc, 0) / max * 100).toFixed(1), 'peach') + bar((p.tz / max * 100).toFixed(1)) + '</span>' +
-        '<span class="vals"><span class="peach">' + money(p.inc) + '</span><span>' + money(p.tz) + '</span></span></div>';
-    }).join('') + '</div>';
+  // החודש עם הכי הרבה צדקה
+  var best = null;
+  ms.forEach(function (m) { var t = kTzedakah(monthRows(m.key)); if (t > 0 && (!best || t > best.tz)) best = { m: m, tz: t }; });
+  if (best) h += '<div class="card st-best">' + icon('star') + '<span><small>החודש עם הכי הרבה צדקה</small><b>' + esc(best.m.name) + '</b></span><span class="amt">' + money(best.tz) + '</span></div>';
 
   h += topHTML('מקורות ההכנסה הגדולים', topOf(all, 'income'), 'peach');
   h += topHTML('הצדקה הגדולה', topOf(all, 'tzedakah'), '');

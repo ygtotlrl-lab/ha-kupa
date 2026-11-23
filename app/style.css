@@ -377,16 +377,17 @@ main > .foot{margin-top:auto}
 .st-k small{color:var(--text-2);font-size:var(--fs-1)}
 .st-k b{font-size:var(--fs-5);color:var(--purple-6);font-weight:600}
 .st-k b.peach,.st-legend .peach,.st-mon .vals .peach{color:var(--peach-ink,var(--peach-2))}
-@media (min-width:640px){.st-kpis{grid-template-columns:repeat(4,1fr)}}
-.st-legend{display:flex;gap:var(--sp-5);font-size:var(--fs-1);color:var(--purple-6);margin-bottom:var(--sp-4)}
-.st-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--purple-3,var(--purple-5));margin-inline-end:6px;vertical-align:-1px}
-.st-legend .peach::before{background:var(--peach-2)}
-.st-mon{display:grid;grid-template-columns:4.2em 1fr auto;align-items:center;gap:var(--sp-4);padding:var(--sp-3) 0;border-top:1px solid var(--line,var(--purple-1))}
-.st-mon:first-of-type{border-top:0}
-.st-mon .nm{font-weight:600;color:var(--text)}
-.st-mon .bars{display:flex;flex-direction:column;gap:4px}
-.st-mon .bars .btrack{height:8px}
-.st-mon .vals{display:flex;flex-direction:column;align-items:flex-end;font-size:var(--fs-1);color:var(--purple-6);font-variant-numeric:tabular-nums}
+@media (min-width:640px){.st-kpis{grid-template-columns:repeat(3,1fr)}}
+.st-d{display:inline-flex;align-items:center;gap:2px;font-size:var(--fs-1);font-weight:600;color:var(--text-2)}
+.st-d svg{width:14px;height:14px}
+.st-d i{font-style:normal;font-weight:400;color:var(--text-3)}
+.st-d.up{color:var(--purple-6)} .st-d.down{color:var(--peach-ink,var(--peach-2))}
+.st-best{display:flex;align-items:center;gap:var(--sp-5)}
+.st-best>svg{flex:none;width:22px;height:22px;color:var(--purple-5)}
+.st-best span{flex:1;display:flex;flex-direction:column}
+.st-best small{color:var(--text-2);font-size:var(--fs-1)}
+.st-best b{font-size:var(--fs-4);color:var(--text)}
+.st-best .amt{flex:none;font-size:var(--fs-4);font-weight:600;color:var(--purple-6);font-variant-numeric:tabular-nums}
 .st-top{list-style:none;margin:0;padding:0}
 .st-top li{display:grid;grid-template-columns:1fr auto;gap:4px var(--sp-4);padding:var(--sp-3) 0}
 .st-top li .btrack{grid-column:1 / -1;height:6px}
