@@ -27,7 +27,8 @@ import { assetIcon,
 import { archiveScreenHTML } from './screens/archive.js';
 import { statsScreenHTML } from './screens/stats.js';
 import { doneScreenHTML } from './screens/done.js';
-import { datePairHTML, dpOpen, dpPick, dpScroll, deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
+import { DATEPAIR_ACTIONS, datePairHTML } from '../core/datepair.js';
+import { deductAmount, deductChkHTML, entryById, entryDelete, entryUndo, flowCollect, flowOpen, flowStart, flowSteps,
          flowValid, monthScreenHTML } from './screens/month.js';
 import { lookupById, lookupFootHTML, lookupFormHTML, orderFormHTML, orderNewVersion, orderStop,
          orderRead, orderValid, settingsScreenHTML } from './screens/settings.js';
@@ -263,8 +264,6 @@ var DOM_ACTIONS = {
     view.step--;
     flowOpen();
   },
-  'dp-open': dpOpen,
-  'dp-pick': dpPick,
   'flow-pick': function (el) { view.draft[el.dataset.k] = el.dataset.v; flowOpen(); },
   'combo-pick': function (el) { return comboPick(el); },
   'combo-more': function (el) { return comboMore(el); },
@@ -470,7 +469,7 @@ var DOM_ACTIONS = {
 
 // ── המאזינים הגלובליים ──
 // מאזין אחד לכל אירוע, בהאצלה מ-document — המסכים נבנים מחדש בכל רינדור, ומאזין שנקשר לאלמנט מת איתו.
-Object.assign(DOM_ACTIONS, GAUTH_ACTIONS);
+Object.assign(DOM_ACTIONS, GAUTH_ACTIONS, DATEPAIR_ACTIONS);
 actWire(DOM_ACTIONS);
 
 // הרשימה הנפתחת בליבה — ההקלדה מסננת, והמיקוד פותח את הרשימה.
@@ -478,7 +477,6 @@ actWire(DOM_ACTIONS);
 document.addEventListener('input', function (e) { comboInput(e); });
 document.addEventListener('focusin', comboFocus);
 // בורר התאריך — גלגל שנעצר קובע את היום; scroll אינו עולה בעץ, ולכן בלכידה.
-document.addEventListener('scroll', dpScroll, true);
 
 // הכפתור הצף במעטפת הסטטית — האייקון נכנס מכאן, כי index.html אינו נושא את הסט.
 
