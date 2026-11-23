@@ -71,7 +71,16 @@ function deltaHTML(now, prev, pts) {
     Math.abs(d) + (pts ? ' נק׳' : '%') + ' <i>מול אשתקד</i></span>';
 }
 function kpiHTML(label, val, cls, delta) {
-  return '<div class="st-k"><small>' + esc(label) + '</small><b' + (cls ? ' class="' + cls + '"' : '') + '>' + val + '</b>' + (delta || '') + '</div>';
+  return '<div class="st-k ' + cls + '"><small>' + esc(label) + '</small><b>' + val + '</b>' + (delta || '') + '</div>';
+}
+// טבעת אחוז — מתמלאת מימין לשמאל, והאחוז במרכזה; מתחתיה התווית, ושורה משנית כשיש
+function ringHTML(label, pct, delta, sub) {
+  var r = 30, c = 2 * Math.PI * r, v = Math.max(0, Math.min(100, pct || 0));
+  return '<div class="st-ring"><svg viewBox="0 0 74 74" aria-hidden="true">' +
+      '<circle class="trk" cx="37" cy="37" r="' + r + '"/>' +
+      '<circle class="val" cx="37" cy="37" r="' + r + '" stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="' + (c * (1 - v / 100)).toFixed(2) + '" transform="scale(-1 1) translate(-74 0) rotate(-90 37 37)"/>' +
+      '<text x="37" y="42">' + Math.round(pct || 0) + '%</text></svg>' +
+    '<small>' + esc(label) + '</small>' + (sub ? '<i class="st-sub">' + esc(sub) + '</i>' : '') + (delta || '') + '</div>';
 }
 
 function statsScreenHTML() {
@@ -94,13 +103,15 @@ function statsScreenHTML() {
     '<button class="mnav" data-act="stat-year" data-id="' + esc(ys[i + 1] || '') + '"' + (i < ys.length - 1 ? '' : ' disabled') + ' aria-label="השנה הבאה">' + icon('next') + '</button></div>';
 
   // השנה במספרים — וכל קובייה מול אותו קטע באשתקד
+  // שני אריחים מלאים — הכנסות וצדקה — ומתחתם שלוש טבעות לאחוזים
   h += '<div class="st-kpis">' +
     kpiHTML('הכנסות', money(inc), 'peach', deltaHTML(inc, py ? P.inc : null)) +
-    kpiHTML('צדקה', money(tz), '', deltaHTML(tz, py ? P.tz : null)) +
-    kpiHTML('צדקה מההכנסה', tzPct + '%', '', deltaHTML(tzPct, py ? P.tzPct : null, true)) +
-    kpiHTML('אישי · אחרים', selfPct + '% · ' + (tz ? 100 - selfPct : 0) + '%', '', deltaHTML(selfPct, py ? P.self : null, true)) +
-    kpiHTML('הוראות קבע מתוך הצדקה', soPct + '%', '', deltaHTML(soPct, py ? P.so : null, true)) +
-    '</div>';
+    kpiHTML('צדקה', money(tz), 'purple', deltaHTML(tz, py ? P.tz : null)) +
+    '<div class="st-rings">' +
+      ringHTML('צדקה מההכנסה', tzPct, deltaHTML(tzPct, py ? P.tzPct : null, true)) +
+      ringHTML('אישי', selfPct, deltaHTML(selfPct, py ? P.self : null, true), 'אחרים ' + (tz ? 100 - selfPct : 0) + '%') +
+      ringHTML('הוראות קבע מהצדקה', soPct, deltaHTML(soPct, py ? P.so : null, true)) +
+    '</div></div>';
 
   // החודש עם הכי הרבה צדקה
   var best = null;
