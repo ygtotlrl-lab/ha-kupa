@@ -38,7 +38,7 @@ function monthScreenHTML() {
        '<div class="sumbox"><div class="inc">' + esc(MSG_SUM_INCOME) +
        '<b>' + signed(c.income || 0) + '</b></div>' +
        '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
-       '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
+       '<b>' + signed(c.tzedakah || 0) + '</b></div>' +
        '<div class="inc sub">' + splitHTML(c) + '</div></div></div>';
 
   // הפירוט — שלושה חלקים, כל אחד מהחדש לישן: הכנסות · צדקה · הוראות קבע.
@@ -48,6 +48,12 @@ function monthScreenHTML() {
   var tz = rows.filter(function (r) { return r.source !== 'standing' && r.type !== 'income'; });
   var std = rows.filter(function (r) { return r.source === 'standing'; });
   var secs = [['inc', MSG_SEC_INCOME, inc], ['tz', MSG_SEC_TZEDAKAH, tz], ['so', MSG_ORDERS_TITLE, std]];
+  // «הכל» — רשימה אחת לפי הזמן: הפעולה האחרונה ראשונה (התאריך, ובתוכו — מה שנרשם אחרון)
+  var allRows = rows.slice().sort(function (a, b) {
+    var x = String(b.entry_date || ''), y = String(a.entry_date || '');
+    if (x !== y) return x < y ? -1 : 1;
+    return (+b.updated_at || 0) - (+a.updated_at || 0);
+  });
   var tab = view.detTab || 'all';
   if (tab !== 'all' && !secs.some(function (x) { return x[0] === tab && x[2].length; })) tab = 'all';
   if (!rows.length) {
@@ -58,6 +64,7 @@ function monthScreenHTML() {
          '<div class="det-seg" role="tablist">' + segs.map(function (x) {
            return '<button role="tab" aria-selected="' + (x[0] === tab) + '" class="' + (x[0] === tab ? 'on' : '') + '" data-act="det-tab" data-id="' + x[0] + '">' + esc(x[1]) + '</button>';
          }).join('') + '</div>' +
+         '<section class="det-sec det-all" data-sec="all"><ul class="det">' + allRows.map(detailRowHTML).join('') + '</ul></section>' +
          secs.map(function (x) {
            return '<section class="det-sec' + (x[2].length ? '' : ' is-empty') + '" data-sec="' + x[0] + '"><h3 class="subhd">' + esc(x[1]) + '</h3>' +
              (x[2].length ? '<ul class="det">' + x[2].map(detailRowHTML).join('') + '</ul>' : '<div class="empty">אין ' + esc(x[1]) + ' החודש</div>') +

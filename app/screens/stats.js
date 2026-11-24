@@ -85,9 +85,59 @@ function ringHTML(label, pct, delta, sub) {
     '<small>' + esc(label) + '</small>' + (sub ? '<i class="st-sub">' + esc(sub) + '</i>' : '') + (delta || '') + '</div>';
 }
 
+// ── עוגות החודש — הכנסות וצדקה לפי הפירוט, באחוזים; בכניסה — החודש הנוכחי, וחיצים לחודשים הקודמים ──
+var PIE_MAX = 6;
+var PIE_TONES = ['var(--purple-6)', 'var(--peach-2)', 'var(--purple-3)', '#E8C2A8', 'var(--purple-2)', '#C46F55', '#D9D0EA'];
+function pieOf(rows, type) {
+  var sum = {}, tot = 0;
+  kLive(rows).forEach(function (r) {
+    if (r.type !== type || !(+r.amount > 0)) return;
+    var k = String(r.description || '').trim() || '—';
+    sum[k] = (sum[k] || 0) + (+r.amount); tot += +r.amount;
+  });
+  var l = Object.keys(sum).map(function (k) { return { k: k, v: sum[k] }; }).sort(function (a, b) { return b.v - a.v; });
+  if (l.length > PIE_MAX) {
+    var rest = l.slice(PIE_MAX - 1).reduce(function (a, x) { return a + x.v; }, 0);
+    l = l.slice(0, PIE_MAX - 1).concat([{ k: 'אחר', v: rest, other: true }]);
+  }
+  return { list: l, tot: tot };
+}
+function pieHTML(title, p, cls) {
+  var h = '<div class="card st-pie ' + cls + '"><h2>' + esc(title) + '<span class="st">' + money(p.tot) + '</span></h2>';
+  if (!p.tot) return h + '<div class="empty">אין ' + esc(title) + ' בחודש הזה</div></div>';
+  var r = 40, c = 2 * Math.PI * r, at = 0, pct = function (v) { return Math.round(v / p.tot * 100); };
+  var arcs = p.list.map(function (x, i) {
+    var len = x.v / p.tot * c, a = '<circle cx="50" cy="50" r="' + r + '" stroke="' + PIE_TONES[i % PIE_TONES.length] + '" stroke-dasharray="' +
+      Math.max(0, len - (p.list.length > 1 ? 1.2 : 0)).toFixed(2) + ' ' + c.toFixed(2) + '" stroke-dashoffset="' + (-at).toFixed(2) + '"/>';
+    at += len; return a;
+  }).join('');
+  return h + '<div class="st-pie-in"><svg viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(-90 50 50)">' + arcs + '</g></svg>' +
+    '<ul class="st-leg">' + p.list.map(function (x, i) {
+      return '<li><i style="background:' + PIE_TONES[i % PIE_TONES.length] + '"></i><span class="nm">' + esc(x.k) + '</span>' +
+        '<b>' + pct(x.v) + '%</b><span class="amt">' + money(x.v) + '</span></li>';
+    }).join('') + '</ul></div></div>';
+}
+function statMonth() {
+  var ms = statMonths(), now = nowMonthKey();
+  var keys = ms.map(function (m) { return m.key; });
+  var k = keys.indexOf(view.statMonth) >= 0 ? view.statMonth : (keys.indexOf(now) >= 0 ? now : keys[keys.length - 1]);
+  return { ms: ms, i: keys.indexOf(k), m: ms[keys.indexOf(k)] };
+}
+function piesHTML() {
+  var s = statMonth(); if (!s.m) return '';
+  var rows = monthRows(s.m.key);
+  return '<div class="st-year st-month">' +
+      '<button class="mnav" data-act="stat-month" data-id="' + esc(s.i > 0 ? s.ms[s.i - 1].key : '') + '"' + (s.i > 0 ? '' : ' disabled') + ' aria-label="החודש הקודם">' + icon('prev') + '</button>' +
+      '<span>' + esc(s.m.name + ' ' + hebYearLabelFull(s.m.year)) + '</span>' +
+      '<button class="mnav" data-act="stat-month" data-id="' + esc(s.i < s.ms.length - 1 ? s.ms[s.i + 1].key : '') + '"' + (s.i < s.ms.length - 1 ? '' : ' disabled') + ' aria-label="החודש הבא">' + icon('next') + '</button></div>' +
+    '<div class="st-pies">' + pieHTML('הכנסות', pieOf(rows, 'income'), 'peach') + pieHTML('צדקה', pieOf(rows, 'tzedakah'), 'purple') + '</div>' +
+    '<h2 class="st-sec">השנה</h2>';
+}
+
 function statsScreenHTML() {
   var h = tabHeadHTML(MSG_STATS_TITLE), y = statYear(), ys = statYears();
   if (!y) return h + '<div class="card"><div class="empty">' + esc(MSG_STATS_EMPTY) + '</div></div>' + footHTML();
+  h += piesHTML();
   var ms = statMonths().filter(function (m) { return m.year === y; });
   var cur = yearSums(y, ms.length), all = cur.rows;
   var inc = cur.inc, tz = cur.tz;

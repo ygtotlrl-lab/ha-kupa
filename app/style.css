@@ -460,3 +460,31 @@ main > .foot{margin-top:auto}
 .st-top li{display:grid;grid-template-columns:1fr auto;gap:4px var(--sp-4);padding:var(--sp-3) 0}
 .st-top li .btrack{grid-column:1 / -1;height:6px}
 .st-top .amt{font-variant-numeric:tabular-nums;color:var(--purple-6)}
+
+/* «הכל» — רשימה אחת לפי הזמן; שלושת החלקים — בלשוניות שלהם. במחשב — שלושת הכרטיסים, בלי «הכל» */
+.det-wrap[data-tab="all"] .det-sec:not(.det-all){display:none}
+.det-wrap:not([data-tab="all"]) .det-all{display:none}
+@media (min-width:1100px){ .det-wrap .det-all{display:none !important} }
+.det-seg{padding:var(--sp-2)}
+.det-seg button{padding:var(--sp-4) var(--sp-4)}
+/* הסכום — עמודה ברוחב קבוע, צמודה לקצה */
+.det .amt{min-width:76px;text-align:end;font-variant-numeric:tabular-nums}
+/* זכות — מסגרת עדינה בגוון הרכיב, בלי טבעת */
+.comp.plus{border-color:var(--purple-3);box-shadow:var(--shadow)}
+.comp.peach.plus{border-color:var(--peach-2);box-shadow:var(--shadow)}
+
+/* עוגות החודש — הכנסות וצדקה, זו לצד זו מ-640px */
+.st-month{margin-top:0}
+.st-pies{display:grid;gap:var(--sp-5);margin-bottom:var(--sp-6)}
+@media (min-width:640px){ .st-pies{grid-template-columns:1fr 1fr} }
+.st-pie .st{font-variant-numeric:tabular-nums}
+.st-pie-in{display:grid;grid-template-columns:120px 1fr;gap:var(--sp-5);align-items:center}
+.st-pie svg{width:120px;height:120px}
+.st-pie circle{fill:none;stroke-width:18}
+.st-leg{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-3);min-width:0}
+.st-leg li{display:grid;grid-template-columns:12px 1fr auto;column-gap:var(--sp-3);align-items:center;font-size:var(--fs-2)}
+.st-leg i{width:12px;height:12px;border-radius:4px}
+.st-leg .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.st-leg b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.st-leg .amt{grid-column:2 / -1;font-size:var(--fs-1);color:var(--text-3);font-variant-numeric:tabular-nums}
+.st-sec{font-size:var(--fs-5);font-weight:600;color:var(--text);margin:var(--sp-2) 0 var(--sp-4);text-align:center}

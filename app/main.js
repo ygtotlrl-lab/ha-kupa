@@ -247,9 +247,11 @@ var DOM_ACTIONS = {
   'tab-go': function (el) {
     view.screen = el.dataset.id;
     if (view.screen === 'month') view.monthKey = nowMonthKey() || null;
+    if (view.screen === 'stats') view.statMonth = null;
     kRender();
   },
   'stat-year': function (el) { if (el.dataset.id) { view.statYear = el.dataset.id; kRender(); } },
+  'stat-month': function (el) { if (el.dataset.id) { view.statMonth = el.dataset.id; kRender(); } },
   'arch-month': function (el) {
     var m = monthByKey(el.dataset.id);
     if (m) { view.monthKey = m.key; view.screen = 'month'; kRender(); }
