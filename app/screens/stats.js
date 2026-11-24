@@ -25,8 +25,9 @@ function statYear() {
   return ys.indexOf(view.statYear) >= 0 ? view.statYear : ys[ys.length - 1];
 }
 
-// המובילים — סכום לכל פירוט, מהגדול; עד חמישה
-function topOf(rows, type) {
+// המובילים — סכום לכל פירוט, מהגדול; עד n, ומי שבשוויון עם האחרון — נכנס גם הוא.
+// הוראות הקבע בפנים: כל חודש שנפתח מוסיף את המופע שלו לסכום של ההוראה.
+function topOf(rows, type, n) {
   var sum = {};
   kLive(rows).forEach(function (r) {
     if (r.type !== type) return;
@@ -35,7 +36,8 @@ function topOf(rows, type) {
   });
   return Object.keys(sum).map(function (k) { return { k: k, v: sum[k] }; })
     .filter(function (x) { return x.v > 0; })
-    .sort(function (a, b) { return b.v - a.v; }).slice(0, 5);
+    .sort(function (a, b) { return b.v - a.v; })
+    .filter(function (x, i, l) { return i < n || (l[n - 1] && x.v === l[n - 1].v); });
 }
 function topHTML(title, list, tone) {
   if (!list.length) return '';
@@ -118,8 +120,8 @@ function statsScreenHTML() {
   ms.forEach(function (m) { var t = kTzedakah(monthRows(m.key)); if (t > 0 && (!best || t > best.tz)) best = { m: m, tz: t }; });
   if (best) h += '<div class="card st-best">' + icon('star') + '<span><small>החודש עם הכי הרבה צדקה</small><b>' + esc(best.m.name) + '</b></span><span class="amt">' + money(best.tz) + '</span></div>';
 
-  h += topHTML('מקורות ההכנסה הגדולים', topOf(all, 'income'), 'peach');
-  h += topHTML('הצדקה הגדולה', topOf(all, 'tzedakah'), '');
+  h += topHTML('מקורות ההכנסה הגדולים', topOf(all, 'income', 5), 'peach');
+  h += topHTML('הצדקה הגדולה', topOf(all, 'tzedakah', 10), '');
   return h + footHTML();
 }
 
