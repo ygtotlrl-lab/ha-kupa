@@ -7,10 +7,11 @@ import { logAction } from '../core/backup.js';
 import { esc, pullRender } from '../core/ui.js';
 import { bar } from '../core/chart.js';
 import { hebDate, hebMonthNames, hebToGreg, hebYearLabelFull } from '../core/hebrew.js';
-import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_ADD_INCOME, MSG_CLOSER, MSG_DEDUCT,
+import { ARCH_FIRST, EPS, KV_TABLE, K_CAT_SELF, MSG_CLOSER, MSG_DEDUCT,
          MSG_LEFT_SUM, MSG_OPENER, MSG_PART_CARRY, MSG_PART_MONTH, MSG_SUM_OTHERS,
          MSG_SUM_SELF, PUSH_TABLES, TABLES } from './constants.js';
 import { S, shell, view } from './state.js';
+import { icon } from './icons.js';
 
 // ── ליבת החישוב ──
 // אין .rpc וקריאה למסד — חישוב בשרת שובר אופליין.
@@ -496,13 +497,13 @@ function detailRowHTML(r) {
   var so = r.source === 'standing';
   // ניכוי הוצאה — הכנסה בסכום שלילי; התגית והמינוס מבדילים אותה מהכנסה.
   var ded = isInc && !so && +r.amount < 0;
-  var tag = so ? 'הו״ק' : (ded ? MSG_DEDUCT : (isInc ? MSG_ADD_INCOME : (r.verified ? 'אומת' : '')));
+  // החלק (הכנסות · צדקה · הוראות קבע) כבר אומר את הסוג — מתחת לשם רק מה שמבדיל: ניכוי, אומת
+  var tag = ded ? MSG_DEDUCT : (!isInc && !so && r.verified ? 'אומת' : '');
   // מופע הוראת קבע אינו נערך מהפירוט — ההוראה נערכת בהגדרות בלבד, ועריכה ממופע של גרסה ישנה פתחה ענף שני.
   return (so ? '<li' + (soIsForecast(r) ? ' class="pend"' : '')
              : '<li data-act="entry-menu" data-id="' + esc(r.client_id) + '"') + '>' +
-         '<span class="det-ic art">' + assetIcon(isInc ? 'asset-wallet' : 'asset-kupa') + '</span>' +
-         '<span class="nm">' + esc(r.description || '') + '</span>' +
-         '<span class="tag">' + esc(tag) + '</span>' +
+         '<span class="det-ic">' + icon(isInc && !so ? 'wallet' : 'coins') + '</span>' +
+         '<span class="nm">' + esc(r.description || '') + (tag ? '<small>' + esc(tag) + '</small>' : '') + '</span>' +
          '<span class="amt">' + (ded ? signed(r.amount) : money(r.amount)) + '</span></li>';
 }
 
@@ -533,7 +534,7 @@ function compPct(given, due) {
 function compCardHTML(title, tone, due, ofMonth, ofCarry, given, after) {
   return '<div class="card comp' + (tone ? ' ' + tone : '') +
     (after > EPS ? ' plus' : '') + '">' +
-    '<h2>' + esc(title) +
+    '<h2><i class="comp-dot" aria-hidden="true"></i>' + esc(title) +
     '<span class="st">' + esc(MSG_LEFT_SUM) + signed(due - given) + '</span></h2>' +
     '<div class="comp-meter">' + bar(compPct(given, due).toFixed(1), tone) + '</div>' +
     '<div class="crow"><div class="big">' + signed(due) + '</div>' +

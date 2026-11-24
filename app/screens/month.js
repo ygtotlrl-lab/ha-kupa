@@ -27,36 +27,42 @@ function monthScreenHTML() {
   var h = '<div class="mrow">' +
        '<button class="mnav" data-act="month-prev" aria-label="חודש קודם">' + chev('prev') + '</button>' +
        '<span class="mid"><span class="mname">' + esc(m.name) + '</span>' +
-       '<span class="myear">' + esc(hebYearLabelFull(m.year)) + '</span>' +
-       '<span class="mgreg">' + esc(monthGreg(m.key)) + '</span></span>' +
+       '<span class="myear">' + esc(hebYearLabelFull(m.year)) + ' • <span class="ltr">' + esc(monthGreg(m.key)) + '</span></span></span>' +
        '<button class="mnav" data-act="month-next" aria-label="חודש הבא">' + chev('next') + '</button>' +
        '</div>';
 
-  h += compCardHTML('חומש', '', c.chumashDue, c.chumash, c.chumashCarry,
-                    c.tzedakah, c.balance);
-  h += compCardHTML('פלעדזש', 'peach', c.pledgeDue, c.pledge, c.pledgeCarry,
-                    c.tzedakah, c.pledgeBalance);
-
-  h += '<div class="inc">' + esc(MSG_SUM_INCOME) +
+  // הראש: שני הרכיבים והסיכום — במחשב שלושה כרטיסים בשורה, בטאבלט שני הרכיבים זה לצד זה והסיכום מתחת, ובטלפון זה מעל זה
+  h += '<div class="top3">' +
+       compCardHTML('חומש', '', c.chumashDue, c.chumash, c.chumashCarry, c.tzedakah, c.balance) +
+       compCardHTML('פלעדזש', 'peach', c.pledgeDue, c.pledge, c.pledgeCarry, c.tzedakah, c.pledgeBalance) +
+       '<div class="sumbox"><div class="inc">' + esc(MSG_SUM_INCOME) +
        '<b>' + signed(c.income || 0) + '</b></div>' +
        '<div class="inc">' + esc(MSG_SUM_TZEDAKAH) +
        '<b>' + esc(money(c.tzedakah || 0)) + '</b></div>' +
-       '<div class="inc sub">' + splitHTML(c) + '</div>';
+       '<div class="inc sub">' + splitHTML(c) + '</div></div></div>';
 
-  // שלושה חלקים באותו כרטיס, כל אחד מהחדש לישן — הכנסות · צדקה · הוראות קבע; חלק ריק אינו מוצג.
+  // הפירוט — שלושה חלקים, כל אחד מהחדש לישן: הכנסות · צדקה · הוראות קבע.
+  // בטלפון ובטאבלט — כרטיס אחד ובורר (הכל · הכנסות · צדקה · הוראות קבע), וחלק ריק אינו מוצג;
+  // במחשב — שלושה כרטיסים זה לצד זה, וחלק ריק — כרטיס עם «אין».
   var inc = rows.filter(function (r) { return r.source !== 'standing' && r.type === 'income'; });
   var tz = rows.filter(function (r) { return r.source !== 'standing' && r.type !== 'income'; });
   var std = rows.filter(function (r) { return r.source === 'standing'; });
-  var part = function (title, list) {
-    return list.length ? '<div class="subhd">' + esc(title) + '</div>' +
-                         '<ul class="det">' + list.map(detailRowHTML).join('') + '</ul>' : '';
-  };
+  var secs = [['inc', MSG_SEC_INCOME, inc], ['tz', MSG_SEC_TZEDAKAH, tz], ['so', MSG_ORDERS_TITLE, std]];
+  var tab = view.detTab || 'all';
+  if (tab !== 'all' && !secs.some(function (x) { return x[0] === tab && x[2].length; })) tab = 'all';
   if (!rows.length) {
     h += '<div class="card"><div class="empty">' + esc(MSG_EMPTY_PRE + m.name) + '</div></div>';
   } else {
-    h += '<div class="card"><h2>פירוט</h2>' +
-         part(MSG_SEC_INCOME, inc) + part(MSG_SEC_TZEDAKAH, tz) + part(MSG_ORDERS_TITLE, std) +
-         '</div>';
+    var segs = [['all', 'הכל']].concat(secs.filter(function (x) { return x[2].length; }).map(function (x) { return [x[0], x[1]]; }));
+    h += '<div class="det-wrap" data-tab="' + tab + '"><h2 class="det-h">פירוט</h2>' +
+         '<div class="det-seg" role="tablist">' + segs.map(function (x) {
+           return '<button role="tab" aria-selected="' + (x[0] === tab) + '" class="' + (x[0] === tab ? 'on' : '') + '" data-act="det-tab" data-id="' + x[0] + '">' + esc(x[1]) + '</button>';
+         }).join('') + '</div>' +
+         secs.map(function (x) {
+           return '<section class="det-sec' + (x[2].length ? '' : ' is-empty') + '" data-sec="' + x[0] + '"><h3 class="subhd">' + esc(x[1]) + '</h3>' +
+             (x[2].length ? '<ul class="det">' + x[2].map(detailRowHTML).join('') + '</ul>' : '<div class="empty">אין ' + esc(x[1]) + ' החודש</div>') +
+             '</section>';
+         }).join('') + '</div>';
   }
   // הביטול הוא כפתור על המסך ולא טקסט בטוסט — טוסט אינו אתר לחיצה.
   if (UNDO.row)

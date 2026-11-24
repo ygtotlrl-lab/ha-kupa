@@ -168,13 +168,14 @@ document.title = self.APP.name;
 
 // ── הסרגל ──
 // הפלוס — באמצע הסרגל (TAB_FAB_AT), עיגול שעולה מעליו; רישום חדש מכל לשונית, והתנועה בתאריך של היום
+// במחשב (מ-1100px) הסרגל בראש המסך: שם האפליקציה · הלשוניות · «הוספה»; בטלפון ובטאבלט — בתחתית, והפלוס באמצעו
 function tabbarHTML() {
-  return '<div class="in">' + TABS.map(function (t, i) {
+  return '<div class="in"><span class="tb-brand">' + esc(self.APP.name) + '</span><div class="tb-tabs">' + TABS.map(function (t, i) {
     return (i === TAB_FAB_AT ? '<span class="tab-fab-slot"><button class="tab-fab" data-act="add-open" aria-label="רישום חדש">' + icon('plus') + '</button></span>' : '') +
            '<button class="tab-btn' + (view.screen === t.k ? ' on' : '') +
            '" data-act="tab-go" data-id="' + esc(t.k) + '">' +
-           '<span class="ti">' + icon(t.ic) + '</span>' + esc(t.lab) + '</button>';
-  }).join('') + '</div>';
+           '<span class="ti">' + icon(t.ic) + '</span><span class="tl">' + esc(t.lab) + '</span></button>';
+  }).join('') + '</div><button class="tb-add" data-act="add-open">' + icon('plus') + 'הוספה</button></div>';
 }
 
 // ── הרינדור ──
@@ -182,6 +183,8 @@ function kRender() {
   var root = kQ('#view');
   if (!root) { uiNoDialog('kRender', 'view'); return; }
   var tb = kQ('#tabbar');
+  // מסך החודש רחב במחשב (שלוש עמודות); שאר המסכים בעמודה
+  root.classList.toggle('wide', view.screen === 'month');
   if (view.screen === 'month') root.innerHTML = monthScreenHTML();
   else if (view.screen === 'slide') root.innerHTML = slideScreenHTML();
   else if (view.screen === 'done') root.innerHTML = doneScreenHTML();
@@ -212,6 +215,13 @@ function entrySelectHTML(id, label, list, cur) {
 // ── מפת הפעולות ──
 // מטפל שממתין לכתיבה מחזיר את ההבטחה — הניתוב מנטרל את הכפתור עד שהסתיימה.
 var DOM_ACTIONS = {
+  // הבורר של הפירוט — בלי ציור מחדש: המצב נשמר לציור הבא, והחלקים מוסתרים ב-CSS לפי data-tab
+  'det-tab': function (el) {
+    view.detTab = el.dataset.id;
+    var w = el.closest('.det-wrap'); if (!w) return;
+    w.dataset.tab = view.detTab;
+    w.querySelectorAll('.det-seg button').forEach(function (b) { var on = b === el; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); });
+  },
   // שני כפתורים מתויגים ולא ask — ask נותן «ביטול» לצד השני, ומי שלוחץ אינו יודע שבחר הכנסה.
   'add-open': function () {
     openModal('', '<div class="pick">' +

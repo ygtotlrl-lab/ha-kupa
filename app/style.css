@@ -344,9 +344,79 @@ main > .foot{margin-top:auto}
   .conf{display:none}
 }
 
+/* ── מסך החודש — שלוש פריסות (העיצוב של 24.11) ──
+   טלפון: זה מעל זה; טאבלט (640): שני הרכיבים זה לצד זה, הסיכום מתחת; מחשב (1100): שלושה כרטיסים בשורה,
+   והפירוט — שלושה כרטיסים זה לצד זה. הבורר של הפירוט — רק כשהוא כרטיס אחד. */
+.top3{display:grid;gap:var(--sp-5);margin-bottom:var(--sp-5)}
+.top3 > .card{margin:0}
+.comp > h2{gap:var(--sp-3)}
+.comp-dot{width:10px;height:10px;border-radius:50%;background:var(--purple-5);flex:none}
+.comp.peach .comp-dot{background:var(--peach-2)}
+.mrow .myear{margin-top:var(--sp-1)}
+.det-wrap{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);
+  padding:var(--sp-6);box-shadow:var(--shadow);margin-bottom:var(--sp-5)}
+.det-h{font-size:var(--fs-5);font-weight:600;color:var(--text);margin:0 0 var(--sp-5)}
+.det-seg{display:flex;gap:var(--sp-1);padding:var(--sp-1);margin-bottom:var(--sp-3);
+  background:var(--purple-1);border-radius:var(--r-6)}
+.det-seg button{flex:1;min-width:0;border:0;background:none;cursor:pointer;font:inherit;font-size:var(--fs-2);
+  color:var(--text-2);padding:var(--sp-4) var(--sp-2);border-radius:var(--r-5);min-height:40px;line-height:1.2}
+.det-seg button.on{background:var(--card);color:var(--text);font-weight:600;box-shadow:0 0 0 1px var(--card-line)}
+.det-sec.is-empty{display:none}
+.det-sec:first-of-type .subhd{border-top:0;margin-top:0}
+.det-wrap:not([data-tab="all"]) .det-sec .subhd{display:none}
+.det-wrap[data-tab="inc"] .det-sec:not([data-sec="inc"]),
+.det-wrap[data-tab="tz"] .det-sec:not([data-sec="tz"]),
+.det-wrap[data-tab="so"] .det-sec:not([data-sec="so"]){display:none}
+.det-sec .subhd{font-weight:400}
+/* אייקון השורה — קו בגוון האפליקציה, בריבוע רך */
+.det .det-ic{width:40px;height:40px;border-radius:var(--r-4)}
+.det .det-ic svg{width:20px;height:20px}
+.det .nm small{display:block;font-size:var(--fs-1);color:var(--text-3);margin-top:2px}
+.det .amt{font-weight:600}
+/* הסרגל — בטלפון ובטאבלט בתחתית, על כל הרוחב; שם האפליקציה ו«הוספה» — רק במחשב */
+.tb-brand,.tb-add{display:none}
+.tb-tabs{display:flex;width:100%}
+@media (min-width:640px){
+  .top3{grid-template-columns:1fr 1fr}
+  .top3 .sumbox{grid-column:1 / -1}
+}
+@media (min-width:1100px){
+  main.wide{max-width:1480px}
+  .top3{grid-template-columns:repeat(3,1fr);align-items:stretch}
+  .top3 .sumbox{grid-column:auto;background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);
+    padding:var(--sp-6);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center}
+  .top3 .sumbox .inc{padding-inline:0;font-size:var(--fs-3)}
+  .top3 .sumbox .inc b{font-size:var(--fs-5)}
+  .top3 .sumbox .inc.sub{font-size:var(--fs-2);justify-content:space-between}
+  /* החיצים צמודים לכותרת החודש, ולא בקצות המסך הרחב */
+  .wide .mrow .mid{flex:none;min-width:240px}
+  .det-wrap{background:none;border:0;box-shadow:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);
+    gap:var(--sp-5);align-items:start}
+  .det-h{grid-column:1 / -1;margin:var(--sp-4) 0 0}
+  .det-seg{display:none}
+  .det-wrap .det-sec,.det-wrap .det-sec.is-empty{display:block !important;background:var(--card);border:1px solid var(--card-line);
+    border-radius:var(--radius);padding:var(--sp-6);box-shadow:var(--shadow)}
+  .det-wrap .det-sec .subhd{display:block !important;font-size:var(--fs-5);font-weight:600;color:var(--text);letter-spacing:0;
+    border-top:0;margin:0;padding:0 0 var(--sp-4);border-bottom:.5px solid var(--line-soft)}
+  /* הסרגל בראש המסך — שם האפליקציה · הלשוניות · «הוספה» */
+  .tabbar{inset-block-start:0;inset-block-end:auto;height:76px;padding:0;border-radius:0;
+    border-bottom:1px solid var(--card-line)}
+  .tabbar .in{max-width:1480px;margin:0 auto;padding-inline:var(--sp-6);align-items:center;justify-content:space-between}
+  .tb-brand{display:block;font-size:var(--fs-5);font-weight:700;color:var(--purple-6)}
+  .tb-tabs{width:auto;gap:var(--sp-3)}
+  .tab-fab-slot{display:none}
+  .tab-btn{flex:none;flex-direction:row;gap:var(--sp-3);padding:var(--sp-3) var(--sp-6);border-radius:var(--r-7);
+    font-size:var(--fs-3);min-height:44px}
+  .tab-btn .ti,.tab-btn.on .ti{width:auto;height:auto;background:none}
+  .tab-btn.on{background:var(--card);box-shadow:0 0 0 1px var(--card-line)}
+  .tb-add{display:flex;align-items:center;gap:var(--sp-3);border:0;cursor:pointer;font:inherit;font-size:var(--fs-3);font-weight:700;
+    background:var(--rasp);color:var(--on-rasp);border-radius:var(--r-7);padding:var(--sp-4) var(--sp-7);min-height:44px}
+  .tb-add svg{width:18px;height:18px}
+  main{padding-top:calc(76px + var(--sp-7));padding-bottom:var(--sp-7)}
+}
 /* ── נקודות שבירה ──
    נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
-@media (min-width:480px){:root{--col:440px}.tabbar{max-width:var(--col)}}
+@media (min-width:480px){:root{--col:440px}}
 @media (min-width:640px){:root{--col:560px}}
 @media (min-width:900px){:root{--col:720px}}
 @media (min-width:1200px){:root{--col:760px}}
