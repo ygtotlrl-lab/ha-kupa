@@ -345,7 +345,7 @@ main > .foot{margin-top:auto}
 }
 
 /* ── מסך החודש — שלוש פריסות (העיצוב של 24.11) ──
-   טלפון: זה מעל זה; טאבלט (640): שני הרכיבים זה לצד זה, הסיכום מתחת; מחשב (1100): שלושה כרטיסים בשורה,
+   טלפון: זה מעל זה; טאבלט (640): שני הרכיבים זה לצד זה, הסיכום מתחת; מחשב (1200): שלושה כרטיסים בשורה,
    והפירוט — שלושה כרטיסים זה לצד זה. הבורר של הפירוט — רק כשהוא כרטיס אחד. */
 .top3{display:grid;gap:var(--sp-5);margin-bottom:var(--sp-5)}
 .top3 > .card{margin:0}
@@ -380,7 +380,7 @@ main > .foot{margin-top:auto}
   .top3{grid-template-columns:1fr 1fr}
   .top3 .sumbox{grid-column:1 / -1}
 }
-@media (min-width:1100px){
+@media (min-width:1200px){
   main.wide{max-width:1480px}
   .top3{grid-template-columns:repeat(3,1fr);align-items:stretch}
   .top3 .sumbox{grid-column:auto;background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);
@@ -415,7 +415,8 @@ main > .foot{margin-top:auto}
   main{padding-top:calc(76px + var(--sp-7));padding-bottom:var(--sp-7)}
 }
 /* ── נקודות שבירה ──
-   נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. */
+   נקודה שאין בה מה להשתנות מוצהרת בשמה ואינה מושמטת. 
+   360 — אין שינוי: הפריסה הבסיסית היא של הטלפון. */
 @media (min-width:480px){:root{--col:440px}}
 @media (min-width:640px){:root{--col:560px}}
 @media (min-width:900px){:root{--col:720px}}
@@ -464,7 +465,7 @@ main > .foot{margin-top:auto}
 /* «הכל» — רשימה אחת לפי הזמן; שלושת החלקים — בלשוניות שלהם. במחשב — שלושת הכרטיסים, בלי «הכל» */
 .det-wrap[data-tab="all"] .det-sec:not(.det-all){display:none}
 .det-wrap:not([data-tab="all"]) .det-all{display:none}
-@media (min-width:1100px){ .det-wrap .det-all{display:none !important} }
+@media (min-width:1200px){ .det-wrap .det-all{display:none !important} }
 .det-seg{padding:var(--sp-2)}
 .det-seg button{padding:var(--sp-4) var(--sp-4)}
 /* הסכום — עמודה ברוחב קבוע, צמודה לקצה */

@@ -168,7 +168,7 @@ document.title = self.APP.name;
 
 // ── הסרגל ──
 // הפלוס — באמצע הסרגל (TAB_FAB_AT), עיגול שעולה מעליו; רישום חדש מכל לשונית, והתנועה בתאריך של היום
-// במחשב (מ-1100px) הסרגל בראש המסך: שם האפליקציה · הלשוניות · «הוספה»; בטלפון ובטאבלט — בתחתית, והפלוס באמצעו
+// במחשב (מ-1200px) הסרגל בראש המסך: שם האפליקציה · הלשוניות · «הוספה»; בטלפון ובטאבלט — בתחתית, והפלוס באמצעו
 function tabbarHTML() {
   return '<div class="in"><span class="tb-brand">' + esc(self.APP.name) + '</span><div class="tb-tabs">' + TABS.map(function (t, i) {
     return (i === TAB_FAB_AT ? '<span class="tab-fab-slot"><button class="tab-fab" data-act="add-open" aria-label="רישום חדש">' + icon('plus') + '</button></span>' : '') +
