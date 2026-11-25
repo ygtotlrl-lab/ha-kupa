@@ -128,7 +128,7 @@ function flowBodyHTML() {
 
   if (key === 'amount') {
     h += '<div class="fld"><label for="f-amount">סכום</label>' +
-      '<input id="f-amount" type="text" inputmode="decimal" autocomplete="off" ' +
+      '<input id="f-amount" data-amt type="text" inputmode="decimal" autocomplete="off" ' +
       'value="' + esc(d.amount === null ? '' : String(Math.abs(d.amount))) + '"></div>';
     // במקלדת המספרים אין מינוס — הסימון הוא שהופך את הסכום לניכוי.
     if (view.flow === 'income') h += deductChkHTML('f-deduct', d.amount !== null && d.amount < 0);

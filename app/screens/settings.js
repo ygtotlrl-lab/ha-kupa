@@ -148,7 +148,7 @@ function orderFormHTML(o) {
   var from = (o && o.valid_from_heb_month) || nowMonthKey();
   return '<div data-ks>' +
     '<div class="fld"><label for="o-amt">סכום</label>' +
-    '<input id="o-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+    '<input id="o-amt" data-amt type="text" inputmode="decimal" autocomplete="off" value="' +
     esc(o ? o.amount : '') + '"></div>' +
     '<div class="fld"><label for="o-name">פירוט</label>' +
     '<input id="o-name" type="text" autocomplete="off" value="' +

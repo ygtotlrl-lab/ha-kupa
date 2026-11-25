@@ -294,7 +294,7 @@ var DOM_ACTIONS = {
     openModal(MSG_EDIT + ' · ' + r.description,
       '<div data-ks>' +
       '<div class="fld"><label for="e-amt">סכום</label>' +
-      '<input id="e-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+      '<input id="e-amt" data-amt type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(Math.abs(+r.amount || 0)) + '"></div>' +
       (r.type === 'income' ? deductChkHTML('e-deduct', +r.amount < 0) : '') +
       '<div class="fld"><label for="e-desc">פירוט</label>' +
@@ -406,7 +406,7 @@ var DOM_ACTIONS = {
     if (!y) { uiNoDialog('pledge-edit', 'year'); return; }
     openModal(MSG_PLEDGE_EDIT + hebYearLabelFull(y),
       '<div data-ks><div class="fld"><label for="p-amt">סכום</label>' +
-      '<input id="p-amt" type="text" inputmode="decimal" autocomplete="off" value="' +
+      '<input id="p-amt" data-amt type="text" inputmode="decimal" autocomplete="off" value="' +
       esc(pledgeOfYear(y)) + '"></div></div>',
       '<button class="btn ghost" data-act="modal-close">ביטול</button>' +
       '<button class="btn" data-act="pledge-save" data-id="' + esc(y) +

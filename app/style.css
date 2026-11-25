@@ -150,7 +150,7 @@ main > .foot{margin-top:auto}
 .fld.chk input{width:19px;height:19px;accent-color:var(--purple-5);flex:none;margin:0;padding:0}
 .fld.chk > span{margin:0;font-size:var(--fs-3);color:var(--text)}
 .fld label{display:block;font-size:var(--fs-3);color:var(--text-2);margin-bottom:var(--sp-4)}
-.fld input,.fld select{width:100%;background:var(--card);color:var(--text);
+.fld input,.fld select{width:100%;background-color:var(--card);color:var(--text);
   border:1px solid var(--border);border-radius:var(--radius-sm);
   padding:var(--sp-5) var(--sp-5);font-size:var(--fs-5);min-height:44px}
 .btn{display:flex;align-items:center;justify-content:center;gap:var(--sp-3);width:100%;border:0;border-radius:var(--radius-sm);cursor:pointer;
@@ -488,3 +488,6 @@ main > .foot{margin-top:auto}
 .st-leg b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
 .st-leg .amt{grid-column:2 / -1;font-size:var(--fs-1);color:var(--text-3);font-variant-numeric:tabular-nums}
 .st-sec{font-size:var(--fs-5);font-weight:600;color:var(--text);margin:var(--sp-2) 0 var(--sp-4);text-align:center}
+
+/* שדה סכום (data-amt, בליבה) — הריווח ל-₪ שבקצה השדה גובר על ריווח השדות של האפליקציה */
+input[data-amt]{padding-inline-end:2.2em}
