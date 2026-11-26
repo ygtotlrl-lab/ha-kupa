@@ -318,7 +318,7 @@ main > .foot{margin-top:auto}
 .target.wide{width:270px}
 .target.narrow{width:230px}
 /* הגרירה כותבת את --x ו---y ב-setProperty, והכלל הזה הוא היחיד שקורא אותם. */
-.coin{--x:0;--y:0;left:var(--x);top:var(--y);
+.coin{--x:0;--y:0;left:var(--x);top:var(--y);-webkit-user-select:none;user-select:none;
   position:absolute;width:150px;height:150px;border-radius:var(--r-7);
   background:var(--peach-2);display:flex;align-items:center;justify-content:center;
   color:var(--on-dark);font-size:var(--fs-6);font-weight:500;touch-action:none;cursor:grab;

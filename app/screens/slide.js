@@ -50,6 +50,8 @@ function coinDown(e) {
   c.classList.remove('settle');
   COIN.dx = e.clientX - r.left; COIN.dy = e.clientY - r.top;
   c.setPointerCapture(e.pointerId);
+  // בלי זה, בעכבר הלחיצה והגרירה מסמנות את הטקסט שבמטבע ובמסך (TABLE.md, «גרירה עוברת ב-Pointer Events»)
+  e.preventDefault();
   return true;
 }
 
