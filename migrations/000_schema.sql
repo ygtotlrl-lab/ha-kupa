@@ -18,7 +18,9 @@ create table if not exists public.k_entries (
   deleted boolean default false,
   deleted_at timestamp with time zone,
   deleted_by text,
-  constraint k_entries_pkey PRIMARY KEY (client_id)
+  constraint k_entries_pkey PRIMARY KEY (client_id),
+  constraint k_entries_amount_check CHECK (((amount <> (0)::numeric) AND ((type = 'income'::text) OR (amount > (0)::numeric)))),
+  constraint k_entries_desc_req CHECK ((COALESCE(deleted, false) OR ((description IS NOT NULL) AND (description <> ''::text))))
 );
 
 create table if not exists public.k_lookups (
@@ -31,7 +33,8 @@ create table if not exists public.k_lookups (
   deleted boolean default false,
   deleted_at timestamp with time zone,
   deleted_by text,
-  constraint k_lookups_pkey PRIMARY KEY (client_id)
+  constraint k_lookups_pkey PRIMARY KEY (client_id),
+  constraint k_lookups_label_req CHECK ((COALESCE(deleted, false) OR (label <> ''::text)))
 );
 
 create table if not exists public.k_pledges (
@@ -93,7 +96,10 @@ create table if not exists public.k_standing_orders (
   sort integer,
   constraint k_standing_orders_pkey PRIMARY KEY (client_id),
   constraint k_standing_orders_valid_from_heb_month_check CHECK (((valid_from_heb_month IS NULL) OR (valid_from_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text))),
-  constraint k_standing_orders_valid_to_heb_month_check CHECK (((valid_to_heb_month IS NULL) OR (valid_to_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text)))
+  constraint k_standing_orders_valid_to_heb_month_check CHECK (((valid_to_heb_month IS NULL) OR (valid_to_heb_month ~ '^[0-9]{4}-(0[1-9]|1[0-3])$'::text))),
+  constraint k_standing_orders_amount_check CHECK ((amount > (0)::numeric)),
+  constraint k_standing_orders_day_check CHECK (((day_of_month >= 1) AND (day_of_month <= 31))),
+  constraint k_standing_orders_name_req CHECK ((COALESCE(deleted, false) OR (name <> ''::text)))
 );
 
 create table if not exists public.k_users (
