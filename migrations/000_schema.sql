@@ -218,7 +218,7 @@ drop policy if exists k_standing_orders_users on public.k_standing_orders;
 create policy k_standing_orders_users on public.k_standing_orders as permissive for all to authenticated using (k_is_user()) with check (k_is_user());
 alter table public.k_users enable row level security;
 drop policy if exists k_users_select on public.k_users;
-create policy k_users_select on public.k_users as permissive for select to authenticated using (k_is_user());
+create policy k_users_select on public.k_users as permissive for select to authenticated using (k_is_user() and login = lower(auth.jwt() ->> 'email'));
 
 drop trigger if exists k_entries_history on public.k_entries;
 create trigger k_entries_history AFTER INSERT OR DELETE OR UPDATE ON public.k_entries FOR EACH ROW EXECUTE FUNCTION sh_history_log('client_id');
