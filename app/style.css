@@ -69,7 +69,6 @@ body{
   margin:0; background:var(--bg); color:var(--text);
   font-family:Heebo,sans-serif;
   font-size:var(--fs-4); line-height:var(--lh-4); -webkit-text-size-adjust:100%;
-  overflow-wrap:anywhere;
 }
 h1,h2,h3{margin:0; font-weight:500; line-height:var(--lh-2)}
 button{font:inherit; color:inherit}
