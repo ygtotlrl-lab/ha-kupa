@@ -105,15 +105,9 @@ var BK_CFG = {
   // אין כניסה ולכן אין שם משתמש — המכשיר הוא הזהות היחידה, ושדה מומצא היה עדות שאיש לא מסר.
   user: function () { return null; },
   secrets: [],
+  // המקורות — הטבלאות שהאפליקציה דוחפת (PUSH_TABLES), ולא רשימה שמוקלדת שנית: טבלה שנוספה לסנכרון נכנסת לגיבוי מעצמה.
   sources: function () {
-    return [
-      { name: 'k_pledges',         order: 'client_id', ts: 'updated_at' },
-      { name: 'k_standing_orders', order: 'client_id', ts: 'updated_at' },
-      { name: 'k_so_instances',    order: 'client_id', ts: 'updated_at' },
-      { name: 'k_entries',         order: 'client_id', ts: 'updated_at' },
-      { name: 'k_lookups',         order: 'client_id', ts: 'updated_at' },
-      { name: KV_TABLE,            order: 'key',       ts: 'updated_at' }
-    ];
+    return PUSH_TABLES.map(function (t) { return { name: t, order: t === KV_TABLE ? 'key' : 'client_id', ts: 'updated_at' }; });
   }
 };
 
